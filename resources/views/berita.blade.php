@@ -34,6 +34,13 @@
     </div>
 </section>
 
+<!-- TODO: Data artikel di bawah ini masih merupakan data dummy. Menunggu artikel resmi dari tim Denpasar Hotel School (DHS). -->
+<section class="max-w-[1280px] mx-auto px-5 md:px-16 pb-4">
+    <div class="bg-dhs-cream p-4 border border-black/5 text-xs text-muted-light font-mono">
+        [TODO] Artikel di bawah ini menggunakan data dummy sementara menunggu update artikel asli.
+    </div>
+</section>
+
 <!-- Featured Article -->
 <section class="max-w-[1280px] mx-auto px-5 md:px-16 pb-20">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white overflow-hidden shadow-sm">

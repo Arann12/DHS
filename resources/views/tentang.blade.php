@@ -25,30 +25,18 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <div>
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">Tentang DHS</span>
-            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6">Lebih dari Sekedar Sekolah</h2>
+            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6">Transforming Into Excellent</h2>
             <p class="text-base text-muted-light leading-relaxed mb-6">
-                Denpasar Hotel School (DHS) adalah institusi pendidikan vokasi perhotelan dan pariwisata terkemuka di Bali. Berdiri sejak 2005, kami hadir dengan visi tunggal: menciptakan profesional perhotelan yang tidak hanya terampil, tetapi juga berkarakter, adaptif, dan berwawasan global.
+                Denpasar Hotel School (DHS) adalah lembaga pendidikan dan pelatihan bidang perhotelan yang mengusung pendidikan luar negeri dengan mengintegrasikan lembaga pendidikan dan pelatihan dengan dunia industri. DHS bernaung di bawah Yayasan Guna Widya Paramesthi. Lembaga ini didirikan untuk memberi kesempatan generasi muda Indonesia menjadi tenaga profesional bidang perhotelan, hospitality, kapal pesiar dan pariwisata.
             </p>
             <p class="text-base text-muted-light leading-relaxed">
-                Berlokasi di jantung kota Denpasar, kami menggabungkan kekayaan budaya Bali dengan standar internasional industri perhotelan — menciptakan lulusan yang dicari oleh hotel-hotel bintang lima di seluruh dunia.
+                Lembaga ini hadir untuk mengajak mahasiswa belajar sambil bekerja di Australia, Jerman dan Asia Tenggara melalui Partnership Program of DHS, dikenal dengan sebutan PP DHS.
             </p>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-dhs-cream p-8 text-center">
-                <p class="text-[56px] font-bold font-serif text-primary leading-none mb-2">19+</p>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-muted-light">Tahun Berpengalaman</p>
-            </div>
-            <div class="bg-dhs-cream p-8 text-center">
-                <p class="text-[56px] font-bold font-serif text-primary leading-none mb-2">3K+</p>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-muted-light">Alumni Tersebar Global</p>
-            </div>
-            <div class="bg-dhs-navy p-8 text-center">
-                <p class="text-[56px] font-bold font-serif text-primary leading-none mb-2">50+</p>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-white/70">Mitra Hotel &amp; Resort</p>
-            </div>
-            <div class="bg-dhs-cream p-8 text-center">
-                <p class="text-[56px] font-bold font-serif text-primary leading-none mb-2">94%</p>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-muted-light">Tingkat Penempatan Kerja</p>
+        <div class="flex items-center justify-center bg-dhs-cream p-8 text-center h-full">
+            <!-- TODO: Tambahkan statistik resmi jika sudah dikonfirmasi -->
+            <div class="text-muted-light italic text-sm">
+                "Mengintegrasikan pendidikan perhotelan dengan dunia industri nyata untuk karir global."
             </div>
         </div>
     </div>
@@ -59,23 +47,40 @@
     <div class="px-5 md:px-16 max-w-[1280px] mx-auto">
         <div class="text-center mb-16">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">Tujuan Kami</span>
-            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light">Visi &amp; Misi</h2>
+            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light">Visi, Misi &amp; Core Values</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div class="bg-white p-10 shadow-sm">
                 <span class="material-icons text-primary text-4xl mb-6 block">visibility</span>
                 <h3 class="text-[24px] font-semibold font-serif text-text-light mb-4">Visi</h3>
-                <p class="text-base text-muted-light leading-relaxed">Menjadi institusi pendidikan vokasi perhotelan terbaik di Asia Tenggara yang menghasilkan profesional unggul, berkarakter, dan berdaya saing global dengan mengedepankan nilai-nilai budaya lokal.</p>
+                <p class="text-base text-muted-light leading-relaxed">Mentransformasi lulusan SMA, SMK, dan sederajat menjadi tenaga profesional di bidang perhotelan dan pariwisata yang mau dan mampu bersaing di tingkat global.</p>
             </div>
             <div class="bg-dhs-navy p-10 shadow-sm">
                 <span class="material-icons text-primary text-4xl mb-6 block">flag</span>
                 <h3 class="text-[24px] font-semibold font-serif text-white mb-4">Misi</h3>
                 <ul class="space-y-3 text-white/80 text-base">
-                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Menyelenggarakan pendidikan vokasi berkualitas tinggi dengan kurikulum berstandar industri internasional.</li>
-                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Mengembangkan kompetensi praktis melalui fasilitas pelatihan mutakhir dan kemitraan industri strategis.</li>
-                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Membentuk karakter profesional yang berintegritas, adaptif, dan berjiwa pelayanan tinggi.</li>
-                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Menjalin kemitraan dengan industri global untuk membuka peluang karir terluas bagi lulusan.</li>
+                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Melaksanakan program pendidikan inovatif sesuai kebutuhan industri.</li>
+                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Mengembangkan sumberdaya pendidikan dan pelatihan secara profesional.</li>
+                    <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> Memberikan kesempatan mahasiswa untuk belajar sambil bekerja di Australia, Jerman dan Asia Tenggara.</li>
                 </ul>
+            </div>
+        </div>
+
+        <div class="bg-white p-10 shadow-sm">
+            <h3 class="text-[24px] font-semibold font-serif text-text-light mb-8 text-center">Core Values (Nilai-Nilai Utama)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="font-bold text-lg text-primary mb-2">Integritas (Integrity)</h4>
+                    <p class="text-sm text-muted-light leading-relaxed">DHS memegang teguh visi dan misi guna membentuk insan pariwisata yang kompeten dan berdaya saing.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg text-primary mb-2">Tanggung Jawab (Responsibility)</h4>
+                    <p class="text-sm text-muted-light leading-relaxed">DHS bertanggung jawab menghasilkan lulusan yang sesuai dengan kriteria dunia kerja serta tantangan di masa depan.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg text-primary mb-2">Kualitas (Quality)</h4>
+                    <p class="text-sm text-muted-light leading-relaxed">DHS memberikan pelayanan dan solusi terbaik yang berfokus pada kualitas pembelajaran.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -116,6 +121,24 @@
     </div>
 </section>
 
+<!-- Pesan Direktur Section -->
+<section class="bg-white py-20 md:py-24 px-5 md:px-16 max-w-[1280px] mx-auto border-t border-black/5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+        <div class="md:col-span-1">
+            <img class="w-full h-auto object-cover border border-black/10" alt="I Made Dwija Suastana, S.H., M.H." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeYrRiWE5PIngmO86w0Cn5hPsDfiG59HTAVn8-asaEPcvD_fxcdAfcXy_4KR3Pj-pL3DyMS_WN9hCkZFO-lSelGflhgKm5r2oTS_3HJ83ZvydeMvZY_QKmjAItPrh0n3Yvymm1YaFTXkLZpopTGMNQl17m_JEFUai2rxAdUHMzWu383ihOl9jx19ZEtRwSlqf0azKeZNaeaNPVSW6SAXdOP0RroYx1ZflK8JBFkyTsOLiVdTtucCRmxQ">
+        </div>
+        <div class="md:col-span-2 text-text-light">
+            <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">KATA SAMBUTAN</span>
+            <h2 class="text-[32px] font-semibold font-serif mb-6">Pesan Direktur</h2>
+            <div class="text-base text-muted-light leading-relaxed space-y-4">
+                <p>"Halo sahabat excellent, Denpasar Hotel School hadir dengan sebuah komitmen untuk mengantarkan calon profesional muda menjadi SDM Indonesia yang unggul dan kompeten."</p>
+                <p>"Di Denpasar Hotel School, Anda akan dilatih oleh para praktisi yang telah berpengalaman di bidangnya masing-masing. Mari bergabung bersama kami, Denpasar Hotel School, kami siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global."</p>
+                <p class="font-bold text-primary pt-4">Salam Excellent!<br>— I Made Dwija Suastana, S.H., M.H. (Direktur)</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Tim Kepemimpinan -->
 <section class="bg-dhs-cream py-20 md:py-24">
     <div class="px-5 md:px-16 max-w-[1280px] mx-auto">
@@ -123,34 +146,16 @@
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">Orang-Orang di Balik DHS</span>
             <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light">Tim Kepemimpinan</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="group text-center">
-                <div class="relative overflow-hidden mb-6 aspect-square">
-                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Dr. I Wayan Sudirta" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeYrRiWE5PIngmO86w0Cn5hPsDfiG59HTAVn8-asaEPcvD_fxcdAfcXy_4KR3Pj-pL3DyMS_WN9hCkZFO-lSelGflhgKm5r2oTS_3HJ83ZvydeMvZY_QKmjAItPrh0n3Yvymm1YaFTXkLZpopTGMNQl17m_JEFUai2rxAdUHMzWu383ihOl9jx19ZEtRwSlqf0azKeZNaeaNPVSW6SAXdOP0RroYx1ZflK8JBFkyTsOLiVdTtucCRmxQ">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
+            <div class="group text-center mx-auto md:col-start-2">
+                <div class="relative overflow-hidden mb-6 aspect-square max-w-[280px] mx-auto">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="I Made Dwija Suastana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeYrRiWE5PIngmO86w0Cn5hPsDfiG59HTAVn8-asaEPcvD_fxcdAfcXy_4KR3Pj-pL3DyMS_WN9hCkZFO-lSelGflhgKm5r2oTS_3HJ83ZvydeMvZY_QKmjAItPrh0n3Yvymm1YaFTXkLZpopTGMNQl17m_JEFUai2rxAdUHMzWu383ihOl9jx19ZEtRwSlqf0azKeZNaeaNPVSW6SAXdOP0RroYx1ZflK8JBFkyTsOLiVdTtucCRmxQ">
                 </div>
-                <h3 class="text-[20px] font-semibold font-serif text-text-light mb-1">Dr. I Wayan Sudirta, MM.</h3>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-3">Direktur Utama</p>
-                <p class="text-sm text-muted-light leading-relaxed">25+ tahun pengalaman di industri perhotelan internasional. Memimpin DHS dengan visi yang berakar pada keunggulan budaya Bali.</p>
+                <h3 class="text-[20px] font-semibold font-serif text-text-light mb-1">I Made Dwija Suastana, S.H., M.H.</h3>
+                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-3">Direktur</p>
+                <p class="text-sm text-muted-light leading-relaxed">Memimpin Denpasar Hotel School (DHS) dengan komitmen penuh untuk mencetak SDM unggul berdaya saing global.</p>
             </div>
-            <div class="group text-center">
-                <div class="relative overflow-hidden mb-6 aspect-square">
-                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Ni Kadek Ayu Dewi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAowavCDdZQkUdNdoSnyJZ4PinttYbln512VUgBEXw0mvWGj4DwuCh2anQGq4D51oKkLTUm-n-LDBfTTMIeLKs9zkExLVUkLLfnFFg9F9yKdBIsBf1V6zW1_-YAzHYASXjDJ0Pto0fCbfuRf5UgVrjDefhoK67nRAMmDsrneuAZFocbvx-Y1aroxs7EsWqADb1g7b1WDfl9nAO62RGCyYRHBgdDHV9tAsvagIN-CM0UmCRNpIr6Ps6ORA">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <h3 class="text-[20px] font-semibold font-serif text-text-light mb-1">Ni Kadek Ayu Dewi, M.Par.</h3>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-3">Wakil Direktur Akademik</p>
-                <p class="text-sm text-muted-light leading-relaxed">Pakar kurikulum hospitality dengan pengalaman mengajar di institusi internasional di Swiss dan Australia selama 15 tahun.</p>
-            </div>
-            <div class="group text-center">
-                <div class="relative overflow-hidden mb-6 aspect-square">
-                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Chef I Made Artha" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxn2eqm_jRIxoqtBqU_Z4510mT8Oum1XJuCt3B4qsnaur1kOxl1kswsTUDy_IWkop-w6gCJC9c4z-J1rwUSX4qHaSazUfu4x09voqcT3DY8fhiWkEHZcuUOZBNOolJHzCrNRQQXlB6UNrMOsC2_nhrMbSl_DzCpEu5YNeYXrmzbkHsYKIWxKH0th79FkaqCRHftpuCaHJyYzxate_qQzEmQcWi4iGgWxF-wIUFQGCYA83w8lUepgu6VQ">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <h3 class="text-[20px] font-semibold font-serif text-text-light mb-1">Chef I Made Artha, Dipl. Culin.</h3>
-                <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-3">Kepala Program Kuliner</p>
-                <p class="text-sm text-muted-light leading-relaxed">Mantan Executive Chef di empat hotel bintang lima. Membawa pengalaman dapur nyata ke dalam setiap sesi pelatihan di DHS.</p>
-            </div>
+            <!-- TODO: Tambahkan jajaran pengurus lengkap saat data resmi tersedia -->
         </div>
     </div>
 </section>
@@ -163,9 +168,9 @@
         <p class="text-base text-muted-light max-w-2xl mx-auto">Kolaborasi dengan pemimpin industri global untuk memastikan lulusan DHS mendapatkan akses langsung ke peluang karir terbaik.</p>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        @foreach(['Marriott International', 'Hilton Hotels', 'Accor Group', 'Four Seasons', 'Hyatt Hotels', 'Kempinski', 'Rosewood Hotels', 'Six Senses'] as $partner)
-        <div class="flex items-center justify-center p-8 bg-dhs-cream hover:bg-white transition-colors shadow-sm border border-transparent hover:border-black/10 group">
-            <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-muted-light group-hover:text-text-light transition-colors text-center">{{ $partner }}</span>
+        @foreach(['The Hotel School Melbourne & Sydney', 'TAFE Australia', 'Ausbildung (Jerman)', 'Bursa SDM Indonesia', 'GCOM Education', 'NEO by ASTON', 'Four Points by Sheraton Ungasan', 'Kuta Paradiso Hotel'] as $partner)
+        <div class="flex items-center justify-center p-6 bg-dhs-cream hover:bg-white transition-colors shadow-sm border border-transparent hover:border-black/10 group">
+            <span class="text-[0.75rem] uppercase tracking-wider font-semibold text-muted-light group-hover:text-text-light transition-colors text-center">{{ $partner }}</span>
         </div>
         @endforeach
     </div>

@@ -40,14 +40,16 @@
         <div>
             <!-- text-primary resolved to DHS Red (#D62828) as per DESIGN.md -->
             <span class="label-text text-primary mb-4 block">SEKILAS DHS</span>
-            <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-tight text-text-light">Pioneering<br>Excellence<br>Since 1989.</h2>
+            <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-tight text-text-light">Transforming<br>Into Excellent.</h2>
             
             <div class="space-y-6 text-dhs-darknavy leading-relaxed">
-                <p>Terletak di jantung pariwisata dunia, Bali, Denpasar Hotel School (DHS) telah menjadi mercusuar pendidikan perhotelan selama lebih dari tiga dekade. Kami menggabungkan keramahtamahan tradisional Indonesia yang hangat dengan standar operasional internasional yang ketat.</p>
-                <p>Visi kami sederhana namun mendalam: mencetak pemimpin masa depan di industri hospitality global yang memiliki integritas, keterampilan teknis yang mumpuni, dan etos kerja yang tak tertandingi.</p>
+                <p>Denpasar Hotel School (DHS) adalah lembaga pendidikan dan pelatihan bidang perhotelan yang mengusung pendidikan luar negeri dengan mengintegrasikan lembaga pendidikan dan pelatihan dengan dunia industri. DHS bernaung di bawah Yayasan Guna Widya Paramesthi.</p>
+                <p>Lembaga ini didirikan untuk memberi kesempatan generasi muda Indonesia menjadi tenaga profesional bidang perhotelan, hospitality, kapal pesiar dan pariwisata, serta belajar sambil bekerja di luar negeri.</p>
             </div>
             
             <div class="flex space-x-16 mt-12 pt-12 border-t border-black/10">
+                <!-- TODO: Konfirmasi statistik resmi DHS sebelum publish -->
+                <!--
                 <div>
                     <div class="text-4xl font-serif mb-2 flex items-start text-text-light">35<span class="text-primary text-2xl font-bold">+</span></div>
                     <div class="label-text text-muted-light text-[0.6rem]">YEARS OF HERITAGE</div>
@@ -55,6 +57,10 @@
                 <div>
                     <div class="text-4xl font-serif mb-2 flex items-start text-text-light">12K<span class="text-primary text-2xl font-bold">+</span></div>
                     <div class="label-text text-muted-light text-[0.6rem]">SUCCESSFUL ALUMNI</div>
+                </div>
+                -->
+                <div class="text-sm italic text-muted-light">
+                    Mencetak SDM pariwisata yang unggul, kompeten, dan siap bersaing di tingkat global.
                 </div>
             </div>
         </div>
@@ -73,58 +79,62 @@
             <h2 class="text-5xl md:text-6xl font-serif mb-16 leading-tight text-text-light">Visionary<br>Standards.</h2>
             
             <div class="mb-12">
-                <span class="label-text text-primary mb-4 block">THE VISION</span>
+                <span class="label-text text-primary mb-4 block">VISI</span>
                 <p class="font-serif text-2xl italic leading-relaxed text-muted-light">
-                    "To be a premier global hospitality institution that empowers innovative, ethical leaders through the fusion of Indonesian heritage and world-class standards."
+                    "Mentransformasi lulusan SMA, SMK, dan sederajat menjadi tenaga profesional di bidang perhotelan dan pariwisata yang mau dan mampu bersaing di tingkat global."
                 </p>
             </div>
             
             <div>
-                <span class="label-text text-primary mb-6 block">THE MISSION</span>
-                <ul class="space-y-6">
+                <span class="label-text text-primary mb-6 block">MISI</span>
+                <ul class="space-y-4">
                     <li class="flex items-start">
                         <span class="material-icons text-primary mr-4 mt-1">check_circle_outline</span>
-                        <span class="text-muted-light leading-relaxed">Menyelenggarakan kurikulum berbasis kompetensi yang selaras dengan dinamika industri perhotelan global.</span>
+                        <span class="text-muted-light leading-relaxed">Melaksanakan program pendidikan inovatif sesuai kebutuhan industri.</span>
                     </li>
                     <li class="flex items-start">
                         <span class="material-icons text-primary mr-4 mt-1">check_circle_outline</span>
-                        <span class="text-muted-light leading-relaxed">Membangun ekosistem kemitraan strategis dengan jaringan hotel bintang lima dan resort mewah di seluruh dunia.</span>
+                        <span class="text-muted-light leading-relaxed">Mengembangkan sumberdaya pendidikan dan pelatihan secara profesional.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="material-icons text-primary mr-4 mt-1">check_circle_outline</span>
+                        <span class="text-muted-light leading-relaxed">Memberikan kesempatan mahasiswa untuk belajar sambil bekerja di Australia, Jerman dan Asia Tenggara.</span>
                     </li>
                 </ul>
             </div>
         </div>
         
         <div class="grid grid-cols-2 gap-6 content-center">
-            <!-- Grid cards with Cream background, sharp corners, and red icons -->
-            <div class="bg-background-light p-8 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
-                <span class="material-icons text-primary text-3xl">workspace_premium</span>
+            <!-- Grid cards for Core Values + Global Network -->
+            <div class="bg-background-light p-6 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
+                <span class="material-icons text-primary text-3xl">verified</span>
                 <div>
-                    <h4 class="font-bold text-sm mb-1 text-text-light">Akreditasi A</h4>
-                    <p class="label-text text-muted-light text-[0.6rem]">BAN-PT EXCELLENCE</p>
+                    <h4 class="font-bold text-sm mb-1 text-text-light">Integritas</h4>
+                    <p class="text-[0.7rem] text-muted-light leading-relaxed">Membentuk insan pariwisata yang kompeten dan berdaya saing tinggi.</p>
                 </div>
             </div>
             
-            <div class="bg-background-light p-8 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
+            <div class="bg-background-light p-6 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
+                <span class="material-icons text-primary text-3xl">fact_check</span>
+                <div>
+                    <h4 class="font-bold text-sm mb-1 text-text-light">Tanggung Jawab</h4>
+                    <p class="text-[0.7rem] text-muted-light leading-relaxed">Menghasilkan lulusan yang sesuai kriteria dunia kerja masa depan.</p>
+                </div>
+            </div>
+            
+            <div class="bg-background-light p-6 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
+                <span class="material-icons text-primary text-3xl">star</span>
+                <div>
+                    <h4 class="font-bold text-sm mb-1 text-text-light">Kualitas</h4>
+                    <p class="text-[0.7rem] text-muted-light leading-relaxed">Berfokus pada penyediaan solusi dan kualitas pembelajaran terbaik.</p>
+                </div>
+            </div>
+            
+            <div class="bg-background-light p-6 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
                 <span class="material-icons text-primary text-3xl">public</span>
                 <div>
                     <h4 class="font-bold text-sm mb-1 text-text-light">Global Network</h4>
-                    <p class="label-text text-muted-light text-[0.6rem]">INTERNATIONAL PARTNERS</p>
-                </div>
-            </div>
-            
-            <div class="bg-background-light p-8 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
-                <span class="material-icons text-primary text-3xl">school</span>
-                <div>
-                    <h4 class="font-bold text-sm mb-1 text-text-light">Expert Faculty</h4>
-                    <p class="label-text text-muted-light text-[0.6rem]">INDUSTRY PRACTITIONERS</p>
-                </div>
-            </div>
-            
-            <div class="bg-background-light p-8 flex flex-col justify-between h-56 transition-transform hover:-translate-y-1 duration-300 shadow-sm">
-                <span class="material-icons text-primary text-3xl">handshake</span>
-                <div>
-                    <h4 class="font-bold text-sm mb-1 text-text-light">Job Placement</h4>
-                    <p class="label-text text-muted-light text-[0.6rem]">98% PLACEMENT RATE</p>
+                    <p class="text-[0.7rem] text-muted-light leading-relaxed">Kesempatan kerja & belajar di Australia, Jerman & Asia Tenggara.</p>
                 </div>
             </div>
         </div>
@@ -156,39 +166,39 @@
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Card 1: Culinary Arts -->
+        <!-- Card 1: Program Internasional -->
         <div class="border border-black/10 group cursor-pointer bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
             <div class="overflow-hidden h-[300px]">
-                <img alt="Culinary Arts Kitchen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXptvnod1HxEn1Bx6IezKWRBCwkykUPMcRW74guW5_55XXUaalkhFqPnoliMwG70kGUvZe7BZdcexnivnWW1-lK7WedS10yZF0nB7J_ZTIXnug_xa2_b0l7ZH3uXNLTJROPIqkEBqhJapvitg8WQoVxzwTyJuSq4r3rcPwfmvU8uPENXrzHnh0AbgLiOgwmys8JVmMCyf7XQYs5X0T0iaZxtDoi7jQJeSzDcGZwmF17aEOKwCkODnBOQ">
+                <img alt="Program Internasional" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXptvnod1HxEn1Bx6IezKWRBCwkykUPMcRW74guW5_55XXUaalkhFqPnoliMwG70kGUvZe7BZdcexnivnWW1-lK7WedS10yZF0nB7J_ZTIXnug_xa2_b0l7ZH3uXNLTJROPIqkEBqhJapvitg8WQoVxzwTyJuSq4r3rcPwfmvU8uPENXrzHnh0AbgLiOgwmys8JVmMCyf7XQYs5X0T0iaZxtDoi7jQJeSzDcGZwmF17aEOKwCkODnBOQ">
             </div>
             <div class="p-8">
-                <h3 class="text-2xl font-serif mb-4 text-text-light">Culinary Arts</h3>
-                <p class="text-muted-light mb-8 text-sm leading-relaxed">Master gastronomy from technical knife skills to world-class resort service standards.</p>
-                <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors" href="/akademi#culinary">PROGRAM DETAILS</a>
+                <h3 class="text-2xl font-serif mb-4 text-text-light">Program Internasional</h3>
+                <p class="text-muted-light mb-8 text-sm leading-relaxed">Pendidikan luar negeri berpartner dengan TAFE Australia & The Hotel School, serta Ausbildung Jerman.</p>
+                <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors" href="/akademi?filter=internasional">PROGRAM DETAILS</a>
             </div>
         </div>
         
-        <!-- Card 2: Hospitality Management -->
+        <!-- Card 2: Pendidikan Vokasi 2 Tahun -->
         <div class="border border-black/10 group cursor-pointer bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
             <div class="overflow-hidden h-[300px]">
-                <img alt="Hotel Room" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxW5mY_zGD0HDOuwOrmrluxFe62YYnMPXOVLSqWRlgjb2vMXfJRycIhaY-CD9oObxiUpXDfsNqINeygV8X8D-cGXIgF1TsGf1oTPgW6_TY1GU8KeHFIgeVZgBDZxo-77h1BWpzJ4Z6JQaflVOHy1jq3aT80-6ua894112IvlKWSK8uWYLygVc8fO53xwVQEVcu7Od_VANVKjmstsZjgZrBxMmHgC8V-HwKbyyG_7PWWcGVDbWh2uLnNw">
+                <img alt="Pendidikan Vokasi 2 Tahun" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxW5mY_zGD0HDOuwOrmrluxFe62YYnMPXOVLSqWRlgjb2vMXfJRycIhaY-CD9oObxiUpXDfsNqINeygV8X8D-cGXIgF1TsGf1oTPgW6_TY1GU8KeHFIgeVZgBDZxo-77h1BWpzJ4Z6JQaflVOHy1jq3aT80-6ua894112IvlKWSK8uWYLygVc8fO53xwVQEVcu7Od_VANVKjmstsZjgZrBxMmHgC8V-HwKbyyG_7PWWcGVDbWh2uLnNw">
             </div>
             <div class="p-8">
-                <h3 class="text-2xl font-serif mb-4 text-text-light">Hospitality Mgmt</h3>
-                <p class="text-muted-light mb-8 text-sm leading-relaxed">Strategic training in guest relations and rooms division for the luxury accommodation ecosystem.</p>
-                <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors" href="/akademi#hospitality">PROGRAM DETAILS</a>
+                <h3 class="text-2xl font-serif mb-4 text-text-light">Vokasi 2 Tahun</h3>
+                <p class="text-muted-light mb-8 text-sm leading-relaxed">Jurusan Culinary Arts, Perhotelan, & F&B Service dengan jaminan OJT hotel bintang 4 & 5.</p>
+                <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors" href="/akademi?filter=2-tahun">PROGRAM DETAILS</a>
             </div>
         </div>
         
-        <!-- Card 3: F&B Service -->
+        <!-- Card 3: Program Eksekutif Cruise Line -->
         <div class="border border-black/10 group cursor-pointer bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
             <div class="overflow-hidden h-[300px]">
-                <img alt="Bartender" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO63PKB9j0PZSIejsxFA-pyDKLSi4F2odNeFY2uIrh8kOIqjFrwvv93e4ZKYiNJ-dZ5BkULb9Fi61NiHFRyKTKMXZ8TGT-5v0yb7WTTtTwaDvUO6gdGFA1X1i7kJ-tOhNjaa499vvTyEkXIHBeryw3dSs-_PvWfpIXUtcxslmh-lvlSqpTB80bYuj1cXpa2bem_wW0OCyUvpUqHlFKEQc_NxIoy3OS_kFmFX8miorPLtRfU6qVyh5bdw">
+                <img alt="Program Eksekutif Cruise Line" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO63PKB9j0PZSIejsxFA-pyDKLSi4F2odNeFY2uIrh8kOIqjFrwvv93e4ZKYiNJ-dZ5BkULb9Fi61NiHFRyKTKMXZ8TGT-5v0yb7WTTtTwaDvUO6gdGFA1X1i7kJ-tOhNjaa499vvTyEkXIHBeryw3dSs-_PvWfpIXUtcxslmh-lvlSqpTB80bYuj1cXpa2bem_wW0OCyUvpUqHlFKEQc_NxIoy3OS_kFmFX8miorPLtRfU6qVyh5bdw">
             </div>
             <div class="p-8">
-                <h3 class="text-2xl font-serif mb-4 text-text-light">F&amp;B Service</h3>
-                <p class="text-muted-light mb-8 text-sm leading-relaxed">Developing excellence in mixology and the invisible choreography of high-end dining experiences.</p>
-                <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors" href="/akademi#fb">PROGRAM DETAILS</a>
+                <h3 class="text-2xl font-serif mb-4 text-text-light">Program Eksekutif</h3>
+                <p class="text-muted-light mb-8 text-sm leading-relaxed">Program singkat 6 bulan kapal pesiar (Cook, Steward, Bartender) dengan bonus gratis paspor & seaman book.</p>
+                <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors" href="/akademi?filter=eksekutif">PROGRAM DETAILS</a>
             </div>
         </div>
     </div>
@@ -220,25 +230,19 @@
     </div>
 </section>
 
-<!-- Testimonial Slider Section -->
+<!-- Message from Director Section (Replacing dummy Ritz-Carlton testimonial) -->
 <section class="py-32 bg-surface-light px-6 md:px-16 relative">
-    <div class="max-w-5xl mx-auto text-center relative z-10 text-text-light">
-        <span class="label-text text-primary mb-12 block">ALUMNI LEGACY</span>
-        <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif leading-tight mb-12">
-            "DHS wasn't just a school; it was the foundation of my career at Ritz-Carlton Paris. The discipline and grace I learned here are my most valuable assets."
+    <div class="max-w-4xl mx-auto text-center relative z-10 text-text-light">
+        <span class="label-text text-primary mb-8 block">PESAN DIREKTUR</span>
+        <!-- TODO: Tambahkan testimonial alumni asli jika data sudah tersedia -->
+        <h2 class="text-2xl md:text-3xl font-serif leading-relaxed mb-8">
+            "Halo sahabat excellent, Denpasar Hotel School hadir dengan sebuah komitmen untuk mengantarkan calon profesional muda menjadi SDM Indonesia yang unggul dan kompeten. Di Denpasar Hotel School, Anda akan dilatih oleh para praktisi yang telah berpengalaman di bidangnya masing-masing. Mari bergabung bersama kami, Denpasar Hotel School, kami siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global."
         </h2>
         <div>
-            <h4 class="font-bold text-sm tracking-widest uppercase mb-2">ANANDA PUTRI</h4>
-            <p class="label-text text-muted-light">GUEST RELATIONS MANAGER — CLASS OF 2018</p>
+            <h4 class="font-bold text-sm tracking-widest uppercase mb-1">I Made Dwija Suastana, S.H., M.H.</h4>
+            <p class="label-text text-muted-light">DIREKTUR DENPASAR HOTEL SCHOOL — SALAM EXCELLENT!</p>
         </div>
     </div>
-    
-    <button class="absolute left-8 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors hidden md:flex text-text-light" title="Previous Testimonial">
-        <span class="material-icons">chevron_left</span>
-    </button>
-    <button class="absolute right-8 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors hidden md:flex text-text-light" title="Next Testimonial">
-        <span class="material-icons">chevron_right</span>
-    </button>
 </section>
 
 <!-- Insights & Articles Section -->
@@ -311,13 +315,16 @@
 <!-- Partners Section -->
 <section class="py-16 bg-surface-light px-6 md:px-16 border-b border-black/5">
     <div class="max-w-7xl mx-auto text-center">
-        <span class="label-text text-text-light mb-8 block">MITRA INDUSTRI</span>
-        <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 grayscale hover:opacity-80 transition-opacity duration-500 text-text-light">
-            <div class="font-serif text-xl font-bold tracking-[0.3em] uppercase">Ritz-Carlton</div>
-            <div class="font-serif text-xl font-bold tracking-[0.3em] uppercase">Marriott</div>
-            <div class="font-serif text-xl font-bold tracking-[0.3em] uppercase">Four Seasons</div>
-            <div class="font-serif text-xl font-bold tracking-[0.3em] uppercase">Hyatt</div>
-            <div class="font-serif text-xl font-bold tracking-[0.3em] uppercase">Hilton</div>
+        <span class="label-text text-text-light mb-8 block">MITRA AKADEMIK & INDUSTRI</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-8 items-center justify-items-center opacity-70 text-text-light font-medium text-xs">
+            <div class="text-center font-serif py-2">The Hotel School Sydney/Melbourne</div>
+            <div class="text-center font-serif py-2">TAFE Australia</div>
+            <div class="text-center font-serif py-2">Ausbildung Jerman</div>
+            <div class="text-center font-serif py-2">Bursa SDM Indonesia</div>
+            <div class="text-center font-serif py-2">GCOM Education</div>
+            <div class="text-center font-serif py-2">NEO by ASTON</div>
+            <div class="text-center font-serif py-2">Four Points Ungasan</div>
+            <div class="text-center font-serif py-2">Kuta Paradiso Hotel</div>
         </div>
     </div>
 </section>
@@ -327,20 +334,23 @@
     <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
         <div class="text-text-light">
             <span class="label-text text-primary mb-4 block">CONTACT</span>
-            <h2 class="text-5xl md:text-7xl font-serif mb-16 leading-tight">Connect With<br>Us.</h2>
+            <h2 class="text-5xl md:text-7xl font-serif mb-12 leading-tight">Hubungi<br>Kami.</h2>
             
-            <div class="space-y-12">
+            <div class="space-y-8">
                 <div>
-                    <span class="label-text text-muted-light mb-2 block">CAMPUS OFFICE</span>
-                    <p class="text-lg">Jl. Sunset Road No. 88<br>Denpasar, Bali 80361, Indonesia</p>
+                    <span class="label-text text-primary mb-2 block">KAMPUS DENPASAR</span>
+                    <p class="text-base font-semibold">Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali</p>
+                    <p class="text-sm text-muted-light mt-1">WA: +62 81 246 319966 | Email: sahabat@dhs.or.id</p>
                 </div>
                 <div>
-                    <span class="label-text text-muted-light mb-2 block">INQUIRIES</span>
-                    <p class="text-lg">+62 361 5671234<br>admission@denpasarhotelschool.com</p>
+                    <span class="label-text text-primary mb-2 block">KAMPUS KLUNGKUNG</span>
+                    <p class="text-base font-semibold">Jl. Raya Takmung No. 36, Klungkung 80752, Bali</p>
+                    <p class="text-sm text-muted-light mt-1">Telp: +0366 5582998 | WA: +62 81 337 106480</p>
                 </div>
                 <div>
-                    <span class="label-text text-muted-light mb-2 block">HOURS</span>
-                    <p class="italic text-muted-light">Monday – Friday: 09:00 – 17:00 WITA</p>
+                    <span class="label-text text-muted-light mb-2 block">PENDAFTARAN ONLINE</span>
+                    <p class="text-sm font-medium">Linktree: <a href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank" class="underline text-primary hover:text-dhs-darknavy">BiayaPendidikan_DHS</a></p>
+                    <p class="text-sm font-medium">Portal: <a href="http://www.dhs.or.id/student" target="_blank" class="underline text-primary hover:text-dhs-darknavy">www.dhs.or.id/student</a></p>
                 </div>
             </div>
         </div>

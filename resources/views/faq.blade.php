@@ -183,12 +183,11 @@
             Tim admisi kami siap membantu Anda secara langsung untuk menjawab segala pertanyaan seputar proses belajar di Denpasar Hotel School.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            {{-- TODO: Route /kontak belum dibuat, gunakan placeholder sementara --}}
-            <a class="inline-flex items-center justify-center px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors w-full sm:w-auto min-w-[280px]" href="#">
-                Hubungi Kami via WhatsApp
+            <a class="inline-flex items-center justify-center px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors w-full sm:w-auto min-w-[280px]" href="https://wa.me/6281246319966" target="_blank">
+                Hubungi Kami via WhatsApp (+62 81 246 319966)
             </a>
-            <a class="inline-flex items-center justify-center px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-navy hover:text-white transition-colors w-full sm:w-auto min-w-[280px]" href="#">
-                Kirim Pertanyaan via Email
+            <a class="inline-flex items-center justify-center px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-navy hover:text-white transition-colors w-full sm:w-auto min-w-[280px]" href="mailto:sahabat@dhs.or.id">
+                Kirim Pertanyaan via Email (sahabat@dhs.or.id)
             </a>
         </div>
     </div>
