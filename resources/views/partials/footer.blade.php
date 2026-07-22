@@ -6,12 +6,12 @@
             
             <div class="space-y-4 text-xs text-muted-light mb-6 leading-relaxed">
                 <div>
-                    <span class="font-bold text-text-light block">KAMPUS DENPASAR</span>
+                    <span class="font-bold text-text-light block" data-id="KAMPUS DENPASAR" data-en="DENPASAR CAMPUS">KAMPUS DENPASAR</span>
                     Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali<br>
                     WA: +62 81 246 319966 | Email: sahabat@dhs.or.id
                 </div>
                 <div>
-                    <span class="font-bold text-text-light block">KAMPUS KLUNGKUNG</span>
+                    <span class="font-bold text-text-light block" data-id="KAMPUS KLUNGKUNG" data-en="KLUNGKUNG CAMPUS">KAMPUS KLUNGKUNG</span>
                     Jl. Raya Takmung No. 36, Klungkung 80752, Bali<br>
                     Telp: +0366 5582998 | WA: +62 81 337 106480
                 </div>
@@ -31,32 +31,32 @@
         </div>
         
         <div>
-            <span class="label-text mb-6 block text-text-light">EXPLORE</span>
+            <span class="label-text mb-6 block text-text-light" data-id="EKSPLORASI" data-en="EXPLORE">EKSPLORASI</span>
             <ul class="space-y-4 text-sm text-muted-light">
-                <li><a class="hover:text-primary transition-colors" href="/">Beranda</a></li>
-                <li><a class="hover:text-primary transition-colors" href="/tentang-kami">Sekilas DHS</a></li>
-                <li><a class="hover:text-primary transition-colors" href="/akademi">Akademi</a></li>
-                <li><a class="hover:text-primary transition-colors" href="/berita">Berita &amp; Artikel</a></li>
+                <li><a class="hover:text-primary transition-colors" href="/"><span data-id="Beranda" data-en="Home">Beranda</span></a></li>
+                <li><a class="hover:text-primary transition-colors" href="/tentang-kami"><span data-id="Tentang DHS" data-en="About DHS">Sekilas DHS</span></a></li>
+                <li><a class="hover:text-primary transition-colors" href="/akademi"><span data-id="Akademi" data-en="Academy">Akademi</span></a></li>
+                <li><a class="hover:text-primary transition-colors" href="/berita"><span data-id="Berita &amp; Artikel" data-en="News &amp; Articles">Berita &amp; Artikel</span></a></li>
             </ul>
         </div>
         
         <div>
-            <span class="label-text mb-6 block text-text-light">ADMISSIONS &amp; LINKS</span>
+            <span class="label-text mb-6 block text-text-light" data-id="PENDAFTARAN &amp; LINK" data-en="ADMISSIONS &amp; LINKS">PENDAFTARAN &amp; LINK</span>
             <ul class="space-y-4 text-sm text-muted-light">
-                <li><a class="hover:text-primary transition-colors" href="http://www.dhs.or.id/student" target="_blank">Pendaftaran Online</a></li>
-                <li><a class="hover:text-primary transition-colors" href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank">Unduh Brosur Biaya (Linktree)</a></li>
-                <li><a class="hover:text-primary transition-colors" href="/faq">FAQ</a></li>
-                <li><a class="hover:text-primary transition-colors" href="/karier">Karier</a></li>
+                <li><a class="hover:text-primary transition-colors" href="http://www.dhs.or.id/student" target="_blank"><span data-id="Pendaftaran Online" data-en="Online Registration">Pendaftaran Online</span></a></li>
+                <li><a class="hover:text-primary transition-colors" href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank"><span data-id="Unduh Brosur Biaya (Linktree)" data-en="Download Cost Brochure (Linktree)">Unduh Brosur Biaya (Linktree)</span></a></li>
+                <li><a class="hover:text-primary transition-colors" href="/faq"><span data-id="FAQ" data-en="FAQ">FAQ</span></a></li>
+                <li><a class="hover:text-primary transition-colors" href="/karier"><span data-id="Karier" data-en="Careers">Karier</span></a></li>
             </ul>
         </div>
     </div>
     
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center pt-8 border-t border-black/5 text-[0.65rem] text-muted-light uppercase tracking-widest">
-        <p>© 2026 DENPASAR HOTEL SCHOOL. CRAFTED FOR EXCELLENCE.</p>
+        <p>© 2026 DENPASAR HOTEL SCHOOL. <span data-id="DIRANCANG UNTUK KEUNGGULAN." data-en="CRAFTED FOR EXCELLENCE.">DIRANCANG UNTUK KEUNGGULAN.</span></p>
         <div class="flex space-x-6 mt-4 md:mt-0">
-            <a class="hover:text-primary transition-colors" href="/privacy-policy">PRIVACY POLICY</a>
-            <a class="hover:text-primary transition-colors" href="/legal">LEGAL</a>
-            <a class="hover:text-primary transition-colors" href="/cookies">COOKIES</a>
+            <a class="hover:text-primary transition-colors" href="/privacy-policy"><span data-id="KEBIJAKAN PRIVASI" data-en="PRIVACY POLICY">KEBIJAKAN PRIVASI</span></a>
+            <a class="hover:text-primary transition-colors" href="/legal"><span data-id="LEGAL" data-en="LEGAL">LEGAL</span></a>
+            <a class="hover:text-primary transition-colors" href="/cookies"><span data-id="KUKIS" data-en="COOKIES">KUKIS</span></a>
         </div>
     </div>
 </footer>

@@ -16,28 +16,28 @@
 
 ---
 
-## 2. Color Palette — v2 (Matched to Logo)
+## 2. Color Palette — v3 (Diambil Langsung dari File Logo)
 
-> **Update:** Palet gold/mustard versi awal diganti supaya matching dengan warna resmi logo DHS (merah cerah + navy blue). Background cream/beige tetap dipertahankan karena masih relevan untuk kesan "resort premium" dan sudah terbukti kontras baik dengan foto-foto kampus.
->
-> ⚠️ Hex merah & navy di bawah adalah estimasi visual dari file logo — sebelum dipakai sebagai final brand color, ambil hex presisi langsung dari file logo (pakai color picker di Figma/Photoshop, atau situs seperti coolors.co/image-picker) supaya benar-benar 100% match, bukan cuma mendekati.
+> **Update:** Hex merah & biru di bawah **bukan lagi estimasi visual** — diambil langsung via color picker dari file logo yang diupload, jadi sudah 100% match dengan warna resmi logo DHS. Background cream/beige tetap dipertahankan sebagai penyeimbang karena warna logo (merah & biru) sangat saturated/cerah dan perlu "ruang napas" netral supaya tidak norak dipakai luas di halaman.
 
-| Nama | Estimasi HEX | Penggunaan |
-|---|---|---|
-| Cream / Off-white | `#F6F2EA` | Background utama section |
-| Warm Beige | `#EFE7D8` | Background alternating section (Visionary Standards, Footer) |
-| **DHS Navy Blue** (dari shield logo) | `#1B2A6B` | Ganti posisi "Charcoal" lama — dipakai untuk heading, nav bar, tombol primary solid, teks utama |
-| **DHS Red** (dari huruf D logo) | `#D62828` | Aksen utama — ganti posisi "Gold" lama: ikon kecil, highlight kutipan, badge/tag kategori, underline tab aktif |
-| Dark Navy (teks sekunder) | `#2B355E` | Teks body sekunder, variasi lebih soft dari Navy utama |
-| Muted Gray | `#8A8478` | Label kecil huruf kapital ("BERITA & ARTIKEL", "OUR MISSION") |
-| White | `#FFFFFF` | Card background, teks di atas Navy/Red, huruf logo |
+| Nama | HEX (dari logo) | RGB | Penggunaan |
+|---|---|---|---|
+| **DHS Red** (segitiga atas, huruf D) | `#E10001` | 225, 0, 1 | Aksen utama — badge, ikon kecil, highlight kutipan, underline tab aktif, angka statistik |
+| **DHS Blue** (perisai, huruf H S) | `#0E06B4` | 14, 6, 180 | Warna dominan/primary — heading, nav bar, tombol primary solid, teks utama |
+| White (huruf logo) | `#FFFFFF` | 255, 255, 255 | Card background, teks di atas Blue/Red, huruf logo |
+| Cream / Off-white | `#F6F2EA` | — | Background utama section (penyeimbang, bukan dari logo) |
+| Warm Beige | `#EFE7D8` | — | Background alternating section (Visionary Standards, Footer) |
+| Dark Blue (teks sekunder) | `#2B2494` | — | Teks body sekunder, variasi lebih soft dari DHS Blue utama (dicampur sedikit dengan hitam supaya tidak terlalu "neon" untuk body text panjang) |
+| Muted Gray | `#8A8478` | — | Label kecil huruf kapital ("BERITA & ARTIKEL", "OUR MISSION") |
 
-**Aturan pemakaian Merah & Navy (penting, supaya tidak norak):**
-- **Navy** jadi warna dominan/primary (mirip posisi Charcoal sebelumnya) — dipakai luas: heading, tombol utama, nav aktif
-- **Merah** jadi aksen sekunder saja, dipakai SEDIKIT dan strategis — untuk elemen kecil yang perlu menarik perhatian (badge "Pendaftaran Dibuka", ikon, garis bawah tab aktif, highlight angka statistik). Jangan pakai merah untuk area luas (background section, misalnya) karena akan terasa terlalu agresif untuk brand hospitality yang harusnya elegan.
-- Rasio disarankan: Navy dominan ~70%, Merah aksen ~10%, sisanya tetap cream/beige/putih sebagai penyeimbang.
+**Catatan penting soal saturasi:** warna logo ini jauh lebih cerah/saturated dibanding palet "navy" versi sebelumnya (`#0E06B4` itu vivid royal blue, bukan navy gelap; `#E10001` itu merah terang, bukan merah bata). Ini konsekuensi dari keputusan "match 100% dengan logo" — supaya tetap terasa elegan dan bukan "norak", ikuti rasio pemakaian di bawah dengan ketat, dan pertimbangkan token `Dark Blue (#2B2494)` untuk area teks/section besar yang butuh biru tapi tidak seterang warna logo asli.
 
-**Aturan kontras:** teks abu-abu di atas cream harus dicek dengan contrast checker — beberapa label kecil berisiko gagal WCAG AA. Gunakan gray lebih gelap (`#6B6558` atau lebih pekat) untuk teks yang perlu dibaca nyaman, bukan cuma dekoratif. Teks putih di atas Navy (`#1B2A6B`) sudah pasti kontras aman; teks putih di atas Merah (`#D62828`) juga aman, tapi hindari teks abu-abu di atas Merah — kontrasnya buruk.
+**Aturan pemakaian Merah & Biru (penting, supaya tidak norak):**
+- **DHS Blue** jadi warna dominan/primary — dipakai luas: heading, tombol utama, nav aktif. Untuk area yang sangat luas (mis. section background solid), pertimbangkan pakai `Dark Blue #2B2494` sebagai versi lebih redup, bukan `#0E06B4` langsung — karena biru vivid ini bisa terasa terlalu tajam kalau dipakai sebagai bidang besar.
+- **DHS Red** jadi aksen sekunder saja, dipakai SEDIKIT dan strategis — untuk elemen kecil yang perlu menarik perhatian (badge "Pendaftaran Dibuka", ikon, garis bawah tab aktif, highlight angka statistik). Jangan pakai merah untuk area luas (background section, misalnya) karena warnanya sangat terang dan akan terasa agresif untuk brand hospitality yang harusnya elegan.
+- Rasio disarankan: Blue dominan ~70%, Red aksen ~10%, sisanya tetap cream/beige/putih sebagai penyeimbang.
+
+**Aturan kontras:** teks abu-abu di atas cream harus dicek dengan contrast checker — beberapa label kecil berisiko gagal WCAG AA. Gunakan gray lebih gelap (`#6B6558` atau lebih pekat) untuk teks yang perlu dibaca nyaman, bukan cuma dekoratif. Teks putih di atas DHS Blue (`#0E06B4`) sudah pasti kontras aman; teks putih di atas DHS Red (`#E10001`) juga aman, tapi hindari teks abu-abu di atas keduanya — kontrasnya buruk karena warna dasarnya sudah sangat cerah.
 
 ---
 
@@ -67,13 +67,13 @@
 ## 5. Komponen
 
 ### 5.1 Tombol (Button)
-- **Primary (solid dark):** background charcoal `#1C1A17`, teks putih, kapital — contoh: "JELAJAHI PROGRAM"
-- **Secondary (outline):** border tipis, teks charcoal, background transparan — contoh tombol kedua di hero
+- **Primary (solid):** background DHS Blue `#0E06B4`, teks putih, kapital — contoh: "JELAJAHI PROGRAM"
+- **Secondary (outline):** border tipis DHS Blue, teks DHS Blue, background transparan — contoh tombol kedua di hero
 - ⚠️ **Aturan penting:** teks tombol HARUS deskriptif dan sesuai tujuan link. Jangan pernah biarkan placeholder/typo lolos ke desain final (lihat catatan "CETAK DASHBOARD" di homepage — perlu diperbaiki).
 
 ### 5.2 Card
 - Card program (Culinary Arts, dst): gambar di atas, judul serif, deskripsi 1-2 kalimat, link kecil kapital "PROGRAM DETAILS" di bawah.
-- Card statistik (Akreditasi, Global Network): ikon merah (`#D62828`) kecil, judul bold warna navy, subjudul kecil di bawah.
+- Card statistik (Akreditasi, Global Network): ikon merah DHS Red (`#E10001`) kecil, judul bold warna DHS Blue, subjudul kecil di bawah.
 
 ### 5.3 Navigasi
 - Logo kiri, menu tengah/kanan: **Beranda · Tentang Kami · Akademi · Berita · Karier**
