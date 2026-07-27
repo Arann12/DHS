@@ -92,7 +92,7 @@
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="bo-label">Jabatan / Angkatan</label>
-                        <input type="text" class="bo-input" x-model="modal.form.jabatan" placeholder="Contoh: Alumni 2018 · F&B Manager, Marriott Bali">
+                        <input type="text" class="bo-input" x-model="modal.form.jabatan" placeholder="Contoh: Alumni 2018 Â· F&B Manager, Marriott Bali">
                     </div>
                 </div>
             </div>
@@ -134,29 +134,40 @@
 </div>
 @endsection
 
+@php
+    $testimoniList = $testimonials->map(function($t) {
+        return [
+            'id'      => $t->id,
+            'nama'    => $t->name,
+            'jabatan' => trim(($t->position ?? '') . ($t->company ? ', ' . $t->company : '')),
+            'kutipan' => $t->quote,
+            'foto'    => $t->photo_url,
+            'rating'  => $t->rating,
+            'featured'=> (bool)$t->is_featured,
+            'active'  => (bool)$t->is_active,
+        ];
+    })->values();
+@endphp
+
 @push('scripts')
 <script>
 function testimoniData() {
     return {
         search: '',
-        items: [
-            { id:1, nama:'I Wayan Sudana', jabatan:'Alumni 2015 · F&B Manager, Intercontinental Bali', kutipan:'DHS memberikan fondasi yang luar biasa. Saya mendapat pekerjaan impian hanya 2 bulan setelah lulus.', foto:null },
-            { id:2, nama:'Ni Luh Ayu Dewi', jabatan:'Alumni 2018 · Guest Relations, Ritz-Carlton Bali', kutipan:'Instruktur di DHS adalah profesional industri yang mengerti kebutuhan dunia kerja nyata.', foto:null },
-            { id:3, nama:'I Made Agus Pranata', jabatan:'Alumni 2020 · Chef de Partie, Alila Seminyak', kutipan:'Program Culinary Arts di DHS sangat komprehensif. Saya siap bekerja sejak hari pertama.', foto:null },
-        ],
+        items: @json($testimoniList),
         modal: { open:false, mode:'add', form:{}, editId:null },
         confirmDelete: { open:false, targetId:null },
 
         get filtered() {
             if (!this.search) return this.items;
             const q = this.search.toLowerCase();
-            return this.items.filter(i => i.nama.toLowerCase().includes(q) || i.jabatan.toLowerCase().includes(q));
+            return this.items.filter(i => (i.nama||'').toLowerCase().includes(q) || (i.jabatan||'').toLowerCase().includes(q));
         },
 
         openModal(mode, item = null) {
             this.modal.mode = mode;
             this.modal.editId = item ? item.id : null;
-            this.modal.form = item ? { ...item } : { nama:'', jabatan:'', kutipan:'', foto:null };
+            this.modal.form = item ? { ...item } : { nama:'', jabatan:'', kutipan:'', foto:null, rating:5, featured:false };
             this.modal.open = true;
         },
         handleFoto(e) {
@@ -168,21 +179,32 @@ function testimoniData() {
         },
         saveItem() {
             if (!this.modal.form.nama.trim()) return alert('Nama tidak boleh kosong.');
-            if (this.modal.mode === 'add') {
-                const newId = Math.max(0, ...this.items.map(i => i.id)) + 1;
-                this.items.push({ ...this.modal.form, id: newId });
-            } else {
-                const idx = this.items.findIndex(i => i.id === this.modal.editId);
-                if (idx !== -1) this.items[idx] = { ...this.modal.form, id: this.modal.editId };
-            }
-            this.modal.open = false;
+            const fd = new FormData();
+            fd.append('name',        this.modal.form.nama);
+            fd.append('position',    this.modal.form.jabatan || '');
+            fd.append('quote',       this.modal.form.kutipan || '');
+            fd.append('rating',      this.modal.form.rating || 5);
+            fd.append('is_featured', this.modal.form.featured ? '1' : '0');
+            fd.append('_token',      '{{ csrf_token() }}');
+            const url = this.modal.mode === 'add'
+                ? '/backoffice/testimoni/store'
+                : `/backoffice/testimoni/${this.modal.editId}/update`;
+            fetch(url, { method:'POST', body: fd })
+                .then(r => r.ok ? location.reload() : alert('Gagal menyimpan.'));
         },
         deleteItem(id) { this.confirmDelete.targetId = id; this.confirmDelete.open = true; },
         confirmDeleteItem() {
-            this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
-            this.confirmDelete.open = false;
+            fetch(`/backoffice/testimoni/${this.confirmDelete.targetId}/delete`, {
+                method:'POST',
+                headers:{ 'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}' },
+                body: JSON.stringify({ id: this.confirmDelete.targetId })
+            }).then(() => {
+                this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
+                this.confirmDelete.open = false;
+            });
         }
     };
 }
 </script>
 @endpush
+

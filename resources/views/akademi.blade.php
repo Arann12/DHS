@@ -656,7 +656,7 @@
             <h2 class="text-[48px] leading-[1.2] font-semibold font-serif mb-6 text-text-light" data-id="Mulai Karir Sukses Anda" data-en="Start Your Successful Career">Mulai Karir Sukses Anda</h2>
             <p class="text-base text-muted-light mb-10" data-id="Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online." data-en="Denpasar Hotel School is ready to guide you to become a competent young professional with global competitiveness. Join us now online.">Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online.</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a class="px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors" href="/pendaftaran-online" target="_blank"><span data-id="Pendaftaran Online" data-en="Online Registration">Pendaftaran Online</span></a>
+                <a class="px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors" href="/formulir-pendaftaran" target="_blank"><span data-id="Pendaftaran Online" data-en="Online Registration">Pendaftaran Online</span></a>
                 <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-cream transition-colors" href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank"><span data-id="Brosur Biaya" data-en="Download Cost Brochure">Unduh Brosur Biaya</span></a>
             </div>
         </section>

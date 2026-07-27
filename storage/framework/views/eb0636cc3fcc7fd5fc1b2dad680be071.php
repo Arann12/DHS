@@ -1,16 +1,16 @@
-﻿@extends('backoffice.layouts.app')
-@section('title', 'Editor Academy & Program')
-@section('page-title', 'Editor Lengkap Halaman Academy & Program')
+﻿
+<?php $__env->startSection('title', 'Editor Academy & Program'); ?>
+<?php $__env->startSection('page-title', 'Editor Lengkap Halaman Academy & Program'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div x-data="academyCompleteData()">
 
-    {{-- Alert Success --}}
+    
     <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
         <span class="material-icons-round">check_circle</span> Seluruh data Halaman Academy & Program berhasil disimpan (demo).
     </div>
 
-    {{-- Category Tabs --}}
+    
     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:24px;border-bottom:1px solid #e5e7eb;scrollbar-width:none;">
         <template x-for="cat in categories" :key="cat.id">
             <button type="button" @click="activeCat = cat.id"
@@ -22,7 +22,7 @@
         </template>
     </div>
 
-    {{-- Active Category Panel --}}
+    
     <div class="bo-card" style="max-width:950px;">
         <template x-for="cat in categories" :key="cat.id">
             <div x-show="activeCat === cat.id">
@@ -36,7 +36,7 @@
                     </button>
                 </div>
 
-                {{-- Panel Description --}}
+                
                 <div style="padding:16px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;margin-bottom:24px;">
                     <div class="form-group">
                         <label class="bo-label">Subtitle / Sub-header</label>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-                {{-- Courses List Grid --}}
+                
                 <h3 style="font-size:15px;font-weight:700;color:#2B2494;margin-bottom:14px;">Daftar Kursus / Modul</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <template x-for="(course, idx) in cat.courses" :key="idx">
@@ -86,7 +86,7 @@
         </template>
     </div>
 
-    {{-- Global Save --}}
+    
     <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
         <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()">
             <span class="material-icons-round" style="font-size:20px;">save</span>
@@ -94,10 +94,10 @@
         </button>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
-@php
+<?php $__env->startPush('scripts'); ?>
+<?php
 $catData = $categories->map(function($cat) {
     return [
         'id'      => $cat->id,
@@ -119,14 +119,14 @@ $catData = $categories->map(function($cat) {
         })->values()
     ];
 })->values();
-@endphp
+?>
 
 <script>
 function academyCompleteData() {
     return {
         saved: false,
-        activeCat: @json($categories->first() ? $categories->first()->id : null),
-        categories: @json($catData),
+        activeCat: <?php echo json_encode($categories->first() ? $categories->first()->id : null, 15, 512) ?>,
+        categories: <?php echo json_encode($catData, 15, 512) ?>,
 
         addCourse(catId) {
             const cat = this.categories.find(c => c.id === catId);
@@ -136,7 +136,7 @@ function academyCompleteData() {
             const formData = new FormData();
             formData.append('category_id', catId);
             formData.append('title', title);
-            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_token', '<?php echo e(csrf_token()); ?>');
             fetch('/backoffice/program/store', { method: 'POST', body: formData })
                 .then(r => r.ok ? location.reload() : alert('Gagal menambah program.'));
         },
@@ -145,7 +145,7 @@ function academyCompleteData() {
             if (!confirm('Hapus program ini dari database?')) return;
             fetch(`/backoffice/program/${courseId}/delete`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' },
                 body: JSON.stringify({ id: courseId })
             }).then(r => r.ok ? location.reload() : alert('Gagal menghapus program.'));
         },
@@ -157,5 +157,7 @@ function academyCompleteData() {
     };
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
+
+<?php echo $__env->make('backoffice.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\laragon\www\DHS\resources\views/backoffice/program.blade.php ENDPATH**/ ?>

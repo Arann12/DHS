@@ -172,6 +172,23 @@
         </div>
     </div>
 </div>
+@php
+    $articlesData = $articles->map(function($a) {
+        return [
+            'id'         => $a->id,
+            'judul'      => $a->title,
+            'slug'       => $a->slug,
+            'kategori'   => ucfirst($a->category),
+            'tanggal'    => $a->created_at->format('d M Y'),
+            'tanggalRaw' => $a->created_at->format('Y-m-d'),
+            'status'     => $a->status === 'dipublikasikan' ? 'Dipublikasikan' : ($a->status === 'archived' ? 'Archived' : 'Draft'),
+            'konten'     => $a->content ?? '',
+            'excerpt'    => $a->excerpt ?? '',
+            'thumbnail'  => $a->thumbnail_url,
+            'is_featured'=> (bool)$a->is_featured,
+        ];
+    });
+@endphp
 @endsection
 
 @push('scripts')
@@ -180,13 +197,7 @@ function beritaData() {
     return {
         search: '',
         filterStatus: '',
-        items: [
-            { id:1, judul:'DHS Raih Akreditasi A dari BAN-SM', kategori:'Prestasi', tanggal:'20 Jul 2026', tanggalRaw:'2026-07-20', status:'Dipublikasikan', konten:'', thumbnail:null },
-            { id:2, judul:'Program Magang Industri 2026 Resmi Dibuka', kategori:'Akademik', tanggal:'18 Jul 2026', tanggalRaw:'2026-07-18', status:'Dipublikasikan', konten:'', thumbnail:null },
-            { id:3, judul:'Workshop Barista & Coffee Art Bersama Marriott Bali', kategori:'Kegiatan', tanggal:'15 Jul 2026', tanggalRaw:'2026-07-15', status:'Dipublikasikan', konten:'', thumbnail:null },
-            { id:4, judul:'Pendaftaran Tahun Ajaran 2026/2027 Segera Dibuka', kategori:'Admisi', tanggal:'10 Jul 2026', tanggalRaw:'2026-07-10', status:'Draft', konten:'', thumbnail:null },
-            { id:5, judul:'Alumni DHS Raih Posisi GM di Ritz-Carlton Bali', kategori:'Alumni', tanggal:'5 Jul 2026', tanggalRaw:'2026-07-05', status:'Dipublikasikan', konten:'', thumbnail:null },
-        ],
+        items: @json($articlesData),
         modal: { open:false, mode:'add', form:{}, editId:null },
         confirmDelete: { open:false, targetId:null },
 
@@ -201,7 +212,9 @@ function beritaData() {
         openModal(mode, item = null) {
             this.modal.mode = mode;
             this.modal.editId = item ? item.id : null;
-            this.modal.form = item ? { ...item } : { judul:'', kategori:'Umum', tanggal:'', tanggalRaw:'', status:'Draft', konten:'', thumbnail:null };
+            this.modal.form = item
+                ? { ...item }
+                : { judul:'', kategori:'umum', tanggalRaw:'', status:'draft', konten:'', excerpt:'', thumbnail:null, is_featured: false };
             this.modal.open = true;
         },
 
@@ -215,25 +228,42 @@ function beritaData() {
 
         saveItem() {
             if (!this.modal.form.judul.trim()) return alert('Judul berita tidak boleh kosong.');
-            const tanggal = this.modal.form.tanggalRaw
-                ? new Date(this.modal.form.tanggalRaw).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
-                : new Date().toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
-            if (this.modal.mode === 'add') {
-                const newId = Math.max(0, ...this.items.map(i => i.id)) + 1;
-                this.items.unshift({ ...this.modal.form, id: newId, tanggal });
-            } else {
-                const idx = this.items.findIndex(i => i.id === this.modal.editId);
-                if (idx !== -1) this.items[idx] = { ...this.modal.form, id: this.modal.editId, tanggal };
+            const formData = new FormData();
+            formData.append('title',       this.modal.form.judul);
+            formData.append('category',    this.modal.form.kategori.toLowerCase());
+            formData.append('excerpt',     this.modal.form.excerpt || '');
+            formData.append('content',     this.modal.form.konten || '');
+            formData.append('status',      this.modal.form.status === 'Dipublikasikan' ? 'dipublikasikan' : 'draft');
+            formData.append('is_featured', this.modal.form.is_featured ? '1' : '0');
+            formData.append('_token',      '{{ csrf_token() }}');
+
+            const thumbInput = document.querySelector('[x-ref="thumbInput"]');
+            if (thumbInput && thumbInput.files[0]) {
+                formData.append('thumbnail', thumbInput.files[0]);
             }
-            this.modal.open = false;
+
+            const url = this.modal.mode === 'add'
+                ? '/backoffice/berita/store'
+                : `/backoffice/berita/${this.modal.editId}/update`;
+
+            fetch(url, { method: 'POST', body: formData })
+                .then(r => r.ok ? location.reload() : r.text().then(t => alert('Gagal menyimpan: ' + t)));
         },
 
         deleteItem(id) { this.confirmDelete.targetId = id; this.confirmDelete.open = true; },
+
         confirmDeleteItem() {
-            this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
-            this.confirmDelete.open = false;
+            fetch(`/backoffice/berita/${this.confirmDelete.targetId}/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ id: this.confirmDelete.targetId })
+            }).then(() => {
+                this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
+                this.confirmDelete.open = false;
+            });
         }
     };
 }
 </script>
 @endpush
+

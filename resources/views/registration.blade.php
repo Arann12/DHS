@@ -5,62 +5,73 @@
 @section('content')
 
 @php
-$programs = [
-    'internasional' => [
-        'label'   => 'Program Internasional',
-        'options' => [
-            'Program 1 Tahun + Ausbildung Jerman',
-            'Program 2 Tahun + 1 Semester TAFE Australia',
-            'TAFE Australia Pathway',
-            'THS Australia Pathway',
-            'Australia Short Course',
-            'Study Visit (Australia & Singapura)',
-        ]
-    ],
-    '2-tahun' => [
-        'label'   => 'Vokasi 2 Tahun',
-        'options' => [
-            'Perhotelan (FO & HK) — 2 Tahun',
-            'Tata Boga (Culinary Art) — 2 Tahun',
-            'Tata Hidangan (FBS & Bartender) — 2 Tahun',
-        ]
-    ],
-    '1-tahun' => [
-        'label'   => 'Vokasi 1 Tahun',
-        'options' => [
-            'Perhotelan (FO & HK) — 1 Tahun',
-            'Tata Boga (Culinary Art) — 1 Tahun',
-            'Tata Hidangan (FBS & Bartender) — 1 Tahun',
-        ]
-    ],
-    '1-tahun-kapal-pesiar' => [
-        'label'   => '1 Tahun Kapal Pesiar',
-        'options' => [
-            'Cook (Asisten Koki) — Kapal Pesiar',
-            'Waiter & Bartender — Kapal Pesiar',
-            'Hotel Steward — Kapal Pesiar',
-        ]
-    ],
-    '6-bulan' => [
-        'label'   => 'Short Course 6 Bulan',
-        'options' => [
-            'Perhotelan (FO & HK) — 6 Bulan',
-            'Tata Boga (Culinary Art) — 6 Bulan',
-            'Tata Hidangan (FBS & Bartender) — 6 Bulan',
-        ]
-    ],
-    'eksekutif' => [
-        'label'   => 'Program Eksekutif (6 Bln)',
-        'options' => [
-            'FBS & Bar (Cruise Line)',
-            'Hotel Steward (Cruise Line)',
-            'Cook (Cruise Line)',
-            'Flair Bartending & Sommelier',
-            'Butler',
-            'SPA Therapist',
-        ]
-    ],
-];
+$programs = [];
+if (isset($categories) && $categories->count() > 0) {
+    foreach ($categories as $cat) {
+        $programs[$cat->category_key] = [
+            'label'   => $cat->category_name,
+            'options' => $cat->programs->where('is_active', 1)->pluck('title')->toArray(),
+        ];
+    }
+} else {
+    // Default fallback if categories not loaded
+    $programs = [
+        'internasional' => [
+            'label'   => 'Program Internasional',
+            'options' => [
+                'Program 1 Tahun + Ausbildung Jerman',
+                'Program 2 Tahun + 1 Semester TAFE Australia',
+                'TAFE Australia Pathway',
+                'THS Australia Pathway',
+                'Australia Short Course',
+                'Study Visit (Australia & Singapura)',
+            ]
+        ],
+        '2-tahun' => [
+            'label'   => 'Vokasi 2 Tahun',
+            'options' => [
+                'Perhotelan (FO & HK) — 2 Tahun',
+                'Tata Boga (Culinary Art) — 2 Tahun',
+                'Tata Hidangan (FBS & Bartender) — 2 Tahun',
+            ]
+        ],
+        '1-tahun' => [
+            'label'   => 'Vokasi 1 Tahun',
+            'options' => [
+                'Perhotelan (FO & HK) — 1 Tahun',
+                'Tata Boga (Culinary Art) — 1 Tahun',
+                'Tata Hidangan (FBS & Bartender) — 1 Tahun',
+            ]
+        ],
+        '1-tahun-kapal-pesiar' => [
+            'label'   => '1 Tahun Kapal Pesiar',
+            'options' => [
+                'Cook (Asisten Koki) — Kapal Pesiar',
+                'Waiter & Bartender — Kapal Pesiar',
+                'Hotel Steward — Kapal Pesiar',
+            ]
+        ],
+        '6-bulan' => [
+            'label'   => 'Short Course 6 Bulan',
+            'options' => [
+                'Perhotelan (FO & HK) — 6 Bulan',
+                'Tata Boga (Culinary Art) — 6 Bulan',
+                'Tata Hidangan (FBS & Bartender) — 6 Bulan',
+            ]
+        ],
+        'eksekutif' => [
+            'label'   => 'Program Eksekutif (6 Bln)',
+            'options' => [
+                'FBS & Bar (Cruise Line)',
+                'Hotel Steward (Cruise Line)',
+                'Cook (Cruise Line)',
+                'Flair Bartending & Sommelier',
+                'Butler',
+                'SPA Therapist',
+            ]
+        ],
+    ];
+}
 @endphp
 
 <!-- Hero Section -->
@@ -518,6 +529,64 @@ $programs = [
         </div>
     </section>
 </main>
+
+{{-- KONTAK HELPDESK ADMISI --}}
+@php
+    $waNum = $helpdesk['helpdesk_wa'] ?? '+62 81 246 319966';
+    $waClean = preg_replace('/[^0-9]/', '', $waNum);
+    if (str_starts_with($waClean, '0')) {
+        $waClean = '62' . substr($waClean, 1);
+    }
+    $emailAddr = $helpdesk['helpdesk_email'] ?? 'sahabat@dhs.or.id';
+    $serviceHours = $helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA';
+@endphp
+<section class="py-16 bg-surface-light px-6 md:px-16">
+    <div class="max-w-[850px] mx-auto">
+        <div class="bg-white border border-black/10 rounded-2xl p-8 md:p-10 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center gap-8">
+                <div class="flex-1">
+                    <span class="text-[0.7rem] uppercase tracking-[0.2em] font-bold text-primary mb-2 block">BUTUH BANTUAN?</span>
+                    <h3 class="text-2xl md:text-3xl font-serif font-bold text-dhs-navy mb-2 leading-tight">Hubungi Tim Admisi</h3>
+                    <p class="text-sm text-muted-light">Tim helpdesk kami siap menjawab pertanyaan Anda seputar program dan pendaftaran.</p>
+                </div>
+                <div class="flex flex-col gap-4 md:min-w-[260px]">
+                    {{-- WhatsApp --}}
+                    <a href="https://wa.me/{{ $waClean }}" target="_blank"
+                        class="flex items-center gap-4 p-4 border border-black/10 rounded-xl hover:border-primary/40 hover:shadow-md transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <span class="material-icons text-green-600 text-xl">chat</span>
+                        </div>
+                        <div>
+                            <p class="text-[0.65rem] uppercase tracking-widest text-muted-light font-semibold">WhatsApp</p>
+                            <p class="text-sm font-bold text-dhs-navy group-hover:text-primary transition-colors">{{ $waNum }}</p>
+                        </div>
+                    </a>
+                    {{-- Email --}}
+                    <a href="mailto:{{ $emailAddr }}"
+                        class="flex items-center gap-4 p-4 border border-black/10 rounded-xl hover:border-primary/40 hover:shadow-md transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <span class="material-icons text-blue-600 text-xl">email</span>
+                        </div>
+                        <div>
+                            <p class="text-[0.65rem] uppercase tracking-widest text-muted-light font-semibold">Email</p>
+                            <p class="text-sm font-bold text-dhs-navy group-hover:text-primary transition-colors">{{ $emailAddr }}</p>
+                        </div>
+                    </a>
+                    {{-- Jam Operasional --}}
+                    <div class="flex items-center gap-4 p-4 border border-black/10 rounded-xl bg-background-light">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                            <span class="material-icons text-amber-600 text-xl">schedule</span>
+                        </div>
+                        <div>
+                            <p class="text-[0.65rem] uppercase tracking-widest text-muted-light font-semibold">Jam Pelayanan</p>
+                            <p class="text-sm font-bold text-dhs-navy">{{ $serviceHours }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <script>
 const programsData = JSON.parse(document.getElementById('programs-data').textContent);

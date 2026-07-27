@@ -12,6 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -487,7 +488,196 @@
 
     @include('partials.footer')
 
+    {{-- Alpine.js for interactive components --}}
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
+
     <script>
+        // Alpine.js testimonial slider component
+        function testimonialSlider(totalSlides) {
+            return {
+                currentSlide: 0,
+                totalSlides: totalSlides,
+                autoplayInterval: null,
+                progressInterval: null,
+                progressPercent: 0,
+                autoplayDuration: 5000,
+
+                init() {
+                    this.startAutoplay();
+                },
+
+                nextSlide() {
+                    this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+                    this.resetAutoplay();
+                },
+
+                prevSlide() {
+                    this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+                    this.resetAutoplay();
+                },
+
+                goToSlide(index) {
+                    this.currentSlide = index;
+                    this.resetAutoplay();
+                },
+
+                startAutoplay() {
+                    var self = this;
+                    this.progressPercent = 0;
+                    var elapsed = 0;
+                    var step = 100;
+                    this.progressInterval = setInterval(function() {
+                        elapsed += step;
+                        self.progressPercent = (elapsed / self.autoplayDuration) * 100;
+                        if (self.progressPercent >= 100) self.progressPercent = 100;
+                    }, step);
+                    this.autoplayInterval = setInterval(function() {
+                        self.currentSlide = (self.currentSlide + 1) % self.totalSlides;
+                        self.progressPercent = 0;
+                        elapsed = 0;
+                    }, this.autoplayDuration);
+                },
+
+                resetAutoplay() {
+                    clearInterval(this.autoplayInterval);
+                    clearInterval(this.progressInterval);
+                    this.startAutoplay();
+                }
+            };
+        }
+
+        // Alpine.js contact form component
+        function contactForm() {
+            return {
+                formData: {
+                    nama: '',
+                    email: '',
+                    kategori: '',
+                    program: '',
+                    pesan: ''
+                },
+                programsData: [],
+                filteredPrograms: [],
+                waNumber: '',
+
+                initFromWindow() {
+                    var d = window.__dhsContact || {};
+                    this.programsData = (d.cats && d.cats.length > 0) ? d.cats : [
+                        {
+                            category_key: 'internasional',
+                            category_name: 'Program Internasional',
+                            programs: [
+                                { id: '1', title: 'Program 1 Tahun + Ausbildung Jerman', duration: '1 Tahun + Ausbildung' },
+                                { id: '2', title: 'Program 2 Tahun + 1 Semester TAFE Australia', duration: '2 Tahun + 1 Semester' },
+                                { id: '3', title: 'TAFE Australia Pathway', duration: 'Pathway' },
+                                { id: '4', title: 'THS Australia Pathway', duration: 'Pathway' },
+                                { id: '5', title: 'Australia Short Course', duration: 'Short Course' },
+                                { id: '6', title: 'Study Visit (Australia & Singapura)', duration: 'Study Visit' }
+                            ]
+                        },
+                        {
+                            category_key: '2-tahun',
+                            category_name: 'Vokasi 2 Tahun',
+                            programs: [
+                                { id: '7', title: 'Perhotelan (FO & HK) — 2 Tahun', duration: '2 Tahun' },
+                                { id: '8', title: 'Tata Boga (Culinary Art) — 2 Tahun', duration: '2 Tahun' },
+                                { id: '9', title: 'Tata Hidangan (FBS & Bartender) — 2 Tahun', duration: '2 Tahun' }
+                            ]
+                        },
+                        {
+                            category_key: '1-tahun',
+                            category_name: 'Vokasi 1 Tahun',
+                            programs: [
+                                { id: '10', title: 'Perhotelan (FO & HK) — 1 Tahun', duration: '1 Tahun' },
+                                { id: '11', title: 'Tata Boga (Culinary Art) — 1 Tahun', duration: '1 Tahun' },
+                                { id: '12', title: 'Tata Hidangan (FBS & Bartender) — 1 Tahun', duration: '1 Tahun' }
+                            ]
+                        },
+                        {
+                            category_key: '1-tahun-kapal-pesiar',
+                            category_name: '1 Tahun Kapal Pesiar',
+                            programs: [
+                                { id: '13', title: 'Cook (Asisten Koki) — Kapal Pesiar', duration: '1 Tahun' },
+                                { id: '14', title: 'Waiter & Bartender — Kapal Pesiar', duration: '1 Tahun' },
+                                { id: '15', title: 'Hotel Steward — Kapal Pesiar', duration: '1 Tahun' }
+                            ]
+                        },
+                        {
+                            category_key: '6-bulan',
+                            category_name: 'Short Course 6 Bulan',
+                            programs: [
+                                { id: '16', title: 'Short Course F&B Service & Bar', duration: '6 Bulan' },
+                                { id: '17', title: 'Short Course Culinary Arts', duration: '6 Bulan' },
+                                { id: '18', title: 'Short Course Housekeeping', duration: '6 Bulan' }
+                            ]
+                        },
+                        {
+                            category_key: 'eksekutif',
+                            category_name: 'Program Eksekutif (6 Bln)',
+                            programs: [
+                                { id: '19', title: 'FBS & Bar (Cruise Line)', duration: '6 Bulan' },
+                                { id: '20', title: 'Cook (Cruise Line)', duration: '6 Bulan' },
+                                { id: '21', title: 'Butler', duration: '6 Bulan' },
+                                { id: '22', title: 'SPA Therapist', duration: '6 Bulan' }
+                            ]
+                        }
+                    ];
+                    this.waNumber = d.wa || '6282143137707';
+                },
+
+                updatePrograms() {
+                    var self = this;
+                    var category = this.programsData.find(function(cat) {
+                        return cat.category_key === self.formData.kategori;
+                    });
+                    this.filteredPrograms = category ? (category.programs || []) : [];
+                    this.formData.program = '';
+                },
+
+                submitToWhatsApp() {
+                    var self = this;
+
+                    if (!this.formData.nama || !this.formData.email || !this.formData.kategori || !this.formData.program || !this.formData.pesan) {
+                        alert('Mohon lengkapi semua field yang diperlukan');
+                        return;
+                    }
+
+                    var kategoriObj = this.programsData.find(function(c) {
+                        return c.category_key === self.formData.kategori;
+                    });
+                    var kategoriLabel = kategoriObj ? (kategoriObj.category_name || kategoriObj.label || self.formData.kategori) : self.formData.kategori;
+
+                    var programObj = this.filteredPrograms.find(function(p) {
+                        return (p.id && p.id == self.formData.program) || (p.title && p.title == self.formData.program) || p == self.formData.program;
+                    });
+                    var programLabel = (typeof programObj === 'object' && programObj !== null)
+                        ? (programObj.title || programObj.program_name || programObj.name || self.formData.program)
+                        : self.formData.program;
+                    var programDuration = (typeof programObj === 'object' && programObj !== null && programObj.duration)
+                        ? ' (' + programObj.duration + ')'
+                        : '';
+
+                    var text = 
+                        'Halo Admin Denpasar Hotel School,\n\n' +
+                        'Ada pertanyaan/inquiry baru dari website DHS:\n\n' +
+                        'Nama Lengkap: ' + this.formData.nama + '\n' +
+                        'Email: ' + this.formData.email + '\n' +
+                        'Kategori Program: ' + kategoriLabel + '\n' +
+                        'Program Diminati: ' + programLabel + programDuration + '\n\n' +
+                        'Pesan / Pertanyaan:\n' + this.formData.pesan + '\n\n' +
+                        '---\n' +
+                        'Formulir Kontak Website Denpasar Hotel School (DHS)';
+
+                    var waUrl = 'https://wa.me/' + this.waNumber + '?text=' + encodeURIComponent(text);
+                    window.open(waUrl, '_blank');
+
+                    // Reset form
+                    this.formData = { nama: '', email: '', kategori: '', program: '', pesan: '' };
+                    this.filteredPrograms = [];
+                }
+            };
+        }
+
         (function () {
             // ── Loading Overlay ─────────────────────────────────────────────
             var loader = document.getElementById('dhs-loader');

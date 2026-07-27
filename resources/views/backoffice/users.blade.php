@@ -118,7 +118,7 @@
 
             <div x-show="modal.mode === 'add'" style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:12px 14px;margin-bottom:18px;font-size:13px;color:#92400e;display:flex;gap:10px;align-items:flex-start;">
                 <span class="material-icons-round" style="font-size:17px;flex-shrink:0;margin-top:1px;">warning</span>
-                <span>Password hanya tersimpan di frontend (demo). Saat terhubung ke backend, password akan di-hash menggunakan bcrypt.</span>
+                <span>Password akan otomatis di-hash secara aman menggunakan algoritma bcrypt di database.</span>
             </div>
 
             <hr class="divider">
@@ -158,56 +158,75 @@
 function usersData() {
     return {
         search: '',
-        items: [
-            { id:1, nama:'Administrator', username:'admin', email:'admin@dhs.ac.id', role:'Super Admin', aktif:true, isSelf:true },
-            { id:2, nama:'Budi Santoso', username:'budi_editor', email:'budi@dhs.ac.id', role:'Editor', aktif:true, isSelf:false },
-            { id:3, nama:'Sari Dewi', username:'sari_view', email:'sari@dhs.ac.id', role:'Viewer', aktif:false, isSelf:false },
-        ],
+        items: @json($users->map(fn($u) => [
+            'id'       => $u->id,
+            'nama'     => $u->name,
+            'username' => explode('@', $u->email)[0],
+            'email'    => $u->email,
+            'role'     => $u->role === 'super_admin' ? 'Super Admin' : ($u->role === 'admin' ? 'Admin' : 'Editor'),
+            'aktif'    => (bool)$u->is_active,
+            'isSelf'   => $u->id === (session('backoffice_user')['id'] ?? null),
+        ])),
         modal: { open:false, mode:'add', form:{}, editId:null },
         confirmDelete: { open:false, targetId:null },
 
         get filtered() {
             if (!this.search) return this.items;
             const q = this.search.toLowerCase();
-            return this.items.filter(i => i.nama.toLowerCase().includes(q) || i.username.toLowerCase().includes(q));
+            return this.items.filter(i => (i.nama||'').toLowerCase().includes(q) || (i.email||'').toLowerCase().includes(q));
         },
 
         openModal(mode, item = null) {
             this.modal.mode = mode;
             this.modal.editId = item ? item.id : null;
-            this.modal.form = item ? { ...item } : { nama:'', username:'', email:'', role:'Editor', password:'', aktif:true };
+            this.modal.form = item ? { ...item } : { nama:'', email:'', role:'editor', password:'', aktif:true };
             this.modal.open = true;
         },
 
         saveItem() {
-            if (!this.modal.form.nama.trim() || !this.modal.form.username.trim()) return alert('Nama dan username tidak boleh kosong.');
-            if (this.modal.mode === 'add') {
-                const newId = Math.max(0, ...this.items.map(i => i.id)) + 1;
-                this.items.push({ ...this.modal.form, id: newId, isSelf: false });
-            } else {
-                const idx = this.items.findIndex(i => i.id === this.modal.editId);
-                if (idx !== -1) this.items[idx] = { ...this.modal.form, id: this.modal.editId, isSelf: this.items[idx].isSelf };
-            }
-            this.modal.open = false;
+            if (!this.modal.form.nama.trim() || !this.modal.form.email.trim()) return alert('Nama dan email tidak boleh kosong.');
+            const fd = new FormData();
+            fd.append('name',     this.modal.form.nama);
+            fd.append('email',    this.modal.form.email);
+            fd.append('role',     this.modal.form.role.toLowerCase().replace(' ', '_'));
+            if (this.modal.form.password) fd.append('password', this.modal.form.password);
+            if (this.modal.form.aktif) fd.append('is_active', '1');
+            fd.append('_token',   '{{ csrf_token() }}');
+
+            const url = this.modal.mode === 'add'
+                ? '/backoffice/users/store'
+                : `/backoffice/users/${this.modal.editId}/update`;
+
+            fetch(url, { method: 'POST', body: fd })
+                .then(r => r.ok ? location.reload() : r.text().then(t => alert('Gagal menyimpan pengguna: ' + t)));
         },
 
         toggleAktif(id) {
             const item = this.items.find(i => i.id === id);
-            if (item && !item.isSelf) item.aktif = !item.aktif;
+            if (!item || item.isSelf) return;
+            fetch(`/backoffice/users/${id}/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ is_active: !item.aktif })
+            }).then(() => item.aktif = !item.aktif);
         },
 
         deleteItem(id) {
             const item = this.items.find(i => i.id === id);
-            if (item?.isSelf) return;
+            if (item?.isSelf) return alert('Tidak dapat menghapus akun Anda sendiri.');
             this.confirmDelete.targetId = id;
             this.confirmDelete.open = true;
         },
 
         confirmDeleteItem() {
-            this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
-            this.confirmDelete.open = false;
+            fetch(`/backoffice/users/${this.confirmDelete.targetId}/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ id: this.confirmDelete.targetId })
+            }).then(r => r.ok ? location.reload() : alert('Gagal menghapus pengguna.'));
         }
     };
 }
 </script>
 @endpush
+

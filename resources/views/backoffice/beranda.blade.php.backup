@@ -1,0 +1,895 @@
+@extends('backoffice.layouts.app')
+@section('title', 'Editor Halaman Home')
+@section('page-title', 'Editor Lengkap Halaman Home / Beranda')
+
+@section('content')
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+{{-- Image Upload Modal Component --}}
+<template x-teleport="body">
+    <div x-data="imageUploadModal()" x-show="$store.imageUpload.isOpen" x-cloak
+         style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;"
+         @click.self="$store.imageUpload.close()">
+        <div style="background:#fff;border-radius:16px;width:90%;max-width:600px;max-height:90vh;overflow:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#2B2494;margin:0;">Pilih Gambar</h3>
+                <button @click="$store.imageUpload.close()" style="background:none;border:none;cursor:pointer;font-size:24px;color:#999;">&times;</button>
+            </div>
+
+            {{-- Tab Navigation --}}
+            <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;">
+                <button @click="mode = 'url'" 
+                        :style="mode === 'url' ? 'border-bottom:2px solid #2B2494;color:#2B2494;' : 'color:#999;'"
+                        style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;margin-bottom:-2px;">
+                    <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">link</span>
+                    Via URL
+                </button>
+                <button @click="mode = 'upload'" 
+                        :style="mode === 'upload' ? 'border-bottom:2px solid #2B2494;color:#2B2494;' : 'color:#999;'"
+                        style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;margin-bottom:-2px;">
+                    <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">upload_file</span>
+                    Upload Lokal
+                </button>
+            </div>
+
+            {{-- URL Input Tab --}}
+            <div x-show="mode === 'url'" style="padding:10px 0;">
+                <label style="display:block;font-weight:600;color:#2B2494;margin-bottom:8px;">URL Gambar</label>
+                <input type="text" x-model="tempUrl" @keyup.enter="applyUrl()" 
+                       placeholder="https://example.com/image.jpg"
+                       style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;margin-bottom:12px;">
+                
+                <div x-show="tempUrl" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:16px;text-align:center;background:#fafafa;">
+                    <img :src="tempUrl" @error="$el.src=''" style="max-height:200px;max-width:100%;border-radius:6px;object-fit:contain;">
+                </div>
+
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button @click="$store.imageUpload.close()" class="btn-secondary" style="padding:10px 20px;">
+                        Batal
+                    </button>
+                    <button @click="applyUrl()" class="btn-primary" style="padding:10px 20px;">
+                        <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">check</span>
+                        Gunakan URL
+                    </button>
+                </div>
+            </div>
+
+            {{-- Upload Tab --}}
+            <div x-show="mode === 'upload'" style="padding:10px 0;">
+                <div @click="$refs.fileInput.click()" 
+                     style="border:2px dashed #cbd5e1;border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.2s;"
+                     @mouseenter="$el.style.borderColor='#2B2494'; $el.style.background='#f0f4ff'"
+                     @mouseleave="$el.style.borderColor='#cbd5e1'; $el.style.background='#fafafa'">
+                    <span class="material-icons-round" style="font-size:48px;color:#2B2494;display:block;margin-bottom:12px;">cloud_upload</span>
+                    <div style="font-weight:600;color:#2B2494;margin-bottom:4px;">Klik untuk pilih gambar</div>
+                    <div style="font-size:12px;color:#999;">atau drag & drop file gambar di sini</div>
+                    <div style="font-size:11px;color:#999;margin-top:8px;">Format: JPG, PNG, GIF, WebP (Max 5MB)</div>
+                </div>
+                <input type="file" x-ref="fileInput" accept="image/*" @change="handleFileUpload($event)" style="display:none;">
+                
+                <div x-show="preview" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-top:16px;text-align:center;background:#fff;">
+                    <img :src="preview" style="max-height:200px;max-width:100%;border-radius:6px;object-fit:contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<div x-data="berandaCompleteData()">
+
+    {{-- Alert Success --}}
+    <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
+        <span class="material-icons-round">check_circle</span> Seluruh perubahan Halaman Home berhasil disimpan ke database.
+    </div>
+
+    {{-- Section Navigation Tabs --}}
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:24px;border-bottom:1px solid #e5e7eb;scrollbar-width:none;">
+        <template x-for="tab in tabs" :key="tab.id">
+            <button type="button" @click="activeTab = tab.id"
+                :class="activeTab === tab.id ? 'btn-primary' : 'btn-secondary'"
+                style="padding:8px 14px;font-size:12.5px;white-space:nowrap;flex-shrink:0;">
+                <span class="material-icons-round" style="font-size:16px;" x-text="tab.icon"></span>
+                <span x-text="tab.label"></span>
+            </button>
+        </template>
+    </div>
+
+    {{-- TAB 1: HERO SECTION --}}
+    <div x-show="activeTab === 'hero'">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <div class="bo-card">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">1. Hero Section</h2>
+
+                    <div class="form-group">
+                        <label class="bo-label">Label Atas (Overline)</label>
+                        <input type="text" class="bo-input" x-model="hero.overline">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">Headline Utama (H1)</label>
+                        <textarea class="bo-textarea" rows="2" x-model="hero.headline"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">Teks Petunjuk Scroll</label>
+                        <input type="text" class="bo-input" x-model="hero.scrollText">
+                    </div>
+                </div>
+
+                <div class="bo-card">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Tombol Action (CTA)</h2>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="bo-label">Teks Tombol 1</label>
+                            <input type="text" class="bo-input" x-model="hero.cta1Text">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label">Link Tombol 1</label>
+                            <input type="text" class="bo-input" x-model="hero.cta1Link">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label">Teks Tombol 2</label>
+                            <input type="text" class="bo-input" x-model="hero.cta2Text">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label">Link Tombol 2</label>
+                            <input type="text" class="bo-input" x-model="hero.cta2Link">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bo-card">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Gambar Latar Hero</h2>
+                    <div class="form-group">
+                        <label class="bo-label">URL Gambar Latar</label>
+                        <input type="text" class="bo-input" x-model="hero.image" placeholder="https://...">
+                    </div>
+                    <div style="border:2px dashed #e0e0e0;border-radius:14px;padding:20px;text-align:center;background:#fafafa;">
+                        <img x-show="hero.image" :src="hero.image" style="max-height:140px;width:100%;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+                        <div x-show="!hero.image" style="margin-bottom:12px;">
+                            <span class="material-icons-round" style="font-size:32px;color:#ccc;">add_photo_alternate</span>
+                            <div style="font-size:12px;color:#8A8478;">Belum ada gambar</div>
+                        </div>
+                        <button type="button" @click="$store.imageUpload.open((url) => hero.image = url)" 
+                                class="btn-primary" style="padding:8px 16px;font-size:13px;">
+                            <span class="material-icons-round" style="font-size:16px;">add_photo_alternate</span>
+                            Pilih Gambar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Preview Hero --}}
+            <div class="bo-card" style="position:sticky;top:88px;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#2B2494;margin:0 0 16px;">Preview Hero Section</h3>
+                <div style="border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.15);background:#2B2494;color:#fff;padding:28px;text-align:center;position:relative;">
+                    <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.8;margin-bottom:12px;" x-text="hero.overline"></div>
+                    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1.3;margin-bottom:20px;" x-text="hero.headline"></div>
+                    <div style="display:flex;gap:10px;justify-content:center;">
+                        <div style="padding:10px 18px;background:#0010B8;color:#fff;border-radius:6px;font-size:11px;font-weight:700;" x-text="hero.cta1Text"></div>
+                        <div style="padding:10px 18px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:6px;font-size:11px;font-weight:700;" x-text="hero.cta2Text"></div>
+                    </div>
+                    <div style="font-size:10px;opacity:0.6;margin-top:20px;" x-text="hero.scrollText"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 2: SEKILAS DHS --}}
+    <div x-show="activeTab === 'about'">
+        <div class="bo-card" style="max-width:800px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">2. Section Sekilas DHS (About Intro)</h2>
+
+            <div class="form-group">
+                <label class="bo-label">Label Sekilas DHS</label>
+                <input type="text" class="bo-input" x-model="about.label">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Judul Utama (H2)</label>
+                <input type="text" class="bo-input" x-model="about.headline">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Paragraf 1</label>
+                <textarea class="bo-textarea" rows="3" x-model="about.p1"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Paragraf 2</label>
+                <textarea class="bo-textarea" rows="3" x-model="about.p2"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Teks Catatan Bawah</label>
+                <input type="text" class="bo-input" x-model="about.note">
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+                <label class="bo-label">URL Gambar Samping</label>
+                <input type="text" class="bo-input" x-model="about.image" placeholder="https://...">
+            </div>
+            <div style="border:2px dashed #e0e0e0;border-radius:14px;padding:20px;text-align:center;background:#fafafa;margin-bottom:20px;">
+                <img x-show="about.image" :src="about.image" style="max-height:140px;width:100%;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+                <div x-show="!about.image" style="margin-bottom:12px;">
+                    <span class="material-icons-round" style="font-size:32px;color:#ccc;">add_photo_alternate</span>
+                    <div style="font-size:12px;color:#8A8478;">Belum ada gambar</div>
+                </div>
+                <button type="button" @click="$store.imageUpload.open((url) => about.image = url)" 
+                        class="btn-primary" style="padding:8px 16px;font-size:13px;">
+                    <span class="material-icons-round" style="font-size:16px;">add_photo_alternate</span>
+                    Pilih Gambar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 3: STANDAR VISIONER --}}
+    <div x-show="activeTab === 'vision'">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <div class="bo-card">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Judul Section & Visi</h2>
+                    <div class="form-group">
+                        <label class="bo-label">Judul Section</label>
+                        <input type="text" class="bo-input" x-model="vision.sectionTitle">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">Label Visi</label>
+                        <input type="text" class="bo-input" x-model="vision.visiLabel">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="bo-label">Teks Visi</label>
+                        <textarea class="bo-textarea" rows="3" x-model="vision.visiText"></textarea>
+                    </div>
+                </div>
+
+                <div class="bo-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">Poin-poin Misi</h2>
+                        <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="vision.misiItems.push('')">
+                            <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Item
+                        </button>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <template x-for="(m, idx) in vision.misiItems" :key="idx">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <input type="text" class="bo-input" x-model="vision.misiItems[idx]">
+                                <button class="btn-icon danger" style="width:30px;height:30px;" @click="vision.misiItems.splice(idx,1)">
+                                    <span class="material-icons-round" style="font-size:16px;">close</span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bo-card">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Core Values (4 Kartu)</h2>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <template x-for="(val, idx) in vision.coreValues" :key="idx">
+                        <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
+                            <div style="display:grid;grid-template-columns:120px 1fr;gap:10px;margin-bottom:8px;">
+                                <input type="text" class="bo-input" style="padding:6px 8px;" x-model="val.icon" placeholder="Icon name">
+                                <input type="text" class="bo-input" style="padding:6px 8px;font-weight:700;" x-model="val.title" placeholder="Judul">
+                            </div>
+                            <textarea class="bo-textarea" style="min-height:50px;padding:6px 8px;" x-model="val.desc" placeholder="Deskripsi"></textarea>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 4: KEHIDUPAN KAMPUS --}}
+    <div x-show="activeTab === 'campus'">
+        <div class="bo-card" style="max-width:800px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">4. Section Kehidupan & Lingkungan Kampus</h2>
+            <div class="form-group">
+                <label class="bo-label">Judul Section</label>
+                <input type="text" class="bo-input" x-model="campus.title">
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                <template x-for="(foto, idx) in campus.fotos" :key="idx">
+                    <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;display:flex;flex-direction:column;gap:8px;">
+                        <div style="font-size:12px;font-weight:700;color:#2B2494;" x-text="'Foto ' + (idx+1)"></div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="bo-label" style="font-size:11px;">URL Gambar</label>
+                            <input type="text" class="bo-input" style="font-size:12px;padding:6px;" x-model="foto.src" placeholder="https://...">
+                        </div>
+                        
+                        <div style="border:1.5px dashed #ccc;border-radius:8px;padding:12px;text-align:center;background:#fff;">
+                            <img x-show="foto.src" :src="foto.src" style="max-height:80px;width:100%;object-fit:cover;border-radius:4px;margin-bottom:8px;">
+                            <div x-show="!foto.src" style="margin-bottom:8px;">
+                                <span class="material-icons-round" style="font-size:20px;color:#999;">add_photo_alternate</span>
+                                <span style="font-size:11px;color:#666;display:block;">Belum ada gambar</span>
+                            </div>
+                            <button type="button" @click="$store.imageUpload.open((url) => foto.src = url)" 
+                                    class="btn-primary" style="padding:6px 12px;font-size:11px;width:100%;">
+                                Pilih Gambar
+                            </button>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="bo-label" style="font-size:11px;">Alt Text</label>
+                            <input type="text" class="bo-input" style="font-size:12px;padding:6px;" x-model="foto.alt">
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 5: AKADEMI UNGGULAN (3 CARDS) --}}
+    <div x-show="activeTab === 'academy'">
+        <div class="bo-card" style="max-width:900px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">5. Section Akademi Unggulan (3 Card Disciplines)</h2>
+            <div class="form-grid-2" style="margin-bottom:20px;">
+                <div class="form-group">
+                    <label class="bo-label">Label Section</label>
+                    <input type="text" class="bo-input" x-model="academy.label">
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Judul Section (H2)</label>
+                    <input type="text" class="bo-input" x-model="academy.headline">
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                <template x-for="(card, idx) in academy.cards" :key="idx">
+                    <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
+                        <div style="font-weight:700;color:#2B2494;margin-bottom:8px;" x-text="'Card ' + (idx+1)"></div>
+                        <div class="form-group">
+                            <label class="bo-label" style="font-size:11px;">Judul Program</label>
+                            <input type="text" class="bo-input" style="padding:6px;font-weight:600;" x-model="card.title">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label" style="font-size:11px;">Deskripsi Singkat</label>
+                            <textarea class="bo-textarea" style="min-height:60px;padding:6px;" x-model="card.desc"></textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom:8px;">
+                            <label class="bo-label" style="font-size:11px;">URL Gambar Card</label>
+                            <input type="text" class="bo-input" style="padding:6px;" x-model="card.image" placeholder="https://...">
+                        </div>
+                        <div style="border:1.5px dashed #ccc;border-radius:8px;padding:12px;text-align:center;background:#fff;margin-bottom:8px;">
+                            <img x-show="card.image" :src="card.image" style="max-height:80px;width:100%;object-fit:cover;border-radius:4px;margin-bottom:8px;">
+                            <div x-show="!card.image" style="margin-bottom:8px;">
+                                <span class="material-icons-round" style="font-size:20px;color:#999;">add_photo_alternate</span>
+                                <span style="font-size:11px;color:#666;display:block;">Belum ada gambar</span>
+                            </div>
+                            <button type="button" @click="$store.imageUpload.open((url) => card.image = url)" 
+                                    class="btn-primary" style="padding:6px 12px;font-size:11px;width:100%;">
+                                Pilih Gambar
+                            </button>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="bo-label" style="font-size:11px;">Link Filter</label>
+                            <input type="text" class="bo-input" style="padding:6px;" x-model="card.link">
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 6: FASILITAS KELAS DUNIA --}}
+    <div x-show="activeTab === 'facilities'">
+        <div class="bo-card" style="max-width:800px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">6. Section Fasilitas Kelas Dunia</h2>
+            <div class="form-group">
+                <label class="bo-label">Judul Section</label>
+                <input type="text" class="bo-input" x-model="facilities.title">
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                <template x-for="(fac, idx) in facilities.items" :key="idx">
+                    <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
+                        <div class="form-group">
+                            <label class="bo-label" style="font-size:11px;">Label Fasilitas</label>
+                            <input type="text" class="bo-input" style="padding:6px;font-weight:600;" x-model="fac.label">
+                        </div>
+                        <div class="form-group" style="margin-bottom:8px;">
+                            <label class="bo-label" style="font-size:11px;">URL Gambar</label>
+                            <input type="text" class="bo-input" style="padding:6px;" x-model="fac.image" placeholder="https://...">
+                        </div>
+                        <div style="border:1.5px dashed #ccc;border-radius:8px;padding:12px;text-align:center;background:#fff;">
+                            <img x-show="fac.image" :src="fac.image" style="max-height:80px;width:100%;object-fit:cover;border-radius:4px;margin-bottom:8px;">
+                            <div x-show="!fac.image" style="margin-bottom:8px;">
+                                <span class="material-icons-round" style="font-size:20px;color:#999;">add_photo_alternate</span>
+                                <span style="font-size:11px;color:#666;display:block;">Belum ada gambar</span>
+                            </div>
+                            <button type="button" @click="$store.imageUpload.open((url) => fac.image = url)" 
+                                    class="btn-primary" style="padding:6px 12px;font-size:11px;width:100%;">
+                                Pilih Gambar
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 7: PESAN DIREKTUR --}}
+    <div x-show="activeTab === 'director'">
+        <div class="bo-card" style="max-width:700px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">7. Section Pesan Direktur</h2>
+            <div class="form-group">
+                <label class="bo-label">Label Overline</label>
+                <input type="text" class="bo-input" x-model="director.label">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Isi Pesan / Sambutan Direktur</label>
+                <textarea class="bo-textarea" rows="6" x-model="director.message"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Nama Lengkap & Gelar Direktur</label>
+                <input type="text" class="bo-input" x-model="director.name">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Jabatan & Subtitle</label>
+                <input type="text" class="bo-input" x-model="director.title">
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 8: BERITA & ARTIKEL (WAWASAN) --}}
+    <div x-show="activeTab === 'news'">
+        <div class="bo-card" style="max-width:850px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">8. Section Berita & Artikel (Wawasan)</h2>
+            <div class="form-grid-2" style="margin-bottom:20px;">
+                <div class="form-group">
+                    <label class="bo-label">Label Overline</label>
+                    <input type="text" class="bo-input" x-model="news.label">
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Judul Section (H2)</label>
+                    <input type="text" class="bo-input" x-model="news.title">
+                </div>
+            </div>
+
+            <h3 style="font-size:14px;font-weight:700;color:#2B2494;margin-bottom:10px;">Artikel Utama (Featured)</h3>
+            <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;margin-bottom:20px;">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="bo-label" style="font-size:11px;">Kategori</label>
+                        <input type="text" class="bo-input" style="padding:6px;" x-model="news.featured.category">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label" style="font-size:11px;">Tanggal</label>
+                        <input type="text" class="bo-input" style="padding:6px;" x-model="news.featured.date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="bo-label" style="font-size:11px;">Judul Artikel Utama</label>
+                    <input type="text" class="bo-input" style="padding:6px;font-weight:600;" x-model="news.featured.title">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="bo-label" style="font-size:11px;">Ringkasan / Excerpt</label>
+                    <textarea class="bo-textarea" style="min-height:50px;padding:6px;" x-model="news.featured.excerpt"></textarea>
+                </div>
+            </div>
+
+            <h3 style="font-size:14px;font-weight:700;color:#2B2494;margin-bottom:10px;">3 Artikel Samping</h3>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+                <template x-for="(art, idx) in news.smallArticles" :key="idx">
+                    <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
+                        <div class="form-group">
+                            <label class="bo-label" style="font-size:11px;">Kategori</label>
+                            <input type="text" class="bo-input" style="padding:5px;" x-model="art.category">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label" style="font-size:11px;">Judul</label>
+                            <input type="text" class="bo-input" style="padding:5px;font-weight:600;" x-model="art.title">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="bo-label" style="font-size:11px;">Tanggal</label>
+                            <input type="text" class="bo-input" style="padding:5px;" x-model="art.date">
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 9: PARTNERSHIP PROGRAM (PP DHS) --}}
+    <div x-show="activeTab === 'partners'">
+        <div class="bo-card" style="max-width:800px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">9. Section Partnership Program (PP DHS)</h2>
+            <div class="form-group">
+                <label class="bo-label">Label Overline</label>
+                <input type="text" class="bo-input" x-model="partner.label">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Judul Section (H2)</label>
+                <input type="text" class="bo-input" x-model="partner.title">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Deskripsi Kemitraan Global</label>
+                <textarea class="bo-textarea" rows="4" x-model="partner.desc"></textarea>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 10: TESTIMONIAL ALUMNI & MITRA --}}
+    <div x-show="activeTab === 'testimonials'">
+        <div class="bo-card" style="max-width:800px;margin-bottom:20px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">10. Section Testimonial Alumni & Mitra</h2>
+            <div class="form-group">
+                <label class="bo-label">Label Overline</label>
+                <input type="text" class="bo-input" x-model="testimonials.overline">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Judul Section (H2)</label>
+                <input type="text" class="bo-input" x-model="testimonials.title">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Subjudul Section</label>
+                <textarea class="bo-textarea" rows="2" x-model="testimonials.subtitle"></textarea>
+            </div>
+        </div>
+        <div class="bo-card" style="max-width:800px;background:#f0f4ff;border:1px solid #c7d2fe;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+                <div>
+                    <h4 style="margin:0 0 4px;color:#1e1b4b;font-weight:700;">Kelola Daftar Testimonial Alumni</h4>
+                    <p style="margin:0;font-size:13px;color:#4338ca;">Tambah, edit, atau hapus testimoni alumni & mitra industri secara detail.</p>
+                </div>
+                <a href="/backoffice/testimoni" class="btn-primary" style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;text-decoration:none;">
+                    <span class="material-icons-round" style="font-size:16px;">rate_review</span>
+                    Kelola Testimoni
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 11: FORM KONTAK (HUBUNGI KAMI VIA EMAIL) --}}
+    <div x-show="activeTab === 'contact_form'">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+            <div class="bo-card">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">11. Form Kontak (Hubungi Kami)</h2>
+                <div class="form-group">
+                    <label class="bo-label">Judul Form</label>
+                    <input type="text" class="bo-input" x-model="contactForm.title">
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Subjudul Form</label>
+                    <textarea class="bo-textarea" rows="2" x-model="contactForm.subtitle"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Email Penerima Pesan / Pertanyaan (Destination Email)</label>
+                    <input type="email" class="bo-input" x-model="contactForm.recipientEmail" placeholder="sahabat@dhs.or.id">
+                    <div style="font-size:11px;color:#8A8478;margin-top:4px;">Setiap inputan form pengunjung website akan dikirim langsung ke alamat email ini.</div>
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Teks Tombol Submit</label>
+                    <input type="text" class="bo-input" x-model="contactForm.buttonText">
+                </div>
+            </div>
+
+            {{-- Preview Form Kontak --}}
+            <div class="bo-card">
+                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#2B2494;margin:0 0 16px;">Preview Form Kontak</h3>
+                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,0.05);">
+                    <h4 style="font-family:'Playfair Display',serif;font-size:18px;margin:0 0 4px;color:#1e293b;" x-text="contactForm.title"></h4>
+                    <p style="font-size:12px;color:#64748b;margin:0 0 16px;" x-text="contactForm.subtitle"></p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                        <div style="padding:8px 10px;border-bottom:1px solid #cbd5e1;font-size:11px;color:#94a3b8;">NAMA LENGKAP</div>
+                        <div style="padding:8px 10px;border-bottom:1px solid #cbd5e1;font-size:11px;color:#94a3b8;">ALAMAT EMAIL</div>
+                    </div>
+                    <div style="padding:8px 10px;border-bottom:1px solid #cbd5e1;font-size:11px;color:#94a3b8;margin-bottom:10px;">KATEGORI PROGRAM</div>
+                    <div style="padding:8px 10px;border-bottom:1px solid #cbd5e1;font-size:11px;color:#94a3b8;margin-bottom:10px;">PROGRAM YANG DIMINATI</div>
+                    <div style="padding:8px 10px;border-bottom:1px solid #cbd5e1;font-size:11px;color:#94a3b8;margin-bottom:16px;">PESAN / PERTANYAAN</div>
+                    <div style="background:#0E06B4;color:#fff;text-align:center;padding:12px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;" x-text="contactForm.buttonText"></div>
+                    <div style="text-align:center;font-size:10px;color:#94a3b8;margin-top:8px;">Pesan dikirim ke: <span x-text="contactForm.recipientEmail" style="font-weight:600;"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB 12: PETA & LOKASI KAMPUS --}}
+    <div x-show="activeTab === 'contact_info'">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div class="bo-card">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">12. Kampus Denpasar</h2>
+                <div class="form-group">
+                    <label class="bo-label">Alamat Lengkap</label>
+                    <textarea class="bo-textarea" rows="2" x-model="contact.denpasar.address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">No. WhatsApp</label>
+                    <input type="text" class="bo-input" x-model="contact.denpasar.wa">
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Email Support</label>
+                    <input type="text" class="bo-input" x-model="contact.denpasar.email">
+                </div>
+            </div>
+
+            <div class="bo-card">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Kampus Klungkung</h2>
+                <div class="form-group">
+                    <label class="bo-label">Alamat Lengkap</label>
+                    <textarea class="bo-textarea" rows="2" x-model="contact.klungkung.address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Telepon</label>
+                    <input type="text" class="bo-input" x-model="contact.klungkung.phone">
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">No. WhatsApp</label>
+                    <input type="text" class="bo-input" x-model="contact.klungkung.wa">
+                </div>
+            </div>
+
+            <div class="bo-card" style="grid-column:1/-1;">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Link Portal & Google Maps Embed</h2>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="bo-label">Linktree URL</label>
+                        <input type="text" class="bo-input" x-model="contact.links.linktree">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">Portal Student URL</label>
+                        <input type="text" class="bo-input" x-model="contact.links.studentPortal">
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label class="bo-label">Google Maps Directions / Embed URL</label>
+                        <input type="text" class="bo-input" x-model="contact.links.googleMaps">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Save Button Global --}}
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
+        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()">
+            <span class="material-icons-round" style="font-size:20px;">save</span>
+            Simpan Seluruh Perubahan Halaman Home
+        </button>
+    </div>
+</div>
+@endsection
+
+@php
+    $secHero = isset($sections['hero']) ? (is_array($sections['hero']->section_content) ? $sections['hero']->section_content : json_decode($sections['hero']->section_content ?? '[]', true)) : [];
+    $secAbout = isset($sections['about']) ? (is_array($sections['about']->section_content) ? $sections['about']->section_content : json_decode($sections['about']->section_content ?? '[]', true)) : [];
+    $secVision = isset($sections['vision']) ? (is_array($sections['vision']->section_content) ? $sections['vision']->section_content : json_decode($sections['vision']->section_content ?? '[]', true)) : [];
+    $secCampus = isset($sections['campus']) ? (is_array($sections['campus']->section_content) ? $sections['campus']->section_content : json_decode($sections['campus']->section_content ?? '[]', true)) : [];
+    $secAcademy = isset($sections['academy']) ? (is_array($sections['academy']->section_content) ? $sections['academy']->section_content : json_decode($sections['academy']->section_content ?? '[]', true)) : [];
+    $secFacilities = isset($sections['facilities']) ? (is_array($sections['facilities']->section_content) ? $sections['facilities']->section_content : json_decode($sections['facilities']->section_content ?? '[]', true)) : [];
+    $secDirector = isset($sections['director']) ? (is_array($sections['director']->section_content) ? $sections['director']->section_content : json_decode($sections['director']->section_content ?? '[]', true)) : [];
+    $secNews = isset($sections['news']) ? (is_array($sections['news']->section_content) ? $sections['news']->section_content : json_decode($sections['news']->section_content ?? '[]', true)) : [];
+    $secPartner = isset($sections['partner']) ? (is_array($sections['partner']->section_content) ? $sections['partner']->section_content : json_decode($sections['partner']->section_content ?? '[]', true)) : [];
+    $secTestimonialHeader = isset($sections['testimonial_header']) ? (is_array($sections['testimonial_header']->section_content) ? $sections['testimonial_header']->section_content : json_decode($sections['testimonial_header']->section_content ?? '[]', true)) : [];
+    $secContactForm = isset($sections['contact_form']) ? (is_array($sections['contact_form']->section_content) ? $sections['contact_form']->section_content : json_decode($sections['contact_form']->section_content ?? '[]', true)) : [];
+    $secContact = isset($sections['contact']) ? (is_array($sections['contact']->section_content) ? $sections['contact']->section_content : json_decode($sections['contact']->section_content ?? '[]', true)) : [];
+@endphp
+
+@push('scripts')
+<script>
+// Alpine Store untuk Image Upload Modal
+document.addEventListener('alpine:init', () => {
+    Alpine.store('imageUpload', {
+        isOpen: false,
+        callback: null,
+        open(callback) {
+            this.isOpen = true;
+            this.callback = callback;
+        },
+        close() {
+            this.isOpen = false;
+            this.callback = null;
+        },
+        apply(value) {
+            if (this.callback) this.callback(value);
+            this.close();
+        }
+    });
+});
+
+function imageUploadModal() {
+    return {
+        mode: 'url',
+        tempUrl: '',
+        preview: '',
+        applyUrl() {
+            if (this.tempUrl) {
+                Alpine.store('imageUpload').apply(this.tempUrl);
+            }
+        },
+        handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                this.preview = ev.target.result;
+                Alpine.store('imageUpload').apply(ev.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+}
+
+function berandaCompleteData() {
+    return {
+        saved: false,
+        activeTab: 'hero',
+        tabs: [
+            { id:'hero',         label:'1. Hero Section',         icon:'wallpaper' },
+            { id:'about',        label:'2. Sekilas DHS',          icon:'auto_stories' },
+            { id:'vision',       label:'3. Standar Visioner',     icon:'stars' },
+            { id:'campus',       label:'4. Kehidupan Kampus',     icon:'photo_library' },
+            { id:'academy',      label:'5. Akademi Unggulan',     icon:'school' },
+            { id:'facilities',   label:'6. Fasilitas Dunia',      icon:'apartment' },
+            { id:'director',     label:'7. Pesan Direktur',       icon:'record_voice_over' },
+            { id:'news',         label:'8. Berita & Artikel',     icon:'article' },
+            { id:'partners',     label:'9. Kemitraan PP DHS',     icon:'handshake' },
+            { id:'testimonials', label:'10. Testimonial Alumni',  icon:'rate_review' },
+            { id:'contact_form', label:'11. Form Kontak (Email)', icon:'email' },
+            { id:'contact_info', label:'12. Peta & Lokasi Kampus', icon:'place' },
+        ],
+        hero: {
+            overline: @json($secHero['overline'] ?? ''),
+            headline: @json($secHero['headline'] ?? ''),
+            cta1Text: @json($secHero['cta1_text'] ?? ''),
+            cta1Link: @json($secHero['cta1_link'] ?? ''),
+            cta2Text: @json($secHero['cta2_text'] ?? ''),
+            cta2Link: @json($secHero['cta2_link'] ?? ''),
+            scrollText: @json($secHero['scroll_text'] ?? ''),
+            image: @json($secHero['background_image'] ?? '')
+        },
+        about: {
+            label: @json($secAbout['label'] ?? ''),
+            headline: @json($secAbout['headline'] ?? ''),
+            p1: @json($secAbout['paragraph1'] ?? ''),
+            p2: @json($secAbout['paragraph2'] ?? ''),
+            note: @json($secAbout['note'] ?? ''),
+            image: @json($secAbout['image'] ?? '')
+        },
+        vision: {
+            sectionTitle: @json($secVision['sectionTitle'] ?? ''),
+            visiLabel: @json($secVision['visiLabel'] ?? ''),
+            visiText: @json($secVision['vision_text'] ?? ''),
+            misiLabel: @json($secVision['misiLabel'] ?? ''),
+            misiItems: @json($secVision['misiItems'] ?? []),
+            coreValues: @json($secVision['coreValues'] ?? [])
+        },
+        campus: {
+            title: @json($secCampus['title'] ?? ''),
+            fotos: @json($secCampus['fotos'] ?? [])
+        },
+        academy: {
+            label: @json($secAcademy['label'] ?? ''),
+            headline: @json($secAcademy['headline'] ?? ''),
+            cards: @json($secAcademy['cards'] ?? [])
+        },
+        facilities: {
+            title: @json($secFacilities['title'] ?? ''),
+            items: @json($secFacilities['items'] ?? [])
+        },
+        director: {
+            label: @json($secDirector['label'] ?? ''),
+            message: @json($secDirector['message'] ?? ''),
+            name: @json($secDirector['name'] ?? ''),
+            title: @json($secDirector['title'] ?? '')
+        },
+        news: {
+            label: @json($secNews['label'] ?? ''),
+            title: @json($secNews['title'] ?? ''),
+            featured: @json($secNews['featured'] ?? []),
+            smallArticles: @json($secNews['smallArticles'] ?? [])
+        },
+        partner: {
+            label: @json($secPartner['label'] ?? ''),
+            title: @json($secPartner['title'] ?? ''),
+            desc: @json($secPartner['desc'] ?? '')
+        },
+        testimonials: {
+            overline: @json($secTestimonialHeader['overline'] ?? ''),
+            title: @json($secTestimonialHeader['title'] ?? ''),
+            subtitle: @json($secTestimonialHeader['subtitle'] ?? '')
+        },
+        contactForm: {
+            title: @json($secContactForm['title'] ?? ''),
+            subtitle: @json($secContactForm['subtitle'] ?? ''),
+            recipientEmail: @json($secContactForm['recipient_email'] ?? ''),
+            buttonText: @json($secContactForm['button_text'] ?? '')
+        },
+        contact: {
+            denpasar: {
+                address: @json($secContact['denpasar_address'] ?? ''),
+                wa: @json($secContact['denpasar_wa'] ?? ''),
+                email: @json($secContact['denpasar_email'] ?? '')
+            },
+            klungkung: {
+                address: @json($secContact['klungkung_address'] ?? ''),
+                phone: @json($secContact['klungkung_phone'] ?? ''),
+                wa: @json($secContact['klungkung_wa'] ?? '')
+            },
+            links: {
+                linktree: 'https://linktr.ee/BiayaPendidikan_DHS',
+                studentPortal: 'http://www.dhs.or.id/student',
+                googleMaps: 'https://maps.google.com/?q=Denpasar+Hotel+School'
+            }
+        },
+        saveAll() {
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('sections[hero][content][overline]', this.hero.overline);
+            formData.append('sections[hero][content][headline]', this.hero.headline);
+            formData.append('sections[hero][content][cta1_text]', this.hero.cta1Text);
+            formData.append('sections[hero][content][cta1_link]', this.hero.cta1Link);
+            formData.append('sections[hero][content][cta2_text]', this.hero.cta2Text);
+            formData.append('sections[hero][content][cta2_link]', this.hero.cta2Link);
+            formData.append('sections[hero][content][scroll_text]', this.hero.scrollText);
+            formData.append('sections[hero][content][background_image]', this.hero.image);
+
+            formData.append('sections[about][content][label]', this.about.label);
+            formData.append('sections[about][content][headline]', this.about.headline);
+            formData.append('sections[about][content][paragraph1]', this.about.p1);
+            formData.append('sections[about][content][paragraph2]', this.about.p2);
+            formData.append('sections[about][content][note]', this.about.note);
+            formData.append('sections[about][content][image]', this.about.image);
+
+            formData.append('sections[vision][content][sectionTitle]', this.vision.sectionTitle);
+            formData.append('sections[vision][content][visiLabel]', this.vision.visiLabel);
+            formData.append('sections[vision][content][vision_text]', this.vision.visiText);
+            formData.append('sections[vision][content][misiLabel]', this.vision.misiLabel);
+            formData.append('sections[vision][content][misiItems]', JSON.stringify(this.vision.misiItems));
+            formData.append('sections[vision][content][coreValues]', JSON.stringify(this.vision.coreValues));
+
+            formData.append('sections[campus][content][title]', this.campus.title);
+            formData.append('sections[campus][content][fotos]', JSON.stringify(this.campus.fotos));
+
+            formData.append('sections[academy][content][label]', this.academy.label);
+            formData.append('sections[academy][content][headline]', this.academy.headline);
+            formData.append('sections[academy][content][cards]', JSON.stringify(this.academy.cards));
+
+            formData.append('sections[facilities][content][title]', this.facilities.title);
+            formData.append('sections[facilities][content][items]', JSON.stringify(this.facilities.items));
+
+            formData.append('sections[director][content][label]', this.director.label);
+            formData.append('sections[director][content][message]', this.director.message);
+            formData.append('sections[director][content][name]', this.director.name);
+            formData.append('sections[director][content][title]', this.director.title);
+
+            formData.append('sections[news][content][label]', this.news.label);
+            formData.append('sections[news][content][title]', this.news.title);
+            formData.append('sections[news][content][featured]', JSON.stringify(this.news.featured));
+            formData.append('sections[news][content][smallArticles]', JSON.stringify(this.news.smallArticles));
+
+            formData.append('sections[partner][content][label]', this.partner.label);
+            formData.append('sections[partner][content][title]', this.partner.title);
+            formData.append('sections[partner][content][desc]', this.partner.desc);
+
+            formData.append('sections[testimonial_header][content][overline]', this.testimonials.overline);
+            formData.append('sections[testimonial_header][content][title]', this.testimonials.title);
+            formData.append('sections[testimonial_header][content][subtitle]', this.testimonials.subtitle);
+
+            formData.append('sections[contact_form][content][title]', this.contactForm.title);
+            formData.append('sections[contact_form][content][subtitle]', this.contactForm.subtitle);
+            formData.append('sections[contact_form][content][recipient_email]', this.contactForm.recipientEmail);
+            formData.append('sections[contact_form][content][button_text]', this.contactForm.buttonText);
+
+            formData.append('sections[contact][content][denpasar_address]', this.contact.denpasar.address);
+            formData.append('sections[contact][content][denpasar_wa]', this.contact.denpasar.wa);
+            formData.append('sections[contact][content][denpasar_email]', this.contact.denpasar.email);
+            formData.append('sections[contact][content][klungkung_address]', this.contact.klungkung.address);
+            formData.append('sections[contact][content][klungkung_phone]', this.contact.klungkung.phone);
+            formData.append('sections[contact][content][klungkung_wa]', this.contact.klungkung.wa);
+
+            fetch('/backoffice/beranda/update', { method: 'POST', body: formData })
+                .then(r => {
+                    if (r.ok) {
+                        this.saved = true;
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        setTimeout(() => this.saved = false, 4000);
+                    } else {
+                        alert('Gagal menyimpan konten beranda.');
+                    }
+                });
+        }
+    };
+}
+</script>
+@endpush
+
+
+

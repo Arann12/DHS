@@ -148,14 +148,11 @@
 
     function applyTranslations(lang) {
         document.querySelectorAll('[data-id][data-en]').forEach(function (el) {
+            var val = lang === 'EN' ? el.getAttribute('data-en') : el.getAttribute('data-id');
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                el.placeholder = lang === 'EN'
-                    ? el.getAttribute('data-en')
-                    : el.getAttribute('data-id');
+                el.placeholder = val;
             } else {
-                el.textContent = lang === 'EN'
-                    ? el.getAttribute('data-en')
-                    : el.getAttribute('data-id');
+                el.innerHTML = val;
             }
         });
         document.documentElement.lang = lang === 'EN' ? 'en' : 'id';
@@ -194,7 +191,7 @@
     document.addEventListener('click', function (e) {
         var switcher = document.getElementById('lang-switcher');
         if (switcher && !switcher.contains(e.target) && langOpen) {
-            langOpen = true;
+            langOpen = false;
             toggleLangDropdown();
         }
     });

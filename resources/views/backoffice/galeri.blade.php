@@ -92,41 +92,42 @@
 function galeriData() {
     return {
         dragOver: false,
-        items: [],
+        items: @json($galleries->map(fn($g) => [
+            'id'    => $g->id,
+            'src'   => $g->image_url,
+            'name'  => $g->title ?: 'Foto Kampus',
+            'order' => $g->display_order,
+        ])),
         confirmDelete: { open:false, targetId:null },
-        nextId: 1,
 
         handleUpload(e) {
-            Array.from(e.target.files).forEach(file => this.addFile(file));
+            Array.from(e.target.files).forEach(file => this.uploadFile(file));
             e.target.value = '';
         },
         handleDrop(e) {
             this.dragOver = false;
-            Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(f => this.addFile(f));
+            Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(f => this.uploadFile(f));
         },
-        addFile(file) {
-            const reader = new FileReader();
-            reader.onload = ev => {
-                this.items.push({ id: this.nextId++, src: ev.target.result, name: file.name });
-            };
-            reader.readAsDataURL(file);
-        },
-        moveUp(idx) {
-            if (idx === 0) return;
-            [this.items[idx-1], this.items[idx]] = [this.items[idx], this.items[idx-1]];
-            this.items = [...this.items];
-        },
-        moveDown(idx) {
-            if (idx === this.items.length - 1) return;
-            [this.items[idx], this.items[idx+1]] = [this.items[idx+1], this.items[idx]];
-            this.items = [...this.items];
+        uploadFile(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            fetch('/backoffice/galeri/store', { method: 'POST', body: formData })
+                .then(r => r.ok ? location.reload() : alert('Gagal mengunggah foto.'));
         },
         deleteItem(id) { this.confirmDelete.targetId = id; this.confirmDelete.open = true; },
         confirmDeleteItem() {
-            this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
-            this.confirmDelete.open = false;
+            fetch(`/backoffice/galeri/${this.confirmDelete.targetId}/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ id: this.confirmDelete.targetId })
+            }).then(() => {
+                this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
+                this.confirmDelete.open = false;
+            });
         }
     };
 }
 </script>
 @endpush
+

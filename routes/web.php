@@ -1,148 +1,119 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\BackofficeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+|--------------------------------------------------------------------------
+| FRONTEND PUBLIC ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::get('/',                function () { return app(FrontendController::class)->welcome(); });
+Route::get('/tentang-kami',    function () { return app(FrontendController::class)->tentang(); });
+Route::get('/tentang',         function () { return app(FrontendController::class)->tentang(); });
+Route::get('/akademi',         function () { return app(FrontendController::class)->akademi(); });
+Route::get('/berita',          function () { return app(FrontendController::class)->berita(request()); });
+Route::get('/faq',             function () { return app(FrontendController::class)->faq(); });
+Route::get('/karier',          function () { return app(FrontendController::class)->karier(); });
+Route::get('/cara-mendaftar',  function () { return app(FrontendController::class)->registration(); });
+Route::get('/formulir-pendaftaran', function () { return app(FrontendController::class)->registration(); });
 
-Route::get('/tentang-kami', function () {
-    return view('tentang');
-});
+Route::post('/pendaftaran', [FrontendController::class, 'submitRegistration']);
 
-Route::get('/akademi', function () {
-    return view('akademi');
-});
+/*
+|--------------------------------------------------------------------------
+| BACKOFFICE AUTH ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::get('/backoffice',         [AuthController::class, 'showLogin']);
+Route::post('/backoffice/login',  [AuthController::class, 'login']);
+Route::get('/backoffice/logout',  [AuthController::class, 'logout']);
 
-Route::get('/berita', function () {
-    return view('berita');
-});
+/*
+|--------------------------------------------------------------------------
+| BACKOFFICE PAGES (GET)
+|--------------------------------------------------------------------------
+*/
+Route::get('/backoffice/dashboard',     [BackofficeController::class, 'dashboard']);
+Route::get('/backoffice/beranda',       [BackofficeController::class, 'beranda']);
+Route::get('/backoffice/branding',      [BackofficeController::class, 'branding']);
+Route::get('/backoffice/color-palette', [BackofficeController::class, 'colorPalette']);
+Route::get('/backoffice/statistik',     [BackofficeController::class, 'statistik']);
+Route::get('/backoffice/program',       [BackofficeController::class, 'program']);
+Route::get('/backoffice/berita',        [BackofficeController::class, 'berita']);
+Route::get('/backoffice/galeri',        [BackofficeController::class, 'galeri']);
+Route::get('/backoffice/testimoni',     [BackofficeController::class, 'testimoni']);
+Route::get('/backoffice/faq',           [BackofficeController::class, 'faq']);
+Route::get('/backoffice/admisi',        [BackofficeController::class, 'admisi']);
+Route::get('/backoffice/pendaftar',     [BackofficeController::class, 'pendaftar']);
+Route::get('/backoffice/navigasi',      [BackofficeController::class, 'navigasi']);
+Route::get('/backoffice/footer-cms',    [BackofficeController::class, 'footer']);
+Route::get('/backoffice/users',         [BackofficeController::class, 'users']);
 
-Route::get('/faq', function () {
-    return view('faq');     
-});
+/*
+|--------------------------------------------------------------------------
+| BACKOFFICE CRUD ENDPOINTS (POST/PUT/DELETE)
+|--------------------------------------------------------------------------
+*/
+// Beranda CMS
+Route::post('/backoffice/beranda/update',       [BackofficeController::class, 'berandaUpdate']);
 
-Route::get('/karier', function () {
-    return view('karier');
-});
+// Branding
+Route::post('/backoffice/branding/update',      [BackofficeController::class, 'brandingUpdate']);
 
-// Placeholders for routes in the nav/footer that might be clicked
-Route::get('/formulir-pendaftaran', function () {
-    return view('registration');
-});
+// Color Palette
+Route::post('/backoffice/color-palette/update', [BackofficeController::class, 'colorPaletteUpdate']);
 
-Route::get('/cara-mendaftar', function () {
-    return view('registration');
-});
+// Statistik
+Route::post('/backoffice/statistik/store',      [BackofficeController::class, 'statistikStore']);
+Route::post('/backoffice/statistik/{id}/update',[BackofficeController::class, 'statistikUpdate']);
+Route::post('/backoffice/statistik/{id}/delete',[BackofficeController::class, 'statistikDestroy']);
 
-Route::post('/pendaftaran', function (\Illuminate\Http\Request $request) {
-    $validated = $request->validate([
-        'nama_lengkap'       => 'required|string|max:255',
-        'hp_wa'              => 'required|string|max:50',
-        'email'              => 'required|email|max:255',
-        'kategori'           => 'required|string',
-        'program'            => 'required|string',
-        'special_request'    => 'nullable|string',
-        'bukti_pendaftaran'  => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        'bukti_program'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        'sumber_info'        => 'nullable|array',
-    ]);
+// Program
+Route::post('/backoffice/program/store',        [BackofficeController::class, 'programStore']);
+Route::post('/backoffice/program/{id}/update',  [BackofficeController::class, 'programUpdate']);
+Route::post('/backoffice/program/{id}/delete',  [BackofficeController::class, 'programDestroy']);
 
-    // Save uploaded files if present
-    $buktiPendaftaranName = null;
-    if ($request->hasFile('bukti_pendaftaran')) {
-        $file = $request->file('bukti_pendaftaran');
-        $buktiPendaftaranName = time() . '_pendaftaran_' . $file->getClientOriginalName();
-        $file->move(public_path('uploads/bukti'), $buktiPendaftaranName);
-    }
+// Berita
+Route::post('/backoffice/berita/store',         [BackofficeController::class, 'beritaStore']);
+Route::post('/backoffice/berita/{id}/update',   [BackofficeController::class, 'beritaUpdate']);
+Route::post('/backoffice/berita/{id}/delete',   [BackofficeController::class, 'beritaDestroy']);
 
-    $buktiProgramName = null;
-    if ($request->hasFile('bukti_program')) {
-        $file = $request->file('bukti_program');
-        $buktiProgramName = time() . '_program_' . $file->getClientOriginalName();
-        $file->move(public_path('uploads/bukti'), $buktiProgramName);
-    }
+// Galeri
+Route::post('/backoffice/galeri/store',         [BackofficeController::class, 'galeriStore']);
+Route::post('/backoffice/galeri/{id}/update',   [BackofficeController::class, 'galeriUpdate']);
+Route::post('/backoffice/galeri/{id}/delete',   [BackofficeController::class, 'galeriDestroy']);
 
-    // Save entry into session array (mock database storage for frontend-only scope)
-    $pendaftarBaru = [
-        'id'                 => time(),
-        'tgl'                => date('d M Y H:i'),
-        'nama'               => $validated['nama_lengkap'],
-        'hp'                 => $validated['hp_wa'],
-        'email'              => $validated['email'],
-        'kategori'           => $validated['kategori'],
-        'program'            => $validated['program'],
-        'special_request'    => $validated['special_request'] ?? '',
-        'sumber'             => implode(', ', $request->input('sumber_info', [])),
-        'bukti_pendaftaran'  => $buktiPendaftaranName,
-        'bukti_program'      => $buktiProgramName,
-        'status'             => 'Baru',
-    ];
+// Testimoni
+Route::post('/backoffice/testimoni/store',         [BackofficeController::class, 'testimoniStore']);
+Route::post('/backoffice/testimoni/{id}/update',   [BackofficeController::class, 'testimoniUpdate']);
+Route::post('/backoffice/testimoni/{id}/delete',   [BackofficeController::class, 'testimoniDestroy']);
 
-    $allPendaftar = session('list_pendaftar', []);
-    array_unshift($allPendaftar, $pendaftarBaru);
-    session(['list_pendaftar' => $allPendaftar]);
+// FAQ
+Route::post('/backoffice/faq/store',            [BackofficeController::class, 'faqStore']);
+Route::post('/backoffice/faq/{id}/update',      [BackofficeController::class, 'faqUpdate']);
+Route::post('/backoffice/faq/{id}/delete',      [BackofficeController::class, 'faqDestroy']);
 
-    return back()->with('reg_success', 'Terima kasih ' . $validated['nama_lengkap'] . '! Pendaftaran Anda telah kami terima. Tim admisi DHS akan menghubungi WhatsApp Anda dalam 1x24 jam.');
-});
+// Admisi
+Route::post('/backoffice/admisi/update-helpdesk', [BackofficeController::class, 'updateHelpdesk']);
+Route::post('/backoffice/admisi/{id}/update',   [BackofficeController::class, 'admisiUpdate']);
 
-// ============================================================
-//  BACKOFFICE ROUTES (Frontend-only, mock auth via session)
-// ============================================================
+// Pendaftar
+Route::get('/backoffice/pendaftar/export',        [BackofficeController::class, 'pendaftarExportExcel']);
+Route::post('/backoffice/pendaftar/update-status', [BackofficeController::class, 'pendaftarUpdateStatus']);
+Route::post('/backoffice/pendaftar/delete',        [BackofficeController::class, 'pendaftarDestroy']);
 
-// Login page
-Route::get('/backoffice', function () {
-    // If already "logged in" (mock session), go to dashboard
-    if (session('backoffice_user')) {
-        return redirect('/backoffice/dashboard');
-    }
-    return view('backoffice.auth.login');
-});
+// Navigasi
+Route::post('/backoffice/navigasi/store',        [BackofficeController::class, 'navigasiStore']);
+Route::post('/backoffice/navigasi/{id}/update',  [BackofficeController::class, 'navigasiUpdate']);
+Route::post('/backoffice/navigasi/{id}/delete',  [BackofficeController::class, 'navigasiDestroy']);
 
-// Mock login handler
-Route::post('/backoffice/login', function (\Illuminate\Http\Request $request) {
-    $username = $request->input('username');
-    $password = $request->input('password');
+// Footer CMS
+Route::post('/backoffice/footer-cms/update',    [BackofficeController::class, 'footerUpdate']);
 
-    // Mock credentials — replace with real auth later
-    if ($username === 'admin' && $password === 'admin123') {
-        session(['backoffice_user' => ['name' => 'Administrator', 'username' => 'admin', 'role' => 'Super Admin']]);
-        return redirect('/backoffice/dashboard');
-    }
-
-    return back()->withErrors(['auth' => 'Username atau password salah.'])->withInput();
-});
-
-// Logout
-Route::get('/backoffice/logout', function () {
-    session()->forget('backoffice_user');
-    return redirect('/backoffice');
-});
-
-// Protected backoffice pages — middleware-like check via closure
-$backofficePages = [
-    'dashboard'  => 'backoffice.dashboard',
-    'branding'   => 'backoffice.branding',
-    'beranda'    => 'backoffice.beranda',
-    'statistik'  => 'backoffice.statistik',
-    'program'    => 'backoffice.program',
-    'berita'     => 'backoffice.berita',
-    'galeri'     => 'backoffice.galeri',
-    'testimoni'  => 'backoffice.testimoni',
-    'faq'        => 'backoffice.faq',
-    'admisi'     => 'backoffice.admisi',
-    'pendaftar'  => 'backoffice.pendaftar',
-    'navigasi'   => 'backoffice.navigasi',
-    'footer-cms' => 'backoffice.footer',
-    'users'      => 'backoffice.users',
-];
-
-foreach ($backofficePages as $path => $view) {
-    Route::get('/backoffice/' . $path, function () use ($view) {
-        if (!session('backoffice_user')) {
-            return redirect('/backoffice');
-        }
-        return view($view, ['user' => session('backoffice_user')]);
-    });
-}
-
+// Users
+Route::post('/backoffice/users/store',          [BackofficeController::class, 'usersStore']);
+Route::post('/backoffice/users/{id}/update',    [BackofficeController::class, 'usersUpdate']);
+Route::post('/backoffice/users/{id}/delete',    [BackofficeController::class, 'usersDestroy']);

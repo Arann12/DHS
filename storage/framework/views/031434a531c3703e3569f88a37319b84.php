@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Backoffice') — DHS Admin</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title><?php echo $__env->yieldContent('title', 'Backoffice'); ?> — DHS Admin</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <style>
         :root {
@@ -144,18 +144,18 @@
         .divider { border: none; border-top: 1px solid #eee; margin: 24px 0; }
         @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
     </style>
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body>
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-@include('backoffice.partials.sidebar')
+<?php echo $__env->make('backoffice.partials.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-@include('backoffice.partials.topbar')
+<?php echo $__env->make('backoffice.partials.topbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 <main id="bo-main">
-    @yield('content')
+    <?php echo $__env->yieldContent('content'); ?>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
@@ -197,6 +197,7 @@
     applySidebarState();
     window.addEventListener('resize', applySidebarState);
 </script>
-@stack('scripts')
+<?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
+<?php /**PATH D:\laragon\www\DHS\resources\views/backoffice/layouts/app.blade.php ENDPATH**/ ?>

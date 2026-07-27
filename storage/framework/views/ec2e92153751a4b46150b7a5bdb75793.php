@@ -1,66 +1,66 @@
 <aside id="bo-sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('image/LogoDHS_2.jpeg') }}" alt="DHS Logo" class="sidebar-logo-img">
+        <img src="<?php echo e(asset('image/LogoDHS_2.jpeg')); ?>" alt="DHS Logo" class="sidebar-logo-img">
         <div class="logo-text">Denpasar<br>Hotel School</div>
     </div>
 
     <nav class="sidebar-nav">
         <div class="nav-group-label">Utama</div>
-        <a href="/backoffice/dashboard" class="nav-item {{ Request::is('backoffice/dashboard') ? 'active' : '' }}">
+        <a href="/backoffice/dashboard" class="nav-item <?php echo e(Request::is('backoffice/dashboard') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">dashboard</span>
             <span class="nav-label">Dashboard</span>
         </a>
 
         <div class="nav-group-label">Modul Utama</div>
-        <a href="/backoffice/beranda" class="nav-item {{ Request::is('backoffice/beranda') ? 'active' : '' }}">
+        <a href="/backoffice/beranda" class="nav-item <?php echo e(Request::is('backoffice/beranda') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">home</span>
             <span class="nav-label">Home</span>
         </a>
-        <a href="/backoffice/statistik" class="nav-item {{ Request::is('backoffice/statistik') ? 'active' : '' }}">
+        <a href="/backoffice/statistik" class="nav-item <?php echo e(Request::is('backoffice/statistik') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">info</span>
             <span class="nav-label">About Us</span>
         </a>
-        <a href="/backoffice/program" class="nav-item {{ Request::is('backoffice/program') ? 'active' : '' }}">
+        <a href="/backoffice/program" class="nav-item <?php echo e(Request::is('backoffice/program') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">school</span>
             <span class="nav-label">Academy</span>
         </a>
-        <a href="/backoffice/branding" class="nav-item {{ Request::is('backoffice/branding') ? 'active' : '' }}">
+        <a href="/backoffice/branding" class="nav-item <?php echo e(Request::is('backoffice/branding') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">palette</span>
             <span class="nav-label">Logo DHS & Branding</span>
         </a>
-        <a href="/backoffice/berita" class="nav-item {{ Request::is('backoffice/berita') ? 'active' : '' }}">
+        <a href="/backoffice/berita" class="nav-item <?php echo e(Request::is('backoffice/berita') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">article</span>
             <span class="nav-label">News</span>
         </a>
-        <a href="/backoffice/faq" class="nav-item {{ Request::is('backoffice/faq') ? 'active' : '' }}">
+        <a href="/backoffice/faq" class="nav-item <?php echo e(Request::is('backoffice/faq') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">quiz</span>
             <span class="nav-label">FAQ</span>
         </a>
-        <a href="/backoffice/admisi" class="nav-item {{ Request::is('backoffice/admisi') ? 'active' : '' }}">
+        <a href="/backoffice/admisi" class="nav-item <?php echo e(Request::is('backoffice/admisi') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">assignment</span>
             <span class="nav-label">Registration Form</span>
         </a>
-        <a href="/backoffice/pendaftar" class="nav-item {{ Request::is('backoffice/pendaftar') ? 'active' : '' }}">
+        <a href="/backoffice/pendaftar" class="nav-item <?php echo e(Request::is('backoffice/pendaftar') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">how_to_reg</span>
             <span class="nav-label">Data Pendaftar</span>
         </a>
 
         <div class="nav-group-label">Konten Tambahan</div>
-        <a href="/backoffice/testimoni" class="nav-item {{ Request::is('backoffice/testimoni') ? 'active' : '' }}">
+        <a href="/backoffice/testimoni" class="nav-item <?php echo e(Request::is('backoffice/testimoni') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">format_quote</span>
             <span class="nav-label">Testimoni</span>
         </a>
 
         <div class="nav-group-label">Pengaturan System</div>
-        <a href="/backoffice/color-palette" class="nav-item {{ Request::is('backoffice/color-palette') ? 'active' : '' }}">
+        <a href="/backoffice/color-palette" class="nav-item <?php echo e(Request::is('backoffice/color-palette') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">palette</span>
             <span class="nav-label">Warna Website</span>
         </a>
-        <a href="/backoffice/navigasi" class="nav-item {{ Request::is('backoffice/navigasi') ? 'active' : '' }}">
+        <a href="/backoffice/navigasi" class="nav-item <?php echo e(Request::is('backoffice/navigasi') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">menu</span>
             <span class="nav-label">Navigasi & Menu</span>
         </a>
-        <a href="/backoffice/footer-cms" class="nav-item {{ Request::is('backoffice/footer-cms') ? 'active' : '' }}">
+        <a href="/backoffice/footer-cms" class="nav-item <?php echo e(Request::is('backoffice/footer-cms') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">web</span>
             <span class="nav-label">Footer</span>
         </a>
@@ -73,3 +73,4 @@
         </a>
     </div>
 </aside>
+<?php /**PATH D:\laragon\www\DHS\resources\views/backoffice/partials/sidebar.blade.php ENDPATH**/ ?>

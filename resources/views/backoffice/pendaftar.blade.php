@@ -69,14 +69,18 @@
                             </td>
                             <td>
                                 <div style="display:flex;flex-direction:column;gap:4px;">
-                                    <template x-if="item.bukti_pendaftaran">
-                                        <span class="badge badge-green" style="font-size:10px;cursor:pointer;" @click="alert('Membuka file: ' + item.bukti_pendaftaran)">✓ Bukti Daftar</span>
+                                    <template x-if="item.bukti_pendaftaran_url">
+                                        <a :href="item.bukti_pendaftaran_url" target="_blank" class="badge badge-green" style="font-size:10.5px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;" title="Klik untuk membuka Bukti Pendaftaran">
+                                            <span class="material-icons-round" style="font-size:13px;">visibility</span> Bukti Daftar
+                                        </a>
                                     </template>
-                                    <template x-if="item.bukti_program">
-                                        <span class="badge badge-blue" style="font-size:10px;cursor:pointer;" @click="alert('Membuka file: ' + item.bukti_program)">✓ Bukti Program</span>
+                                    <template x-if="item.bukti_program_url">
+                                        <a :href="item.bukti_program_url" target="_blank" class="badge badge-blue" style="font-size:10.5px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;" title="Klik untuk membuka Bukti Program">
+                                            <span class="material-icons-round" style="font-size:13px;">visibility</span> Bukti Program
+                                        </a>
                                     </template>
-                                    <template x-if="!item.bukti_pendaftaran && !item.bukti_program">
-                                        <span style="font-size:11px;color:#aaa;italic;">Tidak ada file</span>
+                                    <template x-if="!item.bukti_pendaftaran_url && !item.bukti_program_url">
+                                        <span style="font-size:11px;color:#aaa;font-style:italic;">Tidak ada file</span>
                                     </template>
                                 </div>
                             </td>
@@ -98,7 +102,7 @@
                             </td>
                             <td>
                                 <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-                                    <button class="btn-icon" title="Detail Pendaftar" @click="viewDetail(item)">
+                                    <button class="btn-icon" title="Detail & Gambar Pendaftar" @click="viewDetail(item)">
                                         <span class="material-icons-round" style="font-size:18px;">visibility</span>
                                     </button>
                                     <button class="btn-icon danger" title="Hapus Data" @click="deleteItem(item.id)">
@@ -120,9 +124,9 @@
 
     {{-- Detail Modal --}}
     <div class="bo-modal-backdrop" x-show="selectedItem" x-transition style="display:none;">
-        <div class="bo-modal wide" @click.away="selectedItem = null">
+        <div class="bo-modal wide" @click.away="selectedItem = null" style="max-width:850px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;">
-                <h3 style="margin:0;">Detail Formulir Pendaftaran</h3>
+                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#2B2494;">Detail Formulir Pendaftaran</h3>
                 <button class="btn-icon" @click="selectedItem = null"><span class="material-icons-round">close</span></button>
             </div>
             
@@ -130,7 +134,7 @@
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <label class="bo-label">Nama Lengkap</label>
-                        <div class="bo-input" style="background:#fafafa;" x-text="selectedItem.nama"></div>
+                        <div class="bo-input" style="background:#fafafa;font-weight:700;" x-text="selectedItem.nama"></div>
                     </div>
                     <div>
                         <label class="bo-label">Tanggal Mendaftar</label>
@@ -159,22 +163,76 @@
                     </div>
                     <div style="grid-column:1/-1;">
                         <label class="bo-label">Special Request / Catatan Khusus</label>
-                        <div class="bo-textarea" style="background:#fafafa;min-height:70px;" x-text="selectedItem.special_request || 'Tidak ada catatan khusus'"></div>
+                        <div class="bo-textarea" style="background:#fafafa;min-height:60px;" x-text="selectedItem.special_request || 'Tidak ada catatan khusus'"></div>
                     </div>
                     <div style="grid-column:1/-1;">
                         <label class="bo-label">Informasi Diperoleh Dari:</label>
                         <div class="bo-input" style="background:#fafafa;" x-text="selectedItem.sumber || '-'"></div>
                     </div>
-                    <div>
-                        <label class="bo-label">Bukti Biaya Pendaftaran</label>
-                        <div class="bo-input" style="background:#fafafa;">
-                            <span x-text="selectedItem.bukti_pendaftaran || 'Tidak diunggah'"></span>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="bo-label">Bukti Biaya Program</label>
-                        <div class="bo-input" style="background:#fafafa;">
-                            <span x-text="selectedItem.bukti_program || 'Tidak diunggah'"></span>
+
+                    {{-- Section Preview Gambar / Berkas Upload --}}
+                    <div style="grid-column:1/-1;border-top:1px solid #eee;padding-top:16px;margin-top:4px;">
+                        <h4 style="font-size:14px;font-weight:700;color:#2B2494;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                            {{-- Bukti Pendaftaran --}}
+                            <div>
+                                <label class="bo-label">Bukti Biaya Pendaftaran</label>
+                                <template x-if="selectedItem.bukti_pendaftaran_url">
+                                    <div style="border:1.5px solid #e5e7eb;border-radius:12px;padding:12px;background:#fafafa;">
+                                        <template x-if="isImage(selectedItem.bukti_pendaftaran_url)">
+                                            <div style="text-align:center;">
+                                                <a :href="selectedItem.bukti_pendaftaran_url" target="_blank" title="Klik untuk memperbesar">
+                                                    <img :src="selectedItem.bukti_pendaftaran_url" alt="Bukti Pendaftaran" style="max-height:220px;width:auto;max-width:100%;border-radius:8px;object-fit:contain;margin:0 auto 10px;display:block;border:1px solid #ddd;box-shadow:0 3px 10px rgba(0,0,0,0.08);">
+                                                </a>
+                                                <a :href="selectedItem.bukti_pendaftaran_url" target="_blank" class="btn-secondary" style="font-size:11.5px;padding:6px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                                                    <span class="material-icons-round" style="font-size:15px;">open_in_new</span> Lihat Gambar Ukuran Penuh
+                                                </a>
+                                            </div>
+                                        </template>
+                                        <template x-if="!isImage(selectedItem.bukti_pendaftaran_url)">
+                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                                <span style="font-size:12px;color:#333;font-weight:600;word-break:break-all;" x-text="selectedItem.bukti_pendaftaran_name"></span>
+                                                <a :href="selectedItem.bukti_pendaftaran_url" target="_blank" class="btn-primary" style="font-size:11.5px;padding:6px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;">
+                                                    <span class="material-icons-round" style="font-size:15px;">picture_as_pdf</span> Buka / Unduh File
+                                                </a>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template x-if="!selectedItem.bukti_pendaftaran_url">
+                                    <div class="bo-input" style="background:#fafafa;color:#8A8478;font-style:italic;">Tidak ada file diunggah</div>
+                                </template>
+                            </div>
+
+                            {{-- Bukti Program --}}
+                            <div>
+                                <label class="bo-label">Bukti Biaya Program</label>
+                                <template x-if="selectedItem.bukti_program_url">
+                                    <div style="border:1.5px solid #e5e7eb;border-radius:12px;padding:12px;background:#fafafa;">
+                                        <template x-if="isImage(selectedItem.bukti_program_url)">
+                                            <div style="text-align:center;">
+                                                <a :href="selectedItem.bukti_program_url" target="_blank" title="Klik untuk memperbesar">
+                                                    <img :src="selectedItem.bukti_program_url" alt="Bukti Program" style="max-height:220px;width:auto;max-width:100%;border-radius:8px;object-fit:contain;margin:0 auto 10px;display:block;border:1px solid #ddd;box-shadow:0 3px 10px rgba(0,0,0,0.08);">
+                                                </a>
+                                                <a :href="selectedItem.bukti_program_url" target="_blank" class="btn-secondary" style="font-size:11.5px;padding:6px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                                                    <span class="material-icons-round" style="font-size:15px;">open_in_new</span> Lihat Gambar Ukuran Penuh
+                                                </a>
+                                            </div>
+                                        </template>
+                                        <template x-if="!isImage(selectedItem.bukti_program_url)">
+                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                                <span style="font-size:12px;color:#333;font-weight:600;word-break:break-all;" x-text="selectedItem.bukti_program_name"></span>
+                                                <a :href="selectedItem.bukti_program_url" target="_blank" class="btn-primary" style="font-size:11.5px;padding:6px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;">
+                                                    <span class="material-icons-round" style="font-size:15px;">picture_as_pdf</span> Buka / Unduh File
+                                                </a>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template x-if="!selectedItem.bukti_program_url">
+                                    <div class="bo-input" style="background:#fafafa;color:#8A8478;font-style:italic;">Tidak ada file diunggah</div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,6 +245,43 @@
     </div>
 
 </div>
+@php
+    $initialData = collect($pendaftarList ?? [])->map(function($reg) {
+        $sources = [];
+        if (is_array($reg->info_sources)) {
+            $sources = $reg->info_sources;
+        } elseif (is_string($reg->info_sources) && !empty($reg->info_sources)) {
+            $decoded = json_decode($reg->info_sources, true);
+            $sources = is_array($decoded) ? $decoded : [$reg->info_sources];
+        }
+
+        $statusMap = [
+            'pending' => 'Baru',
+            'verified' => 'Diproses',
+            'accepted' => 'Diterima',
+            'rejected' => 'Ditolak',
+            'cancelled' => 'Ditolak'
+        ];
+
+        return [
+            'id' => $reg->id,
+            'tgl' => \Carbon\Carbon::parse($reg->created_at)->format('d M Y H:i'),
+            'nama' => $reg->full_name,
+            'hp' => $reg->phone,
+            'email' => $reg->email,
+            'kategori' => $reg->category_key ?? '-',
+            'program' => $reg->program_title ?? '-',
+            'special_request' => $reg->special_request ?? '',
+            'sumber' => count($sources) > 0 ? implode(', ', $sources) : '-',
+            'bukti_pendaftaran_url' => $reg->registration_fee_proof ? asset($reg->registration_fee_proof) : null,
+            'bukti_pendaftaran_name' => $reg->registration_fee_proof ? basename($reg->registration_fee_proof) : '',
+            'bukti_program_url' => $reg->program_fee_proof ? asset($reg->program_fee_proof) : null,
+            'bukti_program_name' => $reg->program_fee_proof ? basename($reg->program_fee_proof) : '',
+            'status' => $statusMap[$reg->status] ?? 'Baru',
+        ];
+    });
+@endphp
+
 @endsection
 
 @push('scripts')
@@ -197,37 +292,57 @@ function pendaftarData() {
         filterStatus: 'semua',
         savedMessage: '',
         selectedItem: null,
-        items: [
-            { id: 1, tgl: '22 Jul 2026 14:20', nama: 'I Gede Agus Pratama', hp: '081234567890', email: 'agus.pratama@gmail.com', kategori: 'Program Internasional', program: 'Program 1 Tahun + Ausbildung Jerman', special_request: 'Mohon info mengenai kelas bahasa Jerman dan tes bakat.', sumber: 'Media Sosial, Teman', bukti_pendaftaran: 'bukti_pendaftaran_1.pdf', bukti_program: '', status: 'Baru' },
-            { id: 2, tgl: '22 Jul 2026 11:05', nama: 'Ni Luh Putu Kirana', hp: '085739201948', email: 'kirana.putu@yahoo.com', kategori: 'Vokasi 2 Tahun', program: 'Perhotelan (FO & HK) — 2 Tahun', special_request: 'Ingin memilih jadwal kelas pagi.', sumber: 'Situs Denpasar Hotel School', bukti_pendaftaran: 'bukti_pendaftaran_2.jpg', bukti_program: 'bukti_program_2.jpg', status: 'Diproses' },
-            { id: 3, tgl: '21 Jul 2026 16:45', nama: 'Made Dwi Septiawan', hp: '081999888777', email: 'dwi.septiawan@outlook.com', kategori: '1 Tahun Kapal Pesiar', program: 'Waiter & Bartender — Kapal Pesiar', special_request: 'Tolong konfirmasi jadwal tes fisik.', sumber: 'Keluarga', bukti_pendaftaran: 'bukti_pendaftaran_3.pdf', bukti_program: '', status: 'Diterima' }
-        ],
+        items: @json($initialData),
         get filteredItems() {
             return this.items.filter(item => {
-                const matchSearch = item.nama.toLowerCase().includes(this.search.toLowerCase()) ||
-                                    item.email.toLowerCase().includes(this.search.toLowerCase()) ||
-                                    item.hp.includes(this.search) ||
-                                    item.program.toLowerCase().includes(this.search.toLowerCase());
+                const matchSearch = (item.nama || '').toLowerCase().includes(this.search.toLowerCase()) ||
+                                    (item.email || '').toLowerCase().includes(this.search.toLowerCase()) ||
+                                    (item.hp || '').includes(this.search) ||
+                                    (item.program || '').toLowerCase().includes(this.search.toLowerCase());
                 const matchStatus = this.filterStatus === 'semua' || item.status === this.filterStatus;
                 return matchSearch && matchStatus;
             });
+        },
+        isImage(url) {
+            if (!url) return false;
+            const cleanUrl = url.split('?')[0];
+            const ext = cleanUrl.split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext);
         },
         viewDetail(item) {
             this.selectedItem = item;
         },
         updateStatus(item) {
-            this.savedMessage = 'Status pendaftar ' + item.nama + ' diperbarui menjadi: ' + item.status;
-            setTimeout(() => this.savedMessage = '', 3000);
+            fetch('/backoffice/pendaftar/update-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ id: item.id, status: item.status })
+            }).then(res => res.json()).then(data => {
+                this.savedMessage = 'Status pendaftar ' + item.nama + ' diperbarui di database: ' + item.status;
+                setTimeout(() => this.savedMessage = '', 3000);
+            });
         },
         deleteItem(id) {
-            if (confirm('Yakin ingin menghapus data pendaftar ini?')) {
-                this.items = this.items.filter(i => i.id !== id);
-                this.savedMessage = 'Data pendaftar berhasil dihapus.';
-                setTimeout(() => this.savedMessage = '', 3000);
+            if (confirm('Yakin ingin menghapus data pendaftar ini dari database?')) {
+                fetch('/backoffice/pendaftar/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ id: id })
+                }).then(res => res.json()).then(data => {
+                    this.items = this.items.filter(i => i.id !== id);
+                    this.savedMessage = 'Data pendaftar berhasil dihapus dari database.';
+                    setTimeout(() => this.savedMessage = '', 3000);
+                });
             }
         },
         exportExcel() {
-            alert('Mengunduh rekap pendaftar (Excel/CSV)...');
+            window.location.href = '/backoffice/pendaftar/export';
         }
     }
 }

@@ -105,6 +105,8 @@ function navigasiData() {
             { label:'Tentang Kami', url:'/tentang-kami' },
             { label:'Akademi', url:'/akademi' },
             { label:'Berita', url:'/berita' },
+            { label:'FAQ', url:'/faq' },
+            { label:'Formulir Pendaftaran', url:'/formulir-pendaftaran' },
             { label:'Karier', url:'/karier' },
         ],
         addMenu() { this.menus.push({ label:'', url:'' }); },

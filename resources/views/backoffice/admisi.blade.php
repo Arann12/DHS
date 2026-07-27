@@ -7,7 +7,7 @@
 
     {{-- Alert Success --}}
     <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
-        <span class="material-icons-round">check_circle</span> Seluruh pengaturan Halaman Registration Form berhasil disimpan (demo).
+        <span class="material-icons-round">check_circle</span> Seluruh pengaturan Halaman Registration Form berhasil disimpan ke database.
     </div>
 
     {{-- Tabs --}}
@@ -21,67 +21,13 @@
             </button>
         </template>
     </div>
-
-    {{-- TAB 1: HEADER & STATUS --}}
-    <div x-show="activeTab === 'header'">
-        <div class="bo-card" style="max-width:750px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">1. Header & Status Pendaftaran</h2>
-            <div class="form-group">
-                <label class="bo-label">Judul Utama H1</label>
-                <input type="text" class="bo-input" x-model="header.title">
-            </div>
-            <div class="form-group">
-                <label class="bo-label">Sub-header / Deskripsi</label>
-                <textarea class="bo-textarea" rows="3" x-model="header.desc"></textarea>
-            </div>
-            <div class="form-grid-2">
-                <div class="form-group">
-                    <label class="bo-label">Tanggal Batas Pendaftaran</label>
-                    <input type="date" class="bo-input" x-model="header.deadline">
-                </div>
-                <div class="form-group">
-                    <label class="bo-label">Status Pendaftaran</label>
-                    <select class="bo-select" x-model="header.status">
-                        <option value="buka">Sedang Dibuka</option>
-                        <option value="tutup">Ditutup Sementara</option>
-                        <option value="segera">Segera Dibuka</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- TAB 2: PERSYARATAN PENDAFTARAN --}}
-    <div x-show="activeTab === 'requirements'">
-        <div class="bo-card" style="max-width:800px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">2. Daftar Persyaratan Pendaftaran</h2>
-                <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="requirements.push('')">
-                    <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Syarat
-                </button>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:10px;">
-                <template x-for="(req, idx) in requirements" :key="idx">
-                    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fafafa;border-radius:10px;border:1.5px solid #eee;">
-                        <span class="material-icons-round" style="font-size:18px;color:#0010B8;flex-shrink:0;">check_circle</span>
-                        <input type="text" class="bo-input" style="flex:1;padding:7px 12px;" x-model="requirements[idx]">
-                        <button class="btn-icon danger" style="width:30px;height:30px;" @click="requirements.splice(idx, 1)">
-                            <span class="material-icons-round" style="font-size:16px;">close</span>
-                        </button>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </div>
-
-    {{-- TAB 3: FIELD FORM ONLINE --}}
+    {{-- TAB 1: FIELD FORM ONLINE --}}
     <div x-show="activeTab === 'fields'">
         <div class="bo-card" style="max-width:900px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
                 <div>
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 4px;">3. Field Form Pendaftaran Online</h2>
-                    <p style="font-size:13px;color:#8A8478;margin:0;">Atur pertanyaan/field yang harus diisi oleh calon mahasiswa.</p>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 4px;">1. Field Form Pendaftaran Online</h2>
+                    <p style="font-size:13px;color:#8A8478;margin:0;">Lihat dan kelola field yang harus diisi calon mahasiswa di website.</p>
                 </div>
                 <button class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="fields.push({ label:'', placeholder:'', type:'text', required:false })">
                     <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Field
@@ -90,47 +36,60 @@
 
             <div style="display:grid;gap:10px;">
                 <template x-for="(field, idx) in fields" :key="idx">
-                    <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
-                        <span class="material-icons-round" style="color:#8A8478;flex-shrink:0;" title="Field">drag_indicator</span>
-                        <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 150px;gap:10px;">
-                            <div>
-                                <label class="bo-label" style="font-size:11px;">Label Field</label>
-                                <input type="text" class="bo-input" style="padding:7px;" x-model="field.label">
+                    <div style="background:#fafafa;border-radius:12px;border:1.5px solid #eee;overflow:hidden;">
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;">
+                            <span class="material-icons-round" style="color:#8A8478;flex-shrink:0;" title="Field">drag_indicator</span>
+                            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 150px;gap:10px;">
+                                <div>
+                                    <label class="bo-label" style="font-size:11px;">Label Field</label>
+                                    <input type="text" class="bo-input" style="padding:7px;" x-model="field.label">
+                                </div>
+                                <div>
+                                    <label class="bo-label" style="font-size:11px;">Placeholder</label>
+                                    <input type="text" class="bo-input" style="padding:7px;" x-model="field.placeholder">
+                                </div>
+                                <div>
+                                    <label class="bo-label" style="font-size:11px;">Tipe Field</label>
+                                    <select class="bo-select" style="padding:7px;" x-model="field.type">
+                                        <option value="text">Text</option>
+                                        <option value="email">Email</option>
+                                        <option value="tel">Telepon (WA)</option>
+                                        <option value="select">Dropdown</option>
+                                        <option value="textarea">Textarea</option>
+                                        <option value="file">Upload File</option>
+                                        <option value="checkbox">Checkbox Multi</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <label class="bo-label" style="font-size:11px;">Placeholder</label>
-                                <input type="text" class="bo-input" style="padding:7px;" x-model="field.placeholder">
-                            </div>
-                            <div>
-                                <label class="bo-label" style="font-size:11px;">Tipe Field</label>
-                                <select class="bo-select" style="padding:7px;" x-model="field.type">
-                                    <option value="text">Text</option>
-                                    <option value="email">Email</option>
-                                    <option value="tel">Telepon (WA)</option>
-                                    <option value="select">Dropdown</option>
-                                    <option value="textarea">Textarea</option>
-                                </select>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#555;">
+                                    <input type="checkbox" x-model="field.required" style="accent-color:#0010B8;">
+                                    Wajib
+                                </label>
+                                <button class="btn-icon danger" style="width:30px;height:30px;" @click="fields.splice(idx, 1)">
+                                    <span class="material-icons-round" style="font-size:16px;">close</span>
+                                </button>
                             </div>
                         </div>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#555;">
-                                <input type="checkbox" x-model="field.required" style="accent-color:#0010B8;">
-                                Wajib
-                            </label>
-                            <button class="btn-icon danger" style="width:30px;height:30px;" @click="fields.splice(idx, 1)">
-                                <span class="material-icons-round" style="font-size:16px;">close</span>
-                            </button>
-                        </div>
+                        {{-- Note row for select/checkbox/file --}}
+                        <template x-if="field.note">
+                            <div style="padding:8px 14px 10px 46px;border-top:1px dashed #e5e7eb;background:#f0f4ff;">
+                                <span style="font-size:11px;color:#2B2494;font-weight:600;">
+                                    <span x-text="field.type === 'select' ? '📋 Pilihan:' : (field.type === 'checkbox' ? '☑ Opsi:' : '📎 Info:')"></span>
+                                </span>
+                                <span style="font-size:11px;color:#555;margin-left:4px;" x-text="field.note"></span>
+                            </div>
+                        </template>
                     </div>
                 </template>
             </div>
         </div>
     </div>
 
-    {{-- TAB 4: KONTAK ADMISI --}}
+    {{-- TAB 2: KONTAK ADMISI --}}
     <div x-show="activeTab === 'contact'">
         <div class="bo-card" style="max-width:700px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">4. Kontak Helpdesk Admisi</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">2. Kontak Helpdesk Admisi</h2>
             <div class="form-group">
                 <label class="bo-label">No. WhatsApp Panitia Admisi</label>
                 <input type="text" class="bo-input" x-model="contact.wa">
@@ -146,12 +105,82 @@
         </div>
     </div>
 
+    {{-- TAB 3: PREVIEW FORM --}}
+    <div x-show="activeTab === 'preview'">
+        <div class="bo-card" style="max-width:750px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <div>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 4px;">5. Preview Form Pendaftaran</h2>
+                    <p style="font-size:13px;color:#8A8478;margin:0;">Tampilan persis seperti yang dilihat calon mahasiswa di website.</p>
+                </div>
+                <a href="/formulir-pendaftaran" target="_blank" class="btn-secondary" style="padding:8px 14px;font-size:12.5px;display:flex;align-items:center;gap:6px;text-decoration:none;">
+                    <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
+                    Buka Website Asli
+                </a>
+            </div>
+
+            <div style="background:#f8f9fb;border:1.5px solid #e5e7eb;border-radius:12px;padding:24px;">
+                <div style="text-align:center;margin-bottom:20px;">
+                    <span style="font-size:10px;font-weight:700;letter-spacing:0.18em;color:#C3932F;text-transform:uppercase;">PENDAFTARAN ONLINE</span>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#2B2494;margin:8px 0 6px;">FORMULIR PENDAFTARAN DENPASAR HOTEL SCHOOL</h3>
+                    <p style="font-size:12px;color:#8A8478;">Silakan lengkapi formulir pendaftaran di bawah ini. Tim admisi DHS akan segera menghubungi Anda.</p>
+                </div>
+
+                <template x-for="field in fields" :key="field.label">
+                    <div style="margin-bottom:16px;">
+                        <label style="display:block;font-size:13px;font-weight:600;color:#222;margin-bottom:6px;">
+                            <span x-text="field.label"></span>
+                            <span x-show="field.required" style="color:#ef4444;"> *</span>
+                        </label>
+                        <template x-if="field.type === 'text' || field.type === 'email' || field.type === 'tel'">
+                            <input disabled :placeholder="field.placeholder" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 14px;font-size:13px;color:#aaa;background:#fff;box-sizing:border-box;">
+                        </template>
+                        <template x-if="field.type === 'select'">
+                            <select disabled style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 14px;font-size:13px;color:#aaa;background:#fff;">
+                                <option x-text="'-- ' + field.placeholder + ' --'"></option>
+                            </select>
+                        </template>
+                        <template x-if="field.type === 'textarea'">
+                            <textarea disabled :placeholder="field.placeholder" rows="3" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 14px;font-size:13px;color:#aaa;background:#fff;resize:none;box-sizing:border-box;"></textarea>
+                        </template>
+                        <template x-if="field.type === 'file'">
+                            <div style="border:2px dashed #d1d5db;border-radius:8px;padding:14px;display:flex;align-items:center;gap:10px;">
+                                <span class="material-icons" style="color:#aaa;">upload_file</span>
+                                <span style="font-size:12px;color:#aaa;" x-text="field.placeholder"></span>
+                            </div>
+                        </template>
+                        <template x-if="field.type === 'checkbox'">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                <template x-if="field.note">
+                                    <template x-for="opt in field.note.split(' | ')" :key="opt">
+                                        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:not-allowed;">
+                                            <input type="checkbox" disabled style="accent-color:#2B2494;">
+                                            <span x-text="opt"></span>
+                                        </label>
+                                    </template>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <div style="margin-top:20px;">
+                    <button disabled style="width:100%;padding:14px;background:#2B2494;color:#fff;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;border:none;border-radius:8px;cursor:not-allowed;opacity:0.8;">DAFTAR SEKARANG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Global Save --}}
-    <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
         <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()">
             <span class="material-icons-round" style="font-size:20px;">save</span>
             Simpan Seluruh Pengaturan Registration Form
         </button>
+        <a href="/formulir-pendaftaran" target="_blank" class="btn-secondary" style="padding:12px 20px;font-size:13px;display:flex;align-items:center;gap:6px;text-decoration:none;">
+            <span class="material-icons-round" style="font-size:18px;">open_in_new</span>
+            Lihat Halaman Registration di Website
+        </a>
     </div>
 </div>
 @endsection
@@ -161,42 +190,51 @@
 function admisiCompleteData() {
     return {
         saved: false,
-        activeTab: 'header',
+        activeTab: 'fields',
         tabs: [
-            { id:'header',       label:'1. Header & Status', icon:'tune' },
-            { id:'requirements', label:'2. Persyaratan',     icon:'fact_check' },
-            { id:'fields',       label:'3. Field Form',      icon:'assignment' },
-            { id:'contact',      label:'4. Kontak Helpdesk', icon:'support_agent' }
-        ],
-        header: {
-            title: 'Daftar Sekarang & Mulai Perjalanan Anda',
-            desc: 'Bergabunglah dengan komunitas pelajar hospitality profesional DHS. Kuota terbatas untuk tahun ajaran 2026/2027.',
-            deadline: '2026-08-31',
-            status: 'buka'
-        },
-        requirements: [
-            'Lulusan SMA/SMK/MA/SMP (sederajat) atau sedang kelas 12/9',
-            'Usia maksimal 22 tahun saat pendaftaran',
-            'Pas foto terbaru ukuran 3×4 (2 lembar)',
-            'Fotokopi kartu keluarga & ijazah/SKL',
-            'Mengikuti tes wawancara & minat bakat'
+            { id:'fields',   label:'1. Field Form',      icon:'assignment' },
+            { id:'contact',  label:'2. Kontak Helpdesk', icon:'support_agent' },
+            { id:'preview',  label:'3. Preview Form',    icon:'visibility' }
         ],
         fields: [
             { label:'Nama Lengkap', placeholder:'Masukkan nama lengkap Anda', type:'text', required:true },
+            { label:'HP / WA', placeholder:'08xxxxxxxxxx (aktif di WhatsApp)', type:'tel', required:true },
             { label:'Email', placeholder:'alamat@email.com', type:'email', required:true },
-            { label:'No. WhatsApp', placeholder:'08xxxxxxxxxx', type:'tel', required:true },
-            { label:'Asal Sekolah', placeholder:'Nama SMA/SMK/SMP asal', type:'text', required:true },
-            { label:'Program Diminati', placeholder:'', type:'select', required:true },
-            { label:'Pesan / Pertanyaan', placeholder:'Ada yang ingin ditanyakan?', type:'textarea', required:false }
+            { label:'Pilih Kategori Durasi', placeholder:'Pilih kategori', type:'select', required:true, note:'Program Internasional, Vokasi 2 Tahun, Vokasi 1 Tahun, 1 Tahun Kapal Pesiar, Short Course 6 Bulan, Program Eksekutif (6 Bln)' },
+            { label:'Program Diminati', placeholder:'Muncul setelah kategori dipilih', type:'select', required:true, note:'Otomatis menyesuaikan pilihan kategori' },
+            { label:'Special Request / Pertanyaan', placeholder:'tuliskan hal yang Denpasar Hotel School perlu tindak lanjuti, misalnya hari, waktu dan lainnya', type:'textarea', required:false },
+            { label:'Unggah Bukti Biaya Pendaftaran', placeholder:'JPG, PNG, PDF — maks. 2MB', type:'file', required:false },
+            { label:'Unggah Bukti Biaya Program', placeholder:'JPG, PNG, PDF — maks. 2MB', type:'file', required:false },
+            { label:'Informasi DHS diperoleh dari', placeholder:'', type:'checkbox', required:false, note:'Keluarga | Teman | Lembaga Tempat Belajar atau Kerja | Media Sosial | Situs Denpasar Hotel School | Pameran Pendidikan | Lainnya' }
         ],
         contact: {
-            wa: '+62 81 246 319966',
-            email: 'admisi@dhs.or.id',
-            hours: 'Senin - Sabtu: 08:00 - 17:00 WITA'
+            wa: '{{ $helpdesk["helpdesk_wa"] ?? "+62 81 246 319966" }}',
+            email: '{{ $helpdesk["helpdesk_email"] ?? "sahabat@dhs.or.id" }}',
+            hours: '{{ $helpdesk["helpdesk_hours"] ?? "Senin – Sabtu: 08:00 – 17:00 WITA" }}'
         },
         saveAll() {
-            this.saved = true;
-            setTimeout(() => this.saved = false, 3500);
+            fetch('/backoffice/admisi/update-helpdesk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    helpdesk_wa: this.contact.wa,
+                    helpdesk_email: this.contact.email,
+                    helpdesk_hours: this.contact.hours
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.saved = true;
+                    setTimeout(() => this.saved = false, 3500);
+                } else {
+                    alert('Gagal menyimpan pengaturan helpdesk.');
+                }
+            })
+            .catch(() => alert('Terjadi kesalahan koneksi saat menyimpan.'));
         }
     };
 }

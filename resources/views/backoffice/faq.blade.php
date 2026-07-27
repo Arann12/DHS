@@ -128,31 +128,38 @@
 </div>
 @endsection
 
+@php
+    $faqList = $faqs->map(function($f) {
+        return [
+            'id'         => $f->id,
+            'pertanyaan' => $f->question,
+            'jawaban'    => $f->answer,
+            'kategori'   => $f->category,
+            'active'     => (bool)$f->is_active,
+        ];
+    })->values();
+@endphp
+
 @push('scripts')
 <script>
 function faqData() {
     return {
         search: '',
         filterKategori: '',
-        items: [
-            { id:1, pertanyaan:'Berapa lama durasi pelatihan di Denpasar Hotel School?', kategori:'akademi', jawaban:'Program pelatihan di DHS memiliki durasi 1 tahun (6 bulan teori & praktikum kampus + 6 bulan magang industri).' },
-            { id:2, pertanyaan:'Apakah lulusan DHS dijamin mendapat penempatan kerja?', kategori:'pendaftaran', jawaban:'DHS bekerja sama dengan 120+ mitra industri lima bintang dan agen magang luar negeri untuk mendukung 95% penempatan lulusan.' },
-            { id:3, pertanyaan:'Bagaimana sistem pembayaran biaya pendidikan?', kategori:'biaya', jawaban:'Biaya dapat diangsur dalam 3 tahap selama masa studi untuk meringankan calon mahasiswa.' },
-            { id:4, pertanyaan:'Apakah terdapat fasilitas asrama untuk siswa luar Bali?', kategori:'kampus', jawaban:'DHS menyediakan rekomendasi hunian/asrama mitra terdekat dengan fasilitas lengkap dan aman.' },
-        ],
+        items: @json($faqList),
         modal: { open:false, mode:'add', form:{}, editId:null },
         confirmDelete: { open:false, targetId:null },
 
         get filtered() {
             return this.items.filter(i => {
-                const matchSearch = !this.search || i.pertanyaan.toLowerCase().includes(this.search.toLowerCase()) || i.jawaban.toLowerCase().includes(this.search.toLowerCase());
+                const matchSearch = !this.search || (i.pertanyaan||'').toLowerCase().includes(this.search.toLowerCase()) || (i.jawaban||'').toLowerCase().includes(this.search.toLowerCase());
                 const matchCat = !this.filterKategori || i.kategori === this.filterKategori;
                 return matchSearch && matchCat;
             });
         },
 
         formatCat(cat) {
-            const map = { akademi:'Akademi', pendaftaran:'Pendaftaran', biaya:'Biaya', kampus:'Kampus' };
+            const map = { akademi:'Akademi', pendaftaran:'Pendaftaran', biaya:'Biaya', kampus:'Kampus', umum:'Umum' };
             return map[cat] || cat;
         },
 
@@ -165,22 +172,34 @@ function faqData() {
 
         saveItem() {
             if (!this.modal.form.pertanyaan.trim()) return alert('Pertanyaan tidak boleh kosong.');
-            if (this.modal.mode === 'add') {
-                const newId = Math.max(0, ...this.items.map(i => i.id)) + 1;
-                this.items.push({ ...this.modal.form, id: newId });
-            } else {
-                const idx = this.items.findIndex(i => i.id === this.modal.editId);
-                if (idx !== -1) this.items[idx] = { ...this.modal.form, id: this.modal.editId };
-            }
-            this.modal.open = false;
+            const fd = new FormData();
+            fd.append('question', this.modal.form.pertanyaan);
+            fd.append('answer',   this.modal.form.jawaban);
+            fd.append('category', this.modal.form.kategori);
+            fd.append('_token',   '{{ csrf_token() }}');
+
+            const url = this.modal.mode === 'add'
+                ? '/backoffice/faq/store'
+                : `/backoffice/faq/${this.modal.editId}/update`;
+
+            fetch(url, { method: 'POST', body: fd })
+                .then(r => r.ok ? location.reload() : alert('Gagal menyimpan FAQ.'));
         },
 
         deleteItem(id) { this.confirmDelete.targetId = id; this.confirmDelete.open = true; },
+
         confirmDeleteItem() {
-            this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
-            this.confirmDelete.open = false;
+            fetch(`/backoffice/faq/${this.confirmDelete.targetId}/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ id: this.confirmDelete.targetId })
+            }).then(() => {
+                this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
+                this.confirmDelete.open = false;
+            });
         }
     };
 }
 </script>
 @endpush
+

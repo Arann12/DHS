@@ -247,21 +247,6 @@
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .demo-hint {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #bbb;
-        }
-
-        .demo-hint code {
-            background: var(--bo-cream);
-            padding: 2px 7px;
-            border-radius: 5px;
-            font-family: monospace;
-            color: var(--bo-dark-blue);
-        }
     </style>
 </head>
 
@@ -351,8 +336,6 @@
                 <span x-text="loading ? 'Memproses...' : 'Masuk'">Masuk</span>
             </button>
         </form>
-
-        <p class="demo-hint">Demo: username <code>admin</code> · password <code>admin123</code></p>
     </div>
 </div>
 
@@ -381,12 +364,9 @@
 
                 if (this.errors.username || this.errors.password) return;
 
-                if (this.username === 'admin' && this.password === 'admin123') {
-                    this.loading = true;
-                    e.target.submit();
-                } else {
-                    this.frontendError = 'Username atau password salah.';
-                }
+                // Submit form untuk validasi backend
+                this.loading = true;
+                e.target.submit();
             }
         };
     }

@@ -5,7 +5,7 @@
 @section('content')
 <div x-data="footerData()">
     <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
-        <span class="material-icons-round">check_circle</span> Footer berhasil disimpan (demo).
+        <span class="material-icons-round">check_circle</span> Pengaturan Footer berhasil disimpan ke database.
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
@@ -101,13 +101,12 @@ function footerData() {
         saved: false,
         form: {
             namaSekolah: 'Denpasar Hotel School',
-            deskripsi: 'Sekolah vokasi hospitality terkemuka di Bali dengan lebih dari 35 tahun pengalaman mencetak profesional kelas dunia.',
-            alamat: 'Jl. Nusa Indah No. 1, Denpasar, Bali 80234, Indonesia',
+            deskripsi: 'Sekolah vokasi hospitality terkemuka di Bali dengan pengalaman mencetak profesional kelas dunia.',
+            alamat: '{{ $settings["address_denpasar"]->setting_value ?? "Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali" }}',
             sosmed: [
-                { platform:'Instagram', icon:'photo_camera', url:'https://instagram.com/dhs_bali' },
-                { platform:'Facebook',  icon:'thumb_up',     url:'https://facebook.com/dhs.bali' },
-                { platform:'YouTube',   icon:'play_circle',  url:'https://youtube.com/@dhsbali' },
-                { platform:'LinkedIn',  icon:'work',         url:'https://linkedin.com/school/dhs-bali' },
+                { platform:'Instagram', icon:'photo_camera', url:'{{ $settings["instagram_url"]->setting_value ?? "" }}' },
+                { platform:'Facebook',  icon:'thumb_up',     url:'{{ $settings["facebook_url"]->setting_value ?? "" }}' },
+                { platform:'YouTube',   icon:'play_circle',  url:'{{ $settings["youtube_url"]->setting_value ?? "" }}' },
             ],
             exploreLinks: [
                 { label:'Beranda', url:'/' },
@@ -118,15 +117,23 @@ function footerData() {
             ],
             admissionsLinks: [
                 { label:'Cara Mendaftar', url:'/cara-mendaftar' },
-                { label:'Persyaratan', url:'/#contact-section' },
-                { label:'Beasiswa', url:'/beasiswa' },
-                { label:'Biaya Pendidikan', url:'/biaya' },
                 { label:'FAQ', url:'/faq' },
             ],
             copyright: '© 2026 Denpasar Hotel School. All rights reserved.',
         },
-        save() { this.saved = true; setTimeout(() => this.saved = false, 3000); }
+        save() {
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('settings[address_denpasar]', this.form.alamat);
+            formData.append('settings[instagram_url]', this.form.sosmed[0]?.url || '');
+            formData.append('settings[facebook_url]', this.form.sosmed[1]?.url || '');
+            formData.append('settings[youtube_url]', this.form.sosmed[2]?.url || '');
+
+            fetch('/backoffice/footer-cms/update', { method: 'POST', body: formData })
+                .then(r => r.ok ? location.reload() : alert('Gagal menyimpan footer.'));
+        }
     };
 }
 </script>
 @endpush
+

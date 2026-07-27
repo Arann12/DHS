@@ -3,11 +3,85 @@
 @section('page-title', 'Editor Lengkap Logo DHS & Branding')
 
 @section('content')
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+{{-- Image Upload Modal Component --}}
+<template x-teleport="body">
+    <div x-data="imageUploadModal()" x-show="$store.imageUpload.isOpen" x-cloak
+         style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;"
+         @click.self="$store.imageUpload.close()">
+        <div style="background:#fff;border-radius:16px;width:90%;max-width:600px;max-height:90vh;overflow:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#2B2494;margin:0;">Pilih Gambar</h3>
+                <button @click="$store.imageUpload.close()" style="background:none;border:none;cursor:pointer;font-size:24px;color:#999;">&times;</button>
+            </div>
+
+            {{-- Tab Navigation --}}
+            <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;">
+                <button @click="mode = 'url'" 
+                        :style="mode === 'url' ? 'border-bottom:2px solid #2B2494;color:#2B2494;' : 'color:#999;'"
+                        style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;margin-bottom:-2px;">
+                    <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">link</span>
+                    Via URL
+                </button>
+                <button @click="mode = 'upload'" 
+                        :style="mode === 'upload' ? 'border-bottom:2px solid #2B2494;color:#2B2494;' : 'color:#999;'"
+                        style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;margin-bottom:-2px;">
+                    <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">upload_file</span>
+                    Upload Lokal
+                </button>
+            </div>
+
+            {{-- URL Input Tab --}}
+            <div x-show="mode === 'url'" style="padding:10px 0;">
+                <label style="display:block;font-weight:600;color:#2B2494;margin-bottom:8px;">URL Gambar</label>
+                <input type="text" x-model="tempUrl" @keyup.enter="applyUrl()" 
+                       placeholder="https://example.com/image.jpg"
+                       style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;margin-bottom:12px;">
+                
+                <div x-show="tempUrl" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:16px;text-align:center;background:#fafafa;">
+                    <img :src="tempUrl" @error="$el.src=''" style="max-height:200px;max-width:100%;border-radius:6px;object-fit:contain;">
+                </div>
+
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button @click="$store.imageUpload.close()" class="btn-secondary" style="padding:10px 20px;">
+                        Batal
+                    </button>
+                    <button @click="applyUrl()" class="btn-primary" style="padding:10px 20px;">
+                        <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">check</span>
+                        Gunakan URL
+                    </button>
+                </div>
+            </div>
+
+            {{-- Upload Tab --}}
+            <div x-show="mode === 'upload'" style="padding:10px 0;">
+                <div @click="$refs.fileInput.click()" 
+                     style="border:2px dashed #cbd5e1;border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.2s;"
+                     @mouseenter="$el.style.borderColor='#2B2494'; $el.style.background='#f0f4ff'"
+                     @mouseleave="$el.style.borderColor='#cbd5e1'; $el.style.background='#fafafa'">
+                    <span class="material-icons-round" style="font-size:48px;color:#2B2494;display:block;margin-bottom:12px;">cloud_upload</span>
+                    <div style="font-weight:600;color:#2B2494;margin-bottom:4px;">Klik untuk pilih gambar</div>
+                    <div style="font-size:12px;color:#999;">atau drag & drop file gambar di sini</div>
+                    <div style="font-size:11px;color:#999;margin-top:8px;">Format: JPG, PNG, GIF, WebP (Max 5MB)</div>
+                </div>
+                <input type="file" x-ref="fileInput" accept="image/*" @change="handleFileUpload($event)" style="display:none;">
+                
+                <div x-show="preview" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-top:16px;text-align:center;background:#fff;">
+                    <img :src="preview" style="max-height:200px;max-width:100%;border-radius:6px;object-fit:contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
 <div x-data="brandingCompleteData()">
 
     {{-- Alert Success --}}
     <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
-        <span class="material-icons-round">check_circle</span> Seluruh pengaturan Logo DHS & Branding berhasil disimpan (demo).
+        <span class="material-icons-round">check_circle</span> Seluruh pengaturan Logo DHS & Branding berhasil disimpan.
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
@@ -114,20 +188,19 @@ function brandingCompleteData() {
     return {
         saved: false,
         logos: {
-            primary: '/image/dhs-logo.png',
-            favicon: '/favicon.ico'
+            primary: '{{ $settings["logo_primary"]->setting_value ?? "/image/LogoDHS.png" }}',
+            favicon: '{{ $settings["logo_favicon"]->setting_value ?? "/favicon.ico" }}'
         },
         colors: [
-            { key:'blue',     name:'DHS Royal Blue (Dominan)', value:'#0010B8' },
-            { key:'darkblue', name:'Dark Navy (Header/Sidebar)', value:'#2B2494' },
-            { key:'red',      name:'DHS Red (Aksen/Tombol)',     value:'#DF1501' },
-            { key:'cream',    name:'DHS Cream (Background)',     value:'#F6F2EA' },
-            { key:'beige',    name:'Warm Beige (Card/Section)',  value:'#EFE7D8' },
-            { key:'muted',    name:'Muted Gray (Subteks)',       value:'#8A8478' }
+            { key:'color_primary',   name:'DHS Royal Blue (Dominan)', value:'{{ $settings["color_primary"]->setting_value ?? "#0010B8" }}' },
+            { key:'color_navy',      name:'Dark Navy (Header/Sidebar)', value:'{{ $settings["color_navy"]->setting_value ?? "#2B2494" }}' },
+            { key:'color_secondary', name:'DHS Red (Aksen/Tombol)',     value:'{{ $settings["color_secondary"]->setting_value ?? "#D62828" }}' },
+            { key:'color_cream',     name:'DHS Cream (Background)',     value:'{{ $settings["color_cream"]->setting_value ?? "#F6F2EA" }}' },
+            { key:'color_beige',     name:'Warm Beige (Card/Section)',  value:'{{ $settings["color_beige"]->setting_value ?? "#EFE7D8" }}' }
         ],
         fonts: {
-            heading: 'Playfair Display, serif',
-            body: 'Inter, sans-serif'
+            heading: '{{ $settings["font_heading"]->setting_value ?? "Playfair Display, serif" }}',
+            body: '{{ $settings["font_body"]->setting_value ?? "Inter, sans-serif" }}'
         },
         uploadImg(e, obj, prop) {
             const file = e.target.files[0];
@@ -137,10 +210,22 @@ function brandingCompleteData() {
             reader.readAsDataURL(file);
         },
         saveAll() {
-            this.saved = true;
-            setTimeout(() => this.saved = false, 3500);
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            this.colors.forEach(c => formData.append(`settings[${c.key}]`, c.value));
+            formData.append('settings[font_heading]', this.fonts.heading);
+            formData.append('settings[font_body]', this.fonts.body);
+
+            const logoInput = document.querySelector('[x-ref="logoInput"]');
+            if (logoInput && logoInput.files[0]) {
+                formData.append('logo_primary', logoInput.files[0]);
+            }
+
+            fetch('/backoffice/branding/update', { method: 'POST', body: formData })
+                .then(r => r.ok ? location.reload() : alert('Gagal menyimpan branding.'));
         }
     };
 }
 </script>
 @endpush
+
