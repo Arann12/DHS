@@ -125,6 +125,16 @@ function galeriData() {
                 this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
                 this.confirmDelete.open = false;
             });
+        },
+        moveUp(idx) {
+            if (idx === 0) return;
+            [this.items[idx-1], this.items[idx]] = [this.items[idx], this.items[idx-1]];
+            this.items = [...this.items];
+        },
+        moveDown(idx) {
+            if (idx === this.items.length - 1) return;
+            [this.items[idx], this.items[idx+1]] = [this.items[idx+1], this.items[idx]];
+            this.items = [...this.items];
         }
     };
 }

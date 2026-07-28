@@ -14,7 +14,7 @@
     <!-- ── Centered Logo (Absolute 50% Centered with Space Above) ── -->
     <a class="nav-logo absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center focus:outline-none transition-transform hover:scale-105"
         href="/">
-        <img src="{{ asset('image/LogoDHS.png') }}" alt="Logo DHS"
+        <img src="{{ isset($navLogo) ? asset(ltrim($navLogo, '/')) : asset('image/LogoDHS.png') }}" alt="Logo DHS"
             class="h-10 md:h-11 lg:h-12 w-auto object-contain shrink-0"
             style="max-height: 46px; width: auto; aspect-ratio: auto; image-rendering: -webkit-optimize-contrast;">
     </a>

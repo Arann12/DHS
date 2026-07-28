@@ -34,13 +34,18 @@
             <p class="text-base text-muted-light mb-10 leading-relaxed">
                 <span data-id="Halaman karier kami sedang dalam pengembangan. Untuk informasi lowongan terkini, silakan hubungi tim HR kami melalui email atau WhatsApp." data-en="Our career page is currently under development. For the latest vacancy information, please contact our HR team via email or WhatsApp.">Halaman karier kami sedang dalam pengembangan. Untuk informasi lowongan terkini, silakan hubungi tim HR kami melalui email atau WhatsApp.</span>
             </p>
+            @php
+                $helpdeskWA = $footerSettings['helpdesk_wa'] ?? '+62 81 246 319966';
+                $waNumber = preg_replace('/[^0-9]/', '', $helpdeskWA);
+                if (!str_starts_with($waNumber, '62')) { $waNumber = '62' . ltrim($waNumber, '0'); }
+            @endphp
             <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <a class="px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors"
-                    href="mailto:karier@dhs.ac.id">
+                    href="mailto:{{ $footerSettings['helpdesk_email'] ?? 'karier@dhs.or.id' }}">
                     <span data-id="Kirim CV via Email" data-en="Send CV via Email">Kirim CV via Email</span>
                 </a>
                 <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-cream transition-colors"
-                    href="https://wa.me/628123456789">
+                    href="https://wa.me/{{ $waNumber }}">
                     <span data-id="Hubungi via WhatsApp" data-en="Contact via WhatsApp">Hubungi via WhatsApp</span>
                 </a>
             </div>

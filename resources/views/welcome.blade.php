@@ -76,11 +76,30 @@
     $contactDenpasarWa = $contactContent['denpasar_wa'] ?? '+62 81 246 319966';
     $contactDenpasarEmail = $contactContent['denpasar_email'] ?? 'sahabat@dhs.or.id';
 
+    $contactKlungkungAddr = $contactContent['klungkung_address'] ?? 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali';
+    $contactKlungkungPhone = $contactContent['klungkung_phone'] ?? '+0366 5582998';
+    $contactKlungkungWa = $contactContent['klungkung_wa'] ?? '+62 81 337 106480';
+
     $contactFormContent = isset($sections['contact_form']) ? (is_array($sections['contact_form']->section_content) ? $sections['contact_form']->section_content : json_decode($sections['contact_form']->section_content ?? '[]', true)) : [];
     $contactFormTitle = $contactFormContent['title'] ?? 'Kirim Pertanyaan';
     $contactFormSubtitle = $contactFormContent['subtitle'] ?? 'Isi formulir — pesan dikirim otomatis ke email resmi kami.';
     $contactFormEmail = $contactFormContent['recipient_email'] ?? ($contactDenpasarEmail ?? 'sahabat@dhs.or.id');
     $contactFormButtonText = $contactFormContent['button_text'] ?? 'KIRIM VIA EMAIL';
+
+    $contactSectionLabel = $contactContent['section_label'] ?? 'KONTAK';
+    $contactSectionTitle = $contactContent['section_title'] ?? 'Hubungi Kami.';
+    $contactGoogleMapsUrl = $contactContent['google_maps_url'] ?? $footerSettings['google_maps_url'] ?? 'https://maps.google.com/?q=Denpasar+Hotel+School';
+    $contactLinktreeUrl = $contactContent['linktree_url'] ?? $footerSettings['linktree_url'] ?? 'https://linktr.ee/BiayaPendidikan_DHS';
+    $contactStudentPortalUrl = $contactContent['student_portal_url'] ?? $footerSettings['student_portal_url'] ?? 'http://www.dhs.or.id/student';
+
+    $partnerContent = isset($sections['partner']) ? (is_array($sections['partner']->section_content) ? $sections['partner']->section_content : json_decode($sections['partner']->section_content ?? '[]', true)) : [];
+    $partnerLabel = $partnerContent['label'] ?? 'Kemitraan & Jaringan Global';
+    $partnerTitle = $partnerContent['title'] ?? 'Partnership Program (PP DHS)';
+    $partnerDesc = $partnerContent['desc'] ?? 'DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 & 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).';
+
+    $newsContent = isset($sections['news']) ? (is_array($sections['news']->section_content) ? $sections['news']->section_content : json_decode($sections['news']->section_content ?? '[]', true)) : [];
+    $newsLabel = $newsContent['label'] ?? 'WAWASAN';
+    $newsSectionTitle = $newsContent['title'] ?? 'Berita & Artikel.';
 @endphp
 
 @section('content')
@@ -341,194 +360,125 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <!-- Main Featured Article -->
+            @php $mainArticle = $featuredNews->firstWhere('is_featured', 1) ?? $featuredNews->first(); @endphp
+            @if($mainArticle)
             <div class="group cursor-pointer" data-reveal="fade-right">
                 <div class="overflow-hidden mb-8 h-[400px]">
-                    <img alt="Team meeting"
+                    <img alt="{{ $mainArticle->title }}"
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAO3TjdyecwwVtS9SP20fK3_4C9aPBiHhONLdja28RvyQ_WiSbCtw3yhXXWyIA-_0QjM3PyUVN4YdtPRrVPQKbZXYiLJcuFqUp0dShFMbOX2jWwnoDr2-hu_aUwmAMCP1at0lGcWERGUPEm1WhFlotXnftrEp4j1XKnawHtj_e-Q7d2w3zSUOtfQAFRpOIdTo4Ee8E6dy6fcOnjn_g5oKV5WL04cs1Ghu3nWQ9ErWT5FTk7UVtFtM8_ww">
+                        src="{{ $mainArticle->thumbnail_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuAO3TjdyecwwVtS9SP20fK3_4C9aPBiHhONLdja28RvyQ_WiSbCtw3yhXXWyIA-_0QjM3PyUVN4YdtPRrVPQKbZXYiLJcuFqUp0dShFMbOX2jWwnoDr2-hu_aUwmAMCP1at0lGcWERGUPEm1WhFlotXnftrEp4j1XKnawHtj_e-Q7d2w3zSUOtfQAFRpOIdTo4Ee8E6dy6fcOnjn_g5oKV5WL04cs1Ghu3nWQ9ErWT5FTk7UVtFtM8_ww' }}">
                 </div>
                 <div class="flex items-center space-x-3 mb-4">
-                    <span class="label-text text-primary text-[0.6rem]" data-id="KEGIATAN" data-en="EVENTS">KEGIATAN</span>
+                    <span class="label-text text-primary text-[0.6rem]" data-id="{{ strtoupper($mainArticle->category) }}" data-en="{{ strtoupper($mainArticle->category) }}">{{ strtoupper($mainArticle->category) }}</span>
                     <span class="w-1 h-1 rounded-full bg-muted-light/30"></span>
-                    <span class="label-text text-muted-light text-[0.6rem]" data-id="12 SEP 2024" data-en="SEP 12, 2024">12
-                        SEP 2024</span>
+                    <span class="label-text text-muted-light text-[0.6rem]" data-id="{{ $mainArticle->created_at->format('d M Y') }}" data-en="{{ $mainArticle->created_at->format('M d, Y') }}">{{ $mainArticle->created_at->format('d M Y') }}</span>
                 </div>
                 <h3
                     class="text-3xl font-serif mb-4 leading-tight text-text-light group-hover:text-primary transition-colors">
-                    <span data-id="Kemitraan DHS dengan Kapal Pesiar Mewah 2026"
-                        data-en="DHS Partnerships with Luxury Cruise Lines 2026">Kemitraan DHS dengan Kapal Pesiar Mewah
-                        2026</span>
+                    <span data-id="{{ $mainArticle->title }}"
+                        data-en="{{ $mainArticle->title }}">{{ $mainArticle->title }}</span>
                 </h3>
                 <p class="text-muted-light mb-6 leading-relaxed text-sm">
                     <span
-                        data-id="Denpasar Hotel School mengumumkan kemitraan eksklusif dengan tiga perusahaan kapal pesiar global. Kolaborasi ini akan memberikan mahasiswa terbaik kami akses yang belum pernah ada sebelumnya ke magang kapal pesiar mewah, meningkatkan standar pelatihan perhotelan kelautan..."
-                        data-en="Denpasar Hotel School announces an exclusive partnership with three global cruise lines. This collaboration will provide our top-tier students with unprecedented access to floating-luxury internships, elevating standard marine hospitality training...">Denpasar
-                        Hotel School announces an exclusive partnership with three global cruise lines. This collaboration
-                        will provide our top-tier students with unprecedented access to floating-luxury internships,
-                        elevating standard marine hospitality training...</span>
+                        data-id="{{ $mainArticle->excerpt ?? '' }}"
+                        data-en="{{ $mainArticle->excerpt ?? '' }}">{{ $mainArticle->excerpt ?? '' }}</span>
                 </p>
                 <a class="label-text text-xs border-b border-text-light/30 pb-1 hover:text-primary transition-colors"
-                    href="/berita">
+                    href="/berita/{{ $mainArticle->slug }}">
                     <span data-id="BACA SELENGKAPNYA &rarr;" data-en="READ FULL ARTICLE &rarr;">BACA SELENGKAPNYA
                         &rarr;</span>
                 </a>
             </div>
+            @endif
 
             <!-- Small Articles List -->
             <div class="flex flex-col gap-8" data-reveal="fade-left" data-delay="200">
-                <!-- Article 1 -->
-                <a href="/berita" class="flex gap-6 group cursor-pointer border-b border-black/5 pb-8 no-underline">
+                @foreach($featuredNews->take(3) as $article)
+                @if($article->id !== ($mainArticle->id ?? null))
+                <a href="/berita/{{ $article->slug }}" class="flex gap-6 group cursor-pointer border-b border-black/5 pb-8 no-underline">
                     <div class="w-32 h-32 flex-shrink-0 overflow-hidden">
-                        <img alt="Culinary dish"
+                        <img alt="{{ $article->title }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOSLVSRHrQY7s9VWmSs04TV3EjPDPwXecszDnbnTZdlKMbo2Vd0WroDGcDAhcWm7TbrOYNO05puHkFoqlIClDRA0hdXnsz1waqZytA_z-Eec9UZOlRQxyNqwul_0HBclEU_z_dH9iOsQ8A3rsvPwYTtYkqJc1BIsATalvHW5OSyjLNtrmfnTQeXWR4RmgzYkva0lr7Rmd_HeZO2e4pWgzUtPYdBqc7wROamPgt_YrSYvQHNQ5cIqdIdQ">
+                            src="{{ $article->thumbnail_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuAOSLVSRHrQY7s9VWmSs04TV3EjPDPwXecszDnbnTZdlKMbo2Vd0WroDGcDAhcWm7TbrOYNO05puHkFoqlIClDRA0hdXnsz1waqZytA_z-Eec9UZOlRQxyNqwul_0HBclEU_z_dH9iOsQ8A3rsvPwYTtYkqJc1BIsATalvHW5OSyjLNtrmfnTQeXWR4RmgzYkva0lr7Rmd_HeZO2e4pWgzUtPYdBqc7wROamPgt_YrSYvQHNQ5cIqdIdQ' }}">
                     </div>
                     <div>
-                        <span class="label-text text-primary text-[0.6rem] mb-2 block" data-id="LOKAKARYA"
-                            data-en="WORKSHOP">LOKAKARYA</span>
+                        <span class="label-text text-primary text-[0.6rem] mb-2 block" data-id="{{ strtoupper($article->category) }}"
+                            data-en="{{ strtoupper($article->category) }}">{{ strtoupper($article->category) }}</span>
                         <h4
                             class="text-xl font-serif mb-2 leading-snug text-text-light group-hover:text-primary transition-colors">
-                            <span data-id="Masterclass Kuliner bersama Chef Michelin"
-                                data-en="Culinary Masterclass with Michelin Chefs">Masterclass Kuliner bersama Chef
-                                Michelin</span>
+                            <span data-id="{{ $article->title }}"
+                                data-en="{{ $article->title }}">{{ $article->title }}</span>
                         </h4>
-                        <span class="label-text text-muted-light text-[0.6rem]" data-id="25 AGU 2024"
-                            data-en="AUG 25, 2024">25 AGU 2024</span>
+                        <span class="label-text text-muted-light text-[0.6rem]" data-id="{{ $article->created_at->format('d M Y') }}"
+                            data-en="{{ $article->created_at->format('M d, Y') }}">{{ $article->created_at->format('d M Y') }}</span>
                     </div>
                 </a>
-
-                <!-- Article 2 -->
-                <a href="/berita" class="flex gap-6 group cursor-pointer border-b border-black/5 pb-8 no-underline">
-                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden">
-                        <img alt="Hotel interior"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBBM8Cew2Zj_xFW078EjybXe3HFH4ljOwP6ScrqZaBOSYPfm9OEMg1QTiBEDQtgRaPwSzGVFZWtxyjVjG7THaHxzgVtk2FJRgFx9uEJ1_N22f4xbj8wTmV6NsoqVHjc-LuAUUwp8xJUo9CE0egnbeTW0VIJbiQu5-33lrPYvWOyERCC-GgvUvw1AceDUx9udxp56x_pL037xrYx30NGvAQVfLsGOQc1V2RexfoEpIDtB-UtkPZKLW6yA">
-                    </div>
-                    <div>
-                        <span class="label-text text-primary text-[0.6rem] mb-2 block" data-id="KARIER"
-                            data-en="CAREERS">KARIER</span>
-                        <h4
-                            class="text-xl font-serif mb-2 leading-snug text-text-light group-hover:text-primary transition-colors">
-                            <span data-id="Lulusan Memimpin Resort Butik di Asia"
-                                data-en="Graduates Leading Boutique Resorts in Asia">Lulusan Memimpin Resort Butik di
-                                Asia</span>
-                        </h4>
-                        <span class="label-text text-muted-light text-[0.6rem]" data-id="15 AGU 2024"
-                            data-en="AUG 15, 2024">15 AGU 2024</span>
-                    </div>
-                </a>
-
-                <!-- Article 3 -->
-                <a href="/berita" class="flex gap-6 group cursor-pointer pb-2 no-underline">
-                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden">
-                        <img alt="Eco resort"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT3146jDkz7k7l8W_Pe9wP81NZq8CHsF8TDxzE6yss-GNpP-U9J05Tf26bqmEfwCuNIs-r32cWfsatZnGNb11ihIw9dnzdjodyKagakbY5b4jD32sHMQUBTvlHDMPv1tnQWreyZL9LYUclFFcv7lsNsLxKy4MJm8PKKqHeuYvGhHQPXRu_UOhg8ks6xnTtwP_3Cgv56ZVSZ2LNeC2LwH-9RkkxnLLq4wz48juU72N9FwdIQ1x8kBgwwQ">
-                    </div>
-                    <div>
-                        <span class="label-text text-primary text-[0.6rem] mb-2 block" data-id="KEBERLANJUTAN"
-                            data-en="SUSTAINABILITY">KEBERLANJUTAN</span>
-                        <h4
-                            class="text-xl font-serif mb-2 leading-snug text-text-light group-hover:text-primary transition-colors">
-                            <span data-id="Inisiatif Kampus Hospitality Berkelanjutan"
-                                data-en="Sustainable Hospitality Campus Initiatives">Inisiatif Kampus Hospitality
-                                Berkelanjutan</span>
-                        </h4>
-                        <span class="label-text text-muted-light text-[0.6rem]" data-id="05 AGU 2024"
-                            data-en="AUG 05, 2024">05 AGU 2024</span>
-                    </div>
-                </a>
+                @endif
+                @endforeach
             </div>
         </div>
     </section>
 
-    <!-- Partnership & Mitra Section -->
-    <section class="py-20 md:py-24 bg-dhs-cream/50 border-t border-b border-black/5 overflow-hidden">
-        <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-16">
+    @php
+        $mitraIndustri = $partners->filter(fn($p) => $p->partner_group === 'mitra_industri')->values();
+        $partnership = $partners->filter(fn($p) => $p->partner_group === 'partnership')->values();
+
+        $renderCard = function ($item) {
+            $name = e($item['name'] ?? '');
+            $sub  = e($item['sub'] ?? '');
+            $font = $item['font'] ?? 'font-sans text-sm font-bold tracking-wider';
+            $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex items-center justify-center w-48 h-24 p-4 cursor-default select-none shrink-0 rounded-lg">';
+            $out .= '<div class="text-center">';
+            $out .= '<div class="' . $font . ' text-dhs-navy">' . $name . '</div>';
+            if ($sub) {
+                $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
+            }
+            $out .= '</div></div>';
+            return $out;
+        };
+
+        $marqueeItems = function($items) use ($renderCard) {
+            $out = '';
+            foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'font' => 'font-sans text-sm font-bold tracking-wider']); }
+            foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'font' => 'font-sans text-sm font-bold tracking-wider']); }
+            return $out;
+        };
+    @endphp
+
+    <!-- Partnership & Mitra Section — Single Section, Two Rows -->
+    @if($partners->count() > 0)
+    <section class="py-20 md:py-24 bg-white border-t border-b border-black/5 overflow-hidden">
+        <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-10">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
-                <span data-id="Kemitraan &amp; Jaringan Global" data-en="Partnership &amp; Global Network">Kemitraan &amp;
-                    Jaringan Global</span>
+                <span data-id="{{ $partnerLabel }}" data-en="{{ $partnerLabel }}">{{ $partnerLabel }}</span>
             </span>
-            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6"
-                data-reveal="fade-up">
-                <span data-id="Partnership Program" data-en="Partnership Program">Partnership Program</span>
+            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6" data-reveal="fade-up">
+                <span data-id="{{ $partnerTitle }}" data-en="{{ $partnerTitle }}">{{ $partnerTitle }}</span>
             </h2>
             <p class="text-base text-muted-light max-w-3xl mx-auto leading-relaxed" data-reveal="fade-up" data-delay="100">
-                <span
-                    data-id="DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 &amp; 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee)."
-                    data-en="DHS is fully committed to integrating vocational education with the global industry. This program guarantees high-quality international internship (OJT) placement and direct recruitment in 4 &amp; 5-star hotels and luxury cruise lines with absolutely zero agent fees.">DHS
-                    berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini
-                    menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel
-                    bintang 4 &amp; 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).</span>
+                {{ strip_tags($partnerDesc) }}
             </p>
         </div>
-
-        <!-- Marquee Rows Container -->
         <div class="space-y-6 select-none" data-reveal="fade-up" data-delay="200">
-            @php
-                $row1 = [
-                    ['line1' => 'TAFE', 'sub' => 'AUSTRALIA', 'font' => 'font-sans text-xl font-black tracking-[0.2em]'],
-                    ['line1' => 'The Hotel<br>School', 'sub' => 'SYDNEY &amp; MELBOURNE', 'font' => 'font-serif text-sm font-bold tracking-wide leading-tight'],
-                    ['line1' => 'Ausbildung', 'sub' => 'JERMAN', 'font' => 'font-serif text-lg italic font-semibold', 'subtracking' => 'tracking-[0.3em]'],
-                    ['line1' => '<span class="text-primary">G</span>COM', 'sub' => 'EDUCATION', 'font' => 'font-sans text-xl font-bold tracking-[0.15em]'],
-                    ['line1' => 'Bursa SDM<br>Indonesia', 'sub' => null, 'font' => 'font-sans text-xs font-extrabold tracking-[0.1em] uppercase leading-tight'],
-                    ['line1' => 'NEO', 'sub' => 'BY ASTON', 'font' => 'font-serif text-2xl font-extrabold tracking-[0.1em]'],
-                    ['line1' => 'Four Star', 'sub' => 'BY TRANS HOTEL', 'font' => 'font-serif text-sm font-bold tracking-wide uppercase leading-tight', 'subtracking' => 'tracking-[0.15em]'],
-                    ['line1' => 'AMNAYA', 'sub' => 'RESORT BALI', 'font' => 'font-serif text-lg font-bold tracking-widest uppercase'],
-                    ['line1' => 'THEANNA', 'sub' => 'VILLA CANGGU', 'font' => 'font-serif text-lg font-semibold tracking-wider uppercase'],
-                ];
-                $row2 = [
-                    ['line1' => 'Four Points<br><span class="text-[0.55rem] font-sans font-normal tracking-[0.12em] text-muted-light">by Sheraton</span>', 'sub' => 'UNGASAN BALI', 'font' => 'font-serif text-xs font-bold tracking-wider uppercase leading-tight', 'subtracking' => 'tracking-[0.15em]', 'submargin' => 'mt-0.5'],
-                    ['line1' => 'Kuta Paradiso', 'sub' => 'HOTEL BALI', 'font' => 'font-serif text-sm font-semibold tracking-wide italic leading-tight'],
-                    ['line1' => 'Bali Language<br>Art &amp; Culture', 'sub' => null, 'font' => 'font-sans text-[10px] font-bold tracking-wider uppercase leading-snug'],
-                    ['line1' => 'FOKUSINDO', 'sub' => null, 'font' => 'font-sans text-sm font-black tracking-[0.15em] uppercase'],
-                    ['line1' => 'JUBILEE', 'sub' => null, 'font' => 'font-serif text-lg font-bold tracking-widest italic'],
-                    ['line1' => 'Soulbites', 'sub' => 'UBUD BALI', 'font' => 'font-sans text-sm font-semibold tracking-wider uppercase'],
-                    ['line1' => 'TACO CASA', 'sub' => null, 'font' => 'font-sans text-base font-extrabold tracking-widest uppercase'],
-                    ['line1' => 'COMO UMA', 'sub' => 'CANGGU', 'font' => 'font-serif text-sm font-bold tracking-wide leading-tight'],
-                    ['line1' => 'THE VASINI', 'sub' => 'SMART BOUTIQUE', 'font' => 'font-serif text-xs font-bold tracking-wider uppercase leading-tight', 'subtracking' => 'tracking-[0.1em]', 'submargin' => 'mt-0.5'],
-                    ['line1' => 'Noble Career<br>Gurus', 'sub' => null, 'font' => 'font-sans text-[10px] font-bold tracking-wider uppercase leading-snug'],
-                ];
-
-                $renderCard = function ($item) {
-                    $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex items-center justify-center w-48 h-24 p-4 cursor-default select-none shrink-0 rounded-lg">';
-                    $out .= '<div class="text-center">';
-                    $out .= '<div class="' . $item['font'] . ' text-dhs-navy">' . $item['line1'] . '</div>';
-                    if (!empty($item['sub'])) {
-                        $subtracking = $item['subtracking'] ?? 'tracking-[0.2em]';
-                        $submargin = $item['submargin'] ?? 'mt-1';
-                        $out .= '<div class="text-[0.55rem] font-sans ' . $subtracking . ' text-muted-light uppercase ' . $submargin . '">' . $item['sub'] . '</div>';
-                    }
-                    $out .= '</div></div>';
-                    return $out;
-                };
-            @endphp
-
-            <!-- Row 1: Left Scroll -->
+            {{-- Row 1: Mitra Industri — scroll left --}}
+            @if($mitraIndustri->count() > 0)
             <div class="marquee-container relative flex overflow-hidden w-full">
                 <div class="flex shrink-0 gap-6 py-4 animate-marquee-left">
-                    @foreach($row1 as $item)
-                        {!! $renderCard($item) !!}
-                    @endforeach
-                    @foreach($row1 as $item)
-                        {!! $renderCard($item) !!}
-                    @endforeach
+                    {!! $marqueeItems($mitraIndustri) !!}
                 </div>
             </div>
-
-            <!-- Row 2: Right Scroll -->
+            @endif
+            {{-- Row 2: Partnership — scroll right --}}
+            @if($partnership->count() > 0)
             <div class="marquee-container relative flex overflow-hidden w-full">
                 <div class="flex shrink-0 gap-6 py-4 animate-marquee-right">
-                    @foreach($row2 as $item)
-                        {!! $renderCard($item) !!}
-                    @endforeach
-                    @foreach($row2 as $item)
-                        {!! $renderCard($item) !!}
-                    @endforeach
+                    {!! $marqueeItems($partnership) !!}
                 </div>
             </div>
+            @endif
         </div>
     </section>
+    @endif
 
     <style>
         @keyframes marquee-left {
@@ -573,9 +523,9 @@
     <section id="contact-section" class="py-24 bg-surface-light px-6 md:px-16">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
             <div class="text-text-light" data-reveal="fade-right">
-                <span class="label-text text-primary mb-4 block" data-id="KONTAK" data-en="CONTACT">KONTAK</span>
+                <span class="label-text text-primary mb-4 block" data-id="KONTAK" data-en="CONTACT">{{ $contactSectionLabel }}</span>
                 <h2 class="text-5xl md:text-7xl font-serif mb-10 leading-tight">
-                    <span data-id="Hubungi Kami." data-en="Contact Us.">Hubungi Kami.</span>
+                    <span data-id="Hubungi Kami." data-en="Contact Us.">{{ $contactSectionTitle }}</span>
                 </h2>
 
                 <div class="space-y-8">
@@ -587,13 +537,13 @@
                     </div>
                     <div>
                         <span class="label-text text-primary mb-2 block" data-id="KAMPUS KLUNGKUNG" data-en="KLUNGKUNG CAMPUS">KAMPUS KLUNGKUNG</span>
-                        <p class="text-base font-semibold">Jl. Raya Takmung No. 36, Klungkung 80752, Bali</p>
-                        <p class="text-sm text-muted-light mt-1">Telp: +0366 5582998 | WA: +62 81 337 106480</p>
+                        <p class="text-base font-semibold">{{ $contactKlungkungAddr }}</p>
+                        <p class="text-sm text-muted-light mt-1">Telp: {{ $contactKlungkungPhone }} | WA: {{ $contactKlungkungWa }}</p>
                     </div>
                     <div>
                         <span class="label-text text-muted-light mb-2 block" data-id="PENDAFTARAN ONLINE" data-en="ONLINE REGISTRATION">PENDAFTARAN ONLINE</span>
-                        <p class="text-sm font-medium">Linktree: <a href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank" class="underline text-primary hover:text-dhs-darknavy">BiayaPendidikan_DHS</a></p>
-                        <p class="text-sm font-medium">Portal: <a href="http://www.dhs.or.id/student" target="_blank" class="underline text-primary hover:text-dhs-darknavy">www.dhs.or.id/student</a></p>
+                        <p class="text-sm font-medium">Linktree: <a href="{{ $contactLinktreeUrl }}" target="_blank" class="underline text-primary hover:text-dhs-darknavy">{{ parse_url($contactLinktreeUrl, PHP_URL_HOST) ?: 'Linktree' }}</a></p>
+                        <p class="text-sm font-medium">Portal: <a href="{{ $contactStudentPortalUrl }}" target="_blank" class="underline text-primary hover:text-dhs-darknavy">{{ parse_url($contactStudentPortalUrl, PHP_URL_HOST) ?: 'Portal' }}</a></p>
                     </div>
                     {{-- Quick WA button --}}
                     <div class="pt-2">
@@ -732,9 +682,8 @@
 
     <!-- Visit / Directions Section -->
     <section class="w-full">
-        <!-- Google Maps Embed -->
         <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.6658058766166!2d115.18809017511477!3d-8.628046287700172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23f595f08b1fd%3A0xffcf6a4a4cc594e9!2sDenpasar%20Hotel%20School!5e0!3m2!1sid!2sid!4v1784079656770!5m2!1sid!2sid"
+            src="{{ $contactGoogleMapsUrl }}"
             width="100%" height="480" style="border:0; display:block;" allowfullscreen="" loading="lazy"
             referrerpolicy="strict-origin-when-cross-origin" title="Denpasar Hotel School Location">
         </iframe>
@@ -746,10 +695,10 @@
                 <span class="material-icons text-primary text-2xl flex-shrink-0">location_on</span>
                 <div>
                     <p class="text-xs font-bold tracking-widest uppercase text-text-light mb-0.5">Denpasar Hotel School</p>
-                    <p class="text-[0.7rem] text-muted-light">Jl. Sari Dana IV No. 1, Gatsu Barat, Denpasar 80116, Bali</p>
+                    <p class="text-[0.7rem] text-muted-light">{{ $contactDenpasarAddr }}</p>
                 </div>
             </div>
-            <a href="https://maps.google.com/?q=Denpasar+Hotel+School" target="_blank" rel="noopener"
+            <a href="{{ $contactGoogleMapsUrl }}" target="_blank" rel="noopener"
                 class="flex-shrink-0 flex items-center gap-1.5 px-6 py-2.5 bg-primary text-white text-[0.65rem] font-bold tracking-widest uppercase hover:bg-red-700 transition-all duration-200 hover:shadow-md rounded-sm">
                 <span class="material-icons text-sm">directions</span>
                 <span data-id="PETUNJUK ARAH" data-en="GET DIRECTIONS">PETUNJUK ARAH</span>

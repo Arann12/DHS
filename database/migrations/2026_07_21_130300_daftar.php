@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        // Migrasi ini kosong karena semua tabel sudah didefinisikan di database/schema.sql
+        // dan diimport manual ke database MySQL.
+        // File ini dibuat hanya untuk tracking purpose di migrations table.
     }
 
     /**
@@ -19,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        // Tidak ada tabel yang dibuat di up(), jadi tidak ada yang perlu di-drop
     }
 };

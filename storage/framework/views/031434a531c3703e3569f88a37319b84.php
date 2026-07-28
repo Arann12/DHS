@@ -13,6 +13,12 @@
 
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
+    
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/lang/summernote-id-ID.min.js"></script>
+
     <style>
         :root {
             --bo-blue:       #0E06B4;
@@ -26,6 +32,7 @@
             --topbar-h:      64px;
         }
         * { box-sizing: border-box; }
+        [x-cloak] { display: none !important; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bo-cream); color: var(--bo-text); margin: 0; min-height: 100vh; }
 
         /* SIDEBAR */
@@ -158,7 +165,156 @@
     <?php echo $__env->yieldContent('content'); ?>
 </main>
 
+
+<div id="image-picker-modal" x-data="imageUploadModal()" x-show="$store.imageUpload.isOpen" x-cloak
+     class="bo-modal-backdrop"
+     style="position:fixed;inset:0;z-index:9999;"
+     @click.self="$store.imageUpload.close()"
+     @keydown.escape.window="$store.imageUpload.isOpen && $store.imageUpload.close()">
+    <div class="bo-modal" style="max-width:600px;" @click.stop>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h3 style="margin:0;">Pilih Gambar</h3>
+            <button class="btn-icon" @click="$store.imageUpload.close()">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;">
+            <button @click="mode = 'url'"
+                    :style="mode === 'url' ? 'border-bottom:2px solid #2B2494;color:#2B2494;margin-bottom:-2px;' : 'color:#999;'"
+                    style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;transition:all 0.15s;">
+                <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">link</span>
+                Via URL
+            </button>
+            <button @click="mode = 'upload'"
+                    :style="mode === 'upload' ? 'border-bottom:2px solid #2B2494;color:#2B2494;margin-bottom:-2px;' : 'color:#999;'"
+                    style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;transition:all 0.15s;">
+                <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">upload_file</span>
+                Upload Lokal
+            </button>
+        </div>
+
+        <!-- URL Tab -->
+        <div x-show="mode === 'url'" style="padding:4px 0;">
+            <label class="bo-label">URL Gambar</label>
+            <input type="text" class="bo-input" x-model="tempUrl" @keyup.enter="applyUrl()"
+                   placeholder="https://example.com/image.jpg">
+
+            <div x-show="tempUrl" style="border:1.5px solid #e0e0e0;border-radius:10px;padding:12px;margin-top:14px;text-align:center;background:#fafafa;">
+                <img :src="tempUrl" @error="$el.style.display='none'" style="max-height:200px;max-width:100%;border-radius:8px;object-fit:contain;">
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+                <button @click="$store.imageUpload.close()" class="btn-secondary" style="padding:9px 18px;">Batal</button>
+                <button @click="applyUrl()" class="btn-primary" style="padding:9px 18px;" :disabled="!tempUrl || !tempUrl.trim()">
+                    <span class="material-icons-round" style="font-size:18px;">check</span>
+                    Gunakan URL
+                </button>
+            </div>
+        </div>
+
+        <!-- Upload Tab -->
+        <div x-show="mode === 'upload'" style="padding:4px 0;">
+            <div @click="$refs.globalFileInput.click()"
+                 style="border:2px dashed #cbd5e1;border-radius:12px;padding:36px;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.2s;"
+                 @mouseenter="$el.style.borderColor='#2B2494'; $el.style.background='#f0f4ff'"
+                 @mouseleave="$el.style.borderColor='#cbd5e1'; $el.style.background='#fafafa'">
+                <span class="material-icons-round" style="font-size:44px;color:#2B2494;display:block;margin-bottom:10px;">cloud_upload</span>
+                <div style="font-weight:600;color:#2B2494;margin-bottom:4px;">Klik untuk pilih gambar</div>
+                <div style="font-size:12px;color:#999;">JPG, PNG, GIF, WebP, SVG — Maks 5MB</div>
+            </div>
+            <input type="file" x-ref="globalFileInput" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" @change="handleFile($event)" style="display:none;">
+
+            <div x-show="preview" style="border:1.5px solid #e0e0e0;border-radius:10px;padding:12px;margin-top:14px;text-align:center;background:#fff;">
+                <img :src="preview" style="max-height:200px;max-width:100%;border-radius:8px;object-fit:contain;">
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+                <button @click="$store.imageUpload.close()" class="btn-secondary" style="padding:9px 18px;">Batal</button>
+                <button @click="applyUpload()" class="btn-primary" style="padding:9px 18px;" :disabled="!preview">
+                    <span class="material-icons-round" style="font-size:18px;">check</span>
+                    Gunakan Gambar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
+<script>
+    /* ═══════ GLOBAL IMAGE PICKER STORE ═══════ */
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('imageUpload', {
+            isOpen: false,
+            callback: null,
+            open(callback) {
+                this.isOpen = true;
+                this.callback = callback;
+            },
+            close() {
+                this.isOpen = false;
+                this.callback = null;
+            },
+            apply(value) {
+                if (this.callback) this.callback(value);
+                this.close();
+            }
+        });
+    });
+
+    function imageUploadModal() {
+        return {
+            mode: 'url',
+            tempUrl: '',
+            preview: '',
+            applyUrl() {
+                if (this.tempUrl && this.tempUrl.trim()) {
+                    Alpine.store('imageUpload').apply(this.tempUrl.trim());
+                    this.reset();
+                }
+            },
+            handleFile(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const allowed = ['image/jpeg','image/png','image/gif','image/webp','image/svg+xml'];
+                if (!allowed.includes(file.type)) {
+                    alert('Tipe file tidak didukung. Gunakan JPG, PNG, GIF, WebP, atau SVG.');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 5MB.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (ev) => { this.preview = ev.target.result; };
+                reader.readAsDataURL(file);
+            },
+            applyUpload() {
+                if (this.preview) {
+                    Alpine.store('imageUpload').apply(this.preview);
+                    this.reset();
+                }
+            },
+            reset() {
+                this.tempUrl = '';
+                this.preview = '';
+                this.mode = 'url';
+            }
+        };
+    }
+
+    /* Helper: convert base64 data URL to File object */
+    function dataURLtoFile(dataUrl, filename) {
+        const arr = dataUrl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        return new File([u8arr], filename, { type: mime });
+    }
+</script>
 <script>
     const sidebar = document.getElementById('bo-sidebar');
     const topbar  = document.getElementById('bo-topbar');

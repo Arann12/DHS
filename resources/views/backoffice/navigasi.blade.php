@@ -121,7 +121,37 @@ function navigasiData() {
             [this.menus[idx], this.menus[idx+1]] = [this.menus[idx+1], this.menus[idx]];
             this.menus = [...this.menus];
         },
-        save() { this.saved = true; setTimeout(() => this.saved = false, 3000); }
+        save() {
+            const fd = new FormData();
+            fd.append('_token', '{{ csrf_token() }}');
+            this.menus.forEach((item, idx) => {
+                fd.append('menus[' + idx + '][menu_label]', item.label || '');
+                fd.append('menus[' + idx + '][menu_url]', item.url || '');
+                fd.append('menus[' + idx + '][display_order]', idx + 1);
+            });
+            // Note: no dedicated bulk-update endpoint exists yet; store/update per-item or add one
+            // For now, persist via individual calls
+            const promises = this.menus.map((item, idx) => {
+                if (item.id) {
+                    return fetch(`/backoffice/navigasi/${item.id}/update`, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ menu_label: item.label, menu_url: item.url, display_order: idx + 1 })
+                    });
+                } else if (item.label) {
+                    return fetch('/backoffice/navigasi/store', {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ menu_label: item.label, menu_url: item.url, menu_type: 'header' })
+                    });
+                }
+                return Promise.resolve();
+            });
+            Promise.all(promises).then(() => {
+                this.saved = true;
+                setTimeout(() => this.saved = false, 3000);
+            }).catch(() => alert('Gagal menyimpan menu.'));
+        }
     };
 }
 </script>

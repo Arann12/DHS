@@ -7,7 +7,7 @@
 
     {{-- Alert Success --}}
     <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
-        <span class="material-icons-round">check_circle</span> Seluruh perubahan Halaman Home dari atas sampai bawah berhasil disimpan (demo).
+        <span class="material-icons-round">check_circle</span> Seluruh perubahan Halaman Home berhasil disimpan.
     </div>
 
     {{-- Section Navigation Tabs --}}
@@ -67,18 +67,30 @@
 
                 <div class="bo-card">
                     <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Gambar Latar Hero</h2>
-                    <div class="form-group">
-                        <label class="bo-label">URL Gambar Latar</label>
-                        <input type="text" class="bo-input" x-model="hero.image" placeholder="https://...">
-                    </div>
-                    <div style="border:2px dashed #e0e0e0;border-radius:14px;padding:20px;text-align:center;background:#fafafa;cursor:pointer;"
-                         @click="$refs.heroImgInput.click()">
-                        <img x-show="hero.image" :src="hero.image" style="max-height:140px;width:100%;object-fit:cover;border-radius:8px;margin-bottom:8px;">
-                        <div x-show="!hero.image">
-                            <span class="material-icons-round" style="font-size:32px;color:#ccc;">add_photo_alternate</span>
-                            <div style="font-size:12px;color:#8A8478;">Klik untuk upload foto baru</div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="bo-label">Gambar Latar</label>
+                        <div style="display:flex;align-items:flex-start;gap:14px;">
+                            <div style="width:140px;height:90px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                                 @click="$store.imageUpload.open(url => { hero.image = url })">
+                                <template x-if="hero.image">
+                                    <img :src="hero.image" style="width:100%;height:100%;object-fit:cover;">
+                                </template>
+                                <template x-if="!hero.image">
+                                    <span class="material-icons-round" style="color:#aaa;font-size:30px;">add_photo_alternate</span>
+                                </template>
+                            </div>
+                            <div>
+                                <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
+                                        @click="$store.imageUpload.open(url => { hero.image = url })">
+                                    <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">edit</span> Ganti Gambar
+                                </button>
+                                <button type="button" x-show="hero.image" class="btn-danger" style="font-size:11px;padding:5px 10px;margin-top:6px;"
+                                        @click="hero.image = ''">
+                                    <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                                </button>
+                                <div style="font-size:11px;color:#aaa;margin-top:6px;">JPG, PNG, WebP — URL atau upload</div>
+                            </div>
                         </div>
-                        <input type="file" x-ref="heroImgInput" accept="image/*" @change="uploadImg($event, hero, 'image')" style="display:none;">
                     </div>
                 </div>
             </div>
@@ -124,9 +136,29 @@
                 <label class="bo-label">Teks Catatan Bawah</label>
                 <input type="text" class="bo-input" x-model="about.note">
             </div>
-            <div class="form-group">
-                <label class="bo-label">URL Gambar Samping</label>
-                <input type="text" class="bo-input" x-model="about.image">
+            <div class="form-group" style="margin-bottom:0;">
+                <label class="bo-label">Gambar Samping</label>
+                <div style="display:flex;align-items:flex-start;gap:14px;">
+                    <div style="width:120px;height:80px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                         @click="$store.imageUpload.open(url => { about.image = url })">
+                        <template x-if="about.image">
+                            <img :src="about.image" style="width:100%;height:100%;object-fit:cover;">
+                        </template>
+                        <template x-if="!about.image">
+                            <span class="material-icons-round" style="color:#aaa;font-size:28px;">add_photo_alternate</span>
+                        </template>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
+                                @click="$store.imageUpload.open(url => { about.image = url })">
+                            <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">edit</span> Ganti Gambar
+                        </button>
+                        <button type="button" x-show="about.image" class="btn-danger" style="font-size:11px;padding:5px 10px;margin-top:6px;"
+                                @click="about.image = ''">
+                            <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -200,9 +232,24 @@
                 <template x-for="(foto, idx) in campus.fotos" :key="idx">
                     <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
                         <div style="font-size:12px;font-weight:700;color:#2B2494;margin-bottom:6px;" x-text="'Foto ' + (idx+1)"></div>
-                        <div class="form-group">
-                            <label class="bo-label" style="font-size:11px;">URL Gambar</label>
-                            <input type="text" class="bo-input" style="font-size:12px;padding:6px;" x-model="foto.src">
+                        <div style="width:100%;height:70px;border-radius:8px;overflow:hidden;border:1.5px dashed #d1d5db;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;"
+                             @click="$store.imageUpload.open(url => { campus.fotos[idx].src = url })">
+                            <template x-if="foto.src">
+                                <img :src="foto.src" style="width:100%;height:100%;object-fit:cover;">
+                            </template>
+                            <template x-if="!foto.src">
+                                <span class="material-icons-round" style="color:#bbb;font-size:22px;">image</span>
+                            </template>
+                        </div>
+                        <div style="display:flex;gap:6px;margin-bottom:8px;">
+                            <button type="button" class="btn-secondary" style="font-size:11px;padding:4px 10px;flex:1;"
+                                    @click="$store.imageUpload.open(url => { campus.fotos[idx].src = url })">
+                                <span class="material-icons-round" style="font-size:14px;vertical-align:middle;">edit</span> Ganti
+                            </button>
+                            <button type="button" x-show="foto.src" class="btn-danger" style="font-size:11px;padding:4px 8px;"
+                                    @click="foto.src = ''">
+                                <span class="material-icons-round" style="font-size:13px;">delete</span>
+                            </button>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label class="bo-label" style="font-size:11px;">Alt Text</label>
@@ -242,8 +289,26 @@
                             <textarea class="bo-textarea" style="min-height:60px;padding:6px;" x-model="card.desc"></textarea>
                         </div>
                         <div class="form-group">
-                            <label class="bo-label" style="font-size:11px;">URL Gambar Card</label>
-                            <input type="text" class="bo-input" style="padding:6px;" x-model="card.image">
+                            <label class="bo-label" style="font-size:11px;">Gambar Card</label>
+                            <div style="display:flex;align-items:flex-start;gap:10px;">
+                                <div style="width:80px;height:50px;border-radius:8px;overflow:hidden;border:1.5px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;"
+                                     @click="$store.imageUpload.open(url => { academy.cards[idx].image = url })">
+                                    <template x-if="card.image">
+                                        <img :src="card.image" style="width:100%;height:100%;object-fit:cover;">
+                                    </template>
+                                    <template x-if="!card.image">
+                                        <span class="material-icons-round" style="color:#bbb;font-size:18px;">image</span>
+                                    </template>
+                                </div>
+                                <button type="button" class="btn-secondary" style="font-size:11px;padding:4px 10px;"
+                                        @click="$store.imageUpload.open(url => { academy.cards[idx].image = url })">
+                                    Ganti
+                                </button>
+                                <button type="button" x-show="card.image" class="btn-danger" style="font-size:11px;padding:4px 8px;"
+                                        @click="card.image = ''">
+                                    <span class="material-icons-round" style="font-size:13px;">delete</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label class="bo-label" style="font-size:11px;">Link Filter</label>
@@ -272,8 +337,26 @@
                             <input type="text" class="bo-input" style="padding:6px;font-weight:600;" x-model="fac.label">
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
-                            <label class="bo-label" style="font-size:11px;">URL Gambar</label>
-                            <input type="text" class="bo-input" style="padding:6px;" x-model="fac.image">
+                            <label class="bo-label" style="font-size:11px;">Gambar</label>
+                            <div style="display:flex;align-items:flex-start;gap:10px;">
+                                <div style="width:80px;height:50px;border-radius:8px;overflow:hidden;border:1.5px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;"
+                                     @click="$store.imageUpload.open(url => { facilities.items[idx].image = url })">
+                                    <template x-if="fac.image">
+                                        <img :src="fac.image" style="width:100%;height:100%;object-fit:cover;">
+                                    </template>
+                                    <template x-if="!fac.image">
+                                        <span class="material-icons-round" style="color:#bbb;font-size:18px;">image</span>
+                                    </template>
+                                </div>
+                                <button type="button" class="btn-secondary" style="font-size:11px;padding:4px 10px;"
+                                        @click="$store.imageUpload.open(url => { facilities.items[idx].image = url })">
+                                    Ganti
+                                </button>
+                                <button type="button" x-show="fac.image" class="btn-danger" style="font-size:11px;padding:4px 8px;"
+                                        @click="fac.image = ''">
+                                    <span class="material-icons-round" style="font-size:13px;">delete</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -439,9 +522,9 @@
 
     {{-- Save Button Global --}}
     <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
-        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()">
-            <span class="material-icons-round" style="font-size:20px;">save</span>
-            Simpan Seluruh Perubahan Halaman Home
+        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()" :disabled="saving">
+            <span class="material-icons-round" style="font-size:20px;" x-text="saving ? 'hourglass_empty' : 'save'"></span>
+            <span x-text="saving ? 'Menyimpan...' : 'Simpan Seluruh Perubahan Halaman Home'"></span>
         </button>
     </div>
 </div>
@@ -452,6 +535,7 @@
 function berandaCompleteData() {
     return {
         saved: false,
+        saving: false,
         activeTab: 'hero',
         tabs: [
             { id:'hero',       label:'1. Hero Section',       icon:'wallpaper' },
@@ -567,16 +651,97 @@ function berandaCompleteData() {
                 googleMaps: 'https://maps.google.com/?q=Denpasar+Hotel+School'
             }
         },
-        uploadImg(e, obj, prop) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => obj[prop] = ev.target.result;
-            reader.readAsDataURL(file);
-        },
         saveAll() {
-            this.saved = true;
-            setTimeout(() => this.saved = false, 3500);
+            if (this.saving) return;
+            this.saving = true;
+            const sections = {
+                hero: {
+                    title: 'Hero Section',
+                    content: {
+                        overline: this.hero.overline,
+                        headline: this.hero.headline,
+                        cta1_text: this.hero.cta1Text,
+                        cta1_link: this.hero.cta1Link,
+                        cta2_text: this.hero.cta2Text,
+                        cta2_link: this.hero.cta2Link,
+                        scroll_text: this.hero.scrollText,
+                        background_image: this.hero.image
+                    }
+                },
+                about: {
+                    title: 'Sekilas DHS',
+                    content: {
+                        label: this.about.label,
+                        headline: this.about.headline,
+                        paragraph1: this.about.p1,
+                        paragraph2: this.about.p2,
+                        note: this.about.note,
+                        image: this.about.image
+                    }
+                },
+                vision: {
+                    title: 'Visi & Misi',
+                    content: {
+                        sectionTitle: this.vision.sectionTitle,
+                        visiLabel: this.vision.visiLabel,
+                        vision_text: this.vision.visiText,
+                        misiLabel: 'MISI',
+                        misiItems: this.vision.misiItems,
+                        coreValues: this.vision.coreValues
+                    }
+                },
+                campus: {
+                    title: 'Kehidupan Kampus',
+                    content: { title: this.campus.title, fotos: this.campus.fotos }
+                },
+                academy: {
+                    title: 'Akademi Unggulan',
+                    content: { label: this.academy.label, headline: this.academy.headline, cards: this.academy.cards }
+                },
+                facilities: {
+                    title: 'Fasilitas Kelas Dunia',
+                    content: { title: this.facilities.title, items: this.facilities.items }
+                },
+                director: {
+                    title: 'Pesan Direktur',
+                    content: { label: this.director.label, message: this.director.message, name: this.director.name, title: this.director.title }
+                },
+                news: {
+                    title: 'Berita & Artikel',
+                    content: { label: this.news.label, title: this.news.title, featured: this.news.featured, smallArticles: this.news.smallArticles }
+                },
+                partner: {
+                    title: 'Partnership Program',
+                    content: { label: this.partner.label, title: this.partner.title, desc: this.partner.desc }
+                },
+                contact: {
+                    title: 'Kontak & Lokasi',
+                    content: {
+                        denpasar_address: this.contact.denpasar.address,
+                        denpasar_wa: this.contact.denpasar.wa,
+                        denpasar_email: this.contact.denpasar.email,
+                        klungkung_address: this.contact.klungkung.address,
+                        klungkung_phone: this.contact.klungkung.phone,
+                        klungkung_wa: this.contact.klungkung.wa,
+                        linktree: this.contact.links.linktree,
+                        student_portal: this.contact.links.studentPortal,
+                        google_maps: this.contact.links.googleMaps
+                    }
+                }
+            };
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            fetch('/backoffice/beranda/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ sections })
+            })
+            .then(r => r.json())
+            .then(data => {
+                this.saving = false;
+                if (data.success) { this.saved = true; setTimeout(() => this.saved = false, 3500); }
+                else alert('Gagal menyimpan: ' + (data.message || ''));
+            })
+            .catch(err => { this.saving = false; console.error(err); alert('Terjadi kesalahan saat menyimpan.'); });
         }
     };
 }

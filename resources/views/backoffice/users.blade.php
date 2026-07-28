@@ -190,7 +190,7 @@ function usersData() {
             fd.append('email',    this.modal.form.email);
             fd.append('role',     this.modal.form.role.toLowerCase().replace(' ', '_'));
             if (this.modal.form.password) fd.append('password', this.modal.form.password);
-            if (this.modal.form.aktif) fd.append('is_active', '1');
+            fd.append('is_active', this.modal.form.aktif ? '1' : '0');
             fd.append('_token',   '{{ csrf_token() }}');
 
             const url = this.modal.mode === 'add'

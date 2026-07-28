@@ -73,17 +73,17 @@
 
             <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:18px;">
                 <div>
-                    <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;background:#eee;cursor:pointer;position:relative;" @click="$refs.fotoInput.click()">
-                        <img x-show="modal.form.foto" :src="modal.form.foto" style="width:100%;height:100%;object-fit:cover;">
-                        <div x-show="!modal.form.foto" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#fafafa;">
-                            <span class="material-icons-round" style="font-size:24px;color:#ccc;">person</span>
+                    <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;background:#eee;cursor:pointer;position:relative;flex-shrink:0;"
+                             @click="$store.imageUpload.open(url => { modal.form.foto = url })">
+                            <img x-show="modal.form.foto" :src="modal.form.foto" style="width:100%;height:100%;object-fit:cover;">
+                            <div x-show="!modal.form.foto" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#fafafa;">
+                                <span class="material-icons-round" style="font-size:24px;color:#ccc;">person</span>
+                            </div>
+                            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                                <span class="material-icons-round" style="font-size:22px;color:#fff;">edit</span>
+                            </div>
                         </div>
-                        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
-                            <span class="material-icons-round" style="font-size:22px;color:#fff;">edit</span>
-                        </div>
-                        <input type="file" x-ref="fotoInput" accept="image/*" @change="handleFoto($event)" style="display:none;">
-                    </div>
-                    <div style="font-size:11px;color:#aaa;text-align:center;margin-top:6px;">Klik untuk<br>upload foto</div>
+                    <div style="font-size:11px;color:#aaa;text-align:center;margin-top:6px;">Klik untuk<br>ganti foto</div>
                 </div>
                 <div style="flex:1;">
                     <div class="form-group">
@@ -170,13 +170,6 @@ function testimoniData() {
             this.modal.form = item ? { ...item } : { nama:'', jabatan:'', kutipan:'', foto:null, rating:5, featured:false };
             this.modal.open = true;
         },
-        handleFoto(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => this.modal.form.foto = ev.target.result;
-            reader.readAsDataURL(file);
-        },
         saveItem() {
             if (!this.modal.form.nama.trim()) return alert('Nama tidak boleh kosong.');
             const fd = new FormData();
@@ -186,6 +179,16 @@ function testimoniData() {
             fd.append('rating',      this.modal.form.rating || 5);
             fd.append('is_featured', this.modal.form.featured ? '1' : '0');
             fd.append('_token',      '{{ csrf_token() }}');
+
+            // Handle foto: convert base64 data URL to File if needed
+            if (this.modal.form.foto) {
+                if (this.modal.form.foto.startsWith('data:')) {
+                    fd.append('photo', dataURLtoFile(this.modal.form.foto, 'foto.png'));
+                } else {
+                    fd.append('photo_url', this.modal.form.foto);
+                }
+            }
+
             const url = this.modal.mode === 'add'
                 ? '/backoffice/testimoni/store'
                 : `/backoffice/testimoni/${this.modal.editId}/update`;

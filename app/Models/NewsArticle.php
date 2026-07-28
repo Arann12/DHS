@@ -18,7 +18,6 @@ class NewsArticle extends Model
         'author_id',
         'status',
         'published_at',
-        'views_count',
         'is_featured',
     ];
 

@@ -31,7 +31,9 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) DEFAULT NULL,
+    email_verified_at TIMESTAMP NULL DEFAULT NULL,
     password VARCHAR(255) NOT NULL,
+    remember_token VARCHAR(100) DEFAULT NULL,
     role ENUM('super_admin', 'admin', 'editor') DEFAULT 'editor',
     is_active TINYINT(1) DEFAULT 1,
     last_login_at DATETIME DEFAULT NULL,
@@ -211,6 +213,7 @@ CREATE TABLE IF NOT EXISTS partners (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     logo_url VARCHAR(500) DEFAULT NULL,
+    partner_group VARCHAR(50) DEFAULT 'mitra_industri' COMMENT 'mitra_industri, partnership',
     type ENUM('hotel', 'restaurant', 'cruise', 'education', 'government', 'other') DEFAULT 'other',
     description TEXT DEFAULT NULL,
     website_url VARCHAR(500) DEFAULT NULL,
@@ -220,7 +223,7 @@ CREATE TABLE IF NOT EXISTS partners (
     display_order INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_type (type),
+    INDEX idx_group (group),
     INDEX idx_is_featured (is_featured),
     INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -3,80 +3,6 @@
 @section('page-title', 'Editor Lengkap Logo DHS & Branding')
 
 @section('content')
-<style>
-    [x-cloak] { display: none !important; }
-</style>
-
-{{-- Image Upload Modal Component --}}
-<template x-teleport="body">
-    <div x-data="imageUploadModal()" x-show="$store.imageUpload.isOpen" x-cloak
-         style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;"
-         @click.self="$store.imageUpload.close()">
-        <div style="background:#fff;border-radius:16px;width:90%;max-width:600px;max-height:90vh;overflow:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#2B2494;margin:0;">Pilih Gambar</h3>
-                <button @click="$store.imageUpload.close()" style="background:none;border:none;cursor:pointer;font-size:24px;color:#999;">&times;</button>
-            </div>
-
-            {{-- Tab Navigation --}}
-            <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;">
-                <button @click="mode = 'url'" 
-                        :style="mode === 'url' ? 'border-bottom:2px solid #2B2494;color:#2B2494;' : 'color:#999;'"
-                        style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;margin-bottom:-2px;">
-                    <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">link</span>
-                    Via URL
-                </button>
-                <button @click="mode = 'upload'" 
-                        :style="mode === 'upload' ? 'border-bottom:2px solid #2B2494;color:#2B2494;' : 'color:#999;'"
-                        style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;margin-bottom:-2px;">
-                    <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">upload_file</span>
-                    Upload Lokal
-                </button>
-            </div>
-
-            {{-- URL Input Tab --}}
-            <div x-show="mode === 'url'" style="padding:10px 0;">
-                <label style="display:block;font-weight:600;color:#2B2494;margin-bottom:8px;">URL Gambar</label>
-                <input type="text" x-model="tempUrl" @keyup.enter="applyUrl()" 
-                       placeholder="https://example.com/image.jpg"
-                       style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;margin-bottom:12px;">
-                
-                <div x-show="tempUrl" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:16px;text-align:center;background:#fafafa;">
-                    <img :src="tempUrl" @error="$el.src=''" style="max-height:200px;max-width:100%;border-radius:6px;object-fit:contain;">
-                </div>
-
-                <div style="display:flex;gap:10px;justify-content:flex-end;">
-                    <button @click="$store.imageUpload.close()" class="btn-secondary" style="padding:10px 20px;">
-                        Batal
-                    </button>
-                    <button @click="applyUrl()" class="btn-primary" style="padding:10px 20px;">
-                        <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">check</span>
-                        Gunakan URL
-                    </button>
-                </div>
-            </div>
-
-            {{-- Upload Tab --}}
-            <div x-show="mode === 'upload'" style="padding:10px 0;">
-                <div @click="$refs.fileInput.click()" 
-                     style="border:2px dashed #cbd5e1;border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.2s;"
-                     @mouseenter="$el.style.borderColor='#2B2494'; $el.style.background='#f0f4ff'"
-                     @mouseleave="$el.style.borderColor='#cbd5e1'; $el.style.background='#fafafa'">
-                    <span class="material-icons-round" style="font-size:48px;color:#2B2494;display:block;margin-bottom:12px;">cloud_upload</span>
-                    <div style="font-weight:600;color:#2B2494;margin-bottom:4px;">Klik untuk pilih gambar</div>
-                    <div style="font-size:12px;color:#999;">atau drag & drop file gambar di sini</div>
-                    <div style="font-size:11px;color:#999;margin-top:8px;">Format: JPG, PNG, GIF, WebP (Max 5MB)</div>
-                </div>
-                <input type="file" x-ref="fileInput" accept="image/*" @change="handleFileUpload($event)" style="display:none;">
-                
-                <div x-show="preview" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-top:16px;text-align:center;background:#fff;">
-                    <img :src="preview" style="max-height:200px;max-width:100%;border-radius:6px;object-fit:contain;">
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <div x-data="brandingCompleteData()">
 
     {{-- Alert Success --}}
@@ -96,28 +22,54 @@
                     {{-- Logo Utama --}}
                     <div>
                         <label class="bo-label">Logo Utama (Header / Navy BG)</label>
-                        <div style="border:2px dashed #e0e0e0;border-radius:14px;padding:20px;text-align:center;background:#fafafa;cursor:pointer;"
-                             @click="$refs.logoInput.click()">
-                            <img x-show="logos.primary" :src="logos.primary" style="max-height:70px;max-width:100%;object-fit:contain;margin-bottom:8px;">
-                            <div x-show="!logos.primary">
-                                <span class="material-icons-round" style="font-size:32px;color:#ccc;">add_photo_alternate</span>
-                                <div style="font-size:12px;color:#8A8478;">Upload Logo Utama</div>
+                        <div style="display:flex;align-items:flex-start;gap:14px;">
+                            <div style="width:120px;height:80px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                                 @click="$store.imageUpload.open(url => { logos.primary = url })">
+                                <template x-if="logos.primary">
+                                    <img :src="logos.primary" style="width:100%;height:100%;object-fit:contain;">
+                                </template>
+                                <template x-if="!logos.primary">
+                                    <span class="material-icons-round" style="color:#aaa;font-size:30px;">add_photo_alternate</span>
+                                </template>
                             </div>
-                            <input type="file" x-ref="logoInput" accept="image/*" @change="uploadImg($event, logos, 'primary')" style="display:none;">
+                            <div>
+                                <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
+                                        @click="$store.imageUpload.open(url => { logos.primary = url })">
+                                    <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">edit</span> Ganti Logo
+                                </button>
+                                <button type="button" x-show="logos.primary" class="btn-danger" style="font-size:11px;padding:5px 10px;margin-top:6px;"
+                                        @click="logos.primary = ''">
+                                    <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                                </button>
+                                <div style="font-size:10px;color:#999;margin-top:6px;">PNG, JPG, SVG, WebP (Max 5MB)</div>
+                            </div>
                         </div>
                     </div>
 
                     {{-- Favicon --}}
                     <div>
                         <label class="bo-label">Favicon Website (Icon Tab)</label>
-                        <div style="border:2px dashed #e0e0e0;border-radius:14px;padding:20px;text-align:center;background:#fafafa;cursor:pointer;"
-                             @click="$refs.favInput.click()">
-                            <img x-show="logos.favicon" :src="logos.favicon" style="max-height:48px;max-width:48px;object-fit:contain;margin:0 auto 8px;display:block;">
-                            <div x-show="!logos.favicon">
-                                <span class="material-icons-round" style="font-size:32px;color:#ccc;">image</span>
-                                <div style="font-size:12px;color:#8A8478;">Upload Favicon</div>
+                        <div style="display:flex;align-items:flex-start;gap:14px;">
+                            <div style="width:64px;height:64px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                                 @click="$store.imageUpload.open(url => { logos.favicon = url })">
+                                <template x-if="logos.favicon">
+                                    <img :src="logos.favicon" style="width:100%;height:100%;object-fit:contain;">
+                                </template>
+                                <template x-if="!logos.favicon">
+                                    <span class="material-icons-round" style="color:#aaa;font-size:24px;">image</span>
+                                </template>
                             </div>
-                            <input type="file" x-ref="favInput" accept="image/*" @change="uploadImg($event, logos, 'favicon')" style="display:none;">
+                            <div>
+                                <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
+                                        @click="$store.imageUpload.open(url => { logos.favicon = url })">
+                                    <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">edit</span> Ganti Favicon
+                                </button>
+                                <button type="button" x-show="logos.favicon" class="btn-danger" style="font-size:11px;padding:5px 10px;margin-top:6px;"
+                                        @click="logos.favicon = ''">
+                                    <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                                </button>
+                                <div style="font-size:10px;color:#999;margin-top:6px;">ICO, PNG (Max 2MB)</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,9 +126,9 @@
 
     {{-- Global Save --}}
     <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
-        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()">
-            <span class="material-icons-round" style="font-size:20px;">save</span>
-            Simpan Seluruh Pengaturan Logo DHS & Branding
+        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()" :disabled="saving">
+            <span class="material-icons-round" style="font-size:20px;" x-text="saving ? 'hourglass_empty' : 'save'"></span>
+            <span x-text="saving ? 'Menyimpan...' : 'Simpan Seluruh Pengaturan Logo DHS & Branding'"></span>
         </button>
     </div>
 </div>
@@ -187,6 +139,7 @@
 function brandingCompleteData() {
     return {
         saved: false,
+        saving: false,
         logos: {
             primary: '{{ $settings["logo_primary"]->setting_value ?? "/image/LogoDHS.png" }}',
             favicon: '{{ $settings["logo_favicon"]->setting_value ?? "/favicon.ico" }}'
@@ -202,27 +155,62 @@ function brandingCompleteData() {
             heading: '{{ $settings["font_heading"]->setting_value ?? "Playfair Display, serif" }}',
             body: '{{ $settings["font_body"]->setting_value ?? "Inter, sans-serif" }}'
         },
-        uploadImg(e, obj, prop) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => obj[prop] = ev.target.result;
-            reader.readAsDataURL(file);
-        },
         saveAll() {
+            if (this.saving) return; // Prevent double submit
+            this.saving = true;
+
             const formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
+
+            // Append all color settings
             this.colors.forEach(c => formData.append(`settings[${c.key}]`, c.value));
+
+            // Append font settings
             formData.append('settings[font_heading]', this.fonts.heading);
             formData.append('settings[font_body]', this.fonts.body);
 
-            const logoInput = document.querySelector('[x-ref="logoInput"]');
-            if (logoInput && logoInput.files[0]) {
-                formData.append('logo_primary', logoInput.files[0]);
+            // Handle logo primary: if it's a base64 data URL, convert to File
+            if (this.logos.primary) {
+                if (this.logos.primary.startsWith('data:')) {
+                    formData.append('logo_primary', dataURLtoFile(this.logos.primary, 'logo_primary.png'));
+                } else {
+                    // Also send URL as setting so backend can store it
+                    formData.append('settings[logo_primary]', this.logos.primary);
+                }
             }
 
-            fetch('/backoffice/branding/update', { method: 'POST', body: formData })
-                .then(r => r.ok ? location.reload() : alert('Gagal menyimpan branding.'));
+            // Handle favicon: if it's a base64 data URL, convert to File
+            if (this.logos.favicon) {
+                if (this.logos.favicon.startsWith('data:')) {
+                    formData.append('logo_favicon', dataURLtoFile(this.logos.favicon, 'favicon.png'));
+                } else {
+                    formData.append('settings[logo_favicon]', this.logos.favicon);
+                }
+            }
+
+            // Send with proper headers
+            fetch('/backoffice/branding/update', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(r => {
+                if (r.ok) {
+                    this.saved = true;
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    this.saving = false;
+                    alert('Gagal menyimpan branding. Silakan coba lagi.');
+                }
+            })
+            .catch(err => {
+                this.saving = false;
+                console.error('Error:', err);
+                alert('Terjadi kesalahan saat menyimpan branding.');
+            });
         }
     };
 }

@@ -17,6 +17,7 @@ use App\Models\FooterSetting;
 use App\Models\NavigationMenu;
 use App\Models\Registration;
 use App\Models\Admission;
+use App\Models\AboutPage;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,14 +28,16 @@ class BackofficeController extends Controller
     /* ── Guard: redirect if not logged in ─────────────────── */
     private function guard()
     {
-        if (!session('backoffice_user')) abort(redirect('/backoffice'));
+        if (!session('backoffice_user')) {
+            return redirect('/backoffice');
+        }
     }
 
     private function logActivity(string $action, string $table = null, int $recordId = null, array $old = null, array $new = null)
     {
         $u = session('backoffice_user');
         ActivityLog::create([
-            'user_id'    => $u['id'] ?? null,
+            'user_id'    => $u ? $u['id'] : null,
             'action'     => $action,
             'table_name' => $table,
             'record_id'  => $recordId,
@@ -49,7 +52,8 @@ class BackofficeController extends Controller
     /* ═══════════════════ DASHBOARD ═══════════════════════════ */
     public function dashboard()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+        
         $stats = [
             'berita'     => NewsArticle::count(),
             'program'    => Program::count(),
@@ -68,14 +72,17 @@ class BackofficeController extends Controller
     /* ═══════════════════ BERANDA CMS ══════════════════════════ */
     public function beranda()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+        
         $sections = HomepageSection::orderBy('display_order')->get()->keyBy('section_key');
         return view('backoffice.beranda', ['user' => session('backoffice_user'), 'sections' => $sections]);
     }
 
     public function berandaUpdate(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+
+        $request->validate(['sections' => 'required|array']);
         foreach ($request->input('sections', []) as $key => $data) {
             $section = HomepageSection::where('section_key', $key)->first();
             
@@ -119,32 +126,75 @@ class BackofficeController extends Controller
     /* ═══════════════════ BRANDING ═════════════════════════════ */
     public function branding()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $settings = BrandingSetting::all()->keyBy('setting_key');
         return view('backoffice.branding', ['user' => session('backoffice_user'), 'settings' => $settings]);
     }
 
     public function brandingUpdate(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+        
+        // Validate file uploads if present
+        $request->validate([
+            'logo_primary' => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:5120',
+            'logo_favicon' => 'nullable|file|mimes:png,jpg,jpeg,svg,ico|max:2048',
+        ]);
+        
+        // Update all settings (colors, fonts, etc) using updateOrCreate for safety
         foreach ($request->input('settings', []) as $key => $value) {
-            BrandingSetting::where('setting_key', $key)->update(['setting_value' => $value]);
+            if (!is_string($key)) continue;
+            BrandingSetting::updateOrCreate(
+                ['setting_key' => $key],
+                [
+                    'setting_value' => $value,
+                    'setting_type' => str_starts_with($key, 'color_') ? 'color' : 'text',
+                    'setting_group' => str_starts_with($key, 'color_') ? 'colors' : 
+                                      (str_starts_with($key, 'font_') ? 'typography' : 'general')
+                ]
+            );
         }
-        // Handle logo upload
+        
+        // Handle logo primary upload
         if ($request->hasFile('logo_primary')) {
             $file = $request->file('logo_primary');
-            $name = 'logo_' . time() . '.' . $file->extension();
+            $name = 'logo_primary_' . time() . '.' . $file->extension();
             $file->move(public_path('image'), $name);
-            BrandingSetting::where('setting_key', 'logo_primary')->update(['setting_value' => '/image/' . $name]);
+            
+            BrandingSetting::updateOrCreate(
+                ['setting_key' => 'logo_primary'],
+                [
+                    'setting_value' => '/image/' . $name,
+                    'setting_type' => 'file',
+                    'setting_group' => 'logo'
+                ]
+            );
         }
-        $this->logActivity('update', 'branding_settings');
+        
+        // Handle favicon upload (NEW - Bug Fix #7)
+        if ($request->hasFile('logo_favicon')) {
+            $file = $request->file('logo_favicon');
+            $name = 'favicon_' . time() . '.' . $file->extension();
+            $file->move(public_path('image'), $name);
+            
+            BrandingSetting::updateOrCreate(
+                ['setting_key' => 'logo_favicon'],
+                [
+                    'setting_value' => '/image/' . $name,
+                    'setting_type' => 'file',
+                    'setting_group' => 'logo'
+                ]
+            );
+        }
+        
+        $this->logActivity('update', 'branding_settings', null, null, $request->input('settings'));
         return back()->with('success', 'Pengaturan branding berhasil diperbarui.');
     }
 
     /* ═══════════════════ COLOR PALETTE ═════════════════════════ */
     public function colorPalette()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $colors = BrandingSetting::where('setting_group', 'colors')
             ->orderBy('setting_key')
             ->get()
@@ -154,7 +204,7 @@ class BackofficeController extends Controller
 
     public function colorPaletteUpdate(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'colors.*.setting_key' => 'required|string',
             'colors.*.setting_value' => 'required|string|regex:/^#[A-Fa-f0-9]{6}$/',
@@ -178,14 +228,14 @@ class BackofficeController extends Controller
     /* ═══════════════════ STATISTIK ════════════════════════════ */
     public function statistik()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $stats = Statistic::orderBy('display_order')->get();
         return view('backoffice.statistik', ['user' => session('backoffice_user'), 'stats' => $stats]);
     }
 
     public function statistikStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'stat_key'   => 'required|string|max:100|unique:statistics,stat_key',
             'stat_value' => 'required|string|max:255',
@@ -199,7 +249,7 @@ class BackofficeController extends Controller
 
     public function statistikUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $stat = Statistic::findOrFail($id);
         $old = $stat->toArray();
         $stat->update($request->only(['stat_value', 'stat_label', 'stat_icon', 'is_active']));
@@ -209,17 +259,65 @@ class BackofficeController extends Controller
 
     public function statistikDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $stat = Statistic::findOrFail($id);
         $this->logActivity('delete', 'statistics', $id, $stat->toArray());
         $stat->delete();
         return response()->json(['success' => true]);
     }
 
+    /* ═══════════════════ ABOUT US CMS ════════════════════════════ */
+    public function aboutUs()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $sections = AboutPage::orderBy('display_order')->get()->keyBy('section_key');
+        return view('backoffice.statistik', ['user' => session('backoffice_user'), 'sections' => $sections, 'stats' => \App\Models\Statistic::orderBy('display_order')->get()]);
+    }
+
+    public function aboutUsUpdate(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $request->validate(['sections' => 'required|array']);
+        foreach ($request->input('sections', []) as $key => $data) {
+            $section = AboutPage::where('section_key', $key)->first();
+            $contentData = $data['content'] ?? [];
+            // Decode HTML entities to prevent double-encoding (e.g. &amp;amp; -> &amp;)
+            array_walk_recursive($contentData, function (&$v) {
+                if (is_string($v)) $v = html_entity_decode($v, ENT_QUOTES, 'UTF-8');
+            });
+
+            if ($section) {
+                $old = $section->toArray();
+                $existingContent = is_array($section->section_content)
+                    ? $section->section_content
+                    : json_decode($section->section_content ?? '[]', true);
+                // Replace instead of merge — prevents array duplication on indexed arrays
+                $newContent = array_replace_recursive($existingContent ?: [], $contentData);
+                $section->update([
+                    'section_title'   => $data['title'] ?? $section->section_title,
+                    'section_content' => $newContent,
+                    'is_active'       => 1,
+                ]);
+                $this->logActivity('update', 'about_pages', $section->id, $old, $section->fresh()->toArray());
+            } else {
+                $newSection = AboutPage::create([
+                    'section_key'     => $key,
+                    'section_title'   => $data['title'] ?? ucfirst($key),
+                    'section_content' => $contentData,
+                    'display_order'   => 10,
+                    'is_active'       => 1,
+                ]);
+                $this->logActivity('create', 'about_pages', $newSection->id, null, $newSection->toArray());
+            }
+        }
+        return response()->json(['success' => true, 'message' => 'Konten halaman About Us berhasil diperbarui.']);
+    }
+
     /* ═══════════════════ PROGRAM ══════════════════════════════ */
     public function program()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $programs   = Program::with('category')->orderBy('category_id')->orderBy('display_order')->get();
         $categories = ProgramCategory::where('is_active', 1)->orderBy('display_order')->get();
         return view('backoffice.program', ['user' => session('backoffice_user'), 'programs' => $programs, 'categories' => $categories]);
@@ -227,7 +325,7 @@ class BackofficeController extends Controller
 
     public function programStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'category_id'   => 'required|exists:program_categories,id',
             'title'         => 'required|string|max:255',
@@ -258,7 +356,7 @@ class BackofficeController extends Controller
 
     public function programUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $program = Program::findOrFail($id);
         $old = $program->toArray();
         $data = $request->only(['title', 'description', 'duration', 'country_badge', 'category_id']);
@@ -282,43 +380,59 @@ class BackofficeController extends Controller
 
     public function programDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $program = Program::findOrFail($id);
         $this->logActivity('delete', 'programs', $id, $program->toArray());
         $program->delete();
         return response()->json(['success' => true]);
     }
 
+    public function programCategoryUpdate(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $validated = $request->validate([
+            'category_name'        => 'sometimes|string|max:255',
+            'subtitle'             => 'nullable|string',
+            'description'          => 'nullable|string',
+            'career_opportunities' => 'nullable|string',
+        ]);
+        $cat = ProgramCategory::findOrFail($id);
+        $old = $cat->toArray();
+        $cat->update($validated);
+        $this->logActivity('update', 'program_categories', $id, $old, $cat->fresh()->toArray());
+        return response()->json(['success' => true]);
+    }
+
     /* ═══════════════════ BERITA ═══════════════════════════════ */
     public function berita()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $articles = NewsArticle::with('author')->orderBy('created_at', 'desc')->get();
         return view('backoffice.berita', ['user' => session('backoffice_user'), 'articles' => $articles]);
     }
 
     public function beritaStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
-            'title'    => 'required|string|max:255',
-            'category' => 'required|string',
-            'excerpt'  => 'nullable|string',
-            'content'  => 'nullable|string',
-            'status'   => 'required|in:draft,dipublikasikan,archived',
+            'title'     => 'required|string|max:255',
+            'category'  => 'required|string',
+            'excerpt'   => 'nullable|string',
+            'content'   => 'nullable|string',
+            'status'    => 'required|in:draft,dipublikasikan,archived',
+            'thumbnail' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
         $validated['slug']        = Str::slug($validated['title']) . '-' . time();
-        $validated['author_id']   = session('backoffice_user')['id'];
+        $validated['author_id']   = session('backoffice_user')['id'] ?? null;
         $validated['published_at'] = $validated['status'] === 'dipublikasikan' ? now() : null;
         $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
-            $name = time() . '_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/news'), $name);
             $validated['thumbnail_url'] = '/uploads/news/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
-            // Support URL paste
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
         }
 
@@ -329,7 +443,7 @@ class BackofficeController extends Controller
 
     public function beritaUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $article = NewsArticle::findOrFail($id);
         $old = $article->toArray();
         $data = $request->only(['title', 'category', 'excerpt', 'content', 'status']);
@@ -338,12 +452,12 @@ class BackofficeController extends Controller
             $data['published_at'] = now();
         }
         if ($request->hasFile('thumbnail')) {
+            $request->validate(['thumbnail' => 'file|mimes:jpg,jpeg,png,webp|max:5120']);
             $file = $request->file('thumbnail');
-            $name = time() . '_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/news'), $name);
             $data['thumbnail_url'] = '/uploads/news/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
-            // Support URL paste
             $data['thumbnail_url'] = $request->input('thumbnail_url');
         }
         $article->update($data);
@@ -353,7 +467,7 @@ class BackofficeController extends Controller
 
     public function beritaDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $article = NewsArticle::findOrFail($id);
         $this->logActivity('delete', 'news_articles', $id, $article->toArray());
         $article->delete();
@@ -363,14 +477,14 @@ class BackofficeController extends Controller
     /* ═══════════════════ GALERI ═══════════════════════════════ */
     public function galeri()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $galleries = Gallery::orderBy('display_order')->get();
         return view('backoffice.galeri', ['user' => session('backoffice_user'), 'galleries' => $galleries]);
     }
 
     public function galeriStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         
         $imageUrl = null;
         
@@ -378,7 +492,7 @@ class BackofficeController extends Controller
             // Upload file
             $request->validate(['image' => 'required|file|mimes:jpg,jpeg,png,webp|max:5120']);
             $file = $request->file('image');
-            $name = time() . '_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/gallery'), $name);
             $imageUrl = '/uploads/gallery/' . $name;
         } elseif ($request->filled('image_url')) {
@@ -395,7 +509,7 @@ class BackofficeController extends Controller
             'image_url'     => $imageUrl,
             'alt_text'      => $request->input('alt_text', ''),
             'category'      => $request->input('category', 'umum'),
-            'display_order' => Gallery::count() + 1,
+            'display_order' => (Gallery::max('display_order') ?? 0) + 1,
             'is_active'     => 1,
         ]);
         $this->logActivity('create', 'galleries', $gallery->id, null, $gallery->toArray());
@@ -404,7 +518,7 @@ class BackofficeController extends Controller
 
     public function galeriUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $gallery = Gallery::findOrFail($id);
         $old = $gallery->toArray();
         $gallery->update($request->only(['title', 'alt_text', 'category', 'is_active', 'display_order']));
@@ -414,7 +528,7 @@ class BackofficeController extends Controller
 
     public function galeriDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $gallery = Gallery::findOrFail($id);
         $this->logActivity('delete', 'galleries', $id, $gallery->toArray());
         $gallery->delete();
@@ -424,34 +538,35 @@ class BackofficeController extends Controller
     /* ═══════════════════ TESTIMONI ═════════════════════════════ */
     public function testimoni()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $testimonials = Testimonial::orderBy('display_order')->get();
         return view('backoffice.testimoni', ['user' => session('backoffice_user'), 'testimonials' => $testimonials]);
     }
 
     public function testimoniStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'position' => 'nullable|string|max:255',
             'company'  => 'nullable|string|max:255',
             'quote'    => 'required|string',
             'rating'   => 'nullable|integer|min:1|max:5',
+            'photo'    => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
-        
+
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $name = time() . '_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/testimonials'), $name);
             $validated['photo_url'] = '/uploads/testimonials/' . $name;
         } elseif ($request->filled('photo_url')) {
             $validated['photo_url'] = $request->input('photo_url');
         }
-        
+
         $validated['is_featured']  = $request->has('is_featured') ? 1 : 0;
         $validated['is_active']    = 1;
-        $validated['display_order'] = Testimonial::count() + 1;
+        $validated['display_order'] = (Testimonial::max('display_order') ?? 0) + 1;
         $t = Testimonial::create($validated);
         $this->logActivity('create', 'testimonials', $t->id, null, $t->toArray());
         return back()->with('success', 'Testimoni berhasil ditambahkan.');
@@ -459,21 +574,22 @@ class BackofficeController extends Controller
 
     public function testimoniUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $t = Testimonial::findOrFail($id);
         $old = $t->toArray();
         $data = $request->only(['name', 'position', 'company', 'quote', 'rating', 'is_active']);
         $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
-        
+
         if ($request->hasFile('photo')) {
+            $request->validate(['photo' => 'file|mimes:jpg,jpeg,png,webp|max:2048']);
             $file = $request->file('photo');
-            $name = time() . '_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/testimonials'), $name);
             $data['photo_url'] = '/uploads/testimonials/' . $name;
         } elseif ($request->filled('photo_url')) {
             $data['photo_url'] = $request->input('photo_url');
         }
-        
+
         $t->update($data);
         $this->logActivity('update', 'testimonials', $id, $old, $t->fresh()->toArray());
         return response()->json(['success' => true]);
@@ -481,7 +597,7 @@ class BackofficeController extends Controller
 
     public function testimoniDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $t = Testimonial::findOrFail($id);
         $this->logActivity('delete', 'testimonials', $id, $t->toArray());
         $t->delete();
@@ -491,20 +607,20 @@ class BackofficeController extends Controller
     /* ═══════════════════ FAQ ══════════════════════════════════ */
     public function faq()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $faqs = Faq::orderBy('category')->orderBy('display_order')->get();
         return view('backoffice.faq', ['user' => session('backoffice_user'), 'faqs' => $faqs]);
     }
 
     public function faqStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'question' => 'required|string|max:500',
             'answer'   => 'required|string',
             'category' => 'required|string',
         ]);
-        $validated['display_order'] = Faq::count() + 1;
+        $validated['display_order'] = (Faq::max('display_order') ?? 0) + 1;
         $f = Faq::create($validated);
         $this->logActivity('create', 'faqs', $f->id, null, $f->toArray());
         return back()->with('success', 'FAQ berhasil ditambahkan.');
@@ -512,7 +628,7 @@ class BackofficeController extends Controller
 
     public function faqUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $f = Faq::findOrFail($id);
         $old = $f->toArray();
         $f->update($request->only(['question', 'answer', 'category', 'is_active']));
@@ -522,7 +638,7 @@ class BackofficeController extends Controller
 
     public function faqDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $f = Faq::findOrFail($id);
         $this->logActivity('delete', 'faqs', $id, $f->toArray());
         $f->delete();
@@ -532,7 +648,7 @@ class BackofficeController extends Controller
     /* ═══════════════════ ADMISI ════════════════════════════════ */
     public function admisi()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $admissions = Admission::with('program')->orderBy('admission_year', 'desc')->get();
         $programs   = Program::where('is_active', 1)->get();
         $helpdesk   = FooterSetting::whereIn('setting_key', ['helpdesk_wa', 'helpdesk_email', 'helpdesk_hours'])
@@ -549,7 +665,7 @@ class BackofficeController extends Controller
 
     public function updateHelpdesk(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $data = $request->validate([
             'helpdesk_wa'    => 'nullable|string|max:100',
             'helpdesk_email' => 'nullable|string|max:100',
@@ -569,7 +685,7 @@ class BackofficeController extends Controller
 
     public function admisiUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $admission = Admission::findOrFail($id);
         $old = $admission->toArray();
         $admission->update($request->only(['status', 'notes', 'graduation_date']));
@@ -580,14 +696,14 @@ class BackofficeController extends Controller
     /* ═══════════════════ PENDAFTAR ═════════════════════════════ */
     public function pendaftar()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $pendaftarList = Registration::orderBy('created_at', 'desc')->get();
         return view('backoffice.pendaftar', ['user' => session('backoffice_user'), 'pendaftarList' => $pendaftarList]);
     }
 
     public function pendaftarExportExcel()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $registrations = Registration::orderBy('created_at', 'desc')->get();
         
         $filename = 'data_pendaftar_dhs_' . date('Y-m-d_His') . '.csv';
@@ -627,9 +743,10 @@ class BackofficeController extends Controller
             
             // Data rows
             foreach ($registrations as $reg) {
+                // Model sudah cast info_sources ke array, tidak perlu json_decode lagi
                 $infoSources = is_array($reg->info_sources) 
                     ? implode(', ', $reg->info_sources) 
-                    : (is_string($reg->info_sources) ? implode(', ', json_decode($reg->info_sources, true) ?? []) : '-');
+                    : '-';
                 
                 fputcsv($file, [
                     $reg->id,
@@ -660,21 +777,28 @@ class BackofficeController extends Controller
 
     public function pendaftarUpdateStatus(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'id'     => 'required|integer|min:1',
+            'status' => 'required|in:Baru,Diproses,Diterima,Ditolak',
+        ]);
+
         $statusMap = [
             'Baru' => 'pending', 'Diproses' => 'verified',
             'Diterima' => 'accepted', 'Ditolak' => 'rejected',
         ];
-        $reg = Registration::findOrFail($request->input('id'));
-        $reg->update(['status' => $statusMap[$request->input('status')] ?? 'pending']);
+        $reg = Registration::findOrFail($validated['id']);
+        $reg->update(['status' => $statusMap[$validated['status']]]);
         $this->logActivity('update', 'registrations', $reg->id);
         return response()->json(['success' => true]);
     }
 
     public function pendaftarDestroy(Request $request)
     {
-        $this->guard();
-        $reg = Registration::findOrFail($request->input('id'));
+        if ($redirect = $this->guard()) return $redirect;
+        $validated = $request->validate(['id' => 'required|integer|min:1']);
+        $reg = Registration::findOrFail($validated['id']);
         $this->logActivity('delete', 'registrations', $reg->id, $reg->toArray());
         $reg->delete();
         return response()->json(['success' => true]);
@@ -683,20 +807,21 @@ class BackofficeController extends Controller
     /* ═══════════════════ NAVIGASI ══════════════════════════════ */
     public function navigasi()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+        
         $menus = NavigationMenu::whereNull('parent_id')->with('children')->orderBy('display_order')->get();
         return view('backoffice.navigasi', ['user' => session('backoffice_user'), 'menus' => $menus]);
     }
 
     public function navigasiStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'menu_label' => 'required|string|max:255',
             'menu_url'   => 'nullable|string|max:500',
             'menu_type'  => 'required|in:header,footer,both',
         ]);
-        $validated['display_order'] = NavigationMenu::count() + 1;
+        $validated['display_order'] = (NavigationMenu::max('display_order') ?? 0) + 1;
         $m = NavigationMenu::create($validated);
         $this->logActivity('create', 'navigation_menus', $m->id, null, $m->toArray());
         return back()->with('success', 'Menu navigasi berhasil ditambahkan.');
@@ -704,7 +829,7 @@ class BackofficeController extends Controller
 
     public function navigasiUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $m = NavigationMenu::findOrFail($id);
         $old = $m->toArray();
         $m->update($request->only(['menu_label', 'menu_url', 'menu_type', 'is_active', 'display_order']));
@@ -714,7 +839,7 @@ class BackofficeController extends Controller
 
     public function navigasiDestroy($id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $m = NavigationMenu::findOrFail($id);
         $this->logActivity('delete', 'navigation_menus', $id, $m->toArray());
         $m->delete();
@@ -724,14 +849,14 @@ class BackofficeController extends Controller
     /* ═══════════════════ FOOTER SETTINGS ══════════════════════ */
     public function footer()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $settings = FooterSetting::all()->keyBy('setting_key');
         return view('backoffice.footer', ['user' => session('backoffice_user'), 'settings' => $settings]);
     }
 
     public function footerUpdate(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         foreach ($request->input('settings', []) as $key => $value) {
             FooterSetting::updateOrCreate(
                 ['setting_key' => $key],
@@ -745,16 +870,17 @@ class BackofficeController extends Controller
     /* ═══════════════════ USERS ═════════════════════════════════ */
     public function users()
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $users = User::orderBy('created_at', 'desc')->get();
         return view('backoffice.users', ['user' => session('backoffice_user'), 'users' => $users]);
     }
 
     public function usersStore(Request $request)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'role'     => 'required|in:super_admin,admin,editor',
@@ -762,35 +888,105 @@ class BackofficeController extends Controller
         $validated['password']  = Hash::make($validated['password']);
         $validated['is_active'] = 1;
         $u = User::create($validated);
-        $this->logActivity('create', 'users', $u->id, null, ['name' => $u->name, 'email' => $u->email, 'role' => $u->role]);
+        $this->logActivity('create', 'users', $u->id, null, ['name' => $u->name, 'username' => $u->username, 'email' => $u->email, 'role' => $u->role]);
         return back()->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function usersUpdate(Request $request, $id)
     {
-        $this->guard();
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'name'     => 'sometimes|string|max:255',
+            'username' => 'sometimes|string|max:255|unique:users,username,'.$id,
+            'email'    => 'sometimes|email|max:255|unique:users,email,'.$id,
+            'password' => 'nullable|string|min:6',
+            'role'     => 'sometimes|in:super_admin,admin,editor',
+        ]);
+
         $u = User::findOrFail($id);
-        $old = $u->only(['name', 'email', 'role', 'is_active']);
-        $data = $request->only(['name', 'email', 'role']);
+        $old = $u->only(['name', 'username', 'email', 'role', 'is_active']);
+        $data = $request->only(['name', 'username', 'email', 'role']);
         $data['is_active'] = $request->has('is_active') ? 1 : 0;
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
         $u->update($data);
-        $this->logActivity('update', 'users', $id, $old, $u->fresh()->only(['name', 'email', 'role', 'is_active']));
+        $this->logActivity('update', 'users', $id, $old, $u->fresh()->only(['name', 'username', 'email', 'role', 'is_active']));
         return response()->json(['success' => true]);
     }
 
     public function usersDestroy($id)
     {
-        $this->guard();
-        $currentUserId = session('backoffice_user')['id'];
-        if ($id == $currentUserId) {
-            return response()->json(['error' => 'Tidak bisa menghapus akun yang sedang login.'], 403);
+        if ($redirect = $this->guard()) return $redirect;
+        $currentUser = session('backoffice_user');
+        $currentUserId = $currentUser ? $currentUser['id'] : null;
+        if ($currentUserId && $id == $currentUserId) {
+            return response()->json(['success' => false, 'message' => 'Tidak bisa menghapus akun yang sedang login.'], 403);
         }
         $u = User::findOrFail($id);
         $this->logActivity('delete', 'users', $id, $u->only(['name', 'email', 'role']));
         $u->delete();
+        return response()->json(['success' => true]);
+    }
+
+    /* ═══════════════════ PARTNER ══════════════════════════════ */
+    public function partner()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $partners = Partner::orderBy('display_order')->get();
+        return view('backoffice.partner', ['user' => session('backoffice_user'), 'partners' => $partners]);
+    }
+
+    public function partnerStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'partner_group' => 'required|in:mitra_industri,partnership',
+            'type'        => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'website_url' => 'nullable|string|max:500',
+            'country'     => 'nullable|string|max:100',
+            'logo_url'    => 'nullable|string|max:500',
+        ]);
+        $validated['is_active']    = $request->has('is_active') ? 1 : 0;
+        $validated['is_featured']  = $request->has('is_featured') ? 1 : 0;
+        $validated['display_order'] = (Partner::max('display_order') ?? 0) + 1;
+
+        $p = Partner::create($validated);
+        $this->logActivity('create', 'partners', $p->id, null, $p->toArray());
+        return back()->with('success', 'Partner berhasil ditambahkan.');
+    }
+
+    public function partnerUpdate(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $validated = $request->validate([
+            'name'     => 'sometimes|string|max:255',
+            'partner_group' => 'sometimes|in:mitra_industri,partnership',
+            'type'     => 'sometimes|string|max:100',
+            'description' => 'nullable|string',
+            'website_url' => 'nullable|string|max:500',
+            'country'  => 'nullable|string|max:100',
+            'logo_url' => 'nullable|string|max:500',
+        ]);
+        $p = Partner::findOrFail($id);
+        $old = $p->toArray();
+        $data = $request->only(['name', 'partner_group', 'type', 'description', 'website_url', 'country', 'logo_url', 'display_order']);
+        $data['is_active']   = $request->has('is_active') ? 1 : 0;
+        $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
+        $p->update($data);
+        $this->logActivity('update', 'partners', $id, $old, $p->fresh()->toArray());
+        return response()->json(['success' => true]);
+    }
+
+    public function partnerDestroy($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $p = Partner::findOrFail($id);
+        $this->logActivity('delete', 'partners', $id, $p->toArray());
+        $p->delete();
         return response()->json(['success' => true]);
     }
 }

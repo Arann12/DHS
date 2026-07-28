@@ -9,7 +9,7 @@ class Partner extends Model
     protected $table = 'partners';
 
     protected $fillable = [
-        'name', 'logo_url', 'type', 'description',
+        'name', 'logo_url', 'type', 'partner_group', 'description',
         'website_url', 'country', 'is_active', 'is_featured', 'display_order',
     ];
 

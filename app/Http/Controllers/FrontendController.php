@@ -13,11 +13,28 @@ use App\Models\Gallery;
 use App\Models\Faq;
 use App\Models\Registration;
 use App\Models\FooterSetting;
+use App\Models\BrandingSetting;
+use App\Models\AboutPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
+    /**
+     * Shared data for all frontend views.
+     */
+    private function shared()
+    {
+        $footerSettings = FooterSetting::pluck('setting_value', 'setting_key')->toArray();
+        $branding = BrandingSetting::pluck('setting_value', 'setting_key')->toArray();
+        $siteName = $footerSettings['site_name'] ?? 'Denpasar Hotel School';
+        $tagline = $footerSettings['tagline'] ?? '"Transforming Into Excellent"';
+        $navLogo = $branding['logo_primary'] ?? '/image/LogoDHS.png';
+
+        return compact('footerSettings', 'branding', 'siteName', 'tagline', 'navLogo');
+    }
+
     public function welcome()
     {
         $sections = HomepageSection::orderBy('display_order')
@@ -42,7 +59,6 @@ class FrontendController extends Controller
             ->get();
 
         $partners = Partner::where('is_active', 1)
-            ->where('is_featured', 1)
             ->orderBy('display_order')
             ->get();
 
@@ -55,22 +71,23 @@ class FrontendController extends Controller
             ->take(8)
             ->get();
 
-        // Get program categories for contact form
         $programCategories = ProgramCategory::with('programs')
             ->where('is_active', 1)
             ->orderBy('display_order')
             ->get();
 
-        return view('welcome', compact(
+        $shared = $this->shared();
+
+        return view('welcome', array_merge($shared, compact(
             'sections', 'featuredNews', 'featuredPrograms',
             'testimonials', 'partners', 'stats', 'galleries',
             'programCategories'
-        ));
+        )));
     }
 
     public function tentang()
     {
-        $sections = HomepageSection::where('is_active', 1)
+        $sections = AboutPage::where('is_active', 1)
             ->orderBy('display_order')
             ->get()
             ->keyBy('section_key');
@@ -82,7 +99,13 @@ class FrontendController extends Controller
             ->take(12)
             ->get();
 
-        return view('tentang', compact('sections', 'stats', 'galleries'));
+        $partners = Partner::where('is_active', 1)
+            ->orderBy('display_order')
+            ->get();
+
+        $shared = $this->shared();
+
+        return view('tentang', array_merge($shared, compact('sections', 'stats', 'galleries', 'partners')));
     }
 
     public function akademi()
@@ -92,7 +115,39 @@ class FrontendController extends Controller
             ->orderBy('display_order')
             ->get();
 
-        return view('akademi', compact('categories'));
+        $partners = Partner::where('is_active', 1)
+            ->orderBy('display_order')
+            ->get();
+
+        // Academy hero data from about_pages
+        $academyHeroRecord = AboutPage::where('section_key', 'academy_hero')->first();
+        $academyHero = $academyHeroRecord
+            ? (is_array($academyHeroRecord->section_content) ? $academyHeroRecord->section_content : json_decode($academyHeroRecord->section_content ?? '[]', true) ?? [])
+            : [];
+
+        $shared = $this->shared();
+
+        return view('akademi', array_merge($shared, compact('categories', 'partners', 'academyHero')));
+    }
+
+    public function detailBerita($slug)
+    {
+        $article = NewsArticle::where('slug', $slug)
+            ->where('status', 'dipublikasikan')
+            ->with('author')
+            ->firstOrFail();
+
+        $article->increment('views_count');
+
+        $related = NewsArticle::where('status', 'dipublikasikan')
+            ->where('id', '!=', $article->id)
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+
+        $shared = $this->shared();
+
+        return view('detail-berita', array_merge($shared, compact('article', 'related')));
     }
 
     public function berita(Request $request)
@@ -105,7 +160,7 @@ class FrontendController extends Controller
         }
 
         if ($request->filled('q')) {
-            $search = $request->q;
+            $search = addcslashes($request->q, '%_');
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%$search%")
                   ->orWhere('excerpt', 'like', "%$search%");
@@ -118,7 +173,9 @@ class FrontendController extends Controller
             ->orderBy('published_at', 'desc')
             ->first();
 
-        return view('berita', compact('articles', 'featured'));
+        $shared = $this->shared();
+
+        return view('berita', array_merge($shared, compact('articles', 'featured')));
     }
 
     public function faq()
@@ -128,7 +185,9 @@ class FrontendController extends Controller
             ->get()
             ->groupBy('category');
 
-        return view('faq', compact('faqs'));
+        $shared = $this->shared();
+
+        return view('faq', array_merge($shared, compact('faqs')));
     }
 
     public function karier()
@@ -139,7 +198,9 @@ class FrontendController extends Controller
             ->get()
             ->groupBy('type');
 
-        return view('karier', compact('partners'));
+        $shared = $this->shared();
+
+        return view('karier', array_merge($shared, compact('partners')));
     }
 
     public function registration()
@@ -153,7 +214,9 @@ class FrontendController extends Controller
             ->pluck('setting_value', 'setting_key')
             ->toArray();
 
-        return view('registration', compact('categories', 'helpdesk'));
+        $shared = $this->shared();
+
+        return view('registration', array_merge($shared, compact('categories', 'helpdesk')));
     }
 
     public function submitRegistration(Request $request)
@@ -173,7 +236,7 @@ class FrontendController extends Controller
         $buktiPendaftaranPath = null;
         if ($request->hasFile('bukti_pendaftaran')) {
             $file = $request->file('bukti_pendaftaran');
-            $name = time() . '_pendaftaran_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/bukti'), $name);
             $buktiPendaftaranPath = '/uploads/bukti/' . $name;
         }
@@ -181,7 +244,7 @@ class FrontendController extends Controller
         $buktiProgramPath = null;
         if ($request->hasFile('bukti_program')) {
             $file = $request->file('bukti_program');
-            $name = time() . '_program_' . $file->getClientOriginalName();
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/bukti'), $name);
             $buktiProgramPath = '/uploads/bukti/' . $name;
         }

@@ -27,12 +27,19 @@ class AuthController extends Controller
         // Check by username field
         $user = User::where('username', $request->username)->where('is_active', 1)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        // Timing-safe: always run Hash::check even if user not found
+        $dummyHash = '$2y$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        $passwordValid = $user ? Hash::check($request->password, $user->password) : Hash::check('x', $dummyHash);
+
+        if (!$user || !$passwordValid) {
             return back()->withErrors(['auth' => 'Username atau password salah.'])->withInput();
         }
 
         // Update last login
         $user->update(['last_login_at' => now()]);
+
+        // Regenerate session to prevent fixation
+        $request->session()->regenerate();
 
         // Log login activity
         ActivityLog::create([

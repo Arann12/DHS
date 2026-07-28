@@ -36,6 +36,10 @@
             <span class="material-icons-round mat-icon">quiz</span>
             <span class="nav-label">FAQ</span>
         </a>
+        <a href="/backoffice/partner" class="nav-item <?php echo e(Request::is('backoffice/partner') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">handshake</span>
+            <span class="nav-label">Partner</span>
+        </a>
         <a href="/backoffice/admisi" class="nav-item <?php echo e(Request::is('backoffice/admisi') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">assignment</span>
             <span class="nav-label">Registration Form</span>
@@ -67,10 +71,13 @@
     </nav>
 
     <div class="sidebar-footer">
-        <a href="/backoffice/logout" class="nav-item" style="margin:0;" onclick="return confirm('Yakin ingin logout?')">
-            <span class="material-icons-round mat-icon">logout</span>
-            <span class="nav-label">Logout</span>
-        </a>
+        <form action="/backoffice/logout" method="POST" onsubmit="return confirm('Yakin ingin logout?')">
+            <?php echo csrf_field(); ?>
+            <button type="submit" class="nav-item" style="margin:0;background:none;border:none;cursor:pointer;width:100%;text-align:left;">
+                <span class="material-icons-round mat-icon">logout</span>
+                <span class="nav-label">Logout</span>
+            </button>
+        </form>
     </div>
 </aside>
 <?php /**PATH D:\laragon\www\DHS\resources\views/backoffice/partials/sidebar.blade.php ENDPATH**/ ?>

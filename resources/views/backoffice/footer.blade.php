@@ -10,21 +10,57 @@
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
 
-        {{-- Kiri: Tentang + Sosmed --}}
+        {{-- Kiri: Info Sekolah + Sosmed --}}
         <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kolom Kiri — Tentang Sekolah</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Informasi Sekolah</h2>
                 <div class="form-group">
-                    <label class="bo-label">Nama Sekolah (di Footer)</label>
-                    <input type="text" class="bo-input" x-model="form.namaSekolah">
+                    <label class="bo-label">Nama Sekolah</label>
+                    <input type="text" class="bo-input" x-model="form.site_name">
                 </div>
                 <div class="form-group">
-                    <label class="bo-label">Deskripsi Singkat</label>
-                    <textarea class="bo-textarea" rows="4" x-model="form.deskripsi"></textarea>
+                    <label class="bo-label">Tagline</label>
+                    <input type="text" class="bo-input" x-model="form.tagline">
                 </div>
+                <div class="form-group">
+                    <label class="bo-label">Copyright</label>
+                    <input type="text" class="bo-input" x-model="form.copyright">
+                </div>
+            </div>
+
+            <div class="bo-card">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kampus Denpasar</h2>
                 <div class="form-group">
                     <label class="bo-label">Alamat</label>
-                    <textarea class="bo-textarea" rows="2" x-model="form.alamat"></textarea>
+                    <textarea class="bo-textarea" rows="2" x-model="form.address_denpasar"></textarea>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="bo-label">No. Telepon/WA</label>
+                        <input type="text" class="bo-input" x-model="form.phone_denpasar">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">Email</label>
+                        <input type="text" class="bo-input" x-model="form.email">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bo-card">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kampus Klungkung</h2>
+                <div class="form-group">
+                    <label class="bo-label">Alamat</label>
+                    <textarea class="bo-textarea" rows="2" x-model="form.address_klungkung"></textarea>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="bo-label">Telepon</label>
+                        <input type="text" class="bo-input" x-model="form.phone_klungkung">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">WA</label>
+                        <input type="text" class="bo-input" x-model="form.wa_klungkung">
+                    </div>
                 </div>
             </div>
 
@@ -41,13 +77,13 @@
             </div>
         </div>
 
-        {{-- Kanan: Link Kolom + Copyright --}}
+        {{-- Kanan: Link Kolom + Extra --}}
         <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kolom "Explore"</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kolom "Eksplorasi"</h2>
                 <template x-for="(link, idx) in form.exploreLinks" :key="idx">
                     <div style="display:flex;gap:10px;margin-bottom:10px;">
-                        <input type="text" class="bo-input" style="flex:1;" placeholder="Label menu" x-model="link.label">
+                        <input type="text" class="bo-input" style="flex:1;" placeholder="Label" x-model="link.label">
                         <input type="text" class="bo-input" style="flex:1;" placeholder="URL" x-model="link.url">
                         <button class="btn-icon danger" @click="form.exploreLinks.splice(idx,1)">
                             <span class="material-icons-round" style="font-size:17px;">close</span>
@@ -60,27 +96,19 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kolom "Admissions"</h2>
-                <template x-for="(link, idx) in form.admissionsLinks" :key="idx">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Kolom "Pendaftaran & Link"</h2>
+                <template x-for="(link, idx) in form.admissionLinks" :key="idx">
                     <div style="display:flex;gap:10px;margin-bottom:10px;">
-                        <input type="text" class="bo-input" style="flex:1;" placeholder="Label menu" x-model="link.label">
+                        <input type="text" class="bo-input" style="flex:1;" placeholder="Label" x-model="link.label">
                         <input type="text" class="bo-input" style="flex:1;" placeholder="URL" x-model="link.url">
-                        <button class="btn-icon danger" @click="form.admissionsLinks.splice(idx,1)">
+                        <button class="btn-icon danger" @click="form.admissionLinks.splice(idx,1)">
                             <span class="material-icons-round" style="font-size:17px;">close</span>
                         </button>
                     </div>
                 </template>
-                <button class="btn-secondary" style="width:100%;justify-content:center;padding:8px;font-size:12.5px;margin-top:4px;" @click="form.admissionsLinks.push({label:'',url:''})">
+                <button class="btn-secondary" style="width:100%;justify-content:center;padding:8px;font-size:12.5px;margin-top:4px;" @click="form.admissionLinks.push({label:'',url:''})">
                     <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Link
                 </button>
-            </div>
-
-            <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Teks Copyright</h2>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label class="bo-label">Teks Copyright</label>
-                    <input type="text" class="bo-input" x-model="form.copyright">
-                </div>
             </div>
         </div>
     </div>
@@ -97,43 +125,57 @@
 @push('scripts')
 <script>
 function footerData() {
+    const settings = @json($settings->mapWithKeys(fn($s) => [$s->setting_key => $s->setting_value])->toArray());
     return {
         saved: false,
         form: {
-            namaSekolah: 'Denpasar Hotel School',
-            deskripsi: 'Sekolah vokasi hospitality terkemuka di Bali dengan pengalaman mencetak profesional kelas dunia.',
-            alamat: '{{ $settings["address_denpasar"]->setting_value ?? "Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali" }}',
+            site_name: settings.site_name ?? 'Denpasar Hotel School',
+            tagline: settings.tagline ?? '"Transforming Into Excellent"',
+            copyright: settings.copyright ?? '© 2026 Denpasar Hotel School.',
+            address_denpasar: settings.address_denpasar ?? 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali',
+            phone_denpasar: settings.phone_denpasar ?? '+62 81 246 319966',
+            email: settings.email ?? 'sahabat@dhs.or.id',
+            address_klungkung: settings.address_klungkung ?? 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali',
+            phone_klungkung: settings.phone_klungkung ?? '+0366 5582998',
+            wa_klungkung: settings.wa_klungkung ?? '+62 81 337 106480',
             sosmed: [
-                { platform:'Instagram', icon:'photo_camera', url:'{{ $settings["instagram_url"]->setting_value ?? "" }}' },
-                { platform:'Facebook',  icon:'thumb_up',     url:'{{ $settings["facebook_url"]->setting_value ?? "" }}' },
-                { platform:'YouTube',   icon:'play_circle',  url:'{{ $settings["youtube_url"]->setting_value ?? "" }}' },
+                { platform:'Instagram', icon:'photo_camera', key:'instagram_url', url: settings.instagram_url ?? '' },
+                { platform:'Facebook',  icon:'thumb_up',     key:'facebook_url',  url: settings.facebook_url ?? '' },
+                { platform:'YouTube',   icon:'play_circle',  key:'youtube_url',   url: settings.youtube_url ?? '' },
             ],
-            exploreLinks: [
+            exploreLinks: settings.explore_links ? JSON.parse(settings.explore_links) : [
                 { label:'Beranda', url:'/' },
-                { label:'Tentang Kami', url:'/tentang-kami' },
+                { label:'Tentang DHS', url:'/tentang-kami' },
                 { label:'Akademi', url:'/akademi' },
-                { label:'Berita', url:'/berita' },
+                { label:'Berita & Artikel', url:'/berita' },
+            ],
+            admissionLinks: settings.admission_links ? JSON.parse(settings.admission_links) : [
+                { label:'Pendaftaran Online', url:'/formulir-pendaftaran' },
+                { label:'Unduh Brosur Biaya', url:'https://linktr.ee/BiayaPendidikan_DHS' },
+                { label:'FAQ', url:'/faq' },
                 { label:'Karier', url:'/karier' },
             ],
-            admissionsLinks: [
-                { label:'Cara Mendaftar', url:'/cara-mendaftar' },
-                { label:'FAQ', url:'/faq' },
-            ],
-            copyright: '© 2026 Denpasar Hotel School. All rights reserved.',
         },
         save() {
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('settings[address_denpasar]', this.form.alamat);
-            formData.append('settings[instagram_url]', this.form.sosmed[0]?.url || '');
-            formData.append('settings[facebook_url]', this.form.sosmed[1]?.url || '');
-            formData.append('settings[youtube_url]', this.form.sosmed[2]?.url || '');
+            const fd = new FormData();
+            fd.append('_token', '{{ csrf_token() }}');
+            fd.append('settings[site_name]', this.form.site_name);
+            fd.append('settings[tagline]', this.form.tagline);
+            fd.append('settings[copyright]', this.form.copyright);
+            fd.append('settings[address_denpasar]', this.form.address_denpasar);
+            fd.append('settings[phone_denpasar]', this.form.phone_denpasar);
+            fd.append('settings[email]', this.form.email);
+            fd.append('settings[address_klungkung]', this.form.address_klungkung);
+            fd.append('settings[phone_klungkung]', this.form.phone_klungkung);
+            fd.append('settings[wa_klungkung]', this.form.wa_klungkung);
+            this.form.sosmed.forEach(s => fd.append('settings[' + s.key + ']', s.url || ''));
+            fd.append('settings[explore_links]', JSON.stringify(this.form.exploreLinks));
+            fd.append('settings[admission_links]', JSON.stringify(this.form.admissionLinks));
 
-            fetch('/backoffice/footer-cms/update', { method: 'POST', body: formData })
+            fetch('/backoffice/footer-cms/update', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                 .then(r => r.ok ? location.reload() : alert('Gagal menyimpan footer.'));
         }
     };
 }
 </script>
 @endpush
-

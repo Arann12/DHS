@@ -18,4 +18,9 @@ class Registration extends Model
         'info_sources' => 'array',
         'registration_date' => 'date',
     ];
+
+    public function admissions()
+    {
+        return $this->hasMany(Admission::class, 'registration_id');
+    }
 }

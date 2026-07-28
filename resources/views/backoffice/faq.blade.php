@@ -93,7 +93,7 @@
 
             <div class="form-group">
                 <label class="bo-label">Jawaban</label>
-                <textarea class="bo-textarea" rows="5" x-model="modal.form.jawaban" placeholder="Tuliskan jawaban yang jelas dan rinci..."></textarea>
+                <div id="summernote-jawaban"></div>
             </div>
 
             <hr class="divider">
@@ -168,13 +168,32 @@ function faqData() {
             this.modal.editId = item ? item.id : null;
             this.modal.form = item ? { ...item } : { pertanyaan:'', kategori:'akademi', jawaban:'' };
             this.modal.open = true;
+
+            this.$nextTick(() => {
+                if ($('#summernote-jawaban').summernote) {
+                    $('#summernote-jawaban').summernote('destroy');
+                }
+                $('#summernote-jawaban').summernote({
+                    height: 200,
+                    lang: 'id-ID',
+                    placeholder: 'Tuliskan jawaban yang jelas dan rinci...',
+                    toolbar: [
+                        ['font', ['bold', 'italic', 'underline']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                    ]
+                });
+                if (item && item.jawaban) {
+                    $('#summernote-jawaban').summernote('code', item.jawaban);
+                }
+            });
         },
 
         saveItem() {
             if (!this.modal.form.pertanyaan.trim()) return alert('Pertanyaan tidak boleh kosong.');
             const fd = new FormData();
             fd.append('question', this.modal.form.pertanyaan);
-            fd.append('answer',   this.modal.form.jawaban);
+            fd.append('answer',   $('#summernote-jawaban').summernote('code') || '');
             fd.append('category', this.modal.form.kategori);
             fd.append('_token',   '{{ csrf_token() }}');
 

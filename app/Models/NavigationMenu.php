@@ -22,4 +22,9 @@ class NavigationMenu extends Model
     {
         return $this->hasMany(NavigationMenu::class, 'parent_id')->orderBy('display_order');
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(NavigationMenu::class, 'parent_id');
+    }
 }

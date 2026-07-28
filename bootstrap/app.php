@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Register custom backoffice authentication middleware
+        $middleware->alias([
+            'backoffice.auth' => \App\Http\Middleware\BackofficeAuth::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
