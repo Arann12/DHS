@@ -6,8 +6,13 @@
 <div x-data="academyCompleteData()">
 
     {{-- Alert Success --}}
-    <div x-show="saved" x-transition style="display:none;background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
+    <div x-show="saved" x-transition style="background:#d1fae5;border:1.5px solid #6ee7b7;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#065f46;font-weight:600;font-size:14px;">
         <span class="material-icons-round">check_circle</span> Seluruh data Halaman Academy & Program berhasil disimpan.
+    </div>
+
+    {{-- Alert Error --}}
+    <div x-show="errorMsg" x-transition style="background:#fee2e2;border:1.5px solid #fca5a5;border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#991b1b;font-weight:600;font-size:14px;">
+        <span class="material-icons-round">error</span> <span x-text="errorMsg"></span>
     </div>
 
     {{-- Hero Section --}}
@@ -23,7 +28,30 @@
         </div>
         <div class="form-group" style="margin-bottom:0;">
             <label class="bo-label">Gambar Latar Hero</label>
-            <input type="text" class="bo-input" x-model="hero.bgImage" placeholder="URL gambar atau upload">
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+                <div style="width:180px;height:100px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                     @click="$store.imageUpload.open(url => { hero.bgImage = url })">
+                    <template x-if="hero.bgImage">
+                        <img :src="hero.bgImage" style="width:100%;height:100%;object-fit:cover;">
+                    </template>
+                    <template x-if="!hero.bgImage">
+                        <span class="material-icons-round" style="color:#aaa;font-size:32px;">add_photo_alternate</span>
+                    </template>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;gap:8px;margin-bottom:8px;">
+                        <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
+                                @click="$store.imageUpload.open(url => { hero.bgImage = url })">
+                            <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">upload</span> Upload / Pilih Gambar
+                        </button>
+                        <button type="button" x-show="hero.bgImage" class="btn-danger" style="font-size:11px;padding:5px 10px;"
+                                @click="hero.bgImage = ''">
+                            <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                        </button>
+                    </div>
+                    <input type="text" class="bo-input" x-model="hero.bgImage" placeholder="Atau paste URL gambar di sini" style="font-size:12px;">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -57,17 +85,24 @@
 
                 {{-- Panel Description --}}
                 <div style="padding:16px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;margin-bottom:24px;">
+                    <p style="font-size:11px;color:#8A8478;margin:0 0 14px;font-weight:600;">
+                        <span class="material-icons-round" style="font-size:14px;vertical-align:middle;">edit</span> Edit Sidebar — data di bawah ini tampil di panel kiri halaman Akademi
+                    </p>
                     <div class="form-group">
-                        <label class="bo-label">Subtitle / Sub-header</label>
-                        <input type="text" class="bo-input" x-model="cat.subtitle">
+                        <label class="bo-label">Nama Kategori <span style="color:#8A8478;font-weight:400;font-size:11px;">— Teks merah & judul besar di sidebar</span></label>
+                        <input type="text" class="bo-input" x-model="cat.name" placeholder="Contoh: Program Internasional">
                     </div>
                     <div class="form-group">
-                        <label class="bo-label">Deskripsi Kategori</label>
-                        <textarea class="bo-textarea" rows="3" x-model="cat.desc"></textarea>
+                        <label class="bo-label">Subtitle / Sub-header <span style="color:#8A8478;font-weight:400;font-size:11px;">— Teks kecil di bawah judul</span></label>
+                        <input type="text" class="bo-input" x-model="cat.subtitle" placeholder="Contoh: Diploma Vokasi">
+                    </div>
+                    <div class="form-group">
+                        <label class="bo-label">Deskripsi Kategori <span style="color:#8A8478;font-weight:400;font-size:11px;">— Paragraf penjelasan di sidebar</span></label>
+                        <textarea class="bo-textarea" rows="3" x-model="cat.desc" placeholder="Deskripsi singkat tentang kategori program ini..."></textarea>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="bo-label">Peluang Kerja Lulusan</label>
-                        <input type="text" class="bo-input" x-model="cat.careers">
+                        <label class="bo-label">Peluang Kerja Lulusan <span style="color:#8A8478;font-weight:400;font-size:11px;">— Teks di bawah garis pemisah</span></label>
+                        <input type="text" class="bo-input" x-model="cat.careers" placeholder="Contoh: Hotel Bintang 5, Kapal Pesiar, Restoran Internasional">
                     </div>
                 </div>
 
@@ -138,9 +173,9 @@
 
     {{-- Global Save --}}
     <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
-        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()">
-            <span class="material-icons-round" style="font-size:20px;">save</span>
-            Simpan Seluruh Data Academy & Program
+        <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()" :disabled="saving">
+            <span class="material-icons-round" style="font-size:20px;" x-text="saving ? 'hourglass_empty' : 'save'"></span>
+            <span x-text="saving ? 'Menyimpan...' : 'Simpan Seluruh Data Academy & Program'"></span>
         </button>
     </div>
 </div>
@@ -180,6 +215,8 @@ $catData = $categories->map(function($cat) {
 function academyCompleteData() {
     return {
         saved: false,
+        saving: false,
+        errorMsg: '',
         activeCat: @json($categories->first() ? $categories->first()->id : null),
         hero: @json($academyHero),
         categories: @json($catData),
@@ -188,70 +225,112 @@ function academyCompleteData() {
             const cat = this.categories.find(c => c.id === catId);
             if (!cat) return;
             const title = prompt('Judul Program Baru:');
-            if (!title) return;
-            const formData = new FormData();
-            formData.append('category_id', catId);
-            formData.append('title', title);
-            formData.append('_token', '{{ csrf_token() }}');
-            fetch('/backoffice/program/store', { method: 'POST', body: formData })
-                .then(r => r.ok ? location.reload() : alert('Gagal menambah program.'));
+            if (!title || !title.trim()) return;
+            const token = '{{ csrf_token() }}';
+            fetch('/backoffice/program/store', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ category_id: catId, title: title.trim() })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success !== false) location.reload();
+                else alert('Gagal menambah program: ' + (data.message || ''));
+            })
+            .catch(() => alert('Gagal menambah program.'));
         },
 
         deleteCourse(courseId) {
             if (!confirm('Hapus program ini dari database?')) return;
             fetch(`/backoffice/program/${courseId}/delete`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'X-Requested-With': 'XMLHttpRequest' },
                 body: JSON.stringify({ id: courseId })
-            }).then(r => r.ok ? location.reload() : alert('Gagal menghapus program.'));
+            }).then(r => r.json()).then(() => location.reload()).catch(() => alert('Gagal menghapus program.'));
         },
 
         saveAll() {
+            if (this.saving) return;
+            this.saving = true;
+            this.errorMsg = '';
             const token = '{{ csrf_token() }}';
+            const jsonHeaders = { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest' };
             const promises = [];
 
             // 0. Save hero to about_pages (academy_hero key)
-            promises.push((() => {
-                const fd = new FormData();
-                fd.append('sections[academy_hero][title]', 'Akademi Hero');
-                fd.append('sections[academy_hero][content][title]', this.hero.title || '');
-                fd.append('sections[academy_hero][content][subtitle]', this.hero.subtitle || '');
-                fd.append('sections[academy_hero][content][bgImage]', this.hero.bgImage || '');
-                return fetch('/backoffice/about-us/update', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': token } });
-            })());
+            promises.push(fetch('/backoffice/about-us/update', {
+                method: 'POST',
+                headers: jsonHeaders,
+                body: JSON.stringify({
+                    sections: {
+                        academy_hero: {
+                            title: 'Akademi Hero',
+                            content: { title: this.hero.title || '', subtitle: this.hero.subtitle || '', bgImage: this.hero.bgImage || '' }
+                        }
+                    }
+                })
+            }));
 
-            // 1. Save each category (subtitle, desc, careers) to program_categories
+            // 1. Save each category to program_categories
             this.categories.forEach(cat => {
-                const fd = new FormData();
-                fd.append('category_name', cat.name);
-                fd.append('subtitle', cat.subtitle || '');
-                fd.append('description', cat.desc || '');
-                fd.append('career_opportunities', cat.careers || '');
-                fd.append('_token', token);
-                promises.push(fetch('/backoffice/program-category/' + cat.id + '/update', { method: 'POST', body: fd }));
+                promises.push(fetch('/backoffice/program-category/' + cat.id + '/update', {
+                    method: 'POST',
+                    headers: jsonHeaders,
+                    body: JSON.stringify({
+                        category_name: cat.name,
+                        subtitle: cat.subtitle || '',
+                        description: cat.desc || '',
+                        career_opportunities: cat.careers || ''
+                    })
+                }));
             });
 
             // 2. Save each program/course update
             this.categories.forEach(cat => {
                 cat.courses.forEach(course => {
-                    if (!course.id) return; // skip new unsaved courses
-                    const fd = new FormData();
-                    fd.append('title', course.title || '');
-                    fd.append('description', course.desc || '');
-                    fd.append('country_badge', course.country || '');
-                    fd.append('duration', course.duration || '');
-                    fd.append('is_active', course.is_active ? '1' : '0');
-                    fd.append('thumbnail_url', course.img || '');
-                    fd.append('_token', token);
-                    promises.push(fetch('/backoffice/program/' + course.id + '/update', { method: 'POST', body: fd }));
+                    if (!course.id) return;
+                    promises.push(fetch('/backoffice/program/' + course.id + '/update', {
+                        method: 'POST',
+                        headers: jsonHeaders,
+                        body: JSON.stringify({
+                            title: course.title || '',
+                            description: course.desc || '',
+                            country_badge: course.country || '',
+                            duration: course.duration || '',
+                            is_active: course.is_active ? 1 : 0,
+                            thumbnail_url: course.img || ''
+                        })
+                    }));
                 });
             });
 
-            Promise.all(promises).then(() => {
-                this.saved = true;
-                setTimeout(() => this.saved = false, 3500);
-                location.reload();
-            }).catch(() => alert('Gagal menyimpan data.'));
+            Promise.all(promises).then(async responses => {
+                const failed = [];
+                for (const r of responses) {
+                    if (!r.ok) {
+                        let msg = 'HTTP ' + r.status;
+                        try { const j = await r.json(); msg = j.message || j.error || JSON.stringify(j.errors || j); } catch(e) {}
+                        failed.push(msg);
+                    }
+                }
+                this.saving = false;
+                if (failed.length === 0) {
+                    this.saved = true;
+                    setTimeout(() => this.saved = false, 3500);
+                    location.reload();
+                } else {
+                    this.errorMsg = 'Gagal menyimpan: ' + failed[0];
+                    setTimeout(() => this.errorMsg = '', 8000);
+                }
+            }).catch(err => {
+                this.saving = false;
+                this.errorMsg = 'Terjadi kesalahan: ' + err.message;
+                setTimeout(() => this.errorMsg = '', 8000);
+            });
         }
     };
 }

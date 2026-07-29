@@ -97,8 +97,32 @@
                 <input type="text" class="bo-input" x-model="modal.form.website_url" placeholder="https://...">
             </div>
             <div class="form-group">
-                <label class="bo-label">Logo URL</label>
-                <input type="text" class="bo-input" x-model="modal.form.logo_url" placeholder="https://...logo.png">
+                <label class="bo-label">Logo Partner</label>
+                <div style="display:flex;align-items:flex-start;gap:14px;">
+                    <div style="width:90px;height:90px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                         @click="$refs.partnerLogoInput.click()">
+                        <template x-if="modal.form.logo_url">
+                            <img :src="modal.form.logo_url" style="width:100%;height:100%;object-fit:contain;">
+                        </template>
+                        <template x-if="!modal.form.logo_url">
+                            <span class="material-icons-round" style="color:#aaa;font-size:28px;">add_business</span>
+                        </template>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="display:flex;gap:8px;margin-bottom:8px;">
+                            <button type="button" class="btn-secondary" style="font-size:12px;padding:6px 12px;"
+                                    @click="$refs.partnerLogoInput.click()">
+                                <span class="material-icons-round" style="font-size:15px;vertical-align:middle;">upload</span> Upload Logo
+                            </button>
+                            <button type="button" x-show="modal.form.logo_url" class="btn-danger" style="font-size:11px;padding:4px 8px;"
+                                    @click="modal.form.logo_url = ''">
+                                <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                            </button>
+                        </div>
+                        <input type="text" class="bo-input" x-model="modal.form.logo_url" placeholder="Atau paste URL logo di sini" style="font-size:12px;">
+                    </div>
+                </div>
+                <input type="file" x-ref="partnerLogoInput" accept="image/*" style="display:none;" @change="uploadLogo($event)">
             </div>
             <div style="display:flex;gap:20px;">
                 <label style="display:flex;align-items:center;gap:6px;font-size:13px;">
@@ -157,6 +181,7 @@ function partnerData() {
         items: @json($partnerItems),
         modal: { open: false, mode: 'add', form: {}, editId: null },
         confirmDelete: { open: false, targetId: null },
+        _logoFile: null,
 
         openModal(mode, item = null) {
             this.modal.mode = mode;
@@ -165,7 +190,16 @@ function partnerData() {
                 name: '', partner_group: 'mitra_industri', type: 'hotel', country: '', description: '',
                 website_url: '', logo_url: '', is_active: true, is_featured: false
             };
+            this._logoFile = null;
             this.modal.open = true;
+        },
+
+        uploadLogo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maksimal 5MB.'); return; }
+            this._logoFile = file;
+            this.modal.form.logo_url = URL.createObjectURL(file);
         },
 
         saveItem() {
@@ -178,9 +212,14 @@ function partnerData() {
             fd.append('country', this.modal.form.country);
             fd.append('description', this.modal.form.description);
             fd.append('website_url', this.modal.form.website_url);
-            fd.append('logo_url', this.modal.form.logo_url);
             fd.append('is_active', this.modal.form.is_active ? '1' : '0');
             fd.append('is_featured', this.modal.form.is_featured ? '1' : '0');
+
+            if (this._logoFile) {
+                fd.append('logo_file', this._logoFile);
+            } else {
+                fd.append('logo_url', this.modal.form.logo_url || '');
+            }
 
             const url = this.modal.mode === 'add'
                 ? '/backoffice/partner/store'
@@ -194,9 +233,12 @@ function partnerData() {
         confirmDeleteItem() {
             fetch(`/backoffice/partner/${this.confirmDelete.targetId}/delete`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'X-Requested-With': 'XMLHttpRequest' },
                 body: JSON.stringify({ id: this.confirmDelete.targetId })
-            }).then(r => r.ok ? location.reload() : alert('Gagal menghapus.'));
+            }).then(r => {
+                if (r.ok) { location.reload(); }
+                else { r.json().then(j => alert('Gagal: ' + (j.message || j.error || 'Unknown error'))).catch(() => alert('Gagal menghapus.')); }
+            }).catch(() => alert('Terjadi kesalahan jaringan.'));
         }
     };
 }

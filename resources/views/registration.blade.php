@@ -82,15 +82,15 @@ if (isset($categories) && $categories->count() > 0) {
 
     <div class="relative z-20 px-6 max-w-5xl mx-auto pt-24 text-white" data-reveal="fade-up">
         <div class="mb-6 inline-flex items-center space-x-2 justify-center text-white/80 text-xs font-semibold uppercase tracking-wider">
-            <a class="hover:text-white transition-colors" href="/">Beranda</a>
+            <a class="hover:text-white transition-colors" href="/"><span data-id="Beranda" data-en="Home">Beranda</span></a>
             <span class="material-icons text-sm text-white/40">chevron_right</span>
-            <span class="text-white font-bold">Formulir Pendaftaran</span>
+            <span class="text-white font-bold"><span data-id="Formulir Pendaftaran" data-en="Registration Form">Formulir Pendaftaran</span></span>
         </div>
         <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-[1.1]">
-            Program & Formulir Pendaftaran
+            <span data-id="Program &amp; Formulir Pendaftaran" data-en="Programs &amp; Registration Form">Program & Formulir Pendaftaran</span>
         </h1>
         <p class="text-xs md:text-sm uppercase tracking-[0.25em] text-white/70 font-medium">
-            Pilih Program Studi & Daftarkan Diri Anda Secara Online
+            <span data-id="Pilih Program Studi &amp; Daftarkan Diri Anda Secara Online" data-en="Choose Your Study Program &amp; Register Online">Pilih Program Studi & Daftarkan Diri Anda Secara Online</span>
         </p>
     </div>
 </section>
@@ -99,7 +99,7 @@ if (isset($categories) && $categories->count() > 0) {
 <main class="pt-16 pb-24">
     <!-- Category Duration Filter -->
     <section class="max-w-[1280px] mx-auto px-5 md:px-16 mb-12" data-reveal="fade-up">
-        <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">PILIH KATEGORI DURASI PROGRAM</span>
+        <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block"><span data-id="PILIH KATEGORI DURASI PROGRAM" data-en="SELECT PROGRAM DURATION CATEGORY">PILIH KATEGORI DURASI PROGRAM</span></span>
         <div class="flex flex-wrap gap-3 border-b border-black/10 pb-6" id="reg-filter-tabs">
             <button class="filter-tab-btn px-5 py-2.5 bg-dhs-navy text-white text-[0.75rem] uppercase tracking-[0.12em] font-semibold transition-all" data-target="internasional">Program Internasional</button>
             <button class="filter-tab-btn px-5 py-2.5 bg-transparent border border-black/20 text-text-light text-[0.75rem] uppercase tracking-[0.12em] font-semibold hover:border-text-light transition-all" data-target="2-tahun">Vokasi 2 Tahun</button>
@@ -382,10 +382,10 @@ if (isset($categories) && $categories->count() > 0) {
         <div class="bg-white border border-black/10 rounded-2xl p-8 md:p-12 shadow-md">
             
             <div class="text-center mb-10">
-                <span class="text-[0.7rem] uppercase tracking-[0.2em] font-bold text-primary mb-2 block">PENDAFTARAN ONLINE</span>
-                <h2 class="text-3xl md:text-4xl font-serif font-bold text-dhs-navy mb-3">FORMULIR PENDAFTARAN DENPASAR HOTEL SCHOOL</h2>
+                <span class="text-[0.7rem] uppercase tracking-[0.2em] font-bold text-primary mb-2 block"><span data-id="PENDAFTARAN ONLINE" data-en="ONLINE REGISTRATION">PENDAFTARAN ONLINE</span></span>
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-dhs-navy mb-3"><span data-id="FORMULIR PENDAFTARAN DENPASAR HOTEL SCHOOL" data-en="DENPASAR HOTEL SCHOOL REGISTRATION FORM">FORMULIR PENDAFTARAN DENPASAR HOTEL SCHOOL</span></h2>
                 <p class="text-sm text-muted-light max-w-xl mx-auto">
-                    Silakan lengkapi formulir pendaftaran di bawah ini. Tim admisi DHS akan segera menghubungi Anda.
+                    <span data-id="Silakan lengkapi formulir pendaftaran di bawah ini. Tim admisi DHS akan segera menghubungi Anda." data-en="Please complete the registration form below. The DHS admissions team will contact you shortly.">Silakan lengkapi formulir pendaftaran di bawah ini. Tim admisi DHS akan segera menghubungi Anda.</span>
                 </p>
             </div>
 
@@ -414,7 +414,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Nama Lengkap -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Nama Lengkap" data-en="Full Name">Nama Lengkap</span> <span class="text-red-500">*</span></label>
                     <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}"
                         placeholder="Masukkan nama lengkap Anda"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all @error('nama_lengkap') border-red-400 @enderror"
@@ -423,7 +423,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- HP/WA -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2">HP / WA <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="HP / WA" data-en="Phone / WhatsApp">HP / WA</span> <span class="text-red-500">*</span></label>
                     <input type="tel" name="hp_wa" value="{{ old('hp_wa') }}"
                         placeholder="08xxxxxxxxxx (aktif di WhatsApp)"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all @error('hp_wa') border-red-400 @enderror"
@@ -432,7 +432,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Email -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2">Email <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Email" data-en="Email">Email</span> <span class="text-red-500">*</span></label>
                     <input type="email" name="email" value="{{ old('email') }}"
                         placeholder="alamat@email.com"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all @error('email') border-red-400 @enderror"
@@ -441,7 +441,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Pilih Kategori Durasi -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2">Pilih Kategori Durasi <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Pilih Kategori Durasi" data-en="Select Duration Category">Pilih Kategori Durasi</span> <span class="text-red-500">*</span></label>
                     <select name="kategori" id="reg-kategori"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all bg-white cursor-pointer @error('kategori') border-red-400 @enderror"
                         required>
@@ -454,7 +454,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Daftar Program -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2">Daftar Program <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Daftar Program" data-en="Select Program">Daftar Program</span> <span class="text-red-500">*</span></label>
                     <select name="program" id="reg-program"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all bg-white cursor-pointer @error('program') border-red-400 @enderror"
                         required>
@@ -465,7 +465,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Special Request -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2">Special Request</label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Special Request" data-en="Special Request">Special Request</span></label>
                     <textarea name="special_request" rows="3"
                         placeholder="tuliskan hal yang Denpasar Hotel School perlu tindak lanjuti, misalnya hari, waktu dan lainnya"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none">{{ old('special_request') }}</textarea>
@@ -473,7 +473,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Unggah Bukti Biaya Pendaftaran -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-1">Unggah Bukti Biaya Pendaftaran (jika ada)</label>
+                    <label class="block text-sm font-semibold text-text-light mb-1"><span data-id="Unggah Bukti Biaya Pendaftaran (jika ada)" data-en="Upload Registration Fee Proof (if applicable)">Unggah Bukti Biaya Pendaftaran (jika ada)</span></label>
                     <p class="text-xs text-muted-light mb-2">note: size file max 2mb</p>
                     <div class="border-2 border-dashed border-black/15 rounded-lg px-4 py-4 flex items-center gap-3 hover:border-primary/40 transition-colors cursor-pointer" onclick="document.getElementById('bukti_pendaftaran').click()">
                         <span class="material-icons text-muted-light">upload_file</span>
@@ -487,7 +487,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Unggah Bukti Biaya Program -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-1">Unggah Bukti Biaya Program (jika ada)</label>
+                    <label class="block text-sm font-semibold text-text-light mb-1"><span data-id="Unggah Bukti Biaya Program (jika ada)" data-en="Upload Program Fee Proof (if applicable)">Unggah Bukti Biaya Program (jika ada)</span></label>
                     <p class="text-xs text-muted-light mb-2">note: size file max 2mb</p>
                     <div class="border-2 border-dashed border-black/15 rounded-lg px-4 py-4 flex items-center gap-3 hover:border-primary/40 transition-colors cursor-pointer" onclick="document.getElementById('bukti_program').click()">
                         <span class="material-icons text-muted-light">upload_file</span>
@@ -501,7 +501,7 @@ if (isset($categories) && $categories->count() > 0) {
 
                 <!-- Informasi Diperoleh Dari -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-3">Informasi tentang Denpasar Hotel School diperoleh dari:</label>
+                    <label class="block text-sm font-semibold text-text-light mb-3"><span data-id="Informasi tentang Denpasar Hotel School diperoleh dari:" data-en="How did you hear about Denpasar Hotel School?">Informasi tentang Denpasar Hotel School diperoleh dari:</span></label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         @foreach(['Keluarga', 'Teman', 'Lembaga Tempat Belajar atau Kerja', 'Media Sosial', 'Situs Denpasar Hotel School', 'Pameran Pendidikan', 'Lainnya'] as $src)
                         <label class="flex items-center gap-3 cursor-pointer group">
@@ -518,11 +518,11 @@ if (isset($categories) && $categories->count() > 0) {
                 <div class="flex justify-end gap-3 pt-6 border-t border-black/10">
                     <button type="reset" onclick="resetFormState()"
                         class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 border border-black/10 text-text-light text-xs font-semibold rounded transition-all">
-                        Batal
+                        <span data-id="Batal" data-en="Cancel">Batal</span>
                     </button>
                     <button type="submit"
                         class="px-7 py-2.5 bg-dhs-navy hover:bg-primary text-white text-xs font-semibold rounded transition-all shadow-sm">
-                        Kirim
+                        <span data-id="Kirim" data-en="Submit">Kirim</span>
                     </button>
                 </div>
             </form>
@@ -545,9 +545,9 @@ if (isset($categories) && $categories->count() > 0) {
         <div class="bg-white border border-black/10 rounded-2xl p-8 md:p-10 shadow-sm">
             <div class="flex flex-col md:flex-row md:items-center gap-8">
                 <div class="flex-1">
-                    <span class="text-[0.7rem] uppercase tracking-[0.2em] font-bold text-primary mb-2 block">BUTUH BANTUAN?</span>
-                    <h3 class="text-2xl md:text-3xl font-serif font-bold text-dhs-navy mb-2 leading-tight">Hubungi Tim Admisi</h3>
-                    <p class="text-sm text-muted-light">Tim helpdesk kami siap menjawab pertanyaan Anda seputar program dan pendaftaran.</p>
+                    <span class="text-[0.7rem] uppercase tracking-[0.2em] font-bold text-primary mb-2 block"><span data-id="BUTUH BANTUAN?" data-en="NEED HELP?">BUTUH BANTUAN?</span></span>
+                    <h3 class="text-2xl md:text-3xl font-serif font-bold text-dhs-navy mb-2 leading-tight"><span data-id="Hubungi Tim Admisi" data-en="Contact Admissions Team">Hubungi Tim Admisi</span></h3>
+                    <p class="text-sm text-muted-light"><span data-id="Tim helpdesk kami siap menjawab pertanyaan Anda seputar program dan pendaftaran." data-en="Our helpdesk team is ready to answer your questions about programs and registration.">Tim helpdesk kami siap menjawab pertanyaan Anda seputar program dan pendaftaran.</span></p>
                 </div>
                 <div class="flex flex-col gap-4 md:min-w-[260px]">
                     {{-- WhatsApp --}}

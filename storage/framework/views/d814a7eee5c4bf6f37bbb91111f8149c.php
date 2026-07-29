@@ -51,10 +51,27 @@
     $directorP2 = $aboutDirector['p2'] ?? '';
     $directorPhoto = !empty($aboutDirector['photo']) ? $aboutDirector['photo'] : 'https://lh3.googleusercontent.com/aida-public/AB6AXuDeYrRiWE5PIngmO86w0Cn5hPsDfiG59HTAVn8-asaEPcvD_fxcdAfcXy_4KR3Pj-pL3DyMS_WN9hCkZFO-lSelGflhgKm5r2oTS_3HJ83ZvydeMvZY_QKmjAItPrh0n3Yvymm1YaFTXkLZpopTGMNQl17m_JEFUai2rxAdUHMzWu383ihOl9jx19ZEtRwSlqf0azKeZNaeaNPVSW6SAXdOP0RroYx1ZflK8JBFkyTsOLiVdTtucCRmxQ';
 
-    $leaderName  = $aboutLeader['name'] ?? 'I Made Dwija Suastana, S.H., M.H.';
-    $leaderTitle = $aboutLeader['title'] ?? 'Direktur Denpasar Hotel School';
-    $leaderBio   = $aboutLeader['bio'] ?? 'Memimpin Denpasar Hotel School (DHS) dengan komitmen penuh untuk mencetak SDM unggul berdaya saing global.';
-    $leaderPhoto = !empty($aboutLeader['photo']) ? $aboutLeader['photo'] : $directorPhoto;
+    // Baca tim kepemimpinan — support format baru (array members) dan lama (single object)
+    if (isset($aboutLeader['members']) && is_array($aboutLeader['members']) && count($aboutLeader['members']) > 0) {
+        $leaderTeam = $aboutLeader['members'];
+    } elseif (!empty($aboutLeader['name'])) {
+        // Backward compat: format lama single object
+        $leaderTeam = [[
+            'name'  => $aboutLeader['name']  ?? 'I Made Dwija Suastana, S.H., M.H.',
+            'title' => $aboutLeader['title'] ?? 'Direktur Denpasar Hotel School',
+            'bio'   => $aboutLeader['bio']   ?? 'Memimpin Denpasar Hotel School (DHS) dengan komitmen penuh untuk mencetak SDM unggul berdaya saing global.',
+            'photo' => !empty($aboutLeader['photo']) ? $aboutLeader['photo'] : $directorPhoto,
+        ]];
+    } else {
+        $leaderTeam = [
+            [
+                'name'  => 'I Made Dwija Suastana, S.H., M.H.',
+                'title' => 'Direktur Denpasar Hotel School',
+                'bio'   => 'Memimpin Denpasar Hotel School (DHS) dengan komitmen penuh untuk mencetak SDM unggul berdaya saing global.',
+                'photo' => $directorPhoto,
+            ]
+        ];
+    }
 
     $ctaTitle  = $aboutCta['title'] ?? 'Jadilah Bagian dari Keluarga DHS';
     $ctaDesc   = $aboutCta['desc'] ?? 'Bergabunglah dengan ribuan alumni kami yang telah berhasil membangun karir gemilang di industri hospitality global.';
@@ -66,7 +83,7 @@
 
 <?php $__env->startSection('content'); ?>
     <!-- Hero Section -->
-    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
+    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden mb-16 md:mb-24">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
         <img alt="DHS Campus panoramic view" class="absolute inset-0 w-full h-full object-cover"
             src="<?php echo e($heroBgImage); ?>">
@@ -87,11 +104,11 @@
     </section>
 
     <!-- Tagline / Intro -->
-    <section class="bg-white py-20 md:py-28 px-5 md:px-16 max-w-[1280px] mx-auto">
+    <section class="bg-white pt-24 md:pt-32 pb-20 md:pb-28 px-5 md:px-16 max-w-[1280px] mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div data-reveal="fade-right">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
-                    <span data-id="<?php echo e($introLabel); ?>" data-en="<?php echo e($introLabel); ?>"><?php echo e($introLabel); ?></span>
+                    <span data-id="<?php echo e($introLabel); ?>" data-en="ABOUT DHS"><?php echo e($introLabel); ?></span>
                 </span>
                 <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6">
                     <span data-id="<?php echo e($introHeadline); ?>" data-en="<?php echo e($introHeadline); ?>"><?php echo e($introHeadline); ?></span>
@@ -187,7 +204,7 @@
     <section class="bg-white py-20 md:py-24 px-5 md:px-16 max-w-[1280px] mx-auto border-t border-black/5">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
             <div class="md:col-span-1" data-reveal="fade-right">
-                <img class="w-full h-auto object-cover border border-black/10" alt="<?php echo e($leaderName); ?>"
+                <img class="w-full h-auto object-cover border border-black/10" alt="<?php echo e($leaderTeam[0]['name'] ?? 'Direktur DHS'); ?>"
                     src="<?php echo e($directorPhoto); ?>">
             </div>
             <div class="md:col-span-2 text-text-light" data-reveal="fade-left" data-delay="200">
@@ -202,7 +219,7 @@
                     <?php if($directorP2): ?>
                     <p><span data-id="<?php echo e($directorP2); ?>" data-en="<?php echo e($directorP2); ?>"><?php echo e($directorP2); ?></span></p>
                     <?php endif; ?>
-                    <p class="font-bold text-primary pt-4">Salam Excellent!<br>— <?php echo e($leaderName); ?> (<span data-id="Direktur" data-en="Director">Direktur</span>)</p>
+                    <p class="font-bold text-primary pt-4">Salam Excellent!<br>— <?php echo e($leaderTeam[0]['name'] ?? 'Direktur DHS'); ?> (<span data-id="Direktur" data-en="Director">Direktur</span>)</p>
                 </div>
             </div>
         </div>
@@ -219,17 +236,35 @@
                     <span data-id="Tim Kepemimpinan" data-en="Leadership Team">Tim Kepemimpinan</span>
                 </h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
-                <div class="group text-center mx-auto md:col-start-2" data-reveal="zoom-in">
+
+            <?php
+                $count = count($leaderTeam);
+                $gridClass = match(true) {
+                    $count === 1 => 'grid grid-cols-1 justify-items-center',
+                    $count === 2 => 'grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto',
+                    default      => 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8',
+                };
+            ?>
+
+            <div class="<?php echo e($gridClass); ?>">
+                <?php $__currentLoopData = $leaderTeam; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
+                    $mName  = $member['name']  ?? '';
+                    $mTitle = $member['title'] ?? '';
+                    $mBio   = $member['bio']   ?? '';
+                    $mPhoto = !empty($member['photo']) ? $member['photo'] : $directorPhoto;
+                ?>
+                <div class="group text-center <?php echo e($count === 1 ? 'mx-auto max-w-xs' : ''); ?>" data-reveal="zoom-in" data-delay="<?php echo e($i * 100); ?>">
                     <div class="relative overflow-hidden mb-6 aspect-square max-w-[280px] mx-auto">
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            alt="<?php echo e($leaderName); ?>"
-                            src="<?php echo e($leaderPhoto); ?>">
+                            alt="<?php echo e($mName); ?>"
+                            src="<?php echo e($mPhoto); ?>">
                     </div>
-                    <h3 class="text-[20px] font-semibold font-serif text-text-light mb-1"><?php echo e($leaderName); ?></h3>
-                    <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-3"><span data-id="<?php echo e($leaderTitle); ?>" data-en="<?php echo e($leaderTitle); ?>"><?php echo e($leaderTitle); ?></span></p>
-                    <p class="text-sm text-muted-light leading-relaxed"><span data-id="<?php echo e($leaderBio); ?>" data-en="<?php echo e($leaderBio); ?>"><?php echo e($leaderBio); ?></span></p>
+                    <h3 class="text-[20px] font-semibold font-serif text-text-light mb-1"><?php echo e($mName); ?></h3>
+                    <p class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-3"><span data-id="<?php echo e($mTitle); ?>" data-en="<?php echo e($mTitle); ?>"><?php echo e($mTitle); ?></span></p>
+                    <p class="text-sm text-muted-light leading-relaxed"><span data-id="<?php echo e($mBio); ?>" data-en="<?php echo e($mBio); ?>"><?php echo e($mBio); ?></span></p>
                 </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
     </section>
@@ -252,20 +287,26 @@
             $renderCard = function($item) {
                 $name = e($item['name'] ?? '');
                 $sub  = e($item['sub'] ?? '');
+                $logo = $item['logo_url'] ?? '';
                 $font = 'font-sans text-sm font-bold tracking-wider';
                 $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex items-center justify-center w-48 h-24 p-4 cursor-default select-none shrink-0 rounded-lg">';
-                $out .= '<div class="text-center">';
-                $out .= '<div class="' . $font . ' text-dhs-navy">' . $name . '</div>';
-                if ($sub) {
-                    $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
+                if ($logo) {
+                    $out .= '<div class="flex items-center justify-center w-full h-full"><img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy"></div>';
+                } else {
+                    $out .= '<div class="text-center">';
+                    $out .= '<div class="' . $font . ' text-dhs-navy">' . $name . '</div>';
+                    if ($sub) {
+                        $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
+                    }
+                    $out .= '</div>';
                 }
-                $out .= '</div></div>';
+                $out .= '</div>';
                 return $out;
             };
             $marqueeItems = function($items) use ($renderCard) {
                 $out = '';
-                foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null]); }
-                foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null]); }
+                foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'logo_url' => $item['logo_url'] ?? '']); }
+                foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'logo_url' => $item['logo_url'] ?? '']); }
                 return $out;
             };
             $mitraIndustri = ($partners ?? collect())->filter(fn($p) => $p->partner_group === 'mitra_industri')->values();
@@ -277,7 +318,7 @@
             
             <?php if($mitraIndustri->count() > 0): ?>
             <div class="marquee-container relative flex overflow-hidden w-full">
-                <div class="flex shrink-0 gap-6 py-4 animate-marquee-left">
+                <div class="marquee-track flex shrink-0 gap-6 py-4 animate-marquee-left" data-direction="left">
                     <?php echo $marqueeItems($mitraIndustri); ?>
 
                 </div>
@@ -286,7 +327,7 @@
             
             <?php if($partnershipItems->count() > 0): ?>
             <div class="marquee-container relative flex overflow-hidden w-full">
-                <div class="flex shrink-0 gap-6 py-4 animate-marquee-right">
+                <div class="marquee-track flex shrink-0 gap-6 py-4 animate-marquee-right" data-direction="right">
                     <?php echo $marqueeItems($partnershipItems); ?>
 
                 </div>
@@ -298,24 +339,52 @@
 
     <style>
         @keyframes marquee-left {
-            0% { transform: translateX(0); }
+            0%   { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
         @keyframes marquee-right {
-            0% { transform: translateX(-50%); }
+            0%   { transform: translateX(-50%); }
             100% { transform: translateX(0); }
         }
         .animate-marquee-left {
-            animation: marquee-left 40s linear infinite;
+            animation: marquee-left var(--dur, 40s) linear infinite;
+            will-change: transform;
+            backface-visibility: hidden;
         }
         .animate-marquee-right {
-            animation: marquee-right 40s linear infinite;
+            animation: marquee-right var(--dur, 40s) linear infinite;
+            will-change: transform;
+            backface-visibility: hidden;
         }
         .marquee-container:hover .animate-marquee-left,
         .marquee-container:hover .animate-marquee-right {
             animation-play-state: paused;
         }
     </style>
+    <script>
+    (function() {
+        var PX_PER_SECOND = 80;
+        function initMarquee() {
+            document.querySelectorAll('.marquee-track').forEach(function(track) {
+                var halfWidth = track.scrollWidth / 2;
+                if (halfWidth > 0) {
+                    var duration = halfWidth / PX_PER_SECOND;
+                    track.style.setProperty('--dur', duration.toFixed(2) + 's');
+                }
+            });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMarquee);
+        } else {
+            initMarquee();
+        }
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(initMarquee, 200);
+        });
+    })();
+    </script>
 
     <!-- CTA Section -->
     <section class="bg-dhs-navy py-20 md:py-24 px-5 md:px-16">

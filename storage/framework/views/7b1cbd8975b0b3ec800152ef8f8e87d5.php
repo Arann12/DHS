@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
@@ -439,6 +439,7 @@
                 transform 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
         }
     </style>
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body class="bg-background-light text-text-light font-sans antialiased transition-colors">
@@ -761,6 +762,177 @@
             handleScroll();
         })();
     </script>
+
+    
+    <div id="google_translate_element2"></div>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'id',
+            includedLanguages: 'id,en,ja,ko,zh-CN,ar,fr,de,es,it,pt,ru,th,vi,ms,tl,hi,nl',
+            autoDisplay: false
+        }, 'google_translate_element2');
+    }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    
+    <div id="lang-switcher">
+        <button id="lang-btn" onclick="toggleLangMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+            </svg>
+        </button>
+        <div id="lang-menu" class="lang-menu">
+            <div class="lang-menu-title">Pilih Bahasa</div>
+            <button onclick="switchLang('id')">🇮🇩 Indonesia</button>
+            <button onclick="switchLang('en')">🇬🇧 English</button>
+            <button onclick="switchLang('ja')">🇯🇵 日本語</button>
+            <button onclick="switchLang('ko')">🇰🇷 한국어</button>
+            <button onclick="switchLang('zh-CN')">🇨🇳 中文</button>
+            <button onclick="switchLang('ar')">🇸🇦 العربية</button>
+            <button onclick="switchLang('fr')">🇫🇷 Français</button>
+            <button onclick="switchLang('de')">🇩🇪 Deutsch</button>
+            <button onclick="switchLang('es')">🇪🇸 Español</button>
+            <button onclick="switchLang('it')">🇮🇹 Italiano</button>
+            <button onclick="switchLang('pt')">🇵🇹 Português</button>
+            <button onclick="switchLang('ru')">🇷🇺 Русский</button>
+            <button onclick="switchLang('th')">🇹🇭 ไทย</button>
+            <button onclick="switchLang('vi')">🇻🇳 Tiếng Việt</button>
+            <button onclick="switchLang('ms')">🇲🇾 Bahasa Melayu</button>
+            <button onclick="switchLang('tl')">🇵🇭 Filipino</button>
+            <button onclick="switchLang('hi')">🇮🇳 हिन्दी</button>
+            <button onclick="switchLang('nl')">🇳🇱 Nederlands</button>
+        </div>
+    </div>
+    <script>
+    function toggleLangMenu() {
+        document.getElementById('lang-menu').classList.toggle('lang-show');
+    }
+    function switchLang(lang) {
+        var combo = document.querySelector('#google_translate_element2 .goog-te-combo');
+        if (combo) {
+            combo.value = lang;
+            combo.dispatchEvent(new Event('change'));
+        }
+        document.getElementById('lang-menu').classList.remove('lang-show');
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#lang-switcher')) {
+            document.getElementById('lang-menu').classList.remove('lang-show');
+        }
+    });
+    </script>
+
+    <style>
+    /* Hide Google's default elements completely */
+    .goog-te-banner-frame,
+    .goog-te-spinner-pos,
+    #goog-gt-tt,
+    .goog-tooltip,
+    .goog-text-highlight,
+    .goog-te-menu-frame,
+    .skiptranslate {
+        display: none !important;
+        visibility: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: auto !important;
+        width: 0 !important;
+        height: 0 !important;
+        pointer-events: none !important;
+    }
+    #google_translate_element2 {
+        display: none !important;
+    }
+    body {
+        top: 0 !important;
+    }
+
+    /* ── Custom Language Switcher ── */
+    #lang-switcher {
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        z-index: 9999;
+    }
+
+    #lang-btn {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, #0E06B4, #2B2494);
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(14,6,180,0.35);
+        transition: box-shadow 0.3s, transform 0.2s;
+    }
+    #lang-btn:hover {
+        box-shadow: 0 6px 28px rgba(14,6,180,0.45);
+        transform: scale(1.08);
+    }
+
+    .lang-menu {
+        position: absolute;
+        bottom: 64px;
+        left: 0;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        width: 200px;
+        max-height: 360px;
+        overflow-y: auto;
+        padding: 8px 0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.25s ease;
+    }
+    .lang-menu.lang-show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .lang-menu-title {
+        padding: 8px 16px 4px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+    }
+
+    .lang-menu button {
+        display: block;
+        width: 100%;
+        padding: 10px 16px;
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        color: #333;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .lang-menu button:hover {
+        background: #f0f0ff;
+    }
+    .lang-menu::-webkit-scrollbar {
+        width: 4px;
+    }
+    .lang-menu::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+    }
+    </style>
+
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
 </html><?php /**PATH D:\laragon\www\DHS\resources\views/layouts/app.blade.php ENDPATH**/ ?>

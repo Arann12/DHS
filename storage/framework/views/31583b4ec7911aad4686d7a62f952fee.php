@@ -12,17 +12,23 @@
     $facebookUrl = $footerSettings['facebook_url'] ?? '#';
     $youtubeUrl = $footerSettings['youtube_url'] ?? '#';
     $copyright = $footerSettings['copyright'] ?? '© 2026 DENPASAR HOTEL SCHOOL.';
-    $exploreLinks = json_decode($footerSettings['explore_links'] ?? '[]', true) ?? [
-        ['label' => 'Beranda', 'url' => '/'],
-        ['label' => 'Sekilas DHS', 'url' => '/tentang-kami'],
-        ['label' => 'Akademi', 'url' => '/akademi'],
-        ['label' => 'Berita & Artikel', 'url' => '/berita'],
-    ];
-    $admissionLinks = json_decode($footerSettings['admission_links'] ?? '[]', true) ?? [
-        ['label' => 'Pendaftaran Online', 'url' => '/formulir-pendaftaran'],
-        ['label' => 'FAQ', 'url' => '/faq'],
-        ['label' => 'Karier', 'url' => '/karier'],
-    ];
+    $exploreLinks = json_decode($footerSettings['explore_links'] ?? '[]', true);
+    if (empty($exploreLinks)) {
+        $exploreLinks = [
+            ['label' => 'Beranda', 'url' => '/'],
+            ['label' => 'Sekilas DHS', 'url' => '/tentang-kami'],
+            ['label' => 'Akademi', 'url' => '/akademi'],
+            ['label' => 'Berita & Artikel', 'url' => '/berita'],
+        ];
+    }
+    $admissionLinks = json_decode($footerSettings['admission_links'] ?? '[]', true);
+    if (empty($admissionLinks)) {
+        $admissionLinks = [
+            ['label' => 'Pendaftaran Online', 'url' => '/formulir-pendaftaran'],
+            ['label' => 'FAQ', 'url' => '/faq'],
+            ['label' => 'Karier', 'url' => '/karier'],
+        ];
+    }
 ?>
 
 <footer class="bg-surface-light pt-16 pb-8 px-6 md:px-16 border-t border-black/5">

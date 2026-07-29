@@ -137,7 +137,12 @@ class FrontendController extends Controller
             ->with('author')
             ->firstOrFail();
 
-        $article->increment('views_count');
+        // Session-based: only increment once per visitor per article
+        $sessionKey = 'viewed_article_' . $article->id;
+        if (!session()->has($sessionKey)) {
+            $article->increment('views_count');
+            session()->put($sessionKey, true);
+        }
 
         $related = NewsArticle::where('status', 'dipublikasikan')
             ->where('id', '!=', $article->id)
@@ -148,6 +153,22 @@ class FrontendController extends Controller
         $shared = $this->shared();
 
         return view('detail-berita', array_merge($shared, compact('article', 'related')));
+    }
+
+    /**
+     * AJAX endpoint: return current views_count for an article.
+     */
+    public function getArticleViews($slug)
+    {
+        $article = NewsArticle::where('slug', $slug)
+            ->select('views_count')
+            ->first();
+
+        if (!$article) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+
+        return response()->json(['views_count' => $article->views_count]);
     }
 
     public function berita(Request $request)

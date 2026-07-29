@@ -2,7 +2,7 @@
     class="fixed w-full z-50 py-5 px-8 md:px-16 flex justify-between items-center nav-transparent relative">
 
     <!-- ── Left Menu: Beranda, Tentang Kami, Akademi ── -->
-    <div class="hidden md:flex items-center space-x-8 text-xs font-light tracking-wide flex-1">
+    <div class="hidden md:flex items-center justify-start space-x-8 text-xs font-light tracking-wide flex-1">
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('/') ? 'nav-link-active' : '' }}"
             href="/"><span data-id="Beranda" data-en="Home">Beranda</span></a>
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('tentang-kami') ? 'nav-link-active' : '' }}"
@@ -11,7 +11,7 @@
             href="/akademi"><span data-id="Akademi" data-en="Academy">Akademi</span></a>
     </div>
 
-    <!-- ── Centered Logo (Absolute 50% Centered with Space Above) ── -->
+    <!-- ── Centered Logo (Absolute 50% Centered) ── -->
     <a class="nav-logo absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center focus:outline-none transition-transform hover:scale-105"
         href="/">
         <img src="{{ isset($navLogo) ? asset(ltrim($navLogo, '/')) : asset('image/LogoDHS.png') }}" alt="Logo DHS"
@@ -19,10 +19,8 @@
             style="max-height: 46px; width: auto; aspect-ratio: auto; image-rendering: -webkit-optimize-contrast;">
     </a>
 
-
-
-    <!-- ── Right Menu & Language Switcher: Berita, FAQ, Formulir Pendaftaran, Fitur Bahasa ── -->
-    <div class="hidden md:flex items-center space-x-8 text-xs font-light tracking-wide flex-1 justify-end">
+    <!-- ── Right Menu: Berita, FAQ, Formulir Pendaftaran ── -->
+    <div class="hidden md:flex items-center justify-end space-x-8 text-xs font-light tracking-wide flex-1">
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('berita') ? 'nav-link-active' : '' }}"
             href="/berita"><span data-id="Berita" data-en="News">Berita</span></a>
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('faq') ? 'nav-link-active' : '' }}"
@@ -30,31 +28,6 @@
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('formulir-pendaftaran') ? 'nav-link-active' : '' }}"
             href="/formulir-pendaftaran"><span data-id="Formulir Pendaftaran" data-en="Registration Form">Formulir
                 Pendaftaran</span></a>
-
-        <!-- Fitur Bahasa (Desain Asli / Lama) -->
-        <div class="relative" id="lang-switcher">
-            <button id="lang-btn" onclick="toggleLangDropdown()"
-                class="text-xs font-light tracking-wide flex items-center gap-1.5 hover:opacity-70 transition-opacity focus:outline-none px-2 py-1">
-                <span class="material-icons text-base">language</span>
-                <span id="lang-label">ID</span>
-                <span class="material-icons text-sm transition-transform duration-300 ease-out"
-                    id="lang-chevron">expand_more</span>
-            </button>
-            <div id="lang-dropdown" class="absolute right-0 mt-2 w-36 bg-white border border-black/10 shadow-xl rounded-sm overflow-hidden
-                        opacity-0 scale-95 pointer-events-none
-                        transition-all duration-250 ease-out origin-top-right text-text-light">
-                <button onclick="setLang('ID')"
-                    class="lang-option w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-text-light hover:bg-primary/5 hover:text-primary transition-colors text-left"
-                    data-lang="ID">
-                    <span class="text-base">🇮🇩</span> Indonesia
-                </button>
-                <button onclick="setLang('EN')"
-                    class="lang-option w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-text-light hover:bg-primary/5 hover:text-primary transition-colors text-left"
-                    data-lang="EN">
-                    <span class="text-base">🇬🇧</span> English
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- ── Mobile Menu Toggle Button (Mobile Only) ── -->
@@ -106,8 +79,7 @@
     }
 
     .nav-transparent .nav-logo,
-    .nav-transparent .nav-link,
-    .nav-transparent #lang-btn {
+    .nav-transparent .nav-link {
         color: #ffffff;
     }
 
@@ -129,8 +101,7 @@
     }
 
     .nav-glass .nav-logo,
-    .nav-glass .nav-link,
-    .nav-glass #lang-btn {
+    .nav-glass .nav-link {
         color: #0010B8;
     }
 
@@ -142,76 +113,11 @@
 </style>
 
 <script>
-
-    /* ─── Language Switcher ─── */
-    var langOpen = false;
-
-    function applyTranslations(lang) {
-        document.querySelectorAll('[data-id][data-en]').forEach(function (el) {
-            var val = lang === 'EN' ? el.getAttribute('data-en') : el.getAttribute('data-id');
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                el.placeholder = val;
-            } else {
-                el.innerHTML = val;
-            }
-        });
-        document.documentElement.lang = lang === 'EN' ? 'en' : 'id';
-    }
-
-    function toggleLangDropdown() {
-        langOpen = !langOpen;
-        var dropdown = document.getElementById('lang-dropdown');
-        var chevron = document.getElementById('lang-chevron');
-        if (langOpen) {
-            dropdown.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
-            dropdown.classList.add('opacity-100', 'scale-100');
-            chevron.style.transform = 'rotate(180deg)';
-        } else {
-            dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
-            dropdown.classList.remove('opacity-100', 'scale-100');
-            chevron.style.transform = 'rotate(0deg)';
-        }
-    }
-
-    function setLang(lang) {
-        localStorage.setItem('dhs-lang', lang);
-
-        document.getElementById('lang-label').textContent = lang;
-        document.querySelectorAll('.lang-option').forEach(function (btn) {
-            btn.classList.toggle('text-primary', btn.dataset.lang === lang);
-            btn.classList.toggle('font-bold', btn.dataset.lang === lang);
-        });
-
-        applyTranslations(lang);
-
-        langOpen = true;
-        toggleLangDropdown();
-    }
-
-    document.addEventListener('click', function (e) {
-        var switcher = document.getElementById('lang-switcher');
-        if (switcher && !switcher.contains(e.target) && langOpen) {
-            langOpen = false;
-            toggleLangDropdown();
-        }
-    });
-
     /* ─── Mobile menu toggle ─── */
     function toggleMobileMenu() {
         var menu = document.getElementById('mobile-menu');
         menu.classList.toggle('hidden');
         menu.classList.toggle('flex');
     }
-
-    /* ─── Restore saved language on every page load ─── */
-    document.addEventListener('DOMContentLoaded', function () {
-        var savedLang = localStorage.getItem('dhs-lang') || 'ID';
-        document.getElementById('lang-label').textContent = savedLang;
-        document.querySelectorAll('.lang-option').forEach(function (btn) {
-            btn.classList.toggle('text-primary', btn.dataset.lang === savedLang);
-            btn.classList.toggle('font-bold', btn.dataset.lang === savedLang);
-        });
-        applyTranslations(savedLang);
-    });
 
 </script>

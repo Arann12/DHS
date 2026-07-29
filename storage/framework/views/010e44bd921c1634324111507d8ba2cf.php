@@ -86,9 +86,27 @@
 
     $contactSectionLabel = $contactContent['section_label'] ?? 'KONTAK';
     $contactSectionTitle = $contactContent['section_title'] ?? 'Hubungi Kami.';
-    $contactGoogleMapsUrl = $contactContent['google_maps_url'] ?? $footerSettings['google_maps_url'] ?? 'https://maps.google.com/?q=Denpasar+Hotel+School';
-    $contactLinktreeUrl = $contactContent['linktree_url'] ?? $footerSettings['linktree_url'] ?? 'https://linktr.ee/BiayaPendidikan_DHS';
-    $contactStudentPortalUrl = $contactContent['student_portal_url'] ?? $footerSettings['student_portal_url'] ?? 'http://www.dhs.or.id/student';
+    // URL embed untuk iframe peta (disimpan langsung sebagai URL embed dari Google Maps)
+    $contactGoogleMapsEmbedUrl = $contactContent['google_maps'] ?? $contactContent['google_maps_url'] ?? '';
+    // URL arah untuk tombol "Petunjuk Arah" (URL biasa Google Maps)
+    $contactGoogleMapsUrl = $contactContent['google_maps_dir'] ?? $contactContent['google_maps_url'] ?? $footerSettings['google_maps_url'] ?? 'https://maps.google.com/?q=Denpasar+Hotel+School';
+
+    // Jika URL embed kosong atau masih URL biasa, konversi ke format embed
+    if (empty($contactGoogleMapsEmbedUrl) || !str_contains($contactGoogleMapsEmbedUrl, '/maps/embed')) {
+        $raw = $contactGoogleMapsEmbedUrl ?: $contactGoogleMapsUrl;
+        if (preg_match('/[?&]q=([^&]+)/', $raw, $m)) {
+            $contactGoogleMapsEmbedUrl = 'https://maps.google.com/maps?q=' . $m[1] . '&output=embed';
+        } elseif (preg_match('#/maps/place/([^/@?]+)#', $raw, $m)) {
+            $contactGoogleMapsEmbedUrl = 'https://maps.google.com/maps?q=' . $m[1] . '&output=embed';
+        } elseif (preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/', $raw, $m)) {
+            $contactGoogleMapsEmbedUrl = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d500!2d' . $m[2] . '!3d' . $m[1] . '!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1';
+        } else {
+            // Fallback hardcoded ke lokasi DHS Denpasar
+            $contactGoogleMapsEmbedUrl = 'https://maps.google.com/maps?q=Jl+Sari+Dana+IV+No+1+Gatsu+Barat+Denpasar+Bali&output=embed';
+        }
+    }
+
+    $contactLinktreeUrl = $contactContent['linktree'] ?? $contactContent['linktree_url'] ?? $footerSettings['linktree_url'] ?? 'https://linktr.ee/BiayaPendidikan_DHS';
 
     $partnerContent = isset($sections['partner']) ? (is_array($sections['partner']->section_content) ? $sections['partner']->section_content : json_decode($sections['partner']->section_content ?? '[]', true)) : [];
     $partnerLabel = $partnerContent['label'] ?? 'Kemitraan & Jaringan Global';
@@ -165,7 +183,7 @@
         <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
             <div data-reveal="fade-right">
                 <!-- text-primary resolved to DHS Red (#D62828) as per DESIGN.md -->
-                <span class="label-text text-primary mb-4 block" data-id="<?php echo e($aboutLabel); ?>" data-en="<?php echo e($aboutLabel); ?>"><?php echo e($aboutLabel); ?></span>
+                <span class="label-text text-primary mb-4 block" data-id="<?php echo e($aboutLabel); ?>" data-en="ABOUT US"><?php echo e($aboutLabel); ?></span>
                 <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-tight text-text-light">
                     <span data-id="<?php echo e($aboutHeadline); ?>" data-en="<?php echo e($aboutHeadline); ?>"><?php echo e($aboutHeadline); ?></span>
                 </h2>
@@ -209,18 +227,18 @@
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
             <div data-reveal="fade-right">
                 <h2 class="text-5xl md:text-6xl font-serif mb-16 leading-tight text-text-light">
-                    <span data-id="<?php echo e($visionSectionTitle); ?>" data-en="<?php echo e($visionSectionTitle); ?>"><?php echo e($visionSectionTitle); ?></span>
+                    <span data-id="<?php echo e($visionSectionTitle); ?>" data-en="Vision & Mission"><?php echo e($visionSectionTitle); ?></span>
                 </h2>
 
                 <div class="mb-12">
-                    <span class="label-text text-primary mb-4 block" data-id="<?php echo e($visionVisiLabel); ?>" data-en="<?php echo e($visionVisiLabel); ?>"><?php echo e($visionVisiLabel); ?></span>
+                    <span class="label-text text-primary mb-4 block" data-id="<?php echo e($visionVisiLabel); ?>" data-en="VISION"><?php echo e($visionVisiLabel); ?></span>
                     <p class="font-serif text-2xl italic leading-relaxed text-muted-light">
                         <span>"<?php echo e($visionText); ?>"</span>
                     </p>
                 </div>
 
                 <div>
-                    <span class="label-text text-primary mb-6 block" data-id="<?php echo e($visionMisiLabel); ?>" data-en="<?php echo e($visionMisiLabel); ?>"><?php echo e($visionMisiLabel); ?></span>
+                    <span class="label-text text-primary mb-6 block" data-id="<?php echo e($visionMisiLabel); ?>" data-en="MISSION"><?php echo e($visionMisiLabel); ?></span>
                     <ul class="space-y-4">
                         <?php $__currentLoopData = $visionMisiItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $misi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li class="flex items-start">
@@ -266,7 +284,7 @@
     <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-end mb-16" data-reveal="fade-up">
             <div>
-                <span class="label-text text-primary mb-4 block" data-id="<?php echo e($academyLabel); ?>" data-en="<?php echo e($academyLabel); ?>"><?php echo e($academyLabel); ?></span>
+                <span class="label-text text-primary mb-4 block" data-id="<?php echo e($academyLabel); ?>" data-en="ACADEMY"><?php echo e($academyLabel); ?></span>
                 <h2 class="text-5xl md:text-6xl font-serif leading-tight text-text-light">
                     <span data-id="<?php echo e($academySectionTitle); ?>" data-en="<?php echo e($academySectionTitle); ?>"><?php echo e($academySectionTitle); ?></span>
                 </h2>
@@ -302,7 +320,7 @@
     <!-- Facilities Showcase -->
     <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto border-t border-black/10">
         <div class="text-center mb-16" data-reveal="fade-up">
-            <span class="label-text text-text-light" data-id="<?php echo e($facilitiesLabel); ?>" data-en="<?php echo e($facilitiesLabel); ?>"><?php echo e($facilitiesLabel); ?></span>
+            <span class="label-text text-text-light" data-id="<?php echo e($facilitiesLabel); ?>" data-en="FACILITIES"><?php echo e($facilitiesLabel); ?></span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -425,21 +443,27 @@
         $renderCard = function ($item) {
             $name = e($item['name'] ?? '');
             $sub  = e($item['sub'] ?? '');
+            $logo = $item['logo_url'] ?? '';
             $font = $item['font'] ?? 'font-sans text-sm font-bold tracking-wider';
             $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex items-center justify-center w-48 h-24 p-4 cursor-default select-none shrink-0 rounded-lg">';
-            $out .= '<div class="text-center">';
-            $out .= '<div class="' . $font . ' text-dhs-navy">' . $name . '</div>';
-            if ($sub) {
-                $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
+            if ($logo) {
+                $out .= '<div class="flex items-center justify-center w-full h-full"><img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy"></div>';
+            } else {
+                $out .= '<div class="text-center">';
+                $out .= '<div class="' . $font . ' text-dhs-navy">' . $name . '</div>';
+                if ($sub) {
+                    $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
+                }
+                $out .= '</div>';
             }
-            $out .= '</div></div>';
+            $out .= '</div>';
             return $out;
         };
 
         $marqueeItems = function($items) use ($renderCard) {
             $out = '';
-            foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'font' => 'font-sans text-sm font-bold tracking-wider']); }
-            foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'font' => 'font-sans text-sm font-bold tracking-wider']); }
+            foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'logo_url' => $item['logo_url'] ?? '', 'font' => 'font-sans text-sm font-bold tracking-wider']); }
+            foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'logo_url' => $item['logo_url'] ?? '', 'font' => 'font-sans text-sm font-bold tracking-wider']); }
             return $out;
         };
     ?>
@@ -449,10 +473,10 @@
     <section class="py-20 md:py-24 bg-white border-t border-b border-black/5 overflow-hidden">
         <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-10">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
-                <span data-id="<?php echo e($partnerLabel); ?>" data-en="<?php echo e($partnerLabel); ?>"><?php echo e($partnerLabel); ?></span>
+                <span data-id="<?php echo e($partnerLabel); ?>" data-en="OUR PARTNERS"><?php echo e($partnerLabel); ?></span>
             </span>
             <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6" data-reveal="fade-up">
-                <span data-id="<?php echo e($partnerTitle); ?>" data-en="<?php echo e($partnerTitle); ?>"><?php echo e($partnerTitle); ?></span>
+                <span data-id="<?php echo e($partnerTitle); ?>" data-en="Trusted by Leading Institutions"><?php echo e($partnerTitle); ?></span>
             </h2>
             <p class="text-base text-muted-light max-w-3xl mx-auto leading-relaxed" data-reveal="fade-up" data-delay="100">
                 <?php echo e(strip_tags($partnerDesc)); ?>
@@ -463,7 +487,7 @@
             
             <?php if($mitraIndustri->count() > 0): ?>
             <div class="marquee-container relative flex overflow-hidden w-full">
-                <div class="flex shrink-0 gap-6 py-4 animate-marquee-left">
+                <div class="marquee-track flex shrink-0 gap-6 py-4 animate-marquee-left" data-direction="left">
                     <?php echo $marqueeItems($mitraIndustri); ?>
 
                 </div>
@@ -472,7 +496,7 @@
             
             <?php if($partnership->count() > 0): ?>
             <div class="marquee-container relative flex overflow-hidden w-full">
-                <div class="flex shrink-0 gap-6 py-4 animate-marquee-right">
+                <div class="marquee-track flex shrink-0 gap-6 py-4 animate-marquee-right" data-direction="right">
                     <?php echo $marqueeItems($partnership); ?>
 
                 </div>
@@ -484,38 +508,56 @@
 
     <style>
         @keyframes marquee-left {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-
         @keyframes marquee-right {
-            0% {
-                transform: translateX(-50%);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
+            0%   { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
         }
-
         .animate-marquee-left {
-            animation: marquee-left 40s linear infinite;
+            animation: marquee-left var(--dur, 40s) linear infinite;
+            will-change: transform;
+            backface-visibility: hidden;
         }
-
         .animate-marquee-right {
-            animation: marquee-right 40s linear infinite;
+            animation: marquee-right var(--dur, 40s) linear infinite;
+            will-change: transform;
+            backface-visibility: hidden;
         }
-
         .marquee-container:hover .animate-marquee-left,
         .marquee-container:hover .animate-marquee-right {
             animation-play-state: paused;
         }
     </style>
+    <script>
+    (function() {
+        // Kecepatan pixel per detik yang diinginkan (sama untuk semua baris)
+        var PX_PER_SECOND = 80;
+        function initMarquee() {
+            document.querySelectorAll('.marquee-track').forEach(function(track) {
+                // scrollWidth adalah total lebar semua item (sudah diduplikasi 2x di PHP)
+                // Kita perlu lebar SETENGAH-nya (1 set item)
+                var halfWidth = track.scrollWidth / 2;
+                if (halfWidth > 0) {
+                    var duration = halfWidth / PX_PER_SECOND;
+                    track.style.setProperty('--dur', duration.toFixed(2) + 's');
+                }
+            });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMarquee);
+        } else {
+            initMarquee();
+        }
+        // Re-hitung saat resize (tablet/mobile ukuran berubah)
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(initMarquee, 200);
+        });
+    })();
+    </script>
 
     
     <?php echo $__env->make('components.testimonial-slider', ['testimonials' => $testimonials], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
@@ -545,7 +587,7 @@
                     <div>
                         <span class="label-text text-muted-light mb-2 block" data-id="PENDAFTARAN ONLINE" data-en="ONLINE REGISTRATION">PENDAFTARAN ONLINE</span>
                         <p class="text-sm font-medium">Linktree: <a href="<?php echo e($contactLinktreeUrl); ?>" target="_blank" class="underline text-primary hover:text-dhs-darknavy"><?php echo e(parse_url($contactLinktreeUrl, PHP_URL_HOST) ?: 'Linktree'); ?></a></p>
-                        <p class="text-sm font-medium">Portal: <a href="<?php echo e($contactStudentPortalUrl); ?>" target="_blank" class="underline text-primary hover:text-dhs-darknavy"><?php echo e(parse_url($contactStudentPortalUrl, PHP_URL_HOST) ?: 'Portal'); ?></a></p>
+
                     </div>
                     
                     <div class="pt-2">
@@ -685,9 +727,9 @@
     <!-- Visit / Directions Section -->
     <section class="w-full">
         <iframe
-            src="<?php echo e($contactGoogleMapsUrl); ?>"
+            src="<?php echo e($contactGoogleMapsEmbedUrl); ?>"
             width="100%" height="480" style="border:0; display:block;" allowfullscreen="" loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin" title="Denpasar Hotel School Location">
+            referrerpolicy="no-referrer-when-downgrade" title="Denpasar Hotel School Location">
         </iframe>
 
         <!-- Location Info Bar — static block below the map, never overlaps footer -->

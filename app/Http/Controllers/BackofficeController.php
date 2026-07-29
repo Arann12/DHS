@@ -319,7 +319,7 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $programs   = Program::with('category')->orderBy('category_id')->orderBy('display_order')->get();
-        $categories = ProgramCategory::where('is_active', 1)->orderBy('display_order')->get();
+        $categories = ProgramCategory::with('programs')->where('is_active', 1)->orderBy('display_order')->get();
         return view('backoffice.program', ['user' => session('backoffice_user'), 'programs' => $programs, 'categories' => $categories]);
     }
 
@@ -351,6 +351,10 @@ class BackofficeController extends Controller
 
         $program = Program::create($validated);
         $this->logActivity('create', 'programs', $program->id, null, $program->toArray());
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['success' => true, 'id' => $program->id, 'message' => 'Program berhasil ditambahkan.']);
+        }
         return back()->with('success', 'Program berhasil ditambahkan.');
     }
 
@@ -359,22 +363,23 @@ class BackofficeController extends Controller
         if ($redirect = $this->guard()) return $redirect;
         $program = Program::findOrFail($id);
         $old = $program->toArray();
-        $data = $request->only(['title', 'description', 'duration', 'country_badge', 'category_id']);
-        $data['is_active']   = $request->has('is_active') ? 1 : 0;
-        $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
+        $data = $request->only(['title', 'description', 'duration', 'country_badge', 'category_id', 'thumbnail_url']);
+        $data['is_active']   = $request->input('is_active') ? 1 : 0;
+        $data['is_featured'] = $request->input('is_featured') ? 1 : 0;
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $name = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads/programs'), $name);
             $data['thumbnail_url'] = '/uploads/programs/' . $name;
-        } elseif ($request->filled('thumbnail_url')) {
-            // Support URL paste
-            $data['thumbnail_url'] = $request->input('thumbnail_url');
         }
 
-        $program->update($data);
+        $program->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
         $this->logActivity('update', 'programs', $id, $old, $program->fresh()->toArray());
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['success' => true, 'message' => 'Program berhasil diperbarui.']);
+        }
         return back()->with('success', 'Program berhasil diperbarui.');
     }
 
@@ -400,7 +405,11 @@ class BackofficeController extends Controller
         $old = $cat->toArray();
         $cat->update($validated);
         $this->logActivity('update', 'program_categories', $id, $old, $cat->fresh()->toArray());
-        return response()->json(['success' => true]);
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['success' => true]);
+        }
+        return back()->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /* ═══════════════════ BERITA ═══════════════════════════════ */
@@ -948,11 +957,18 @@ class BackofficeController extends Controller
             'description' => 'nullable|string',
             'website_url' => 'nullable|string|max:500',
             'country'     => 'nullable|string|max:100',
-            'logo_url'    => 'nullable|string|max:500',
+            'logo_url'    => 'nullable|string',
         ]);
         $validated['is_active']    = $request->has('is_active') ? 1 : 0;
         $validated['is_featured']  = $request->has('is_featured') ? 1 : 0;
         $validated['display_order'] = (Partner::max('display_order') ?? 0) + 1;
+
+        if ($request->hasFile('logo_file')) {
+            $file = $request->file('logo_file');
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/partners'), $name);
+            $validated['logo_url'] = '/uploads/partners/' . $name;
+        }
 
         $p = Partner::create($validated);
         $this->logActivity('create', 'partners', $p->id, null, $p->toArray());
@@ -962,20 +978,21 @@ class BackofficeController extends Controller
     public function partnerUpdate(Request $request, $id)
     {
         if ($redirect = $this->guard()) return $redirect;
-        $validated = $request->validate([
-            'name'     => 'sometimes|string|max:255',
-            'partner_group' => 'sometimes|in:mitra_industri,partnership',
-            'type'     => 'sometimes|string|max:100',
-            'description' => 'nullable|string',
-            'website_url' => 'nullable|string|max:500',
-            'country'  => 'nullable|string|max:100',
-            'logo_url' => 'nullable|string|max:500',
-        ]);
         $p = Partner::findOrFail($id);
         $old = $p->toArray();
         $data = $request->only(['name', 'partner_group', 'type', 'description', 'website_url', 'country', 'logo_url', 'display_order']);
         $data['is_active']   = $request->has('is_active') ? 1 : 0;
         $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
+
+        if ($request->hasFile('logo_file')) {
+            $file = $request->file('logo_file');
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/partners'), $name);
+            $data['logo_url'] = '/uploads/partners/' . $name;
+        } elseif (array_key_exists('logo_url', $data)) {
+            $data['logo_url'] = $data['logo_url'] ?: null;
+        }
+
         $p->update($data);
         $this->logActivity('update', 'partners', $id, $old, $p->fresh()->toArray());
         return response()->json(['success' => true]);

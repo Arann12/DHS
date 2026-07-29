@@ -222,40 +222,91 @@
                 </div>
             </div>
 
-            <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Profil Tim Kepemimpinan</h2>
-                <div class="form-group">
-                    <label class="bo-label">Nama Lengkap & Gelar</label>
-                    <input type="text" class="bo-input" x-model="leader.name">
+            <div class="bo-card" style="grid-column:1/-1;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">Tim Kepemimpinan</h2>
+                    <button type="button" class="btn-primary" style="font-size:12px;padding:7px 14px;" @click="openAddLeader()">
+                        <span class="material-icons-round" style="font-size:15px;vertical-align:middle;">add</span> Tambah Anggota
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label class="bo-label">Jabatan</label>
-                    <input type="text" class="bo-input" x-model="leader.title">
-                </div>
-                <div class="form-group">
-                    <label class="bo-label">Bio / Deskripsi Singkat</label>
-                    <textarea class="bo-textarea" rows="3" x-model="leader.bio"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="bo-label">Foto Profil</label>
-                    <div style="display:flex;align-items:flex-start;gap:12px;">
-                        <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
-                             @click="$store.imageUpload.open(url => { leader.photo = url })">
-                            <template x-if="leader.photo">
-                                <img :src="leader.photo" style="width:100%;height:100%;object-fit:cover;">
-                            </template>
-                            <template x-if="!leader.photo">
-                                <span class="material-icons-round" style="color:#aaa;font-size:24px;">person</span>
-                            </template>
+
+                {{-- Daftar Anggota --}}
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;" x-show="leaderTeam.length > 0">
+                    <template x-for="(member, idx) in leaderTeam" :key="idx">
+                        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;background:#fafafa;">
+                            <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;margin:0 auto 10px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;">
+                                <template x-if="member.photo">
+                                    <img :src="member.photo" style="width:100%;height:100%;object-fit:cover;">
+                                </template>
+                                <template x-if="!member.photo">
+                                    <span class="material-icons-round" style="color:#aaa;font-size:32px;">person</span>
+                                </template>
+                            </div>
+                            <p style="font-weight:700;font-size:14px;color:#1f2937;margin:0 0 2px;" x-text="member.name"></p>
+                            <p style="font-size:11px;color:#2B2494;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px;" x-text="member.title"></p>
+                            <p style="font-size:11px;color:#8A8478;margin:0 0 12px;line-height:1.5;" x-text="member.bio"></p>
+                            <div style="display:flex;gap:6px;justify-content:center;">
+                                <button type="button" class="btn-secondary" style="font-size:11px;padding:4px 10px;" @click="openEditLeader(idx)">
+                                    <span class="material-icons-round" style="font-size:13px;">edit</span> Edit
+                                </button>
+                                <button type="button" class="btn-danger" style="font-size:11px;padding:4px 10px;" @click="deleteLeader(idx)">
+                                    <span class="material-icons-round" style="font-size:13px;">delete</span>
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button type="button" class="btn-secondary" style="font-size:12px;padding:6px 12px;"
-                                    @click="$store.imageUpload.open(url => { leader.photo = url })">
-                                <span class="material-icons-round" style="font-size:15px;vertical-align:middle;">edit</span> Ganti
-                            </button>
-                            <button type="button" x-show="leader.photo" class="btn-danger" style="font-size:11px;padding:4px 8px;margin-top:4px;"
-                                    @click="leader.photo = ''">
-                                <span class="material-icons-round" style="font-size:13px;">delete</span>
+                    </template>
+                </div>
+                <p style="color:#8A8478;font-size:13px;text-align:center;padding:20px 0;" x-show="leaderTeam.length === 0">
+                    Belum ada anggota tim. Klik <strong>Tambah Anggota</strong> untuk memulai.
+                </p>
+
+                {{-- Modal Tambah/Edit Anggota --}}
+                <div x-show="leaderModal.open" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px;" @click.self="leaderModal.open=false">
+                    <div style="background:#fff;border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);">
+                        <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;" x-text="leaderModal.mode==='add' ? 'Tambah Anggota Tim' : 'Edit Anggota Tim'"></h3>
+
+                        <div class="form-group">
+                            <label class="bo-label">Nama Lengkap & Gelar <span style="color:#E10001">*</span></label>
+                            <input type="text" class="bo-input" x-model="leaderModal.form.name" placeholder="Contoh: I Made Dwija Suastana, S.H., M.H.">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label">Jabatan</label>
+                            <input type="text" class="bo-input" x-model="leaderModal.form.title" placeholder="Contoh: Direktur Denpasar Hotel School">
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label">Bio / Deskripsi Singkat</label>
+                            <textarea class="bo-textarea" rows="3" x-model="leaderModal.form.bio" placeholder="Deskripsi singkat tentang peran dan pencapaian..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="bo-label">Foto Profil</label>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                                     @click="$store.imageUpload.open(url => { leaderModal.form.photo = url })">
+                                    <template x-if="leaderModal.form.photo">
+                                        <img :src="leaderModal.form.photo" style="width:100%;height:100%;object-fit:cover;">
+                                    </template>
+                                    <template x-if="!leaderModal.form.photo">
+                                        <span class="material-icons-round" style="color:#aaa;font-size:24px;">person</span>
+                                    </template>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn-secondary" style="font-size:12px;padding:6px 12px;"
+                                            @click="$store.imageUpload.open(url => { leaderModal.form.photo = url })">
+                                        <span class="material-icons-round" style="font-size:15px;vertical-align:middle;">upload</span> Upload Foto
+                                    </button>
+                                    <button type="button" x-show="leaderModal.form.photo" class="btn-danger" style="font-size:11px;padding:4px 8px;margin-top:4px;display:block;"
+                                            @click="leaderModal.form.photo = ''">
+                                        <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus Foto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">
+                            <button type="button" class="btn-secondary" @click="leaderModal.open=false">Batal</button>
+                            <button type="button" class="btn-primary" @click="saveLeader()">
+                                <span class="material-icons-round" style="font-size:15px;vertical-align:middle;">save</span>
+                                <span x-text="leaderModal.mode==='add' ? 'Tambah' : 'Simpan Perubahan'"></span>
                             </button>
                         </div>
                     </div>
@@ -352,12 +403,20 @@
         'p2'    => $directorData['p2'] ?? '',
         'photo' => $directorData['photo'] ?? '',
     ];
-    $leaderJson = [
-        'name'  => $leaderData['name'] ?? '',
-        'title' => $leaderData['title'] ?? '',
-        'bio'   => $leaderData['bio'] ?? '',
-        'photo' => $leaderData['photo'] ?? '',
-    ];
+    // Konversi data lama (single object) ke format baru (array of members)
+    if (isset($leaderData['members']) && is_array($leaderData['members'])) {
+        $leaderJson = $leaderData['members'];
+    } elseif (!empty($leaderData['name'])) {
+        // Migrasi dari format lama
+        $leaderJson = [[
+            'name'  => $leaderData['name']  ?? '',
+            'title' => $leaderData['title'] ?? '',
+            'bio'   => $leaderData['bio']   ?? '',
+            'photo' => $leaderData['photo'] ?? '',
+        ]];
+    } else {
+        $leaderJson = [];
+    }
     $ctaJson = [
         'title'    => $ctaData['title'] ?? '',
         'desc'     => $ctaData['desc'] ?? '',
@@ -390,7 +449,26 @@ function aboutUsCompleteData() {
         timelineSectionTitle: '{{ $timelineSectionTitle }}',
         timeline: @json($timelineJson),
         director: @json($directorJson),
-        leader: @json($leaderJson),
+        leaderTeam: @json($leaderJson),
+        leaderModal: { open: false, mode: 'add', idx: -1, form: { name: '', title: '', bio: '', photo: '' } },
+        openAddLeader() {
+            this.leaderModal = { open: true, mode: 'add', idx: -1, form: { name: '', title: '', bio: '', photo: '' } };
+        },
+        openEditLeader(idx) {
+            this.leaderModal = { open: true, mode: 'edit', idx, form: { ...this.leaderTeam[idx] } };
+        },
+        saveLeader() {
+            if (!this.leaderModal.form.name.trim()) return alert('Nama wajib diisi.');
+            if (this.leaderModal.mode === 'add') {
+                this.leaderTeam.push({ ...this.leaderModal.form });
+            } else {
+                this.leaderTeam[this.leaderModal.idx] = { ...this.leaderModal.form };
+            }
+            this.leaderModal.open = false;
+        },
+        deleteLeader(idx) {
+            if (confirm('Hapus anggota ini dari tim?')) this.leaderTeam.splice(idx, 1);
+        },
         cta: @json($ctaJson),
         saveAll() {
             if (this.saving) return;
@@ -401,7 +479,7 @@ function aboutUsCompleteData() {
                 vision: { title: 'Visi Misi Core Values', content: { sectionLabel: this.vision.sectionLabel, sectionTitle: this.vision.sectionTitle, visiLabel: this.vision.visiLabel, misiLabel: this.vision.misiLabel, visi: this.vision.visi, misi: this.vision.misi, coreValues: this.vision.coreValues } },
                 timeline: { title: 'Sejarah Timeline', content: { sectionLabel: this.timelineSectionLabel, sectionTitle: this.timelineSectionTitle, items: this.timeline } },
                 director: { title: 'Pesan Direktur', content: { p1: this.director.p1, p2: this.director.p2, photo: this.director.photo } },
-                leader: { title: 'Tim Kepemimpinan', content: { name: this.leader.name, title: this.leader.title, bio: this.leader.bio, photo: this.leader.photo } },
+                leader: { title: 'Tim Kepemimpinan', content: { members: this.leaderTeam } },
                 cta: { title: 'Bottom CTA', content: { title: this.cta.title, desc: this.cta.desc, btn1Text: this.cta.btn1Text, btn1Url: this.cta.btn1Url, btn2Text: this.cta.btn2Text, btn2Url: this.cta.btn2Url } }
             };
             const token = document.querySelector('meta[name="csrf-token"]').content;

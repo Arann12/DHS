@@ -507,13 +507,39 @@
                         <label class="bo-label">Linktree URL</label>
                         <input type="text" class="bo-input" x-model="contact.links.linktree">
                     </div>
-                    <div class="form-group">
-                        <label class="bo-label">Portal Student URL</label>
-                        <input type="text" class="bo-input" x-model="contact.links.studentPortal">
-                    </div>
+
                     <div class="form-group" style="grid-column:1/-1;">
-                        <label class="bo-label">Google Maps Directions URL</label>
-                        <input type="text" class="bo-input" x-model="contact.links.googleMaps">
+                        <label class="bo-label">Google Maps — URL Embed Iframe</label>
+                        <input type="text" class="bo-input" x-model="contact.links.googleMaps"
+                               placeholder="https://www.google.com/maps/embed?pb=..."
+                               @input="mapsPreviewKey++">
+                        <p style="font-size:12px;color:#8A8478;margin-top:6px;line-height:1.6;">
+                            💡 <strong>Cara mendapatkan URL embed:</strong>
+                            Buka <a href="https://maps.google.com" target="_blank" style="color:#2B2494;">Google Maps</a>
+                            → cari lokasi DHS → klik ikon <strong>Share</strong> 🔗
+                            → pilih tab <strong>"Embed a map"</strong>
+                            → klik <strong>"COPY HTML"</strong>
+                            → ambil hanya bagian <code style="background:#f3f4f6;padding:1px 4px;border-radius:3px;">src="..."</code> dari kode iframe tersebut.
+                        </p>
+                        {{-- Live Preview --}}
+                        <div style="margin-top:12px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;" x-show="contact.links.googleMaps">
+                            <p style="font-size:11px;font-weight:600;color:#6b7280;padding:6px 10px;background:#f9fafb;margin:0;border-bottom:1px solid #e5e7eb;">PREVIEW PETA</p>
+                            <template x-if="contact.links.googleMaps">
+                                <iframe
+                                    :src="contact.links.googleMaps"
+                                    width="100%" height="300" style="border:0;display:block;"
+                                    allowfullscreen loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label class="bo-label">Google Maps Directions URL <span style="font-weight:400;color:#8A8478;">(untuk tombol Petunjuk Arah)</span></label>
+                        <input type="text" class="bo-input" x-model="contact.links.googleMapsDir"
+                               placeholder="https://maps.google.com/?q=Denpasar+Hotel+School">
+                        <p style="font-size:12px;color:#8A8478;margin-top:4px;">URL biasa dari Google Maps (bukan embed) — dipakai untuk tombol "Petunjuk Arah" yang membuka Maps di tab baru.</p>
                     </div>
                 </div>
             </div>
@@ -645,10 +671,17 @@ function berandaCompleteData() {
                 phone: '+0366 5582998',
                 wa: '+62 81 337 106480'
             },
+@php
+    $contactSection = isset($sections['contact'])
+        ? (is_array($sections['contact']->section_content)
+            ? $sections['contact']->section_content
+            : json_decode($sections['contact']->section_content ?? '{}', true))
+        : [];
+@endphp
             links: {
-                linktree: 'https://linktr.ee/BiayaPendidikan_DHS',
-                studentPortal: 'http://www.dhs.or.id/student',
-                googleMaps: 'https://maps.google.com/?q=Denpasar+Hotel+School'
+                linktree: '{{ addslashes($contactSection['linktree'] ?? 'https://linktr.ee/BiayaPendidikan_DHS') }}',
+                googleMaps: '{{ addslashes($contactSection['google_maps'] ?? '') }}',
+                googleMapsDir: '{{ addslashes($contactSection['google_maps_dir'] ?? 'https://maps.google.com/?q=Denpasar+Hotel+School') }}',
             }
         },
         saveAll() {
@@ -724,8 +757,8 @@ function berandaCompleteData() {
                         klungkung_phone: this.contact.klungkung.phone,
                         klungkung_wa: this.contact.klungkung.wa,
                         linktree: this.contact.links.linktree,
-                        student_portal: this.contact.links.studentPortal,
-                        google_maps: this.contact.links.googleMaps
+                        google_maps: this.contact.links.googleMaps,
+                        google_maps_dir: this.contact.links.googleMapsDir,
                     }
                 }
             };

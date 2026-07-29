@@ -16,6 +16,7 @@ Route::get('/tentang',         function () { return app(FrontendController::clas
 Route::get('/akademi',         function () { return app(FrontendController::class)->akademi(); });
 Route::get('/berita',          function () { return app(FrontendController::class)->berita(request()); });
 Route::get('/berita/{slug}',   [FrontendController::class, 'detailBerita']);
+Route::get('/berita/{slug}/views', [FrontendController::class, 'getArticleViews']);
 Route::get('/faq',             function () { return app(FrontendController::class)->faq(); });
 Route::get('/karier',          function () { return app(FrontendController::class)->karier(); });
 Route::get('/cara-mendaftar',  function () { return app(FrontendController::class)->registration(); });
