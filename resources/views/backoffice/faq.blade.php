@@ -108,7 +108,7 @@
     </div>
 
     {{-- Confirm Delete --}}
-    <div class="bo-modal-backdrop" x-show="confirmDelete.open" x-transition style="display:none;">
+    <div class="bo-modal-backdrop" x-show="deleteConfirm.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
                 <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
@@ -118,7 +118,7 @@
                 <p style="font-size:14px;color:#8A8478;margin:0;">Pertanyaan ini akan dihapus dari halaman FAQ.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
-                <button class="btn-secondary" @click="confirmDelete.open=false">Batal</button>
+                <button class="btn-secondary" @click="deleteConfirm.open=false">Batal</button>
                 <button class="btn-danger" @click="confirmDeleteItem()">
                     <span class="material-icons-round" style="font-size:17px;">delete</span> Ya, Hapus
                 </button>
@@ -148,7 +148,7 @@ function faqData() {
         filterKategori: '',
         items: @json($faqList),
         modal: { open:false, mode:'add', form:{}, editId:null },
-        confirmDelete: { open:false, targetId:null },
+        deleteConfirm: { open:false, targetId:null },
 
         get filtered() {
             return this.items.filter(i => {
@@ -169,7 +169,7 @@ function faqData() {
             this.modal.form = item ? { ...item } : { pertanyaan:'', kategori:'akademi', jawaban:'' };
             this.modal.open = true;
 
-            this.$nextTick(() => {
+            setTimeout(() => {
                 if ($('#summernote-jawaban').summernote) {
                     $('#summernote-jawaban').summernote('destroy');
                 }
@@ -186,7 +186,7 @@ function faqData() {
                 if (item && item.jawaban) {
                     $('#summernote-jawaban').summernote('code', item.jawaban);
                 }
-            });
+            }, 300);
         },
 
         saveItem() {
@@ -205,16 +205,16 @@ function faqData() {
                 .then(r => r.ok ? location.reload() : alert('Gagal menyimpan FAQ.'));
         },
 
-        deleteItem(id) { this.confirmDelete.targetId = id; this.confirmDelete.open = true; },
+        deleteItem(id) { this.deleteConfirm.targetId = id; this.deleteConfirm.open = true; },
 
         confirmDeleteItem() {
-            fetch(`/backoffice/faq/${this.confirmDelete.targetId}/delete`, {
+            fetch(`/backoffice/faq/${this.deleteConfirm.targetId}/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ id: this.confirmDelete.targetId })
+                body: JSON.stringify({ id: this.deleteConfirm.targetId })
             }).then(() => {
-                this.items = this.items.filter(i => i.id !== this.confirmDelete.targetId);
-                this.confirmDelete.open = false;
+                this.items = this.items.filter(i => i.id !== this.deleteConfirm.targetId);
+                this.deleteConfirm.open = false;
             });
         }
     };

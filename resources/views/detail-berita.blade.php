@@ -152,7 +152,7 @@
 
     {{-- Related Articles --}}
     @if($related->count() > 0)
-    <section class="bg-dhs-cream/50 py-16 px-5 md:px-16 border-t border-black/5">
+    <section class="py-16 px-5 md:px-16 border-t border-black/5">
         <div class="max-w-[1280px] mx-auto">
             <h2 class="text-3xl font-serif text-text-light mb-10"><span data-id="Berita Lainnya" data-en="Other News">Berita Lainnya</span></h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

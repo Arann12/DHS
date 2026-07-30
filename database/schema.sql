@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS partners (
     display_order INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_group (group),
+    INDEX idx_partner_group (partner_group),
     INDEX idx_is_featured (is_featured),
     INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

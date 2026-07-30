@@ -66,6 +66,9 @@ Route::middleware(['backoffice.auth'])->group(function () {
     // About Us CMS
     Route::post('/backoffice/about-us/update',      [BackofficeController::class, 'aboutUsUpdate']);
 
+    // Generic image upload
+    Route::post('/backoffice/upload/image', [BackofficeController::class, 'uploadImage']);
+
     // Branding
     Route::post('/backoffice/branding/update',      [BackofficeController::class, 'brandingUpdate']);
 

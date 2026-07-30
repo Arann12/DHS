@@ -141,12 +141,12 @@
     </div>
 
     
-    <div class="bo-modal-backdrop" x-show="confirmDelete.open" x-transition style="display:none;">
+    <div class="bo-modal-backdrop" x-show="deleteConfirm.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 12px;">Hapus Partner?</h3>
             <p style="font-size:14px;color:#8A8478;margin-bottom:20px;">Data partner akan dihapus permanen.</p>
             <div style="display:flex;gap:12px;justify-content:flex-end;">
-                <button class="btn-secondary" @click="confirmDelete.open = false">Batal</button>
+                <button class="btn-secondary" @click="deleteConfirm.open = false">Batal</button>
                 <button class="btn-danger" @click="confirmDeleteItem()">
                     <span class="material-icons-round" style="font-size:17px;">delete</span> Ya, Hapus
                 </button>
@@ -179,7 +179,7 @@ function partnerData() {
         saved: false,
         items: <?php echo json_encode($partnerItems, 15, 512) ?>,
         modal: { open: false, mode: 'add', form: {}, editId: null },
-        confirmDelete: { open: false, targetId: null },
+        deleteConfirm: { open: false, targetId: null },
         _logoFile: null,
 
         openModal(mode, item = null) {
@@ -228,15 +228,22 @@ function partnerData() {
                 .then(r => r.ok ? location.reload() : r.text().then(t => alert('Gagal: ' + t)));
         },
 
-        confirmDelete(id) { this.confirmDelete.targetId = id; this.confirmDelete.open = true; },
+        confirmDelete(id) { this.deleteConfirm.targetId = id; this.deleteConfirm.open = true; },
         confirmDeleteItem() {
-            fetch(`/backoffice/partner/${this.confirmDelete.targetId}/delete`, {
+            const fd = new FormData();
+            fd.append('_token', '<?php echo e(csrf_token()); ?>');
+            
+            fetch(`/backoffice/partner/${this.deleteConfirm.targetId}/delete`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>', 'X-Requested-With': 'XMLHttpRequest' },
-                body: JSON.stringify({ id: this.confirmDelete.targetId })
+                body: fd
             }).then(r => {
-                if (r.ok) { location.reload(); }
-                else { r.json().then(j => alert('Gagal: ' + (j.message || j.error || 'Unknown error'))).catch(() => alert('Gagal menghapus.')); }
+                if (r.ok) { 
+                    location.reload(); 
+                } else { 
+                    r.json()
+                        .then(j => alert('Gagal: ' + (j.message || j.error || 'Unknown error')))
+                        .catch(() => r.text().then(t => alert('Gagal menghapus: ' + t)));
+                }
             }).catch(() => alert('Terjadi kesalahan jaringan.'));
         }
     };

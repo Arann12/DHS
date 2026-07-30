@@ -11,7 +11,7 @@
     @endphp
     <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
-        <img alt="Students in training kitchen" class="absolute inset-0 w-full h-full object-cover" src="{{ $academyHeroBg }}">
+        <img alt="Students in training kitchen" width="1920" height="1080" class="absolute inset-0 w-full h-full object-cover" style="will-change:transform;" src="{{ $academyHeroBg }}">
 
         <div class="relative z-20 px-6 max-w-5xl mx-auto pt-24 text-white" data-reveal="fade-up">
             <div class="mb-6 inline-flex items-center space-x-2 justify-center text-white/80 text-xs font-semibold uppercase tracking-wider">
@@ -68,7 +68,7 @@
                     <!-- Programs Grid -->
                     <div class="lg:col-span-2 xl:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         @forelse($cat->programs->where('is_active', 1) as $program)
-                        <div class="group bg-white border border-black/10 rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full card-hover">
+                        <div class="group bg-white border border-black/10 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col h-full card-hover">
                             <div class="relative overflow-hidden h-44 sm:h-48 lg:h-52 shrink-0">
                                 <img src="{{ $program->thumbnail_url ?? 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800' }}" alt="{{ $program->title }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
@@ -192,6 +192,12 @@
         </section>
     </main>
 
+    <style>
+        .category-content-panel.hidden {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 2000px;
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const filterBtns = document.querySelectorAll('.filter-tab-btn');

@@ -56,10 +56,6 @@
         </a>
 
         <div class="nav-group-label">Pengaturan System</div>
-        <a href="/backoffice/color-palette" class="nav-item {{ Request::is('backoffice/color-palette') ? 'active' : '' }}">
-            <span class="material-icons-round mat-icon">palette</span>
-            <span class="nav-label">Warna Website</span>
-        </a>
         <a href="/backoffice/navigasi" class="nav-item {{ Request::is('backoffice/navigasi') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">menu</span>
             <span class="nav-label">Navigasi & Menu</span>

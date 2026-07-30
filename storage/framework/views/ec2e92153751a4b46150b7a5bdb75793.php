@@ -36,6 +36,10 @@
             <span class="material-icons-round mat-icon">quiz</span>
             <span class="nav-label">FAQ</span>
         </a>
+        <a href="/backoffice/beasiswa" class="nav-item <?php echo e(Request::is('backoffice/beasiswa') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">school</span>
+            <span class="nav-label">Beasiswa</span>
+        </a>
         <a href="/backoffice/partner" class="nav-item <?php echo e(Request::is('backoffice/partner') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">handshake</span>
             <span class="nav-label">Partner</span>
@@ -56,10 +60,6 @@
         </a>
 
         <div class="nav-group-label">Pengaturan System</div>
-        <a href="/backoffice/color-palette" class="nav-item <?php echo e(Request::is('backoffice/color-palette') ? 'active' : ''); ?>">
-            <span class="material-icons-round mat-icon">palette</span>
-            <span class="nav-label">Warna Website</span>
-        </a>
         <a href="/backoffice/navigasi" class="nav-item <?php echo e(Request::is('backoffice/navigasi') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">menu</span>
             <span class="nav-label">Navigasi & Menu</span>

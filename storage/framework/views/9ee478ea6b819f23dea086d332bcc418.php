@@ -112,10 +112,6 @@
                         <span class="material-icons-round" style="font-size:18px;">how_to_reg</span>
                         Data Pendaftar
                     </a>
-                    <a href="/backoffice/galeri" class="btn-secondary" style="justify-content:flex-start;">
-                        <span class="material-icons-round" style="font-size:18px;">photo_library</span>
-                        Upload Galeri
-                    </a>
                 </div>
             </div>
 

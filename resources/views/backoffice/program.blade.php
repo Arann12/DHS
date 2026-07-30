@@ -113,7 +113,7 @@
                         <div style="padding:16px;background:#fff;border-radius:12px;border:1.5px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
                                 <span class="badge badge-blue" x-text="course.country || 'UMUM'"></span>
-                                <button class="btn-icon danger" style="width:28px;height:28px;" @click="cat.courses.splice(idx,1)">
+                                <button class="btn-icon danger" style="width:28px;height:28px;" @click="deleteCourse(course.id)">
                                     <span class="material-icons-round" style="font-size:16px;">delete</span>
                                 </button>
                             </div>
@@ -171,6 +171,48 @@
         </template>
     </div>
 
+    {{-- Modal Tambah Kursus --}}
+    <div class="bo-modal-backdrop" x-show="addModal.open" x-transition style="display:none;" @keydown.escape.window="addModal.open=false">
+        <div class="bo-modal" style="max-width:480px;" @click.stop>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#2B2494;">Tambah Kursus Baru</h3>
+                <button class="btn-icon" @click="addModal.open=false"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Judul Program / Kursus <span style="color:#E10001;">*</span></label>
+                <input type="text" class="bo-input" x-model="addModal.title" placeholder="Contoh: Diploma Perhotelan Internasional" @keydown.enter="submitAddCourse()">
+            </div>
+            <p style="font-size:12px;color:#8A8478;margin:0 0 16px;">
+                Kategori: <strong x-text="addModal.catName"></strong> — Program akan langsung aktif setelah ditambahkan.
+            </p>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button class="btn-secondary" @click="addModal.open=false">Batal</button>
+                <button class="btn-primary" @click="submitAddCourse()" :disabled="!addModal.title.trim()">
+                    <span class="material-icons-round" style="font-size:18px;">add</span> Tambah
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Hapus Kursus --}}
+    <div class="bo-modal-backdrop" x-show="delModal.open" x-transition style="display:none;" @keydown.escape.window="delModal.open=false">
+        <div class="bo-modal" style="max-width:400px;" @click.stop>
+            <div style="text-align:center;margin-bottom:20px;">
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#E10001;">delete_forever</span>
+                </div>
+                <h3 style="margin:0 0 8px;">Hapus Kursus?</h3>
+                <p style="font-size:14px;color:#8A8478;margin:0;">Program <strong x-text="delModal.title"></strong> akan dihapus permanen dari database.</p>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button class="btn-secondary" @click="delModal.open=false">Batal</button>
+                <button class="btn-danger" @click="confirmDeleteCourse()">
+                    <span class="material-icons-round" style="font-size:17px;">delete</span> Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
     {{-- Global Save --}}
     <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
         <button class="btn-primary" style="padding:12px 28px;font-size:15px;" @click="saveAll()" :disabled="saving">
@@ -221,36 +263,55 @@ function academyCompleteData() {
         hero: @json($academyHero),
         categories: @json($catData),
 
+        addModal: { open: false, catId: null, catName: '', title: '' },
+        delModal: { open: false, courseId: null, title: '' },
+
         addCourse(catId) {
             const cat = this.categories.find(c => c.id === catId);
             if (!cat) return;
-            const title = prompt('Judul Program Baru:');
-            if (!title || !title.trim()) return;
-            const token = '{{ csrf_token() }}';
+            this.addModal.catId = catId;
+            this.addModal.catName = cat.name;
+            this.addModal.title = '';
+            this.addModal.open = true;
+        },
+
+        submitAddCourse() {
+            if (!this.addModal.title.trim()) return;
+            const catId = this.addModal.catId;
+            this.addModal.open = false;
             fetch('/backoffice/program/store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({ category_id: catId, title: title.trim() })
+                body: JSON.stringify({ category_id: catId, title: this.addModal.title.trim() })
             })
             .then(r => r.json())
             .then(data => {
                 if (data.success !== false) location.reload();
-                else alert('Gagal menambah program: ' + (data.message || ''));
+                else { this.errorMsg = 'Gagal menambah program: ' + (data.message || ''); setTimeout(() => this.errorMsg = '', 5000); }
             })
-            .catch(() => alert('Gagal menambah program.'));
+            .catch(() => { this.errorMsg = 'Terjadi kesalahan jaringan.'; setTimeout(() => this.errorMsg = '', 5000); });
         },
 
         deleteCourse(courseId) {
-            if (!confirm('Hapus program ini dari database?')) return;
-            fetch(`/backoffice/program/${courseId}/delete`, {
+            const cat = this.categories.find(c => c.courses.some(cr => cr.id === courseId));
+            const course = cat ? cat.courses.find(cr => cr.id === courseId) : null;
+            this.delModal.courseId = courseId;
+            this.delModal.title = course ? course.title : '';
+            this.delModal.open = true;
+        },
+
+        confirmDeleteCourse() {
+            const id = this.delModal.courseId;
+            this.delModal.open = false;
+            fetch(`/backoffice/program/${id}/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'X-Requested-With': 'XMLHttpRequest' },
-                body: JSON.stringify({ id: courseId })
-            }).then(r => r.json()).then(() => location.reload()).catch(() => alert('Gagal menghapus program.'));
+                body: JSON.stringify({ id: id })
+            }).then(r => r.json()).then(() => location.reload()).catch(() => { this.errorMsg = 'Gagal menghapus program.'; setTimeout(() => this.errorMsg = '', 5000); });
         },
 
         saveAll() {

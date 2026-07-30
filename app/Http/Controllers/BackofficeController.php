@@ -159,12 +159,12 @@ class BackofficeController extends Controller
         if ($request->hasFile('logo_primary')) {
             $file = $request->file('logo_primary');
             $name = 'logo_primary_' . time() . '.' . $file->extension();
-            $file->move(public_path('image'), $name);
-            
+            $file->move(public_path('uploads/branding'), $name);
+
             BrandingSetting::updateOrCreate(
                 ['setting_key' => 'logo_primary'],
                 [
-                    'setting_value' => '/image/' . $name,
+                    'setting_value' => '/uploads/branding/' . $name,
                     'setting_type' => 'file',
                     'setting_group' => 'logo'
                 ]
@@ -175,12 +175,12 @@ class BackofficeController extends Controller
         if ($request->hasFile('logo_favicon')) {
             $file = $request->file('logo_favicon');
             $name = 'favicon_' . time() . '.' . $file->extension();
-            $file->move(public_path('image'), $name);
-            
+            $file->move(public_path('uploads/branding'), $name);
+
             BrandingSetting::updateOrCreate(
                 ['setting_key' => 'logo_favicon'],
                 [
-                    'setting_value' => '/image/' . $name,
+                    'setting_value' => '/uploads/branding/' . $name,
                     'setting_type' => 'file',
                     'setting_group' => 'logo'
                 ]
@@ -336,14 +336,14 @@ class BackofficeController extends Controller
             'is_featured'   => 'nullable',
         ]);
         $validated['slug'] = Str::slug($validated['title']) . '-' . time();
-        $validated['is_active']   = $request->has('is_active') ? 1 : 0;
-        $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
+        $validated['is_active']   = $request->boolean('is_active', true) ? 1 : 0;
+        $validated['is_featured'] = $request->boolean('is_featured') ? 1 : 0;
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $name = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/programs'), $name);
-            $validated['thumbnail_url'] = '/uploads/programs/' . $name;
+            $file->move(public_path('uploads/program'), $name);
+            $validated['thumbnail_url'] = '/uploads/program/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
             // Support URL paste
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
@@ -370,8 +370,8 @@ class BackofficeController extends Controller
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $name = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/programs'), $name);
-            $data['thumbnail_url'] = '/uploads/programs/' . $name;
+            $file->move(public_path('uploads/program'), $name);
+            $data['thumbnail_url'] = '/uploads/program/' . $name;
         }
 
         $program->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
@@ -412,6 +412,19 @@ class BackofficeController extends Controller
         return back()->with('success', 'Kategori berhasil diperbarui.');
     }
 
+    public function uploadImage(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,gif,webp,svg|max:5120',
+        ]);
+        $file = $request->file('file');
+        $dir = $request->input('folder', 'uploads');
+        $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path($dir), $name);
+        return response()->json(['url' => '/' . $dir . '/' . $name]);
+    }
+
     /* ═══════════════════ BERITA ═══════════════════════════════ */
     public function berita()
     {
@@ -439,8 +452,8 @@ class BackofficeController extends Controller
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/news'), $name);
-            $validated['thumbnail_url'] = '/uploads/news/' . $name;
+            $file->move(public_path('uploads/berita'), $name);
+            $validated['thumbnail_url'] = '/uploads/berita/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
         }
@@ -464,8 +477,8 @@ class BackofficeController extends Controller
             $request->validate(['thumbnail' => 'file|mimes:jpg,jpeg,png,webp|max:5120']);
             $file = $request->file('thumbnail');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/news'), $name);
-            $data['thumbnail_url'] = '/uploads/news/' . $name;
+            $file->move(public_path('uploads/berita'), $name);
+            $data['thumbnail_url'] = '/uploads/berita/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
             $data['thumbnail_url'] = $request->input('thumbnail_url');
         }
@@ -502,8 +515,8 @@ class BackofficeController extends Controller
             $request->validate(['image' => 'required|file|mimes:jpg,jpeg,png,webp|max:5120']);
             $file = $request->file('image');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/gallery'), $name);
-            $imageUrl = '/uploads/gallery/' . $name;
+            $file->move(public_path('uploads/galeri'), $name);
+            $imageUrl = '/uploads/galeri/' . $name;
         } elseif ($request->filled('image_url')) {
             // Use URL
             $request->validate(['image_url' => 'required|url']);
@@ -567,8 +580,8 @@ class BackofficeController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/testimonials'), $name);
-            $validated['photo_url'] = '/uploads/testimonials/' . $name;
+            $file->move(public_path('uploads/testimoni'), $name);
+            $validated['photo_url'] = '/uploads/testimoni/' . $name;
         } elseif ($request->filled('photo_url')) {
             $validated['photo_url'] = $request->input('photo_url');
         }
@@ -593,8 +606,8 @@ class BackofficeController extends Controller
             $request->validate(['photo' => 'file|mimes:jpg,jpeg,png,webp|max:2048']);
             $file = $request->file('photo');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/testimonials'), $name);
-            $data['photo_url'] = '/uploads/testimonials/' . $name;
+            $file->move(public_path('uploads/testimoni'), $name);
+            $data['photo_url'] = '/uploads/testimoni/' . $name;
         } elseif ($request->filled('photo_url')) {
             $data['photo_url'] = $request->input('photo_url');
         }
@@ -617,7 +630,7 @@ class BackofficeController extends Controller
     public function faq()
     {
         if ($redirect = $this->guard()) return $redirect;
-        $faqs = Faq::orderBy('category')->orderBy('display_order')->get();
+        $faqs = Faq::orderBy('category')->orderBy('id', 'desc')->get();
         return view('backoffice.faq', ['user' => session('backoffice_user'), 'faqs' => $faqs]);
     }
 
@@ -632,7 +645,7 @@ class BackofficeController extends Controller
         $validated['display_order'] = (Faq::max('display_order') ?? 0) + 1;
         $f = Faq::create($validated);
         $this->logActivity('create', 'faqs', $f->id, null, $f->toArray());
-        return back()->with('success', 'FAQ berhasil ditambahkan.');
+        return response()->json(['success' => true]);
     }
 
     public function faqUpdate(Request $request, $id)
@@ -966,8 +979,8 @@ class BackofficeController extends Controller
         if ($request->hasFile('logo_file')) {
             $file = $request->file('logo_file');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/partners'), $name);
-            $validated['logo_url'] = '/uploads/partners/' . $name;
+            $file->move(public_path('uploads/partner'), $name);
+            $validated['logo_url'] = '/uploads/partner/' . $name;
         }
 
         $p = Partner::create($validated);
@@ -987,8 +1000,8 @@ class BackofficeController extends Controller
         if ($request->hasFile('logo_file')) {
             $file = $request->file('logo_file');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/partners'), $name);
-            $data['logo_url'] = '/uploads/partners/' . $name;
+            $file->move(public_path('uploads/partner'), $name);
+            $data['logo_url'] = '/uploads/partner/' . $name;
         } elseif (array_key_exists('logo_url', $data)) {
             $data['logo_url'] = $data['logo_url'] ?: null;
         }

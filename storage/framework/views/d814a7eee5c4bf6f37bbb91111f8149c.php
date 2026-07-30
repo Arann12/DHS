@@ -129,7 +129,7 @@
     </section>
 
     <!-- Visi & Misi -->
-    <section class="bg-dhs-cream py-20 md:py-24">
+    <section class="bg-surface-light py-20 md:py-24">
         <div class="px-5 md:px-16 max-w-[1280px] mx-auto">
             <div class="text-center mb-16" data-reveal="fade-up">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
@@ -226,7 +226,7 @@
     </section>
 
     <!-- Tim Kepemimpinan -->
-    <section class="bg-dhs-cream py-20 md:py-24">
+    <section class="bg-surface-light py-20 md:py-24">
         <div class="px-5 md:px-16 max-w-[1280px] mx-auto">
             <div class="text-center mb-16" data-reveal="fade-up">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
@@ -270,7 +270,7 @@
     </section>
 
     <!-- Partnership & Mitra Section -->
-    <section class="py-20 md:py-24 bg-dhs-cream/50 border-t border-b border-black/5 overflow-hidden">
+    <section class="py-20 md:py-24 border-t border-b border-black/5 overflow-hidden">
         <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-16">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                 <span data-id="Kemitraan &amp; Jaringan Global" data-en="Partnership &amp; Global Network">Kemitraan &amp; Jaringan Global</span>

@@ -309,7 +309,6 @@
             transition-property: opacity, transform;
             transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
             transition-duration: 0.95s;
-            will-change: opacity, transform;
         }
 
         [data-reveal="fade-up"] {
@@ -707,9 +706,7 @@
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                    } else {
-                        // Fade out when scrolling out of viewport to make it dynamic and trendy
-                        entry.target.classList.remove('is-visible');
+                        revealObs.unobserve(entry.target);
                     }
                 });
             }, {
@@ -738,14 +735,9 @@
             });
 
             var navbar = document.getElementById('main-nav');
-            var heroImg = document.querySelector('section img.object-cover');
 
             function handleScroll() {
                 var scrolled = window.scrollY;
-
-                if (heroImg) {
-                    heroImg.style.transform = 'translate3d(0, ' + (scrolled * 0.25) + 'px, 0)';
-                }
 
                 if (navbar) {
                     if (scrolled > 50) {

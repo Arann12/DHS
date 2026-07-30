@@ -258,16 +258,16 @@ class FrontendController extends Controller
         if ($request->hasFile('bukti_pendaftaran')) {
             $file = $request->file('bukti_pendaftaran');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/bukti'), $name);
-            $buktiPendaftaranPath = '/uploads/bukti/' . $name;
+            $file->move(public_path('uploads/pendaftaran'), $name);
+            $buktiPendaftaranPath = '/uploads/pendaftaran/' . $name;
         }
 
         $buktiProgramPath = null;
         if ($request->hasFile('bukti_program')) {
             $file = $request->file('bukti_program');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/bukti'), $name);
-            $buktiProgramPath = '/uploads/bukti/' . $name;
+            $file->move(public_path('uploads/pendaftaran'), $name);
+            $buktiProgramPath = '/uploads/pendaftaran/' . $name;
         }
 
         Registration::create([

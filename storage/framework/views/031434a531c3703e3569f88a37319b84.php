@@ -232,9 +232,9 @@
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button @click="$store.imageUpload.close()" class="btn-secondary" style="padding:9px 18px;">Batal</button>
-                <button @click="applyUpload()" class="btn-primary" style="padding:9px 18px;" :disabled="!preview">
-                    <span class="material-icons-round" style="font-size:18px;">check</span>
-                    Gunakan Gambar
+                <button @click="applyUpload()" class="btn-primary" style="padding:9px 18px;" :disabled="!preview || uploading">
+                    <span class="material-icons-round" style="font-size:18px;" x-text="uploading ? 'hourglass_empty' : 'check'"></span>
+                    <span x-text="uploading ? 'Mengupload...' : 'Gunakan Gambar'"></span>
                 </button>
             </div>
         </div>
@@ -268,6 +268,7 @@
             mode: 'url',
             tempUrl: '',
             preview: '',
+            uploading: false,
             applyUrl() {
                 if (this.tempUrl && this.tempUrl.trim()) {
                     Alpine.store('imageUpload').apply(this.tempUrl.trim());
@@ -291,14 +292,36 @@
                 reader.readAsDataURL(file);
             },
             applyUpload() {
-                if (this.preview) {
-                    Alpine.store('imageUpload').apply(this.preview);
-                    this.reset();
-                }
+                if (!this.preview) return;
+                this.uploading = true;
+                fetch(this.preview)
+                    .then(r => r.blob())
+                    .then(blob => {
+                        const fd = new FormData();
+                        fd.append('file', blob, 'image.jpg');
+                        fd.append('_token', '<?php echo e(csrf_token()); ?>');
+                        return fetch('/backoffice/upload/image', { method: 'POST', body: fd });
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        this.uploading = false;
+                        if (data.url) {
+                            Alpine.store('imageUpload').apply(data.url);
+                        } else {
+                            alert('Gagal upload gambar.');
+                        }
+                        this.reset();
+                    })
+                    .catch(() => {
+                        this.uploading = false;
+                        alert('Gagal upload gambar. Coba lagi.');
+                        this.reset();
+                    });
             },
             reset() {
                 this.tempUrl = '';
                 this.preview = '';
+                this.uploading = false;
                 this.mode = 'url';
             }
         };

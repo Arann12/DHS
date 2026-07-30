@@ -540,7 +540,7 @@ if (isset($categories) && $categories->count() > 0) {
     $emailAddr = $helpdesk['helpdesk_email'] ?? 'sahabat@dhs.or.id';
     $serviceHours = $helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA';
 @endphp
-<section class="py-16 bg-surface-light px-6 md:px-16">
+<section class="py-16 px-6 md:px-16">
     <div class="max-w-[850px] mx-auto">
         <div class="bg-white border border-black/10 rounded-2xl p-8 md:p-10 shadow-sm">
             <div class="flex flex-col md:flex-row md:items-center gap-8">
