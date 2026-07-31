@@ -25,7 +25,7 @@
     {{-- TAB 1: HERO --}}
     <div x-show="activeTab === 'hero'">
         <div class="bo-card" style="max-width:750px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">1. Hero Banner About Us</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">1. Hero Banner About Us</h2>
             <div class="form-group">
                 <label class="bo-label">Judul Utama H1</label>
                 <input type="text" class="bo-input" x-model="hero.title">
@@ -64,7 +64,7 @@
     {{-- TAB 2: TAGLINE / INTRO --}}
     <div x-show="activeTab === 'intro'">
         <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">2. Tagline & Intro</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">2. Tagline & Intro</h2>
             <div class="form-group">
                 <label class="bo-label">Label Overline</label>
                 <input type="text" class="bo-input" x-model="intro.label">
@@ -105,15 +105,15 @@
                     </div>
                 </div>
                 <div class="bo-card">
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">
-                        <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;border:none;padding:0;background:transparent;" x-model="vision.visiLabel" placeholder="Visi">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">
+                        <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;border:none;padding:0;background:transparent;" x-model="vision.visiLabel" placeholder="Visi">
                     </h2>
                     <textarea class="bo-textarea" rows="3" x-model="vision.visi"></textarea>
                 </div>
                 <div class="bo-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">
-                            <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;border:none;padding:0;background:transparent;width:120px;" x-model="vision.misiLabel" placeholder="Misi">
+                        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">
+                            <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;border:none;padding:0;background:transparent;width:120px;" x-model="vision.misiLabel" placeholder="Misi">
                         </h2>
                         <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="vision.misi.push('')">
                             <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Item
@@ -133,7 +133,7 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Core Values</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Core Values</h2>
                 <div style="display:flex;flex-direction:column;gap:14px;">
                     <template x-for="(val, idx) in vision.coreValues" :key="idx">
                         <div style="padding:12px;background:#fafafa;border-radius:10px;border:1.5px solid #eee;">
@@ -160,7 +160,7 @@
                 </div>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">Milestone Timeline</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">Milestone Timeline</h2>
                 <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="timeline.push({year:'', title:'', desc:''})">
                     <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Milestone
                 </button>
@@ -187,7 +187,7 @@
     <div x-show="activeTab === 'leadership'">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Kata Sambutan Direktur</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Kata Sambutan Direktur</h2>
                 <div class="form-group">
                     <label class="bo-label">Paragraf 1</label>
                     <textarea class="bo-textarea" rows="3" x-model="director.p1"></textarea>
@@ -224,7 +224,7 @@
 
             <div class="bo-card" style="grid-column:1/-1;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">Tim Kepemimpinan</h2>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">Tim Kepemimpinan</h2>
                     <button type="button" class="btn-primary" style="font-size:12px;padding:7px 14px;" @click="openAddLeader()">
                         <span class="material-icons-round" style="font-size:15px;vertical-align:middle;">add</span> Tambah Anggota
                     </button>
@@ -243,7 +243,7 @@
                                 </template>
                             </div>
                             <p style="font-weight:700;font-size:14px;color:#1f2937;margin:0 0 2px;" x-text="member.name"></p>
-                            <p style="font-size:11px;color:#2B2494;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px;" x-text="member.title"></p>
+                            <p style="font-size:11px;color:#101340;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px;" x-text="member.title"></p>
                             <p style="font-size:11px;color:#8A8478;margin:0 0 12px;line-height:1.5;" x-text="member.bio"></p>
                             <div style="display:flex;gap:6px;justify-content:center;">
                                 <button type="button" class="btn-secondary" style="font-size:11px;padding:4px 10px;" @click="openEditLeader(idx)">
@@ -263,10 +263,10 @@
                 {{-- Modal Tambah/Edit Anggota --}}
                 <div x-show="leaderModal.open" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px;" @click.self="leaderModal.open=false">
                     <div style="background:#fff;border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);">
-                        <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;" x-text="leaderModal.mode==='add' ? 'Tambah Anggota Tim' : 'Edit Anggota Tim'"></h3>
+                        <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;" x-text="leaderModal.mode==='add' ? 'Tambah Anggota Tim' : 'Edit Anggota Tim'"></h3>
 
                         <div class="form-group">
-                            <label class="bo-label">Nama Lengkap & Gelar <span style="color:#E10001">*</span></label>
+                            <label class="bo-label">Nama Lengkap & Gelar <span style="color:#D4302A">*</span></label>
                             <input type="text" class="bo-input" x-model="leaderModal.form.name" placeholder="Contoh: I Made Dwija Suastana, S.H., M.H.">
                         </div>
                         <div class="form-group">
@@ -318,7 +318,7 @@
     {{-- TAB 6: BOTTOM CTA --}}
     <div x-show="activeTab === 'cta'">
         <div class="bo-card" style="max-width:700px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">6. CTA Bottom Banner</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">6. CTA Bottom Banner</h2>
             <div class="form-group">
                 <label class="bo-label">Judul Banner H2</label>
                 <input type="text" class="bo-input" x-model="cta.title">

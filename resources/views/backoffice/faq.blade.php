@@ -18,6 +18,8 @@
                 <option value="pendaftaran">Pendaftaran & Seleksi</option>
                 <option value="biaya">Biaya & Pembayaran</option>
                 <option value="kampus">Kehidupan Kampus</option>
+                <option value="umum">Umum</option>
+                <option value="karir">Karir</option>
             </select>
         </div>
         <button class="btn-primary" @click="openModal('add')">
@@ -88,6 +90,8 @@
                     <option value="pendaftaran">Pendaftaran & Seleksi</option>
                     <option value="biaya">Biaya & Pembayaran</option>
                     <option value="kampus">Kehidupan Kampus</option>
+                    <option value="umum">Umum</option>
+                    <option value="karir">Karir</option>
                 </select>
             </div>
 
@@ -112,7 +116,7 @@
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
                 <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#E10001;">delete_forever</span>
+                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus FAQ?</h3>
                 <p style="font-size:14px;color:#8A8478;margin:0;">Pertanyaan ini akan dihapus dari halaman FAQ.</p>

@@ -14,11 +14,11 @@
 
     <style>
         :root {
-            --bo-blue:      #0E06B4;
-            --bo-dark-blue: #2B2494;
-            --bo-red:       #E10001;
-            --bo-cream:     #F6F2EA;
-            --bo-beige:     #EFE7D8;
+            --bo-blue:      #1A1F6B;
+            --bo-dark-blue: #101340;
+            --bo-red:       #D4302A;
+            --bo-cream:     #F5F6F8;
+            --bo-beige:     #EBF0FA;
         }
         /* Hide x-cloak elements only after Alpine loads */
         [x-cloak] { display: none !important; }

@@ -21,11 +21,12 @@
 
     <style>
         :root {
-            --bo-blue:       #0E06B4;
-            --bo-dark-blue:  #2B2494;
-            --bo-red:        #E10001;
-            --bo-cream:      #F6F2EA;
-            --bo-beige:      #EFE7D8;
+            --bo-blue:       #1A1F6B;
+            --bo-dark-blue:  #101340;
+            --bo-red:        #D4302A;
+            --bo-gold:       #C7A14D;
+            --bo-cream:      #F5F6F8;
+            --bo-beige:      #EBF0FA;
             --bo-gray:       #8A8478;
             --bo-text:       #1a1a2e;
             --sidebar-w:     260px;
@@ -36,10 +37,10 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--bo-cream); color: var(--bo-text); margin: 0; min-height: 100vh; }
 
         /* SIDEBAR */
-        #bo-sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: linear-gradient(180deg, #1a1070 0%, var(--bo-dark-blue) 100%); display: flex; flex-direction: column; z-index: 100; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), width 0.3s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
+        #bo-sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: linear-gradient(180deg, var(--bo-blue) 0%, var(--bo-dark-blue) 100%); display: flex; flex-direction: column; z-index: 100; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), width 0.3s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
         #bo-sidebar.collapsed { width: 72px; }
         .sidebar-logo { padding: 20px 20px 12px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 72px; flex-shrink: 0; }
-        .sidebar-logo-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #0E06B4, #E10001); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 13px; flex-shrink: 0; letter-spacing: -0.5px; }
+        .sidebar-logo-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--bo-blue), var(--bo-gold)); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 13px; flex-shrink: 0; letter-spacing: -0.5px; }
         .sidebar-logo-img { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
         .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 13px; color: #fff; line-height: 1.3; white-space: nowrap; overflow: hidden; transition: opacity 0.2s, width 0.3s; flex: 1; min-width: 0; }
         #bo-sidebar.collapsed .logo-text { opacity: 0; width: 0; }
@@ -155,6 +156,7 @@
 </head>
 
 <body>
+@php $boLogo = \App\Models\BrandingSetting::where('setting_key', 'logo_primary')->value('setting_value') ?? ''; @endphp
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 @include('backoffice.partials.sidebar')
@@ -182,13 +184,13 @@
         <!-- Tab Navigation -->
         <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;">
             <button @@click="mode = 'url'"
-                    :style="mode === 'url' ? 'border-bottom:2px solid #2B2494;color:#2B2494;margin-bottom:-2px;' : 'color:#999;'"
+                    :style="mode === 'url' ? 'border-bottom:2px solid #101340;color:#101340;margin-bottom:-2px;' : 'color:#999;'"
                     style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;transition:all 0.15s;">
                 <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">link</span>
                 Via URL
             </button>
             <button @@click="mode = 'upload'"
-                    :style="mode === 'upload' ? 'border-bottom:2px solid #2B2494;color:#2B2494;margin-bottom:-2px;' : 'color:#999;'"
+                    :style="mode === 'upload' ? 'border-bottom:2px solid #101340;color:#101340;margin-bottom:-2px;' : 'color:#999;'"
                     style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;transition:all 0.15s;">
                 <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">upload_file</span>
                 Upload Lokal
@@ -218,10 +220,10 @@
         <div x-show="mode === 'upload'" style="padding:4px 0;">
             <div @@click="$refs.globalFileInput.click()"
                  style="border:2px dashed #cbd5e1;border-radius:12px;padding:36px;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.2s;"
-                 @@mouseenter="$el.style.borderColor='#2B2494'; $el.style.background='#f0f4ff'"
+                 @@mouseenter="$el.style.borderColor='#101340'; $el.style.background='#f0f4ff'"
                  @@mouseleave="$el.style.borderColor='#cbd5e1'; $el.style.background='#fafafa'">
-                <span class="material-icons-round" style="font-size:44px;color:#2B2494;display:block;margin-bottom:10px;">cloud_upload</span>
-                <div style="font-weight:600;color:#2B2494;margin-bottom:4px;">Klik untuk pilih gambar</div>
+                <span class="material-icons-round" style="font-size:44px;color:#101340;display:block;margin-bottom:10px;">cloud_upload</span>
+                <div style="font-weight:600;color:#101340;margin-bottom:4px;">Klik untuk pilih gambar</div>
                 <div style="font-size:12px;color:#999;">JPG, PNG, GIF, WebP, SVG — Maks 5MB</div>
             </div>
             <input type="file" x-ref="globalFileInput" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" @@change="handleFile($event)" style="display:none;">

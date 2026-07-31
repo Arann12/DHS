@@ -83,7 +83,7 @@
 
 <?php $__env->startSection('content'); ?>
     <!-- Hero Section -->
-    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden mb-16 md:mb-24">
+    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
         <img alt="DHS Campus panoramic view" class="absolute inset-0 w-full h-full object-cover"
             src="<?php echo e($heroBgImage); ?>">
@@ -98,7 +98,7 @@
                 <span data-id="<?php echo e($heroTitle); ?>" data-en="<?php echo e($heroTitle); ?>"><?php echo e($heroTitle); ?></span>
             </h1>
             <p class="text-xs md:text-sm uppercase tracking-[0.25em] text-white/70 font-medium">
-                <span data-id="<?php echo e($heroSubtitle); ?>" data-en="<?php echo e($heroSubtitle); ?>"><?php echo $heroSubtitle; ?></span>
+                <span data-id="<?php echo e($heroSubtitle); ?>" data-en="<?php echo e($heroSubtitle); ?>"><?php echo e($heroSubtitle); ?></span>
             </p>
         </div>
     </section>
@@ -120,16 +120,16 @@
                     <span data-id="<?php echo e($introP2); ?>" data-en="<?php echo e($introP2); ?>"><?php echo e($introP2); ?></span>
                 </p>
             </div>
-            <div class="flex items-center justify-center bg-dhs-cream p-8 text-center h-full" data-reveal="fade-left" data-delay="200">
+            <div class="flex items-center justify-center bg-white p-8 text-center h-full" data-reveal="fade-left" data-delay="200">
                 <div class="text-muted-light italic text-sm">
-                    <span data-id="<?php echo e($introQuote); ?>" data-en="<?php echo e($introQuote); ?>"><?php echo $introQuote; ?></span>
+                    <span data-id="<?php echo e($introQuote); ?>" data-en="<?php echo e($introQuote); ?>"><?php echo e($introQuote); ?></span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Visi & Misi -->
-    <section class="bg-surface-light py-20 md:py-24">
+    <section class="bg-white py-20 md:py-24">
         <div class="px-5 md:px-16 max-w-[1280px] mx-auto">
             <div class="text-center mb-16" data-reveal="fade-up">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
@@ -171,7 +171,7 @@
     </section>
 
     <!-- Sejarah Timeline -->
-    <section class="py-20 md:py-24 px-5 md:px-16 max-w-[1280px] mx-auto">
+    <section class="py-20 md:py-24 bg-dhs-lightblue px-5 md:px-16 max-w-[1280px] mx-auto">
         <div class="text-center mb-16" data-reveal="fade-up">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                 <span data-id="Perjalanan Kami" data-en="Our Journey"><?php echo e($timelineSectionLabel); ?></span>
@@ -226,7 +226,7 @@
     </section>
 
     <!-- Tim Kepemimpinan -->
-    <section class="bg-surface-light py-20 md:py-24">
+    <section class="bg-white py-20 md:py-24">
         <div class="px-5 md:px-16 max-w-[1280px] mx-auto">
             <div class="text-center mb-16" data-reveal="fade-up">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
@@ -270,7 +270,7 @@
     </section>
 
     <!-- Partnership & Mitra Section -->
-    <section class="py-20 md:py-24 border-t border-b border-black/5 overflow-hidden">
+    <section class="py-20 md:py-24 bg-white/50 border-t border-b border-black/5 overflow-hidden">
         <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-16">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                 <span data-id="Kemitraan &amp; Jaringan Global" data-en="Partnership &amp; Global Network">Kemitraan &amp; Jaringan Global</span>

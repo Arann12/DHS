@@ -1,6 +1,6 @@
 <aside id="bo-sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('image/LogoDHS_2.jpeg') }}" alt="DHS Logo" class="sidebar-logo-img">
+        <img src="{{ $boLogo ? asset(ltrim($boLogo, '/')) : asset('image/LogoDHS_2.jpeg') }}" alt="DHS Logo" class="sidebar-logo-img">
         <div class="logo-text">Denpasar<br>Hotel School</div>
     </div>
 

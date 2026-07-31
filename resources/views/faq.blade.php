@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden mb-16">
+    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
         <img alt="Hospitality Support" class="absolute inset-0 w-full h-full object-cover"
             src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1600&auto=format&fit=crop">
@@ -32,7 +32,7 @@
     </section>
 
     <!-- Category Filter -->
-    <section class="border-y border-black/10 bg-dhs-cream">
+    <section class="border-y border-black/10 bg-dhs-lightblue">
         <div class="max-w-[1280px] mx-auto px-5 md:px-16 py-4">
             <div class="flex overflow-x-auto gap-4 md:justify-center">
                 <button class="faq-cat-btn whitespace-nowrap px-6 py-2 bg-text-light text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold border border-text-light transition-colors active" data-cat="all">
@@ -48,7 +48,7 @@
                     ];
                 @endphp
                 @foreach($faqs->keys() as $cat)
-                <button class="faq-cat-btn whitespace-nowrap px-6 py-2 bg-transparent text-text-light hover:bg-dhs-beige text-[0.7rem] uppercase tracking-[0.15em] font-semibold border border-transparent hover:border-black/20 transition-colors" data-cat="{{ $cat }}">
+                <button class="faq-cat-btn whitespace-nowrap px-6 py-2 bg-transparent text-text-light hover:bg-dhs-lightblue text-[0.7rem] uppercase tracking-[0.15em] font-semibold border border-transparent hover:border-black/20 transition-colors" data-cat="{{ $cat }}">
                     <span>{{ $categoryLabels[$cat] ?? ucfirst($cat) }}</span></button>
                 @endforeach
             </div>
@@ -71,7 +71,7 @@
                             <span class="material-icons text-primary shrink-0 transition-transform duration-300 icon-indicator">add</span>
                         </button>
                         <div class="accordion-content overflow-hidden transition-all duration-300 max-h-0">
-                            <div class="text-muted-light text-base leading-relaxed pt-4">{!! strip_tags($faq->answer, '<p><b><i><u><strong><em><ul><ol><li><a><br><h3><h4>') !!}</div>
+                            <div class="text-muted-light text-base leading-relaxed pt-4">{!! strip_tags($faq->answer, '<p><b><i><u><strong><em><ul><ol><li><br><h3><h4>') !!}</div>
                         </div>
                     </div>
                     @endforeach
@@ -87,7 +87,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="bg-dhs-beige py-20 md:py-24 px-5 md:px-16">
+    <section class="bg-dhs-lightblue py-20 md:py-24 px-5 md:px-16">
         <div class="max-w-4xl mx-auto text-center">
             <span class="material-icons text-primary text-5xl mb-6 block">support_agent</span>
             <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6">
@@ -105,7 +105,7 @@
                 else { $waNumber = '62' . $waNumber; }
             @endphp
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a class="inline-flex items-center justify-center px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors w-full sm:w-auto min-w-[280px]"
+                <a class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-primary/90 transition-colors w-full sm:w-auto min-w-[280px]"
                     href="https://wa.me/{{ $waNumber }}" target="_blank">
                     Hubungi Kami via WhatsApp ({{ $helpdeskWA }})
                 </a>

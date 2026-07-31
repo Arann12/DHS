@@ -56,7 +56,7 @@
                             <td style="font-weight:600;color:#8A8478;" x-text="idx + 1"></td>
                             <td style="white-space:nowrap;font-size:12.5px;color:#555;" x-text="item.tgl"></td>
                             <td>
-                                <div style="font-weight:700;color:#2B2494;" x-text="item.nama"></div>
+                                <div style="font-weight:700;color:#101340;" x-text="item.nama"></div>
                                 <div style="font-size:11px;color:#8A8478;" x-text="'Sumber Info: ' + (item.sumber || '-')"></div>
                             </td>
                             <td>
@@ -64,7 +64,7 @@
                                 <div style="font-size:12px;color:#666;" x-text="item.email"></div>
                             </td>
                             <td>
-                                <div style="font-weight:600;color:#0010B8;" x-text="item.program"></div>
+                                <div style="font-weight:600;color:#1A1F6B;" x-text="item.program"></div>
                                 <div style="font-size:11px;color:#8A8478;" x-text="'Kategori: ' + item.kategori"></div>
                             </td>
                             <td>
@@ -126,7 +126,7 @@
     <div class="bo-modal-backdrop" x-show="selectedItem" x-transition style="display:none;">
         <div class="bo-modal wide" @click.away="selectedItem = null" style="max-width:850px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;">
-                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#2B2494;">Detail Formulir Pendaftaran</h3>
+                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#101340;">Detail Formulir Pendaftaran</h3>
                 <button class="btn-icon" @click="selectedItem = null"><span class="material-icons-round">close</span></button>
             </div>
             
@@ -159,7 +159,7 @@
                     </div>
                     <div>
                         <label class="bo-label">Program Studi Diminati</label>
-                        <div class="bo-input" style="background:#fafafa;font-weight:700;color:#0010B8;" x-text="selectedItem.program"></div>
+                        <div class="bo-input" style="background:#fafafa;font-weight:700;color:#1A1F6B;" x-text="selectedItem.program"></div>
                     </div>
                     <div style="grid-column:1/-1;">
                         <label class="bo-label">Special Request / Catatan Khusus</label>
@@ -172,7 +172,7 @@
 
                     {{-- Section Preview Gambar / Berkas Upload --}}
                     <div style="grid-column:1/-1;border-top:1px solid #eee;padding-top:16px;margin-top:4px;">
-                        <h4 style="font-size:14px;font-weight:700;color:#2B2494;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
+                        <h4 style="font-size:14px;font-weight:700;color:#101340;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                             {{-- Bukti Pendaftaran --}}
                             <div>

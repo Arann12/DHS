@@ -32,8 +32,8 @@
         }
 
         body {
-            background-color: #F6F2EA;
-            color: #0010B8;
+            background-color: #FFFFFF;
+            color: #1A1F6B;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -62,7 +62,7 @@
             inset: 0;
             z-index: 9999;
             opacity: 1 !important;
-            background-color: #0010B8;
+            background-color: #1A1F6B;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -109,7 +109,7 @@
 
         .loader-icon-wrap .material-icons {
             font-size: 2.2rem;
-            color: #F6F2EA;
+            color: #F5F6F8;
             opacity: 0.35;
             transition: opacity 0.3s;
         }
@@ -135,7 +135,7 @@
             width: 4px;
             height: 4px;
             border-radius: 50%;
-            background-color: #DF1501;
+            background-color: #D4302A;
             opacity: 0;
         }
 
@@ -178,7 +178,7 @@
             top: 0;
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #DF1501, #F6F2EA);
+            background: linear-gradient(90deg, #D4302A, #F5F6F8);
             animation: dhs-line-progress 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
@@ -196,7 +196,7 @@
             font-size: 1.4rem;
             font-weight: 600;
             letter-spacing: 0.08em;
-            color: #F6F2EA;
+            color: #F5F6F8;
             opacity: 0;
             transform: translateY(10px);
             animation: dhs-fade-up 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.15s forwards;
@@ -218,13 +218,13 @@
             0%,
             100% {
                 opacity: 0.3;
-                color: #F6F2EA;
+                color: #F5F6F8;
             }
 
             25%,
             50% {
                 opacity: 1;
-                color: #DF1501;
+                color: #D4302A;
             }
         }
 
@@ -542,6 +542,18 @@
                     clearInterval(this.autoplayInterval);
                     clearInterval(this.progressInterval);
                     this.startAutoplay();
+                },
+
+                touchStartX: 0,
+                handleTouchStart(e) {
+                    this.touchStartX = e.touches[0].clientX;
+                },
+                handleTouchEnd(e) {
+                    var diff = this.touchStartX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextSlide();
+                        else this.prevSlide();
+                    }
                 }
             };
         }
@@ -777,24 +789,24 @@
         </button>
         <div id="lang-menu" class="lang-menu">
             <div class="lang-menu-title">Pilih Bahasa</div>
-            <button onclick="switchLang('id')">🇮🇩 Indonesia</button>
-            <button onclick="switchLang('en')">🇬🇧 English</button>
-            <button onclick="switchLang('ja')">🇯🇵 日本語</button>
-            <button onclick="switchLang('ko')">🇰🇷 한국어</button>
-            <button onclick="switchLang('zh-CN')">🇨🇳 中文</button>
-            <button onclick="switchLang('ar')">🇸🇦 العربية</button>
-            <button onclick="switchLang('fr')">🇫🇷 Français</button>
-            <button onclick="switchLang('de')">🇩🇪 Deutsch</button>
-            <button onclick="switchLang('es')">🇪🇸 Español</button>
-            <button onclick="switchLang('it')">🇮🇹 Italiano</button>
-            <button onclick="switchLang('pt')">🇵🇹 Português</button>
-            <button onclick="switchLang('ru')">🇷🇺 Русский</button>
-            <button onclick="switchLang('th')">🇹🇭 ไทย</button>
-            <button onclick="switchLang('vi')">🇻🇳 Tiếng Việt</button>
-            <button onclick="switchLang('ms')">🇲🇾 Bahasa Melayu</button>
-            <button onclick="switchLang('tl')">🇵🇭 Filipino</button>
-            <button onclick="switchLang('hi')">🇮🇳 हिन्दी</button>
-            <button onclick="switchLang('nl')">🇳🇱 Nederlands</button>
+            <button onclick="switchLang('id')"><img src="https://flagcdn.com/w20/id.png" alt="ID" class="lang-flag"> Indonesia</button>
+            <button onclick="switchLang('en')"><img src="https://flagcdn.com/w20/gb.png" alt="EN" class="lang-flag"> English</button>
+            <button onclick="switchLang('ja')"><img src="https://flagcdn.com/w20/jp.png" alt="JA" class="lang-flag"> 日本語</button>
+            <button onclick="switchLang('ko')"><img src="https://flagcdn.com/w20/kr.png" alt="KO" class="lang-flag"> 한국어</button>
+            <button onclick="switchLang('zh-CN')"><img src="https://flagcdn.com/w20/cn.png" alt="ZH" class="lang-flag"> 中文</button>
+            <button onclick="switchLang('ar')"><img src="https://flagcdn.com/w20/sa.png" alt="AR" class="lang-flag"> العربية</button>
+            <button onclick="switchLang('fr')"><img src="https://flagcdn.com/w20/fr.png" alt="FR" class="lang-flag"> Français</button>
+            <button onclick="switchLang('de')"><img src="https://flagcdn.com/w20/de.png" alt="DE" class="lang-flag"> Deutsch</button>
+            <button onclick="switchLang('es')"><img src="https://flagcdn.com/w20/es.png" alt="ES" class="lang-flag"> Español</button>
+            <button onclick="switchLang('it')"><img src="https://flagcdn.com/w20/it.png" alt="IT" class="lang-flag"> Italiano</button>
+            <button onclick="switchLang('pt')"><img src="https://flagcdn.com/w20/pt.png" alt="PT" class="lang-flag"> Português</button>
+            <button onclick="switchLang('ru')"><img src="https://flagcdn.com/w20/ru.png" alt="RU" class="lang-flag"> Русский</button>
+            <button onclick="switchLang('th')"><img src="https://flagcdn.com/w20/th.png" alt="TH" class="lang-flag"> ไทย</button>
+            <button onclick="switchLang('vi')"><img src="https://flagcdn.com/w20/vn.png" alt="VI" class="lang-flag"> Tiếng Việt</button>
+            <button onclick="switchLang('ms')"><img src="https://flagcdn.com/w20/my.png" alt="MS" class="lang-flag"> Bahasa Melayu</button>
+            <button onclick="switchLang('tl')"><img src="https://flagcdn.com/w20/ph.png" alt="TL" class="lang-flag"> Filipino</button>
+            <button onclick="switchLang('hi')"><img src="https://flagcdn.com/w20/in.png" alt="HI" class="lang-flag"> हिन्दी</button>
+            <button onclick="switchLang('nl')"><img src="https://flagcdn.com/w20/nl.png" alt="NL" class="lang-flag"> Nederlands</button>
         </div>
     </div>
     <script>
@@ -854,7 +866,7 @@
         height: 52px;
         border-radius: 50%;
         border: none;
-        background: linear-gradient(135deg, #0E06B4, #2B2494);
+        background: linear-gradient(135deg, #1A1F6B, #101340);
         color: #fff;
         cursor: pointer;
         display: flex;
@@ -889,6 +901,15 @@
         visibility: visible;
         transform: translateY(0);
     }
+    .lang-flag {
+        width: 20px;
+        height: 14px;
+        border-radius: 2px;
+        object-fit: cover;
+        margin-right: 8px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        vertical-align: middle;
+    }
 
     .lang-menu-title {
         padding: 8px 16px 4px;
@@ -900,7 +921,8 @@
     }
 
     .lang-menu button {
-        display: block;
+        display: flex;
+        align-items: center;
         width: 100%;
         padding: 10px 16px;
         border: none;

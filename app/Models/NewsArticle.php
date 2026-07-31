@@ -24,6 +24,7 @@ class NewsArticle extends Model
     protected $casts = [
         'published_at' => 'datetime',
         'is_featured' => 'boolean',
+        'views_count' => 'integer',
     ];
 
     public function author()

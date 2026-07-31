@@ -26,7 +26,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
             <div style="display:flex;flex-direction:column;gap:20px;">
                 <div class="bo-card">
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">1. Hero Section</h2>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">1. Hero Section</h2>
 
                     <div class="form-group">
                         <label class="bo-label">Label Atas (Overline)</label>
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="bo-card">
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Tombol Action (CTA)</h2>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Tombol Action (CTA)</h2>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="bo-label">Teks Tombol 1</label>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="bo-card">
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">Gambar Latar Hero</h2>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Gambar Latar Hero</h2>
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="bo-label">Gambar Latar</label>
                         <div style="display:flex;align-items:flex-start;gap:14px;">
@@ -96,12 +96,12 @@
 
             
             <div class="bo-card" style="position:sticky;top:88px;">
-                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#2B2494;margin:0 0 16px;">Preview Hero Section</h3>
-                <div style="border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.15);background:#2B2494;color:#fff;padding:28px;text-align:center;position:relative;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#101340;margin:0 0 16px;">Preview Hero Section</h3>
+                <div style="border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.15);background:#101340;color:#fff;padding:28px;text-align:center;position:relative;">
                     <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.8;margin-bottom:12px;" x-text="hero.overline"></div>
                     <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1.3;margin-bottom:20px;" x-text="hero.headline"></div>
                     <div style="display:flex;gap:10px;justify-content:center;">
-                        <div style="padding:10px 18px;background:#0010B8;color:#fff;border-radius:6px;font-size:11px;font-weight:700;" x-text="hero.cta1Text"></div>
+                        <div style="padding:10px 18px;background:#1A1F6B;color:#fff;border-radius:6px;font-size:11px;font-weight:700;" x-text="hero.cta1Text"></div>
                         <div style="padding:10px 18px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:6px;font-size:11px;font-weight:700;" x-text="hero.cta2Text"></div>
                     </div>
                     <div style="font-size:10px;opacity:0.6;margin-top:20px;" x-text="hero.scrollText"></div>
@@ -113,7 +113,7 @@
     
     <div x-show="activeTab === 'about'">
         <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">2. Section Sekilas DHS (About Intro)</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">2. Section Sekilas DHS (About Intro)</h2>
 
             <div class="form-group">
                 <label class="bo-label">Label Sekilas DHS</label>
@@ -160,6 +160,41 @@
                 </div>
             </div>
         </div>
+
+        
+        <div class="bo-card" style="max-width:800px;margin-top:20px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 8px;">Statistik</h2>
+            <p style="font-size:13px;color:#8A8478;margin:0 0 16px;">Angka statistik yang tampil di bawah deskripsi sekilas DHS.</p>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <template x-for="(stat, idx) in stats" :key="stat.id">
+                    <div style="padding:12px 14px;background:#fafafa;border-radius:10px;border:1.5px solid #eee;">
+                        <div style="display:grid;grid-template-columns:80px 1fr 1fr auto;gap:10px;align-items:end;">
+                            <div class="form-group" style="margin:0;">
+                                <label class="bo-label" style="font-size:10px;">Value</label>
+                                <input type="text" class="bo-input" style="padding:6px 8px;font-weight:700;font-size:15px;" x-model="stat.stat_value" placeholder="18">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label class="bo-label" style="font-size:10px;">Label</label>
+                                <input type="text" class="bo-input" style="padding:6px 8px;" x-model="stat.stat_label" placeholder="YEARS OF HERITAGE">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label class="bo-label" style="font-size:10px;">Icon</label>
+                                <input type="text" class="bo-input" style="padding:6px 8px;" x-model="stat.stat_icon" placeholder="school">
+                            </div>
+                            <div style="display:flex;gap:5px;">
+                                <button class="btn-primary" style="padding:6px 10px;font-size:11px;" @click="updateStat(stat)">
+                                    <span class="material-icons-round" style="font-size:14px;">save</span>
+                                </button>
+                                <button class="btn-icon danger" style="width:28px;height:28px;" @click="deleteStat(stat.id)">
+                                    <span class="material-icons-round" style="font-size:15px;">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
     </div>
 
     
@@ -167,7 +202,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
             <div style="display:flex;flex-direction:column;gap:20px;">
                 <div class="bo-card">
-                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Judul Section & Visi</h2>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Judul Section & Visi</h2>
                     <div class="form-group">
                         <label class="bo-label">Judul Section</label>
                         <input type="text" class="bo-input" x-model="vision.sectionTitle">
@@ -184,7 +219,7 @@
 
                 <div class="bo-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">Poin-poin Misi</h2>
+                        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">Poin-poin Misi</h2>
                         <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="vision.misiItems.push('')">
                             <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Item
                         </button>
@@ -203,7 +238,7 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Core Values (4 Kartu)</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Core Values (4 Kartu)</h2>
                 <div style="display:flex;flex-direction:column;gap:14px;">
                     <template x-for="(val, idx) in vision.coreValues" :key="idx">
                         <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
@@ -222,7 +257,7 @@
     
     <div x-show="activeTab === 'campus'">
         <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">4. Section Kehidupan & Lingkungan Kampus</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">4. Section Kehidupan & Lingkungan Kampus</h2>
             <div class="form-group">
                 <label class="bo-label">Judul Section</label>
                 <input type="text" class="bo-input" x-model="campus.title">
@@ -230,7 +265,7 @@
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                 <template x-for="(foto, idx) in campus.fotos" :key="idx">
                     <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
-                        <div style="font-size:12px;font-weight:700;color:#2B2494;margin-bottom:6px;" x-text="'Foto ' + (idx+1)"></div>
+                        <div style="font-size:12px;font-weight:700;color:#101340;margin-bottom:6px;" x-text="'Foto ' + (idx+1)"></div>
                         <div style="width:100%;height:70px;border-radius:8px;overflow:hidden;border:1.5px dashed #d1d5db;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;"
                              @click="$store.imageUpload.open(url => { campus.fotos[idx].src = url })">
                             <template x-if="foto.src">
@@ -263,7 +298,7 @@
     
     <div x-show="activeTab === 'academy'">
         <div class="bo-card" style="max-width:900px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">5. Section Akademi Unggulan (3 Card Disciplines)</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">5. Section Akademi Unggulan (3 Card Disciplines)</h2>
             <div class="form-grid-2" style="margin-bottom:20px;">
                 <div class="form-group">
                     <label class="bo-label">Label Section</label>
@@ -278,7 +313,7 @@
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                 <template x-for="(card, idx) in academy.cards" :key="idx">
                     <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
-                        <div style="font-weight:700;color:#2B2494;margin-bottom:8px;" x-text="'Card ' + (idx+1)"></div>
+                        <div style="font-weight:700;color:#101340;margin-bottom:8px;" x-text="'Card ' + (idx+1)"></div>
                         <div class="form-group">
                             <label class="bo-label" style="font-size:11px;">Judul Program</label>
                             <input type="text" class="bo-input" style="padding:6px;font-weight:600;" x-model="card.title">
@@ -322,7 +357,7 @@
     
     <div x-show="activeTab === 'facilities'">
         <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">6. Section Fasilitas Kelas Dunia</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">6. Section Fasilitas Kelas Dunia</h2>
             <div class="form-group">
                 <label class="bo-label">Judul Section</label>
                 <input type="text" class="bo-input" x-model="facilities.title">
@@ -366,7 +401,7 @@
     
     <div x-show="activeTab === 'director'">
         <div class="bo-card" style="max-width:700px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">7. Section Pesan Direktur</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">7. Section Pesan Direktur</h2>
             <div class="form-group">
                 <label class="bo-label">Label Overline</label>
                 <input type="text" class="bo-input" x-model="director.label">
@@ -389,7 +424,7 @@
     
     <div x-show="activeTab === 'news'">
         <div class="bo-card" style="max-width:850px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">8. Section Berita & Artikel (Wawasan)</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">8. Section Berita & Artikel (Wawasan)</h2>
             <div class="form-grid-2" style="margin-bottom:20px;">
                 <div class="form-group">
                     <label class="bo-label">Label Overline</label>
@@ -401,7 +436,7 @@
                 </div>
             </div>
 
-            <h3 style="font-size:14px;font-weight:700;color:#2B2494;margin-bottom:10px;">Artikel Utama (Featured)</h3>
+            <h3 style="font-size:14px;font-weight:700;color:#101340;margin-bottom:10px;">Artikel Utama (Featured)</h3>
             <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;margin-bottom:20px;">
                 <div class="form-grid-2">
                     <div class="form-group">
@@ -423,7 +458,7 @@
                 </div>
             </div>
 
-            <h3 style="font-size:14px;font-weight:700;color:#2B2494;margin-bottom:10px;">3 Artikel Samping</h3>
+            <h3 style="font-size:14px;font-weight:700;color:#101340;margin-bottom:10px;">3 Artikel Samping</h3>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
                 <template x-for="(art, idx) in news.smallArticles" :key="idx">
                     <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
@@ -448,7 +483,7 @@
     
     <div x-show="activeTab === 'partners'">
         <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">9. Section Partnership Program (PP DHS)</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">9. Section Partnership Program (PP DHS)</h2>
             <div class="form-group">
                 <label class="bo-label">Label Overline</label>
                 <input type="text" class="bo-input" x-model="partner.label">
@@ -468,7 +503,7 @@
     <div x-show="activeTab === 'contact'">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Kampus Denpasar</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Kampus Denpasar</h2>
                 <div class="form-group">
                     <label class="bo-label">Alamat Lengkap</label>
                     <textarea class="bo-textarea" rows="2" x-model="contact.denpasar.address"></textarea>
@@ -484,7 +519,7 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Kampus Klungkung</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Kampus Klungkung</h2>
                 <div class="form-group">
                     <label class="bo-label">Alamat Lengkap</label>
                     <textarea class="bo-textarea" rows="2" x-model="contact.klungkung.address"></textarea>
@@ -500,7 +535,7 @@
             </div>
 
             <div class="bo-card" style="grid-column:1/-1;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Link Portal & Petunjuk Arah</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Link Portal & Petunjuk Arah</h2>
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label class="bo-label">Linktree URL</label>
@@ -514,7 +549,7 @@
                                @input="mapsPreviewKey++">
                         <p style="font-size:12px;color:#8A8478;margin-top:6px;line-height:1.6;">
                             💡 <strong>Cara mendapatkan URL embed:</strong>
-                            Buka <a href="https://maps.google.com" target="_blank" style="color:#2B2494;">Google Maps</a>
+                            Buka <a href="https://maps.google.com" target="_blank" style="color:#101340;">Google Maps</a>
                             → cari lokasi DHS → klik ikon <strong>Share</strong> 🔗
                             → pilih tab <strong>"Embed a map"</strong>
                             → klik <strong>"COPY HTML"</strong>
@@ -555,6 +590,9 @@
 </div>
 <?php $__env->stopSection(); ?>
 
+<?php
+    $statsJson = $stats->map(fn($s) => ['id' => $s->id, 'stat_key' => $s->stat_key, 'stat_value' => $s->stat_value, 'stat_label' => $s->stat_label, 'stat_icon' => $s->stat_icon ?? '', 'is_active' => (bool)$s->is_active])->values()->toArray();
+?>
 <?php $__env->startPush('scripts'); ?>
 <script>
 function berandaCompleteData() {
@@ -682,6 +720,28 @@ function berandaCompleteData() {
                 googleMaps: '<?php echo e(addslashes($contactSection['google_maps'] ?? '')); ?>',
                 googleMapsDir: '<?php echo e(addslashes($contactSection['google_maps_dir'] ?? 'https://maps.google.com/?q=Denpasar+Hotel+School')); ?>',
             }
+        },
+        stats: <?php echo json_encode($statsJson, 15, 512) ?>,
+        updateStat(stat) {
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            fetch(`/backoffice/statistik/${stat.id}/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ stat_value: stat.stat_value, stat_label: stat.stat_label, stat_icon: stat.stat_icon, is_active: stat.is_active ? 1 : 0 })
+            }).then(r => r.json()).then(data => {
+                if (data.success) { this.saved = true; setTimeout(() => this.saved = false, 2500); }
+            });
+        },
+        deleteStat(id) {
+            if (!confirm('Hapus statistik ini?')) return;
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            fetch(`/backoffice/statistik/${id}/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ id })
+            }).then(r => r.json()).then(data => {
+                if (data.success) { this.saved = true; setTimeout(() => location.reload(), 800); }
+            }).catch(() => alert('Gagal menghapus.'));
         },
         saveAll() {
             if (this.saving) return;

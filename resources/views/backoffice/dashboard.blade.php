@@ -8,14 +8,14 @@
     {{-- Stat Cards --}}
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px;">
 
-        <div class="bo-card" style="border-left:4px solid #0E06B4;padding:20px 24px;">
+        <div class="bo-card" style="border-left:4px solid #1A1F6B;padding:20px 24px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                 <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#8A8478;">Total Berita</div>
                 <div style="width:40px;height:40px;border-radius:12px;background:rgba(14,6,180,0.1);display:flex;align-items:center;justify-content:center;">
-                    <span class="material-icons-round" style="font-size:20px;color:#0E06B4;">article</span>
+                    <span class="material-icons-round" style="font-size:20px;color:#1A1F6B;">article</span>
                 </div>
             </div>
-            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#2B2494;line-height:1;">{{ $stats['berita'] }}</div>
+            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#101340;line-height:1;">{{ $stats['berita'] }}</div>
             <div style="font-size:12.5px;color:#8A8478;margin-top:6px;">Total artikel berita</div>
         </div>
 
@@ -26,7 +26,7 @@
                     <span class="material-icons-round" style="font-size:20px;color:#16a34a;">school</span>
                 </div>
             </div>
-            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#2B2494;line-height:1;">{{ $stats['program'] }}</div>
+            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#101340;line-height:1;">{{ $stats['program'] }}</div>
             <div style="font-size:12.5px;color:#8A8478;margin-top:6px;">Total program aktif</div>
         </div>
 
@@ -37,18 +37,18 @@
                     <span class="material-icons-round" style="font-size:20px;color:#f59e0b;">how_to_reg</span>
                 </div>
             </div>
-            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#2B2494;line-height:1;">{{ $stats['pendaftar'] }}</div>
+            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#101340;line-height:1;">{{ $stats['pendaftar'] }}</div>
             <div style="font-size:12.5px;color:#8A8478;margin-top:6px;">Total formulir masuk</div>
         </div>
 
-        <div class="bo-card" style="border-left:4px solid #E10001;padding:20px 24px;">
+        <div class="bo-card" style="border-left:4px solid #D4302A;padding:20px 24px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                 <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#8A8478;">Pengguna Admin</div>
                 <div style="width:40px;height:40px;border-radius:12px;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;">
-                    <span class="material-icons-round" style="font-size:20px;color:#E10001;">manage_accounts</span>
+                    <span class="material-icons-round" style="font-size:20px;color:#D4302A;">manage_accounts</span>
                 </div>
             </div>
-            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#2B2494;line-height:1;">{{ $stats['users'] }}</div>
+            <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#101340;line-height:1;">{{ $stats['users'] }}</div>
             <div style="font-size:12.5px;color:#8A8478;margin-top:6px;">Admin aktif</div>
         </div>
     </div>
@@ -58,7 +58,7 @@
         {{-- Recent Berita --}}
         <div class="bo-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:17px;color:#2B2494;margin:0;">Berita Terbaru</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:17px;color:#101340;margin:0;">Berita Terbaru</h2>
                 <a href="/backoffice/berita" class="btn-secondary" style="padding:7px 14px;font-size:12.5px;">
                     <span class="material-icons-round" style="font-size:15px;">open_in_new</span>
                     Lihat Semua
@@ -99,7 +99,7 @@
 
             {{-- Quick Actions --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:17px;color:#2B2494;margin:0 0 16px;">Aksi Cepat</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:17px;color:#101340;margin:0 0 16px;">Aksi Cepat</h2>
                 <div style="display:flex;flex-direction:column;gap:10px;">
                     <a href="/backoffice/berita" class="btn-primary" style="justify-content:flex-start;">
                         <span class="material-icons-round" style="font-size:18px;">add</span>
@@ -118,12 +118,12 @@
 
             {{-- Recent Activity --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:17px;color:#2B2494;margin:0 0 16px;">Aktivitas Terkini</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:17px;color:#101340;margin:0 0 16px;">Aktivitas Terkini</h2>
                 <div style="display:flex;flex-direction:column;gap:14px;">
                     @forelse($activities->take(6) as $act)
                     <div style="display:flex;gap:12px;align-items:flex-start;">
                         <div style="width:32px;height:32px;border-radius:8px;background:rgba(14,6,180,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <span class="material-icons-round" style="font-size:16px;color:#0E06B4;">
+                            <span class="material-icons-round" style="font-size:16px;color:#1A1F6B;">
                                 {{ $act->action === 'login' ? 'login' : ($act->action === 'create' ? 'add_circle' : ($act->action === 'delete' ? 'delete' : 'edit')) }}
                             </span>
                         </div>

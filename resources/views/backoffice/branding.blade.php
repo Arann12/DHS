@@ -16,7 +16,7 @@
 
             {{-- Logo Variants --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">1. File Logo DHS & Asset Branding</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A1F6B;margin:0 0 20px;">1. File Logo DHS & Asset Branding</h2>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
                     {{-- Logo Utama --}}
@@ -77,7 +77,7 @@
 
             {{-- Color Palette --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 6px;">2. Palet Warna Resmi Logo DHS</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A1F6B;margin:0 0 6px;">2. Palet Warna Resmi Logo DHS</h2>
                 <p style="font-size:13px;color:#8A8478;margin:0 0 20px;">Sesuai panduan resmi DESIGN.md & warna logo asli.</p>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -95,7 +95,7 @@
 
             {{-- Typography & Font Family --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 20px;">3. Font Tipografi</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A1F6B;margin:0 0 20px;">3. Font Tipografi</h2>
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label class="bo-label">Font Headings (Judul)</label>
@@ -111,7 +111,7 @@
 
         {{-- Live Preview Branding --}}
         <div class="bo-card" style="position:sticky;top:88px;">
-            <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#2B2494;margin:0 0 16px;">Preview Brand Color</h3>
+            <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#1A1F6B;margin:0 0 16px;">Preview Brand Color</h3>
             <div style="display:flex;flex-direction:column;gap:8px;">
                 <template x-for="color in colors" :key="color.key">
                     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;color:#fff;font-weight:700;font-size:12px;"
@@ -145,11 +145,12 @@ function brandingCompleteData() {
             favicon: '{{ $settings["logo_favicon"]->setting_value ?? "/favicon.ico" }}'
         },
         colors: [
-            { key:'color_primary',   name:'DHS Royal Blue (Dominan)', value:'{{ $settings["color_primary"]->setting_value ?? "#0010B8" }}' },
-            { key:'color_navy',      name:'Dark Navy (Header/Sidebar)', value:'{{ $settings["color_navy"]->setting_value ?? "#2B2494" }}' },
-            { key:'color_secondary', name:'DHS Red (Aksen/Tombol)',     value:'{{ $settings["color_secondary"]->setting_value ?? "#D62828" }}' },
-            { key:'color_cream',     name:'DHS Cream (Background)',     value:'{{ $settings["color_cream"]->setting_value ?? "#F6F2EA" }}' },
-            { key:'color_beige',     name:'Warm Beige (Card/Section)',  value:'{{ $settings["color_beige"]->setting_value ?? "#EFE7D8" }}' }
+            { key:'color_primary',   name:'DHS Royal Blue (Dominan)', value:'{{ $settings["color_primary"]->setting_value ?? "#1A1F6B" }}' },
+            { key:'color_navy',      name:'Dark Navy (Header/Sidebar)', value:'{{ $settings["color_navy"]->setting_value ?? "#101340" }}' },
+            { key:'color_secondary', name:'DHS Red (Aksen/Tombol)',     value:'{{ $settings["color_secondary"]->setting_value ?? "#D4302A" }}' },
+            { key:'color_gold',      name:'DHS Gold (Aksen Premium)',   value:'{{ $settings["color_gold"]->setting_value ?? "#C7A14D" }}' },
+            { key:'color_cream',     name:'Light Gray (Background)',    value:'{{ $settings["color_cream"]->setting_value ?? "#F5F6F8" }}' },
+            { key:'color_beige',     name:'Light Blue (Section)',       value:'{{ $settings["color_beige"]->setting_value ?? "#EBF0FA" }}' }
         ],
         fonts: {
             heading: '{{ $settings["font_heading"]->setting_value ?? "Playfair Display, serif" }}',

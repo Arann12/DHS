@@ -38,7 +38,7 @@ Route::post('/backoffice/logout',  [AuthController::class, 'logout']);
 | BACKOFFICE PAGES (GET) - Protected by BackofficeAuth Middleware
 |--------------------------------------------------------------------------
 */
-Route::middleware(['backoffice.auth'])->group(function () {
+Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::get('/backoffice/dashboard',     [BackofficeController::class, 'dashboard']);
     Route::get('/backoffice/beranda',       [BackofficeController::class, 'beranda']);
     Route::get('/backoffice/branding',      [BackofficeController::class, 'branding']);

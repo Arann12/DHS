@@ -19,7 +19,7 @@
 
         {{-- Slider Container --}}
         <div class="testimonial-slider-wrapper" data-reveal="fade-up" data-delay="200">
-            <div class="testimonial-slider" x-data="testimonialSlider({{ $testimonials->count() }})">
+            <div class="testimonial-slider" x-data="testimonialSlider({{ $testimonials->count() }})" @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)">
 
                 {{-- Progress Bar --}}
                 <div class="autoplay-progress">
@@ -87,13 +87,6 @@
                     @endforeach
                 </div>
 
-                {{-- Navigation Arrows --}}
-                <button type="button" class="slider-arrow prev" @click="prevSlide()" aria-label="Previous testimonial">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <button type="button" class="slider-arrow next" @click="nextSlide()" aria-label="Next testimonial">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
             </div>
         </div>
     </div>
@@ -102,7 +95,7 @@
 <style>
     .testimonial-section {
         padding: 100px 0;
-        background: linear-gradient(135deg, #F6F2EA 0%, #EFE7D8 100%);
+        background: linear-gradient(135deg, #1A1F6B 0%, #101340 100%);
         position: relative;
         overflow: hidden;
     }
@@ -136,7 +129,7 @@
         font-weight: 600;
         letter-spacing: 0.15em;
         text-transform: uppercase;
-        color: #0E06B4;
+        color: #C7A14D;
         margin-bottom: 12px;
     }
 
@@ -144,14 +137,14 @@
         font-family: 'Playfair Display', serif;
         font-size: 2.5rem;
         font-weight: 700;
-        color: #1a1a2e;
+        color: #FFFFFF;
         margin-bottom: 12px;
         line-height: 1.2;
     }
 
     .section-subtitle {
         font-size: 0.95rem;
-        color: #888;
+        color: rgba(255,255,255,0.6);
         max-width: 520px;
         margin: 0 auto 48px;
         line-height: 1.7;
@@ -166,7 +159,7 @@
     /* Progress bar */
     .autoplay-progress {
         height: 3px;
-        background: rgba(14,6,180,0.12);
+        background: rgba(255,255,255,0.12);
         border-radius: 2px;
         margin-bottom: 32px;
         overflow: hidden;
@@ -174,7 +167,7 @@
 
     .autoplay-bar {
         height: 100%;
-        background: linear-gradient(90deg, #0E06B4, #4B45D4);
+        background: linear-gradient(90deg, #C7A14D, #DFC06A);
         border-radius: 2px;
         transition: width 0.1s linear;
     }
@@ -231,8 +224,8 @@
         font-family: 'Playfair Display', serif;
         font-size: 100px;
         line-height: 0.6;
-        color: #0E06B4;
-        opacity: 0.12;
+        color: #C7A14D;
+        opacity: 0.15;
         margin-bottom: 20px;
         user-select: none;
         letter-spacing: -4px;
@@ -242,7 +235,7 @@
         font-family: 'Playfair Display', serif;
         font-size: 1.15rem;
         line-height: 1.85;
-        color: #2a2a3e;
+        color: #1a1a2e;
         margin-bottom: 32px;
         font-style: italic;
     }
@@ -250,7 +243,7 @@
     .testi-divider {
         width: 40px;
         height: 2px;
-        background: linear-gradient(90deg, #0E06B4, #4B45D4);
+        background: linear-gradient(90deg, #C7A14D, #DFC06A);
         margin: 0 auto 24px;
         border-radius: 1px;
     }
@@ -270,7 +263,7 @@
         font-family: 'Playfair Display', serif;
         font-size: 1.1rem;
         font-weight: 700;
-        color: #0E06B4;
+        color: #1A1F6B;
         margin: 0 0 4px;
         letter-spacing: 0.01em;
     }
@@ -284,7 +277,7 @@
 
     .author-company {
         font-size: 0.77rem;
-        color: #aaa;
+        color: #999;
         margin: 0;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -303,11 +296,11 @@
     }
 
     .star-icon.filled {
-        color: #F5A623;
+        color: #C7A14D;
     }
 
     .star-icon.empty {
-        color: #e0e0e0;
+        color: rgba(255,255,255,0.2);
     }
 
     /* Dots */
@@ -324,7 +317,7 @@
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: rgba(14,6,180,0.18);
+        background: rgba(255,255,255,0.18);
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -332,12 +325,12 @@
     }
 
     .dot:hover {
-        background: rgba(14,6,180,0.45);
+        background: rgba(199,161,77,0.5);
         transform: scale(1.2);
     }
 
     .dot.active {
-        background: #0E06B4;
+        background: #C7A14D;
         width: 28px;
         border-radius: 5px;
     }
@@ -351,8 +344,8 @@
         height: 46px;
         border-radius: 50%;
         background: #fff;
-        border: 2px solid rgba(14,6,180,0.25);
-        color: #0E06B4;
+        border: 2px solid rgba(255,255,255,0.25);
+        color: #FFFFFF;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -363,8 +356,8 @@
     }
 
     .slider-arrow:hover {
-        background: #0E06B4;
-        border-color: #0E06B4;
+        background: #C7A14D;
+        border-color: #C7A14D;
         color: #fff;
         transform: translateY(-50%) scale(1.1);
         box-shadow: 0 8px 24px rgba(14,6,180,0.25);

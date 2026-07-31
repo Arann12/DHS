@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden mb-16">
+    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
         <img alt="Karier DHS" class="absolute inset-0 w-full h-full object-cover"
             src="https://images.unsplash.com/photo-1521737711867-e3b90473bd58?q=80&w=1600&auto=format&fit=crop">
@@ -25,7 +25,7 @@
     </section>
 
     <!-- Coming Soon Banner -->
-    <section class="bg-dhs-cream py-20 px-5 md:px-16">
+    <section class="bg-dhs-lightblue py-20 px-5 md:px-16">
         <div class="max-w-3xl mx-auto text-center">
             <span class="material-icons text-primary text-6xl mb-8 block">work_outline</span>
             <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6">
@@ -40,11 +40,11 @@
                 if (!str_starts_with($waNumber, '62')) { $waNumber = '62' . ltrim($waNumber, '0'); }
             @endphp
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a class="px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors"
+                <a class="px-8 py-4 bg-primary text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-primary/90 transition-colors"
                     href="mailto:{{ $footerSettings['helpdesk_email'] ?? 'karier@dhs.or.id' }}">
                     <span data-id="Kirim CV via Email" data-en="Send CV via Email">Kirim CV via Email</span>
                 </a>
-                <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-cream transition-colors"
+                <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-lightblue transition-colors"
                     href="https://wa.me/{{ $waNumber }}">
                     <span data-id="Hubungi via WhatsApp" data-en="Contact via WhatsApp">Hubungi via WhatsApp</span>
                 </a>

@@ -23,6 +23,7 @@
 -- 15. navigation_menus         - Menu navigasi website (header & footer)
 -- 16. footer_settings          - Pengaturan footer website
 -- 17. activity_logs            - Log aktivitas admin backoffice
+-- 18. about_pages              - Konten halaman About Us & Academy
 -- =========================================================================
 
 -- 1. USERS (Manajemen Akun Admin Backoffice)
@@ -176,7 +177,7 @@ CREATE TABLE IF NOT EXISTS faqs (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     question VARCHAR(500) NOT NULL,
     answer LONGTEXT NOT NULL,
-    category ENUM('akademi', 'pendaftaran', 'biaya', 'kampus', 'umum') DEFAULT 'umum',
+    category ENUM('akademi', 'pendaftaran', 'biaya', 'kampus', 'umum', 'karir') DEFAULT 'umum',
     is_active TINYINT(1) DEFAULT 1,
     display_order INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -332,6 +333,20 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 18. ABOUT_PAGES (Konten Halaman About Us, Academy, dll)
+CREATE TABLE IF NOT EXISTS about_pages (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    section_key VARCHAR(100) NOT NULL UNIQUE,
+    section_title VARCHAR(255) DEFAULT NULL,
+    section_content JSON DEFAULT NULL,
+    is_active TINYINT(1) DEFAULT 1,
+    display_order INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_section_key (section_key),
+    INDEX idx_display_order (display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- =========================================================================
 -- SEEDING DATA DUMMY (untuk keperluan testing frontend & backoffice)
 -- =========================================================================
@@ -347,11 +362,12 @@ INSERT IGNORE INTO users (name, username, email, password, role) VALUES
 INSERT IGNORE INTO branding_settings (setting_key, setting_value, setting_type, setting_group) VALUES
 ('logo_primary', '/image/LogoDHS.png', 'file', 'logo'),
 ('logo_favicon', '/favicon.ico', 'file', 'logo'),
-('color_primary', '#0010B8', 'color', 'colors'),
-('color_secondary', '#D62828', 'color', 'colors'),
-('color_navy', '#2B2494', 'color', 'colors'),
-('color_cream', '#F6F2EA', 'color', 'colors'),
-('color_beige', '#EFE7D8', 'color', 'colors'),
+('color_primary', '#1A1F6B', 'color', 'colors'),
+('color_secondary', '#D4302A', 'color', 'colors'),
+('color_gold', '#C7A14D', 'color', 'colors'),
+('color_navy', '#101340', 'color', 'colors'),
+('color_cream', '#F5F6F8', 'color', 'colors'),
+('color_beige', '#EBF0FA', 'color', 'colors'),
 ('font_heading', 'Playfair Display, serif', 'text', 'typography'),
 ('font_body', 'Inter, sans-serif', 'text', 'typography');
 

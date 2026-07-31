@@ -1,6 +1,6 @@
 <aside id="bo-sidebar">
     <div class="sidebar-logo">
-        <img src="<?php echo e(asset('image/LogoDHS_2.jpeg')); ?>" alt="DHS Logo" class="sidebar-logo-img">
+        <img src="<?php echo e($boLogo ? asset(ltrim($boLogo, '/')) : asset('image/LogoDHS_2.jpeg')); ?>" alt="DHS Logo" class="sidebar-logo-img">
         <div class="logo-text">Denpasar<br>Hotel School</div>
     </div>
 
@@ -35,10 +35,6 @@
         <a href="/backoffice/faq" class="nav-item <?php echo e(Request::is('backoffice/faq') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">quiz</span>
             <span class="nav-label">FAQ</span>
-        </a>
-        <a href="/backoffice/beasiswa" class="nav-item <?php echo e(Request::is('backoffice/beasiswa') ? 'active' : ''); ?>">
-            <span class="material-icons-round mat-icon">school</span>
-            <span class="nav-label">Beasiswa</span>
         </a>
         <a href="/backoffice/partner" class="nav-item <?php echo e(Request::is('backoffice/partner') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">handshake</span>

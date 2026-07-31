@@ -29,7 +29,7 @@
     </section>
 
     <!-- Main Content with Filter -->
-    <main class="pt-16 pb-24">
+    <main class="pt-16">
         <!-- Category Filter Tabs -->
         <section class="max-w-[1280px] mx-auto px-5 md:px-16 mb-12" data-reveal="fade-up">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block" data-id="PILIH KATEGORI DURASI" data-en="SELECT DURATION CATEGORY">PILIH KATEGORI DURASI</span>
@@ -50,7 +50,7 @@
                     <!-- Category Sidebar -->
                     <div class="lg:col-span-1 bg-white p-8 border border-black/5 shadow-sm rounded-lg lg:sticky lg:top-24 mb-8 lg:mb-0">
                         <span class="text-xs font-bold uppercase tracking-widest text-primary mb-3 block">{{ $cat->category_name }}</span>
-                        <h2 class="text-3xl font-serif font-bold text-dhs-navy mb-4 leading-tight">{{ $cat->category_name }}</h2>
+                        <h2 class="text-3xl font-serif font-bold text-text-light mb-4 leading-tight">{{ $cat->category_name }}</h2>
                         @if($cat->subtitle)
                         <p class="text-xs text-muted-light uppercase tracking-wider mb-4">{{ $cat->subtitle }}</p>
                         @endif
@@ -59,7 +59,7 @@
                         @endif
                         @if($cat->career_opportunities)
                         <div class="pt-4 border-t border-black/10">
-                            <p class="text-xs font-bold text-dhs-navy uppercase tracking-wider mb-2">Peluang Kerja Lulusan:</p>
+                            <p class="text-xs font-bold text-text-light uppercase tracking-wider mb-2">Peluang Kerja Lulusan:</p>
                             <p class="text-xs text-muted-light leading-relaxed">{{ $cat->career_opportunities }}</p>
                         </div>
                         @endif
@@ -80,7 +80,7 @@
                             </div>
                             <div class="p-6 flex-1 flex flex-col justify-between">
                                 <div>
-                                    <h3 class="font-serif font-bold text-lg text-dhs-navy group-hover:text-primary transition-colors mb-2 leading-snug">{{ $program->title }}</h3>
+                                    <h3 class="font-serif font-bold text-lg text-text-light group-hover:text-primary transition-colors mb-2 leading-snug">{{ $program->title }}</h3>
                                     @if($program->description)
                                     <p class="text-xs text-muted-light leading-relaxed mb-4">{{ Str::limit($program->description, 120) }}</p>
                                     @endif
@@ -124,13 +124,13 @@
                     </ul>
                 </div>
 
-                <div class="bg-dhs-navy p-8 shadow-sm text-white">
-                    <div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6">
-                        <span class="material-icons text-white text-2xl">groups</span>
+                <div class="bg-dhs-lightblue p-8 shadow-sm">
+                    <div class="w-12 h-12 bg-primary/10 flex items-center justify-center mb-6">
+                        <span class="material-icons text-primary text-2xl">groups</span>
                     </div>
-                    <h4 class="font-bold font-serif text-xl text-white mb-3">Beasiswa STT / Desa</h4>
-                    <p class="text-xs text-white/75 leading-relaxed mb-5">Khusus bagi anggota Sekaa Teruna Teruni (STT) dan utusan desa adat yang ingin meningkatkan kompetensi di bidang perhotelan.</p>
-                    <ul class="text-xs text-white/75 space-y-2.5">
+                    <h4 class="font-bold font-serif text-xl text-text-light mb-3">Beasiswa STT / Desa</h4>
+                    <p class="text-xs text-muted-light leading-relaxed mb-5">Khusus bagi anggota Sekaa Teruna Teruni (STT) dan utusan desa adat yang ingin meningkatkan kompetensi di bidang perhotelan.</p>
+                    <ul class="text-xs text-muted-light space-y-2.5">
                         <li class="flex items-start gap-2"><span class="material-icons text-primary text-sm mt-0.5">check_circle</span>Surat rekomendasi Bendesa Adat</li>
                         <li class="flex items-start gap-2"><span class="material-icons text-primary text-sm mt-0.5">check_circle</span>Aktif sebagai anggota STT</li>
                         <li class="flex items-start gap-2"><span class="material-icons text-primary text-sm mt-0.5">check_circle</span>Warga Bali berdomisili di Bali</li>
@@ -173,7 +173,7 @@
                         ['title' => 'PSCRB', 'icon' => 'sailing'],
                         ['title' => 'C1D VISA', 'icon' => 'badge']
                     ] as $doc)
-                    <div class="bg-dhs-cream p-6 border border-black/5 hover:bg-white transition-colors duration-300">
+                    <div class="bg-dhs-lightblue p-6 border border-black/5 hover:bg-white transition-colors duration-300">
                         <span class="material-icons text-primary text-3xl mb-3 block">{{$doc['icon']}}</span>
                         <h5 class="font-bold text-sm text-text-light">{{ $doc['title'] }}</h5>
                     </div>
@@ -182,13 +182,15 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="max-w-3xl mx-auto px-5 text-center mb-24">
+        <section class="py-16 mb-0 border-t border-black/10">
+        <div class="max-w-3xl mx-auto px-5 text-center">
             <h2 class="text-[48px] leading-[1.2] font-semibold font-serif mb-6 text-text-light" data-id="Mulai Karir Sukses Anda" data-en="Start Your Successful Career">Mulai Karir Sukses Anda</h2>
             <p class="text-base text-muted-light mb-10" data-id="Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global." data-en="Denpasar Hotel School is ready to guide you to become a competent young professional with global competitiveness.">Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online.</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a class="px-8 py-4 bg-dhs-navy text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-darknavy transition-colors" href="/formulir-pendaftaran"><span data-id="Pendaftaran Online" data-en="Online Registration">Pendaftaran Online</span></a>
-                <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-cream transition-colors" href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank"><span data-id="Brosur Biaya" data-en="Download Cost Brochure">Unduh Brosur Biaya</span></a>
+                <a class="px-8 py-4 bg-primary text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-primary/90 transition-colors" href="/formulir-pendaftaran"><span data-id="Pendaftaran Online" data-en="Online Registration">Pendaftaran Online</span></a>
+                <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-navy hover:text-white transition-colors" href="https://linktr.ee/BiayaPendidikan_DHS" target="_blank"><span data-id="Brosur Biaya" data-en="Download Cost Brochure">Unduh Brosur Biaya</span></a>
             </div>
+        </div>
         </section>
     </main>
 

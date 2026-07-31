@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden" style="margin-bottom:48px;">
+    <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
         <img alt="Hospitality Background" class="absolute inset-0 w-full h-full object-cover"
             src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600&auto=format&fit=crop">
@@ -30,7 +30,8 @@
     </section>
 
     <!-- Category Filters -->
-    <section class="max-w-[1280px] mx-auto px-5 md:px-16 pb-12">
+    <section class="bg-dhs-lightblue">
+    <div class="max-w-[1280px] mx-auto px-5 md:px-16 py-12">
         <div class="flex flex-wrap gap-3">
             <a href="/berita"
                 class="{{ !request('kategori') ? 'bg-primary text-white border-primary' : 'bg-white border-black/10 text-text-light hover:border-text-light' }} text-[0.7rem] uppercase tracking-[0.15em] font-semibold px-5 py-2 transition-colors border">
@@ -41,6 +42,7 @@
                     {{ $catLabel }}</a>
             @endforeach
         </div>
+    </div>
     </section>
 
     <!-- Featured Article -->

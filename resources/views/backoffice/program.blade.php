@@ -17,7 +17,7 @@
 
     {{-- Hero Section --}}
     <div class="bo-card" style="margin-bottom:20px;">
-        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 16px;">Hero Section — Halaman Akademi</h2>
+        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Hero Section — Halaman Akademi</h2>
         <div class="form-group">
             <label class="bo-label">Judul Utama (H1)</label>
             <input type="text" class="bo-input" x-model="hero.title" placeholder="Program Vokasi & Kursus">
@@ -73,8 +73,8 @@
             <div x-show="activeCat === cat.id">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
                     <div>
-                        <h2 style="font-family:'Playfair Display',serif;font-size:20px;color:#2B2494;margin:0 0 4px;">
-                            <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:20px;color:#2B2494;border:none;padding:0;background:transparent;font-weight:700;" x-model="cat.name" placeholder="Nama Kategori">
+                        <h2 style="font-family:'Playfair Display',serif;font-size:20px;color:#101340;margin:0 0 4px;">
+                            <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:20px;color:#101340;border:none;padding:0;background:transparent;font-weight:700;" x-model="cat.name" placeholder="Nama Kategori">
                         </h2>
                         <p style="font-size:13px;color:#8A8478;margin:0;">Pengaturan deskripsi & daftar kursus</p>
                     </div>
@@ -107,7 +107,7 @@
                 </div>
 
                 {{-- Courses List Grid --}}
-                <h3 style="font-size:15px;font-weight:700;color:#2B2494;margin-bottom:14px;">Daftar Kursus / Modul</h3>
+                <h3 style="font-size:15px;font-weight:700;color:#101340;margin-bottom:14px;">Daftar Kursus / Modul</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <template x-for="(course, idx) in cat.courses" :key="idx">
                         <div style="padding:16px;background:#fff;border-radius:12px;border:1.5px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
@@ -175,11 +175,11 @@
     <div class="bo-modal-backdrop" x-show="addModal.open" x-transition style="display:none;" @keydown.escape.window="addModal.open=false">
         <div class="bo-modal" style="max-width:480px;" @click.stop>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#2B2494;">Tambah Kursus Baru</h3>
+                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#101340;">Tambah Kursus Baru</h3>
                 <button class="btn-icon" @click="addModal.open=false"><span class="material-icons-round">close</span></button>
             </div>
             <div class="form-group">
-                <label class="bo-label">Judul Program / Kursus <span style="color:#E10001;">*</span></label>
+                <label class="bo-label">Judul Program / Kursus <span style="color:#D4302A;">*</span></label>
                 <input type="text" class="bo-input" x-model="addModal.title" placeholder="Contoh: Diploma Perhotelan Internasional" @keydown.enter="submitAddCourse()">
             </div>
             <p style="font-size:12px;color:#8A8478;margin:0 0 16px;">
@@ -199,7 +199,7 @@
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
                 <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#E10001;">delete_forever</span>
+                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Kursus?</h3>
                 <p style="font-size:14px;color:#8A8478;margin:0;">Program <strong x-text="delModal.title"></strong> akan dihapus permanen dari database.</p>

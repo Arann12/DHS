@@ -10,20 +10,22 @@
     --font-serif: 'Playfair Display', Georgia, Cambria, 'Times New Roman', Times, serif;
 
     --color-primary: #DF1501;
-    --color-dhs-navy: #0010B8;
-    --color-dhs-red: #DF1501;
-    --color-dhs-cream: #F6F2EA;
-    --color-dhs-beige: #EFE7D8;
-    --color-dhs-darknavy: #000B82;
-    --color-dhs-logo-blue: #0010B8;
+    --color-dhs-navy: #1A1F6B;
+    --color-dhs-red: #D4302A;
+    --color-dhs-gold: #C7A14D;
+    --color-dhs-lightblue: #EBF0FA;
+    --color-dhs-lightrose: #FDF0EF;
+    --color-dhs-lightgray: #F5F6F8;
+    --color-dhs-darknavy: #101340;
+    --color-dhs-logo-blue: #1A1F6B;
     --color-dhs-mutedgray: #6B6558;
 
-    --color-background-light: #F6F2EA;
-    --color-background-dark: #0010B8;
-    --color-surface-light: #EFE7D8;
-    --color-surface-dark: #000B82;
-    --color-text-light: #0010B8;
-    --color-text-dark: #F6F2EA;
+    --color-background-light: #FFFFFF;
+    --color-background-dark: #1A1F6B;
+    --color-surface-light: #EBF0FA;
+    --color-surface-dark: #101340;
+    --color-text-light: #1A1F6B;
+    --color-text-dark: #FFFFFF;
     --color-muted-light: #6B6558;
     --color-muted-dark: #8A8478;
 }

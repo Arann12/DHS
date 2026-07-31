@@ -13,7 +13,7 @@
         {{-- Menu Editor --}}
         <div class="bo-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0;">Menu Navigasi</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">Menu Navigasi</h2>
                 <button class="btn-primary" style="padding:8px 14px;font-size:12.5px;" @click="addMenu()">
                     <span class="material-icons-round" style="font-size:16px;">add</span>
                     Tambah Menu
@@ -62,9 +62,9 @@
         <div style="display:flex;flex-direction:column;gap:18px;">
             {{-- Preview --}}
             <div class="bo-card" style="position:sticky;top:88px;">
-                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#2B2494;margin:0 0 14px;">Preview Navbar</h3>
+                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#101340;margin:0 0 14px;">Preview Navbar</h3>
                 <div style="border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
-                    <div style="background:#2B2494;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="background:#101340;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">
                         <div style="color:#fff;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;">DHS</div>
                         <div style="display:flex;gap:14px;flex-wrap:wrap;">
                             <template x-for="item in menus" :key="item.label">
@@ -77,7 +77,7 @@
                 <hr class="divider">
 
                 {{-- Design Checklist --}}
-                <h3 style="font-family:'Playfair Display',serif;font-size:15px;color:#2B2494;margin:0 0 12px;">Checklist Konsistensi (DESIGN.md)</h3>
+                <h3 style="font-family:'Playfair Display',serif;font-size:15px;color:#101340;margin:0 0 12px;">Checklist Konsistensi (DESIGN.md)</h3>
                 <div style="display:flex;flex-direction:column;gap:8px;">
                     <template x-for="item in menus" :key="item.label">
                         <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;" :style="item.label ? 'background:#f0fdf4;' : 'background:#fff7ed;'">
@@ -98,17 +98,12 @@
 @push('scripts')
 <script>
 function navigasiData() {
+    @php
+        $menuData = $menus->map(fn($m) => ['id' => $m->id, 'label' => $m->menu_label, 'url' => $m->menu_url])->values();
+    @endphp
     return {
         saved: false,
-        menus: [
-            { label:'Beranda', url:'/' },
-            { label:'Tentang Kami', url:'/tentang-kami' },
-            { label:'Akademi', url:'/akademi' },
-            { label:'Berita', url:'/berita' },
-            { label:'FAQ', url:'/faq' },
-            { label:'Formulir Pendaftaran', url:'/formulir-pendaftaran' },
-            { label:'Karier', url:'/karier' },
-        ],
+        menus: @json($menuData),
         addMenu() { this.menus.push({ label:'', url:'' }); },
         removeMenu(idx) { this.menus.splice(idx, 1); },
         moveUp(idx) {

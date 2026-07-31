@@ -32,14 +32,14 @@
                 <template x-for="item in filtered" :key="item.id">
                     <tr>
                         <td>
-                            <div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,#0E06B4,#2B2494);" x-text="item.nama.charAt(0).toUpperCase()"></div>
+                            <div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,#1A1F6B,#101340);" x-text="item.nama.charAt(0).toUpperCase()"></div>
                         </td>
                         <td>
                             <div style="font-weight:700;color:#1a1a2e;" x-text="item.nama"></div>
                             <div style="font-size:12px;color:#8A8478;" x-text="item.email"></div>
                         </td>
                         <td>
-                            <code style="background:#f3f4f6;padding:3px 8px;border-radius:6px;font-size:13px;color:#0E06B4;" x-text="item.username"></code>
+                            <code style="background:#f3f4f6;padding:3px 8px;border-radius:6px;font-size:13px;color:#1A1F6B;" x-text="item.username"></code>
                         </td>
                         <td>
                             <span :class="item.role === 'Super Admin' ? 'badge badge-blue' : item.role === 'Editor' ? 'badge badge-green' : 'badge badge-gray'" x-text="item.role"></span>
@@ -137,7 +137,7 @@
         <div class="bo-modal" style="max-width:420px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
                 <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#E10001;">person_remove</span>
+                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">person_remove</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Pengguna?</h3>
                 <p style="font-size:14px;color:#8A8478;margin:0;">Pengguna ini akan kehilangan akses ke backoffice.</p>
@@ -161,7 +161,7 @@ function usersData() {
         items: @json($users->map(fn($u) => [
             'id'       => $u->id,
             'nama'     => $u->name,
-            'username' => explode('@', $u->email)[0],
+            'username' => $u->username ?? explode('@', $u->email)[0],
             'email'    => $u->email,
             'role'     => $u->role === 'super_admin' ? 'Super Admin' : ($u->role === 'admin' ? 'Admin' : 'Editor'),
             'aktif'    => (bool)$u->is_active,
@@ -187,6 +187,7 @@ function usersData() {
             if (!this.modal.form.nama.trim() || !this.modal.form.email.trim()) return alert('Nama dan email tidak boleh kosong.');
             const fd = new FormData();
             fd.append('name',     this.modal.form.nama);
+            fd.append('username', this.modal.form.username || this.modal.form.nama.toLowerCase().replace(/\s+/g, '_'));
             fd.append('email',    this.modal.form.email);
             fd.append('role',     this.modal.form.role.toLowerCase().replace(' ', '_'));
             if (this.modal.form.password) fd.append('password', this.modal.form.password);

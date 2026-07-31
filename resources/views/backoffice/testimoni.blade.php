@@ -32,7 +32,7 @@
                         <td>
                             <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#eee;">
                                 <img x-show="item.foto" :src="item.foto" style="width:100%;height:100%;object-fit:cover;">
-                                <div x-show="!item.foto" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0E06B4,#2B2494);">
+                                <div x-show="!item.foto" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1A1F6B,#101340);">
                                     <span style="color:#fff;font-weight:700;font-size:16px;" x-text="item.nama.charAt(0).toUpperCase()"></span>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
                 <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#E10001;">delete_forever</span>
+                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Testimoni?</h3>
                 <p style="font-size:14px;color:#8A8478;margin:0;">Testimoni ini akan dihapus permanen.</p>

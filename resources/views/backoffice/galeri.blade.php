@@ -9,7 +9,7 @@
     <div class="bo-card" style="margin-bottom:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
             <div>
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#2B2494;margin:0 0 4px;">Galeri Foto</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 4px;">Galeri Foto</h2>
                 <p style="font-size:13px;color:#8A8478;margin:0;" x-text="'Total: ' + items.length + ' foto'"></p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;">
@@ -28,7 +28,7 @@
              @dragover.prevent="dragOver = true"
              @dragleave="dragOver = false"
              @drop.prevent="handleDrop($event)"
-             :style="dragOver ? 'border-color:#0E06B4;background:#eef0ff;' : ''">
+             :style="dragOver ? 'border-color:#1A1F6B;background:#eef0ff;' : ''">
             <span class="material-icons-round" style="font-size:42px;color:#ccc;display:block;margin-bottom:8px;">cloud_upload</span>
             <div style="font-size:14px;color:#8A8478;">Drag & drop foto ke sini, atau klik tombol <strong>Upload</strong> di atas</div>
             <div style="font-size:12px;color:#bbb;margin-top:6px;">JPG, PNG, WebP — maks 5MB per foto</div>
@@ -71,7 +71,7 @@
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
                 <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#E10001;">delete_forever</span>
+                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Foto?</h3>
                 <p style="font-size:14px;color:#8A8478;margin:0;">Foto akan dihapus dari galeri.</p>

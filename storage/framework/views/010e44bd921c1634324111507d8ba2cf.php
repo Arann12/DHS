@@ -182,7 +182,7 @@
     <section class="py-24 md:py-32 px-6 md:px-16 max-w-7xl mx-auto">
         <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
             <div data-reveal="fade-right">
-                <!-- text-primary resolved to DHS Red (#D62828) as per DESIGN.md -->
+                <!-- text-primary resolved to DHS Red (#D4302A) as per DESIGN.md -->
                 <span class="label-text text-primary mb-4 block" data-id="<?php echo e($aboutLabel); ?>" data-en="ABOUT US"><?php echo e($aboutLabel); ?></span>
                 <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-tight text-text-light">
                     <span data-id="<?php echo e($aboutHeadline); ?>" data-en="<?php echo e($aboutHeadline); ?>"><?php echo e($aboutHeadline); ?></span>
@@ -194,17 +194,12 @@
                 </div>
 
                 <div class="flex space-x-16 mt-12 pt-12 border-t border-black/10">
-                    <!-- TODO: Konfirmasi statistik resmi DHS sebelum publish -->
-                    <!--
-                                    <div>
-                                        <div class="text-4xl font-serif mb-2 flex items-start text-text-light">35<span class="text-primary text-2xl font-bold">+</span></div>
-                                        <div class="label-text text-muted-light text-[0.6rem]">YEARS OF HERITAGE</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-4xl font-serif mb-2 flex items-start text-text-light">12K<span class="text-primary text-2xl font-bold">+</span></div>
-                                        <div class="label-text text-muted-light text-[0.6rem]">SUCCESSFUL ALUMNI</div>
-                                    </div>
-                                    -->
+                    <?php $__currentLoopData = $stats->take(2); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div>
+                        <div class="text-4xl font-serif mb-2 flex items-start text-text-light"><?php echo e($stat->stat_value); ?></div>
+                        <div class="label-text text-muted-light text-[0.6rem]"><?php echo e(strtoupper($stat->stat_label)); ?></div>
+                    </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <div class="text-sm italic text-muted-light"
                         data-id="<?php echo e($aboutNote); ?>"
                         data-en="<?php echo e($aboutNote); ?>">
@@ -215,7 +210,7 @@
             </div>
 
             <div class="relative h-[600px] md:h-[700px] w-full ml-auto md:w-[85%]" data-reveal="fade-left" data-delay="200">
-                <div class="absolute -inset-4 bg-surface-light -z-10 translate-x-4 translate-y-4"></div>
+                <div class="absolute -inset-4 bg-dhs-lightblue -z-10 translate-x-4 translate-y-4"></div>
                 <img alt="Hotel Interior" class="w-full h-full object-cover shadow-sm"
                     src="<?php echo e($aboutImage); ?>">
             </div>
@@ -223,7 +218,7 @@
     </section>
 
     <!-- Vision & Mission Section -->
-    <section class="py-24 bg-surface-light px-6 md:px-16">
+    <section class="py-24 bg-dhs-lightblue px-6 md:px-16">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
             <div data-reveal="fade-right">
                 <h2 class="text-5xl md:text-6xl font-serif mb-16 leading-tight text-text-light">
@@ -267,7 +262,7 @@
     </section>
 
     <!-- Campus Life Gallery -->
-    <section class="py-12 bg-surface-light px-6 md:px-16">
+    <section class="py-12 bg-white px-6 md:px-16">
         <div class="max-w-7xl mx-auto">
             <h3 class="text-center font-serif text-2xl mb-12 text-text-light" data-reveal="fade-up"><span data-id="<?php echo e($campusTitle); ?>" data-en="<?php echo e($campusTitle); ?>"><?php echo e($campusTitle); ?></span></h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -281,7 +276,8 @@
     </section>
 
     <!-- Disciplines & Programs Section -->
-    <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto">
+    <section class="py-24 bg-dhs-lightblue">
+        <div class="px-6 md:px-16 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-end mb-16" data-reveal="fade-up">
             <div>
                 <span class="label-text text-primary mb-4 block" data-id="<?php echo e($academyLabel); ?>" data-en="ACADEMY"><?php echo e($academyLabel); ?></span>
@@ -315,6 +311,7 @@
             </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
+        </div>
     </section>
 
     <!-- Facilities Showcase -->
@@ -347,26 +344,27 @@
     </section>
 
     <!-- Message from Director Section -->
-    <section class="py-32 bg-surface-light px-6 md:px-16 relative">
-        <div class="max-w-4xl mx-auto text-center relative z-10 text-text-light" data-reveal="zoom-in">
-            <span class="label-text text-primary mb-8 block"><?php echo e($directorLabel); ?></span>
+    <section class="py-32 bg-dhs-darknavy px-6 md:px-16 relative">
+        <div class="max-w-4xl mx-auto text-center relative z-10 text-white" data-reveal="zoom-in">
+            <span class="label-text text-dhs-gold mb-8 block"><?php echo e($directorLabel); ?></span>
             <h2 class="text-2xl md:text-3xl font-serif leading-relaxed mb-8">
                 <span>"<?php echo e($directorMessage); ?>"</span>
             </h2>
             <div>
                 <h4 class="font-bold text-sm tracking-widest uppercase mb-1"><?php echo e($directorName); ?></h4>
-                <p class="label-text text-muted-light"><?php echo e($directorTitle); ?></p>
+                <p class="label-text text-white/60"><?php echo e($directorTitle); ?></p>
             </div>
         </div>
     </section>
 
     <!-- Insights & Articles Section -->
-    <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto">
+    <section class="py-24">
+        <div class="px-6 md:px-16 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-end mb-16" data-reveal="fade-up">
             <div>
-                <span class="label-text text-primary mb-4 block" data-id="WAWASAN" data-en="INSIGHTS">WAWASAN</span>
+                <span class="label-text text-primary mb-4 block" data-id="<?php echo e($newsLabel); ?>" data-en="INSIGHTS"><?php echo e($newsLabel); ?></span>
                 <h2 class="text-5xl md:text-6xl font-serif leading-tight text-text-light">
-                    <span data-id="Berita &amp; Artikel." data-en="News &amp; Articles.">Berita &amp; Artikel.</span>
+                    <span data-id="<?php echo e($newsSectionTitle); ?>" data-en="News &amp; Articles."><?php echo e($newsSectionTitle); ?></span>
                 </h2>
             </div>
             <a class="label-text border-b border-primary pb-1 mt-6 md:mt-0 hover:text-primary transition-colors text-primary"
@@ -434,6 +432,7 @@
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
+        </div>
     </section>
 
     <?php
@@ -470,7 +469,7 @@
 
     <!-- Partnership & Mitra Section — Single Section, Two Rows -->
     <?php if($partners->count() > 0): ?>
-    <section class="py-20 md:py-24 bg-white border-t border-b border-black/5 overflow-hidden">
+    <section class="py-20 md:py-24 bg-dhs-lightblue border-t border-b border-black/5 overflow-hidden">
         <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-10">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                 <span data-id="<?php echo e($partnerLabel); ?>" data-en="OUR PARTNERS"><?php echo e($partnerLabel); ?></span>
@@ -564,7 +563,7 @@
 
     <!-- Contact Form Section -->
     
-    <section id="contact-section" class="py-24 bg-surface-light px-6 md:px-16">
+    <section id="contact-section" class="py-24 bg-dhs-lightblue px-6 md:px-16">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
             <div class="text-text-light" data-reveal="fade-right">
                 <span class="label-text text-primary mb-4 block" data-id="KONTAK" data-en="CONTACT"><?php echo e($contactSectionLabel); ?></span>
@@ -689,7 +688,7 @@
             transition: border-color 0.2s;
         }
         .contact-field::placeholder { color: rgba(0,0,0,0.28); }
-        .contact-field:focus { border-bottom-color: #0E06B4; }
+        .contact-field:focus { border-bottom-color: #1A1F6B; }
         .contact-select-wrap {
             position: relative;
             transition: opacity 0.2s;
@@ -709,7 +708,7 @@
             cursor: pointer;
             transition: border-color 0.2s;
         }
-        .contact-select:focus { border-bottom-color: #0E06B4; }
+        .contact-select:focus { border-bottom-color: #1A1F6B; }
         .contact-select option { background: #fff; color: #1a1a2e; }
         .contact-select:disabled { cursor: not-allowed; color: rgba(0,0,0,0.3); }
         .contact-chevron {

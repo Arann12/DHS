@@ -91,7 +91,7 @@
 
     /* ── Glass state (scrolled / active sticky) ── */
     .nav-glass {
-        background: rgba(246, 242, 234, 0.82);
+        background: rgba(255, 255, 255, 0.88);
         backdrop-filter: blur(24px) saturate(1.7);
         -webkit-backdrop-filter: blur(24px) saturate(1.7);
         border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -102,13 +102,13 @@
 
     .nav-glass .nav-logo,
     .nav-glass .nav-link {
-        color: #0010B8;
+        color: #1A1F6B;
     }
 
     .nav-glass .nav-link-active {
-        border-bottom: 2px solid #DF1501;
+        border-bottom: 2px solid #D4302A;
         padding-bottom: 4px;
-        color: #DF1501;
+        color: #D4302A;
     }
 </style>
 

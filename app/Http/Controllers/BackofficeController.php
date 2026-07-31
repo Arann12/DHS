@@ -49,6 +49,22 @@ class BackofficeController extends Controller
         ]);
     }
 
+    private function deleteOldFile(string $path): void
+    {
+        if ($path && file_exists(public_path($path))) {
+            @unlink(public_path($path));
+        }
+    }
+
+    private function moveUploadedFile($file, string $dir, string $name): void
+    {
+        $dest = public_path($dir);
+        if (!is_dir($dest)) {
+            \Illuminate\Support\Facades\File::makeDirectory($dest, 0755, true);
+        }
+        $file->move($dest, $name);
+    }
+
     /* ═══════════════════ DASHBOARD ═══════════════════════════ */
     public function dashboard()
     {
@@ -75,7 +91,8 @@ class BackofficeController extends Controller
         if ($redirect = $this->guard()) return $redirect;
         
         $sections = HomepageSection::orderBy('display_order')->get()->keyBy('section_key');
-        return view('backoffice.beranda', ['user' => session('backoffice_user'), 'sections' => $sections]);
+        $stats = \App\Models\Statistic::orderBy('display_order')->get();
+        return view('backoffice.beranda', ['user' => session('backoffice_user'), 'sections' => $sections, 'stats' => $stats]);
     }
 
     public function berandaUpdate(Request $request)
@@ -101,7 +118,7 @@ class BackofficeController extends Controller
                 $existingContent = is_array($section->section_content)
                     ? $section->section_content
                     : json_decode($section->section_content ?? '[]', true);
-                $newContent = array_merge($existingContent ?: [], $contentData);
+                $newContent = array_replace_recursive($existingContent ?: [], $contentData);
 
                 $section->update([
                     'section_title'   => $data['title'] ?? $section->section_title,
@@ -157,9 +174,11 @@ class BackofficeController extends Controller
         
         // Handle logo primary upload
         if ($request->hasFile('logo_primary')) {
+            $oldLogo = BrandingSetting::where('setting_key', 'logo_primary')->value('setting_value');
+            $this->deleteOldFile($oldLogo);
             $file = $request->file('logo_primary');
-            $name = 'logo_primary_' . time() . '.' . $file->extension();
-            $file->move(public_path('uploads/branding'), $name);
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $this->moveUploadedFile($file, 'uploads/branding', $name);
 
             BrandingSetting::updateOrCreate(
                 ['setting_key' => 'logo_primary'],
@@ -170,12 +189,14 @@ class BackofficeController extends Controller
                 ]
             );
         }
-        
-        // Handle favicon upload (NEW - Bug Fix #7)
+
+        // Handle favicon upload
         if ($request->hasFile('logo_favicon')) {
+            $oldFavicon = BrandingSetting::where('setting_key', 'logo_favicon')->value('setting_value');
+            $this->deleteOldFile($oldFavicon);
             $file = $request->file('logo_favicon');
-            $name = 'favicon_' . time() . '.' . $file->extension();
-            $file->move(public_path('uploads/branding'), $name);
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $this->moveUploadedFile($file, 'uploads/branding', $name);
 
             BrandingSetting::updateOrCreate(
                 ['setting_key' => 'logo_favicon'],
@@ -225,13 +246,6 @@ class BackofficeController extends Controller
         return back()->with('success', 'Palet warna website berhasil diperbarui!');
     }
 
-    /* ═══════════════════ STATISTIK ════════════════════════════ */
-    public function statistik()
-    {
-        if ($redirect = $this->guard()) return $redirect;
-        $stats = Statistic::orderBy('display_order')->get();
-        return view('backoffice.statistik', ['user' => session('backoffice_user'), 'stats' => $stats]);
-    }
 
     public function statistikStore(Request $request)
     {
@@ -244,12 +258,21 @@ class BackofficeController extends Controller
         ]);
         $stat = Statistic::create($validated);
         $this->logActivity('create', 'statistics', $stat->id, null, $stat->toArray());
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['success' => true, 'message' => 'Statistik berhasil ditambahkan.']);
+        }
         return back()->with('success', 'Statistik berhasil ditambahkan.');
     }
 
     public function statistikUpdate(Request $request, $id)
     {
         if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'stat_value' => 'sometimes|string|max:255',
+            'stat_label' => 'sometimes|string|max:255',
+            'stat_icon'  => 'sometimes|string|max:100',
+            'is_active'  => 'sometimes|boolean',
+        ]);
         $stat = Statistic::findOrFail($id);
         $old = $stat->toArray();
         $stat->update($request->only(['stat_value', 'stat_label', 'stat_icon', 'is_active']));
@@ -341,11 +364,12 @@ class BackofficeController extends Controller
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
-            $name = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/program'), $name);
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $this->moveUploadedFile($file, 'uploads/program', $name);
             $validated['thumbnail_url'] = '/uploads/program/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
             // Support URL paste
+            $request->validate(['thumbnail_url' => 'nullable|url|max:500']);
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
         }
 
@@ -368,13 +392,14 @@ class BackofficeController extends Controller
         $data['is_featured'] = $request->input('is_featured') ? 1 : 0;
 
         if ($request->hasFile('thumbnail')) {
+            $this->deleteOldFile($program->thumbnail_url);
             $file = $request->file('thumbnail');
-            $name = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/program'), $name);
+            $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $this->moveUploadedFile($file, 'uploads/program', $name);
             $data['thumbnail_url'] = '/uploads/program/' . $name;
         }
 
-        $program->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
+        $program->update(array_filter($data, fn($v) => $v !== null));
         $this->logActivity('update', 'programs', $id, $old, $program->fresh()->toArray());
 
         if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
@@ -416,10 +441,14 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $request->validate([
-            'file' => 'required|image|mimes:jpeg,png,gif,webp,svg|max:5120',
+            'file' => 'required|image|mimes:jpeg,png,gif,webp|max:5120',
         ]);
         $file = $request->file('file');
+        $allowedFolders = ['uploads', 'uploads/berita', 'uploads/galeri', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding'];
         $dir = $request->input('folder', 'uploads');
+        if (!in_array($dir, $allowedFolders)) {
+            return response()->json(['error' => 'Folder tidak valid.'], 422);
+        }
         $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path($dir), $name);
         return response()->json(['url' => '/' . $dir . '/' . $name]);
@@ -438,7 +467,7 @@ class BackofficeController extends Controller
         if ($redirect = $this->guard()) return $redirect;
         $validated = $request->validate([
             'title'     => 'required|string|max:255',
-            'category'  => 'required|string',
+            'category'  => 'required|in:prestasi,akademik,kegiatan,admisi,alumni,umum,partnership,kampus,keberlanjutan',
             'excerpt'   => 'nullable|string',
             'content'   => 'nullable|string',
             'status'    => 'required|in:draft,dipublikasikan,archived',
@@ -448,13 +477,19 @@ class BackofficeController extends Controller
         $validated['author_id']   = session('backoffice_user')['id'] ?? null;
         $validated['published_at'] = $validated['status'] === 'dipublikasikan' ? now() : null;
         $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
+        // Sanitize HTML content — allow safe tags only
+        if (isset($validated['content'])) {
+            $allowed = '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><ul><ol><li><a><img><blockquote><pre><code><table><thead><tbody><tr><th><td><div><span>';
+            $validated['content'] = strip_tags($validated['content'], $allowed);
+        }
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/berita'), $name);
+            $this->moveUploadedFile($file, 'uploads/berita', $name);
             $validated['thumbnail_url'] = '/uploads/berita/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
+            $request->validate(['thumbnail_url' => 'nullable|url|max:500']);
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
         }
 
@@ -470,16 +505,23 @@ class BackofficeController extends Controller
         $old = $article->toArray();
         $data = $request->only(['title', 'category', 'excerpt', 'content', 'status']);
         $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
+        // Sanitize HTML content — allow safe tags only
+        if (isset($data['content'])) {
+            $allowed = '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><ul><ol><li><a><img><blockquote><pre><code><table><thead><tbody><tr><th><td><div><span>';
+            $data['content'] = strip_tags($data['content'], $allowed);
+        }
         if (isset($data['status']) && $data['status'] === 'dipublikasikan' && !$article->published_at) {
             $data['published_at'] = now();
         }
         if ($request->hasFile('thumbnail')) {
             $request->validate(['thumbnail' => 'file|mimes:jpg,jpeg,png,webp|max:5120']);
+            $this->deleteOldFile($article->thumbnail_url);
             $file = $request->file('thumbnail');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/berita'), $name);
+            $this->moveUploadedFile($file, 'uploads/berita', $name);
             $data['thumbnail_url'] = '/uploads/berita/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
+            $request->validate(['thumbnail_url' => 'nullable|url|max:500']);
             $data['thumbnail_url'] = $request->input('thumbnail_url');
         }
         $article->update($data);
@@ -525,7 +567,18 @@ class BackofficeController extends Controller
             return back()->withErrors(['image' => 'Silakan upload file atau paste URL gambar.']);
         }
 
+        $category = $request->input('category', 'umum');
+        $validCategories = ['kampus', 'kegiatan', 'fasilitas', 'alumnus', 'partnership', 'umum'];
+        if (!in_array($category, $validCategories)) {
+            $category = 'umum';
+        }
+
         $gallery = Gallery::create([
+            'title'         => $request->input('title', ''),
+            'description'   => $request->input('description', ''),
+            'image_url'     => $imageUrl,
+            'alt_text'      => $request->input('alt_text', ''),
+            'category'      => $category,
             'title'         => $request->input('title', ''),
             'description'   => $request->input('description', ''),
             'image_url'     => $imageUrl,
@@ -541,6 +594,13 @@ class BackofficeController extends Controller
     public function galeriUpdate(Request $request, $id)
     {
         if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'title'         => 'sometimes|string|max:255',
+            'alt_text'      => 'nullable|string|max:255',
+            'category'      => 'sometimes|in:kampus,kegiatan,fasilitas,alumnus,partnership,umum',
+            'is_active'     => 'sometimes|boolean',
+            'display_order' => 'sometimes|integer|min:0',
+        ]);
         $gallery = Gallery::findOrFail($id);
         $old = $gallery->toArray();
         $gallery->update($request->only(['title', 'alt_text', 'category', 'is_active', 'display_order']));
@@ -580,7 +640,7 @@ class BackofficeController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/testimoni'), $name);
+            $this->moveUploadedFile($file, 'uploads/testimoni', $name);
             $validated['photo_url'] = '/uploads/testimoni/' . $name;
         } elseif ($request->filled('photo_url')) {
             $validated['photo_url'] = $request->input('photo_url');
@@ -604,9 +664,10 @@ class BackofficeController extends Controller
 
         if ($request->hasFile('photo')) {
             $request->validate(['photo' => 'file|mimes:jpg,jpeg,png,webp|max:2048']);
+            $this->deleteOldFile($t->photo_url);
             $file = $request->file('photo');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/testimoni'), $name);
+            $this->moveUploadedFile($file, 'uploads/testimoni', $name);
             $data['photo_url'] = '/uploads/testimoni/' . $name;
         } elseif ($request->filled('photo_url')) {
             $data['photo_url'] = $request->input('photo_url');
@@ -640,7 +701,7 @@ class BackofficeController extends Controller
         $validated = $request->validate([
             'question' => 'required|string|max:500',
             'answer'   => 'required|string',
-            'category' => 'required|string',
+            'category' => 'required|in:akademi,pendaftaran,biaya,kampus,umum,karir',
         ]);
         $validated['display_order'] = (Faq::max('display_order') ?? 0) + 1;
         $f = Faq::create($validated);
@@ -651,6 +712,11 @@ class BackofficeController extends Controller
     public function faqUpdate(Request $request, $id)
     {
         if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'question' => 'sometimes|string|max:500',
+            'answer'   => 'sometimes|string',
+            'category' => 'sometimes|in:akademi,pendaftaran,biaya,kampus,umum,karir',
+        ]);
         $f = Faq::findOrFail($id);
         $old = $f->toArray();
         $f->update($request->only(['question', 'answer', 'category', 'is_active']));
@@ -708,6 +774,11 @@ class BackofficeController extends Controller
     public function admisiUpdate(Request $request, $id)
     {
         if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'status'          => 'sometimes|in:active,graduated,dropout,transferred,suspended',
+            'notes'           => 'nullable|string',
+            'graduation_date' => 'nullable|date',
+        ]);
         $admission = Admission::findOrFail($id);
         $old = $admission->toArray();
         $admission->update($request->only(['status', 'notes', 'graduation_date']));
@@ -904,12 +975,13 @@ class BackofficeController extends Controller
             'name'     => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
             'role'     => 'required|in:super_admin,admin,editor',
         ]);
-        $validated['password']  = Hash::make($validated['password']);
-        $validated['is_active'] = 1;
         $u = User::create($validated);
+        $u->role = $validated['role'];
+        $u->is_active = 1;
+        $u->save();
         $this->logActivity('create', 'users', $u->id, null, ['name' => $u->name, 'username' => $u->username, 'email' => $u->email, 'role' => $u->role]);
         return back()->with('success', 'Pengguna berhasil ditambahkan.');
     }
@@ -922,18 +994,31 @@ class BackofficeController extends Controller
             'name'     => 'sometimes|string|max:255',
             'username' => 'sometimes|string|max:255|unique:users,username,'.$id,
             'email'    => 'sometimes|email|max:255|unique:users,email,'.$id,
-            'password' => 'nullable|string|min:6',
+            'password' => 'nullable|string|min:8',
             'role'     => 'sometimes|in:super_admin,admin,editor',
         ]);
 
         $u = User::findOrFail($id);
         $old = $u->only(['name', 'username', 'email', 'role', 'is_active']);
         $data = $request->only(['name', 'username', 'email', 'role']);
-        $data['is_active'] = $request->has('is_active') ? 1 : 0;
+        // Prevent privilege escalation
+        $currentUser = session('backoffice_user');
+        if (($currentUser['role'] ?? '') !== 'super_admin') {
+            unset($data['role']);
+        }
+        if (($currentUser['id'] ?? null) == $id) {
+            unset($data['role']);
+        }
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            $data['password'] = $request->password;
         }
         $u->update($data);
+        // Set role and is_active explicitly (not in $fillable)
+        if (isset($data['role'])) {
+            $u->role = $data['role'];
+        }
+        $u->is_active = $request->has('is_active') ? 1 : 0;
+        $u->save();
         $this->logActivity('update', 'users', $id, $old, $u->fresh()->only(['name', 'username', 'email', 'role', 'is_active']));
         return response()->json(['success' => true]);
     }
@@ -979,7 +1064,7 @@ class BackofficeController extends Controller
         if ($request->hasFile('logo_file')) {
             $file = $request->file('logo_file');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/partner'), $name);
+            $this->moveUploadedFile($file, 'uploads/partner', $name);
             $validated['logo_url'] = '/uploads/partner/' . $name;
         }
 
@@ -998,9 +1083,10 @@ class BackofficeController extends Controller
         $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
 
         if ($request->hasFile('logo_file')) {
+            $this->deleteOldFile($p->logo_url);
             $file = $request->file('logo_file');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/partner'), $name);
+            $this->moveUploadedFile($file, 'uploads/partner', $name);
             $data['logo_url'] = '/uploads/partner/' . $name;
         } elseif (array_key_exists('logo_url', $data)) {
             $data['logo_url'] = $data['logo_url'] ?: null;
