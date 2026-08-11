@@ -8,18 +8,18 @@
         <span class="material-icons-round">check_circle</span> Menu navigasi berhasil disimpan (demo).
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+    <div class="bo-grid-sidebar" style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
 
         {{-- Menu Editor --}}
         <div class="bo-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">Menu Navigasi</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0;">Menu Navigasi</h2>
                 <button class="btn-primary" style="padding:8px 14px;font-size:12.5px;" @click="addMenu()">
                     <span class="material-icons-round" style="font-size:16px;">add</span>
                     Tambah Menu
                 </button>
             </div>
-            <p style="font-size:13px;color:#8A8478;margin:0 0 20px;">Gunakan tombol ↑↓ untuk mengatur urutan. Label harus konsisten dengan judul (H1) halaman tujuan.</p>
+            <p style="font-size:13px;color:#718096;margin:0 0 20px;">Gunakan tombol ↑↓ untuk mengatur urutan. Label harus konsisten dengan judul (H1) halaman tujuan.</p>
 
             <div style="display:flex;flex-direction:column;gap:10px;">
                 <template x-for="(item, idx) in menus" :key="idx">
@@ -62,9 +62,9 @@
         <div style="display:flex;flex-direction:column;gap:18px;">
             {{-- Preview --}}
             <div class="bo-card" style="position:sticky;top:88px;">
-                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#101340;margin:0 0 14px;">Preview Navbar</h3>
+                <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#0F2440;margin:0 0 14px;">Preview Navbar</h3>
                 <div style="border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
-                    <div style="background:#101340;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="background:#0F2440;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">
                         <div style="color:#fff;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;">DHS</div>
                         <div style="display:flex;gap:14px;flex-wrap:wrap;">
                             <template x-for="item in menus" :key="item.label">
@@ -77,14 +77,14 @@
                 <hr class="divider">
 
                 {{-- Design Checklist --}}
-                <h3 style="font-family:'Playfair Display',serif;font-size:15px;color:#101340;margin:0 0 12px;">Checklist Konsistensi (DESIGN.md)</h3>
+                <h3 style="font-family:'Playfair Display',serif;font-size:15px;color:#0F2440;margin:0 0 12px;">Checklist Konsistensi (DESIGN.md)</h3>
                 <div style="display:flex;flex-direction:column;gap:8px;">
                     <template x-for="item in menus" :key="item.label">
                         <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;" :style="item.label ? 'background:#f0fdf4;' : 'background:#fff7ed;'">
                             <span class="material-icons-round" style="font-size:16px;" :style="item.label ? 'color:#16a34a;' : 'color:#f59e0b;'" x-text="item.label ? 'check_circle' : 'warning'"></span>
                             <div>
                                 <div style="font-size:12.5px;font-weight:600;" x-text="item.label || '(kosong)'"></div>
-                                <div style="font-size:11px;color:#8A8478;" x-text="item.url || 'URL belum diisi'"></div>
+                                <div style="font-size:11px;color:#718096;" x-text="item.url || 'URL belum diisi'"></div>
                             </div>
                         </div>
                     </template>

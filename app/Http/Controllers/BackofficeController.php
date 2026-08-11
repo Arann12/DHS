@@ -369,7 +369,6 @@ class BackofficeController extends Controller
             $validated['thumbnail_url'] = '/uploads/program/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
             // Support URL paste
-            $request->validate(['thumbnail_url' => 'nullable|url|max:500']);
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
         }
 
@@ -444,13 +443,30 @@ class BackofficeController extends Controller
             'file' => 'required|image|mimes:jpeg,png,gif,webp|max:5120',
         ]);
         $file = $request->file('file');
-        $allowedFolders = ['uploads', 'uploads/berita', 'uploads/galeri', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding'];
+        $allowedFolders = ['uploads', 'uploads/hero', 'uploads/beranda', 'uploads/berita', 'uploads/galeri', 'uploads/galeri/foto', 'uploads/galeri/video', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding', 'uploads/pendaftaran', 'uploads/pendaftaran/bukti'];
         $dir = $request->input('folder', 'uploads');
         if (!in_array($dir, $allowedFolders)) {
             return response()->json(['error' => 'Folder tidak valid.'], 422);
         }
         $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path($dir), $name);
+        $this->moveUploadedFile($file, $dir, $name);
+        return response()->json(['url' => '/' . $dir . '/' . $name]);
+    }
+
+    public function uploadVideo(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'file' => 'required|file|mimes:mp4,webm|max:40960',
+        ]);
+        $file = $request->file('file');
+        $allowedFolders = ['uploads', 'uploads/hero', 'uploads/beranda', 'uploads/berita', 'uploads/galeri', 'uploads/galeri/foto', 'uploads/galeri/video', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding', 'uploads/pendaftaran', 'uploads/pendaftaran/bukti'];
+        $dir = $request->input('folder', 'uploads');
+        if (!in_array($dir, $allowedFolders)) {
+            return response()->json(['error' => 'Folder tidak valid.'], 422);
+        }
+        $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+        $this->moveUploadedFile($file, $dir, $name);
         return response()->json(['url' => '/' . $dir . '/' . $name]);
     }
 
@@ -489,7 +505,6 @@ class BackofficeController extends Controller
             $this->moveUploadedFile($file, 'uploads/berita', $name);
             $validated['thumbnail_url'] = '/uploads/berita/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
-            $request->validate(['thumbnail_url' => 'nullable|url|max:500']);
             $validated['thumbnail_url'] = $request->input('thumbnail_url');
         }
 
@@ -521,7 +536,6 @@ class BackofficeController extends Controller
             $this->moveUploadedFile($file, 'uploads/berita', $name);
             $data['thumbnail_url'] = '/uploads/berita/' . $name;
         } elseif ($request->filled('thumbnail_url')) {
-            $request->validate(['thumbnail_url' => 'nullable|url|max:500']);
             $data['thumbnail_url'] = $request->input('thumbnail_url');
         }
         $article->update($data);
@@ -557,7 +571,7 @@ class BackofficeController extends Controller
             $request->validate(['image' => 'required|file|mimes:jpg,jpeg,png,webp|max:5120']);
             $file = $request->file('image');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/galeri'), $name);
+            $this->moveUploadedFile($file, 'uploads/galeri', $name);
             $imageUrl = '/uploads/galeri/' . $name;
         } elseif ($request->filled('image_url')) {
             // Use URL

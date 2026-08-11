@@ -69,6 +69,9 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     // Generic image upload
     Route::post('/backoffice/upload/image', [BackofficeController::class, 'uploadImage']);
 
+    // Video upload
+    Route::post('/backoffice/upload/video', [BackofficeController::class, 'uploadVideo']);
+
     // Branding
     Route::post('/backoffice/branding/update',      [BackofficeController::class, 'brandingUpdate']);
 

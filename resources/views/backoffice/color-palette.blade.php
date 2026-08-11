@@ -13,13 +13,13 @@
     @endif
 
     {{-- Page Description --}}
-    <div class="bo-card" style="margin-bottom:24px;background:linear-gradient(135deg, #F5F6F8 0%, #EBF0FA 100%);">
+    <div class="bo-card" style="margin-bottom:24px;background:linear-gradient(135deg, #F7FAFC 0%, #EBF4FF 100%);">
         <div style="display:flex;align-items:start;gap:16px;">
-            <div style="width:50px;height:50px;background:#1A1F6B;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div style="width:50px;height:50px;background:#1A365D;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <span class="material-icons-round" style="color:#fff;font-size:28px;">palette</span>
             </div>
             <div>
-                <h3 style="margin:0 0 8px;font-family:'Playfair Display',serif;font-size:20px;color:#101340;">Kelola Palet Warna Website</h3>
+                <h3 style="margin:0 0 8px;font-family:'Playfair Display',serif;font-size:20px;color:#0F2440;">Kelola Palet Warna Website</h3>
                 <p style="margin:0;color:#666;font-size:13.5px;line-height:1.6;">
                     Ubah skema warna utama website DHS secara real-time. Gunakan color picker atau masukkan kode HEX warna.
                 </p>
@@ -33,7 +33,7 @@
         <input type="hidden" name="_method" value="POST">
 
         <div class="bo-card">
-            <h3 style="margin:0 0 20px;font-family:'Playfair Display',serif;font-size:18px;color:#101340;border-bottom:2px solid #eee;padding-bottom:12px;">
+            <h3 style="margin:0 0 20px;font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;border-bottom:2px solid #eee;padding-bottom:12px;">
                 Warna Utama Website
             </h3>
 
@@ -75,7 +75,7 @@
 
     {{-- Preview Section --}}
     <div class="bo-card" style="margin-top:24px;">
-        <h3 style="margin:0 0 16px;font-family:'Playfair Display',serif;font-size:18px;color:#101340;">
+        <h3 style="margin:0 0 16px;font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;">
             <span class="material-icons-round" style="vertical-align:middle;font-size:22px;margin-right:6px;">visibility</span>
             Preview Warna
         </h3>
@@ -115,8 +115,8 @@
         transition: all 0.2s;
     }
     .color-item:hover {
-        border-color: #1A1F6B;
-        box-shadow: 0 4px 12px rgba(14,6,180,0.1);
+        border-color: #1A365D;
+        box-shadow: 0 4px 12px rgba(197,48,48,0.1);
     }
     @keyframes spin {
         to { transform: rotate(360deg); }
@@ -128,11 +128,11 @@ function colorPaletteManager() {
     return {
         saving: false,
         colors: [
-            { key: 'color_primary',   label: 'Primary Color (Navy)',  desc: 'Warna utama tombol & heading',       default: '#1A1F6B', value: '{{ $colors["color_primary"]->setting_value ?? "#1A1F6B" }}' },
-            { key: 'color_secondary', label: 'Secondary Color (Red)', desc: 'Warna aksen & highlight',            default: '#D4302A', value: '{{ $colors["color_secondary"]->setting_value ?? "#D4302A" }}' },
-            { key: 'color_navy',      label: 'Navy Color',            desc: 'Warna navy untuk elemen dekoratif',  default: '#101340', value: '{{ $colors["color_navy"]->setting_value ?? "#101340" }}' },
-            { key: 'color_cream',     label: 'Cream Background',      desc: 'Warna background section',           default: '#F5F6F8', value: '{{ $colors["color_cream"]->setting_value ?? "#F5F6F8" }}' },
-            { key: 'color_beige',     label: 'Beige Surface',         desc: 'Warna permukaan alternatif',         default: '#EBF0FA', value: '{{ $colors["color_beige"]->setting_value ?? "#EBF0FA" }}' },
+            { key: 'color_primary',   label: 'Primary Color (Navy)',  desc: 'Warna utama tombol & heading',       default: '#1A365D', value: '{{ $colors["color_primary"]->setting_value ?? "#1A365D" }}' },
+            { key: 'color_secondary', label: 'Secondary Color (Red)', desc: 'Warna aksen & highlight',            default: '#C53030', value: '{{ $colors["color_secondary"]->setting_value ?? "#C53030" }}' },
+            { key: 'color_navy',      label: 'Navy Color',            desc: 'Warna navy untuk elemen dekoratif',  default: '#0F2440', value: '{{ $colors["color_navy"]->setting_value ?? "#0F2440" }}' },
+            { key: 'color_cream',     label: 'Cream Background',      desc: 'Warna background section',           default: '#F7FAFC', value: '{{ $colors["color_cream"]->setting_value ?? "#F7FAFC" }}' },
+            { key: 'color_beige',     label: 'Beige Surface',         desc: 'Warna permukaan alternatif',         default: '#EBF4FF', value: '{{ $colors["color_beige"]->setting_value ?? "#EBF4FF" }}' },
         ],
 
         getColor(key) {

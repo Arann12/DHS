@@ -35,6 +35,15 @@ class FrontendController extends Controller
         return compact('footerSettings', 'branding', 'siteName', 'tagline', 'navLogo');
     }
 
+    private function moveUploadedFile($file, string $dir, string $name): void
+    {
+        $dest = public_path($dir);
+        if (!is_dir($dest)) {
+            \Illuminate\Support\Facades\File::makeDirectory($dest, 0755, true);
+        }
+        $file->move($dest, $name);
+    }
+
     public function welcome()
     {
         $sections = HomepageSection::orderBy('display_order')
@@ -258,7 +267,7 @@ class FrontendController extends Controller
         if ($request->hasFile('bukti_pendaftaran')) {
             $file = $request->file('bukti_pendaftaran');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/pendaftaran'), $name);
+            $this->moveUploadedFile($file, 'uploads/pendaftaran', $name);
             $buktiPendaftaranPath = '/uploads/pendaftaran/' . $name;
         }
 
@@ -266,7 +275,7 @@ class FrontendController extends Controller
         if ($request->hasFile('bukti_program')) {
             $file = $request->file('bukti_program');
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/pendaftaran'), $name);
+            $this->moveUploadedFile($file, 'uploads/pendaftaran', $name);
             $buktiProgramPath = '/uploads/pendaftaran/' . $name;
         }
 

@@ -9,7 +9,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
             <div class="bo-search">
-                <span class="material-icons-round" style="font-size:18px;color:#8A8478;">search</span>
+                <span class="material-icons-round" style="font-size:18px;color:#718096;">search</span>
                 <input type="text" placeholder="Cari pertanyaan..." x-model="search">
             </div>
             <select class="bo-select" style="width:auto;" x-model="filterKategori">
@@ -30,6 +30,7 @@
 
     {{-- Table --}}
     <div class="bo-card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
         <table class="bo-table">
             <thead>
                 <tr>
@@ -43,9 +44,9 @@
             <tbody>
                 <template x-for="(item, idx) in filtered" :key="item.id">
                     <tr>
-                        <td style="color:#8A8478;font-size:13px;" x-text="idx + 1"></td>
+                        <td style="color:#718096;font-size:13px;" x-text="idx + 1"></td>
                         <td>
-                            <div style="font-weight:700;color:#1a1a2e;" x-text="item.pertanyaan"></div>
+                            <div style="font-weight:700;color:#1A365D;" x-text="item.pertanyaan"></div>
                         </td>
                         <td><span class="badge badge-blue" x-text="formatCat(item.kategori)"></span></td>
                         <td style="max-width:320px;">
@@ -64,10 +65,11 @@
                     </tr>
                 </template>
                 <tr x-show="filtered.length === 0">
-                    <td colspan="5" style="text-align:center;color:#8A8478;padding:40px;">Tidak ada pertanyaan ditemukan.</td>
+                    <td colspan="5" style="text-align:center;color:#718096;padding:40px;">Tidak ada pertanyaan ditemukan.</td>
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     {{-- Modal Add/Edit --}}
@@ -115,11 +117,11 @@
     <div class="bo-modal-backdrop" x-show="deleteConfirm.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#C53030;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus FAQ?</h3>
-                <p style="font-size:14px;color:#8A8478;margin:0;">Pertanyaan ini akan dihapus dari halaman FAQ.</p>
+                <p style="font-size:14px;color:#718096;margin:0;">Pertanyaan ini akan dihapus dari halaman FAQ.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-secondary" @click="deleteConfirm.open=false">Batal</button>

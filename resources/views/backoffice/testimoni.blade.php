@@ -6,7 +6,7 @@
 <div x-data="testimoniData()">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div class="bo-search">
-            <span class="material-icons-round" style="font-size:18px;color:#8A8478;">search</span>
+            <span class="material-icons-round" style="font-size:18px;color:#718096;">search</span>
             <input type="text" placeholder="Cari testimoni..." x-model="search">
         </div>
         <button class="btn-primary" @click="openModal('add')">
@@ -16,6 +16,7 @@
     </div>
 
     <div class="bo-card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
         <table class="bo-table">
             <thead>
                 <tr>
@@ -32,15 +33,15 @@
                         <td>
                             <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#eee;">
                                 <img x-show="item.foto" :src="item.foto" style="width:100%;height:100%;object-fit:cover;">
-                                <div x-show="!item.foto" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1A1F6B,#101340);">
+                                <div x-show="!item.foto" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1A365D,#0F2440);">
                                     <span style="color:#fff;font-weight:700;font-size:16px;" x-text="item.nama.charAt(0).toUpperCase()"></span>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div style="font-weight:700;color:#1a1a2e;" x-text="item.nama"></div>
+                            <div style="font-weight:700;color:#1A365D;" x-text="item.nama"></div>
                         </td>
-                        <td style="color:#8A8478;font-size:13px;" x-text="item.jabatan"></td>
+                        <td style="color:#718096;font-size:13px;" x-text="item.jabatan"></td>
                         <td style="max-width:300px;">
                             <div style="font-style:italic;color:#555;font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" x-text="'\"' + item.kutipan + '\"'"></div>
                         </td>
@@ -57,10 +58,11 @@
                     </tr>
                 </template>
                 <tr x-show="filtered.length === 0">
-                    <td colspan="5" style="text-align:center;color:#8A8478;padding:40px;">Tidak ada testimoni ditemukan.</td>
+                    <td colspan="5" style="text-align:center;color:#718096;padding:40px;">Tidak ada testimoni ditemukan.</td>
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     {{-- Modal --}}
@@ -117,11 +119,11 @@
     <div class="bo-modal-backdrop" x-show="confirmDelete.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#C53030;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Testimoni?</h3>
-                <p style="font-size:14px;color:#8A8478;margin:0;">Testimoni ini akan dihapus permanen.</p>
+                <p style="font-size:14px;color:#718096;margin:0;">Testimoni ini akan dihapus permanen.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-secondary" @click="confirmDelete.open=false">Batal</button>

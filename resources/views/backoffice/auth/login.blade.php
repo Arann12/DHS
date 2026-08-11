@@ -14,11 +14,11 @@
 
     <style>
         :root {
-            --bo-blue:      #1A1F6B;
-            --bo-dark-blue: #101340;
-            --bo-red:       #D4302A;
-            --bo-cream:     #F5F6F8;
-            --bo-beige:     #EBF0FA;
+            --bo-blue:      #1A365D;
+            --bo-dark-blue: #0F2440;
+            --bo-red:       #C53030;
+            --bo-cream:     #F7FAFC;
+            --bo-beige:     #EBF4FF;
         }
         /* Hide x-cloak elements only after Alpine loads */
         [x-cloak] { display: none !important; }
@@ -43,7 +43,7 @@
             top: -200px; right: -200px;
             width: 500px; height: 500px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(14,6,180,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(197,48,48,0.08) 0%, transparent 70%);
             pointer-events: none;
         }
         body::after {
@@ -52,7 +52,7 @@
             bottom: -200px; left: -200px;
             width: 500px; height: 500px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(225,0,1,0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(197,48,48,0.06) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -76,7 +76,7 @@
             border-radius: 18px;
             background: linear-gradient(135deg, var(--bo-blue) 0%, var(--bo-dark-blue) 100%);
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 12px 32px rgba(14,6,180,0.25);
+            box-shadow: 0 12px 32px rgba(197,48,48,0.25);
             margin-bottom: 14px;
         }
 
@@ -96,7 +96,7 @@
 
         .dhs-subtitle {
             font-size: 12.5px;
-            color: #8A8478;
+            color: #718096;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             margin-top: 4px;
@@ -120,7 +120,7 @@
 
         .login-card p {
             font-size: 13.5px;
-            color: #8A8478;
+            color: #718096;
             margin: 0 0 28px;
         }
 
@@ -129,8 +129,8 @@
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            background: rgba(225,0,1,0.07);
-            border: 1.5px solid rgba(225,0,1,0.25);
+            background: rgba(197,48,48,0.07);
+            border: 1.5px solid rgba(197,48,48,0.25);
             border-radius: 12px;
             padding: 12px 14px;
             margin-bottom: 20px;
@@ -170,7 +170,7 @@
             border-radius: 12px;
             font-size: 14px;
             font-family: 'Inter', sans-serif;
-            color: #1a1a2e;
+            color: #1A365D;
             background: #fff;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
@@ -178,11 +178,11 @@
 
         input:focus {
             border-color: var(--bo-blue);
-            box-shadow: 0 0 0 3px rgba(14,6,180,0.12);
+            box-shadow: 0 0 0 3px rgba(26,54,93,0.12);
         }
 
         input.error { border-color: var(--bo-red); }
-        input.error:focus { box-shadow: 0 0 0 3px rgba(225,0,1,0.12); }
+        input.error:focus { box-shadow: 0 0 0 3px rgba(197,48,48,0.12); }
 
         .field-error {
             font-size: 12px;
@@ -229,7 +229,7 @@
 
         .btn-login:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(14,6,180,0.32);
+            box-shadow: 0 10px 28px rgba(197,48,48,0.32);
         }
 
         .btn-login:disabled {
@@ -255,8 +255,7 @@
     {{-- Logo / Brand --}}
     <div class="dhs-badge">
         <div class="dhs-logo-mark">
-            {{-- DHS Initial badge --}}
-            <span style="color:#fff;font-family:'Playfair Display',serif;font-weight:900;font-size:22px;letter-spacing:-1px;">DHS</span>
+            <img src="{{ asset('image/LogoDHS_2.jpeg') }}" alt="DHS Logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;">
         </div>
         <h1 class="dhs-wordmark">Denpasar Hotel School</h1>
         <p class="dhs-subtitle">Backoffice Admin Panel</p>

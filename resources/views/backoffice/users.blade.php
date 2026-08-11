@@ -7,7 +7,7 @@
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div class="bo-search">
-            <span class="material-icons-round" style="font-size:18px;color:#8A8478;">search</span>
+            <span class="material-icons-round" style="font-size:18px;color:#718096;">search</span>
             <input type="text" placeholder="Cari pengguna..." x-model="search">
         </div>
         <button class="btn-primary" @click="openModal('add')">
@@ -17,6 +17,7 @@
     </div>
 
     <div class="bo-card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
         <table class="bo-table">
             <thead>
                 <tr>
@@ -32,14 +33,14 @@
                 <template x-for="item in filtered" :key="item.id">
                     <tr>
                         <td>
-                            <div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,#1A1F6B,#101340);" x-text="item.nama.charAt(0).toUpperCase()"></div>
+                            <div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,#1A365D,#0F2440);" x-text="item.nama.charAt(0).toUpperCase()"></div>
                         </td>
                         <td>
-                            <div style="font-weight:700;color:#1a1a2e;" x-text="item.nama"></div>
-                            <div style="font-size:12px;color:#8A8478;" x-text="item.email"></div>
+                            <div style="font-weight:700;color:#1A365D;" x-text="item.nama"></div>
+                            <div style="font-size:12px;color:#718096;" x-text="item.email"></div>
                         </td>
                         <td>
-                            <code style="background:#f3f4f6;padding:3px 8px;border-radius:6px;font-size:13px;color:#1A1F6B;" x-text="item.username"></code>
+                            <code style="background:#f3f4f6;padding:3px 8px;border-radius:6px;font-size:13px;color:#1A365D;" x-text="item.username"></code>
                         </td>
                         <td>
                             <span :class="item.role === 'Super Admin' ? 'badge badge-blue' : item.role === 'Editor' ? 'badge badge-green' : 'badge badge-gray'" x-text="item.role"></span>
@@ -53,7 +54,7 @@
                                     <span class="material-icons-round" style="font-size:17px;">edit</span>
                                 </button>
                                 <button class="btn-icon" @click="toggleAktif(item.id)" title="Aktif/Nonaktif" :disabled="item.isSelf" :style="item.isSelf?'opacity:0.4;cursor:not-allowed;':''">
-                                    <span class="material-icons-round" style="font-size:17px;" x-text="item.aktif ? 'toggle_on' : 'toggle_off'" :style="item.aktif ? 'color:#16a34a;' : 'color:#8A8478;'"></span>
+                                    <span class="material-icons-round" style="font-size:17px;" x-text="item.aktif ? 'toggle_on' : 'toggle_off'" :style="item.aktif ? 'color:#16a34a;' : 'color:#718096;'"></span>
                                 </button>
                                 <button class="btn-icon danger" @click="deleteItem(item.id)" title="Hapus" :disabled="item.isSelf" :style="item.isSelf?'opacity:0.4;cursor:not-allowed;':''">
                                     <span class="material-icons-round" style="font-size:17px;">delete</span>
@@ -63,10 +64,11 @@
                     </tr>
                 </template>
                 <tr x-show="filtered.length === 0">
-                    <td colspan="6" style="text-align:center;color:#8A8478;padding:40px;">Tidak ada pengguna ditemukan.</td>
+                    <td colspan="6" style="text-align:center;color:#718096;padding:40px;">Tidak ada pengguna ditemukan.</td>
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     <p style="font-size:12.5px;color:#aaa;margin-top:12px;">
@@ -136,11 +138,11 @@
     <div class="bo-modal-backdrop" x-show="confirmDelete.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:420px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">person_remove</span>
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#C53030;">person_remove</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Pengguna?</h3>
-                <p style="font-size:14px;color:#8A8478;margin:0;">Pengguna ini akan kehilangan akses ke backoffice.</p>
+                <p style="font-size:14px;color:#718096;margin:0;">Pengguna ini akan kehilangan akses ke backoffice.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-secondary" @click="confirmDelete.open=false">Batal</button>

@@ -22,7 +22,7 @@
 <div class="form-group" x-data="imageInput('{{ $inputId }}', '{{ $currentUrl }}')">
     <label for="{{ $inputId }}">
         {{ $inputLabel }}
-        @if($isRequired) <span style="color:#D4302A;">*</span> @endif
+        @if($isRequired) <span style="color:#C53030;">*</span> @endif
     </label>
     
     {{-- Tab Switcher --}}
@@ -30,7 +30,7 @@
         <button 
             type="button" 
             @click="mode = 'upload'" 
-            :style="mode === 'upload' ? 'border-bottom:3px solid #1A1F6B;color:#1A1F6B;font-weight:600;' : 'color:#888;'"
+            :style="mode === 'upload' ? 'border-bottom:3px solid #1A365D;color:#1A365D;font-weight:600;' : 'color:#888;'"
             style="background:none;border:none;padding:10px 16px;cursor:pointer;font-size:14px;transition:all 0.2s;margin-bottom:-2px;"
         >
             <span class="material-icons-round" style="vertical-align:middle;font-size:18px;margin-right:4px;">upload_file</span>
@@ -39,7 +39,7 @@
         <button 
             type="button" 
             @click="mode = 'url'" 
-            :style="mode === 'url' ? 'border-bottom:3px solid #1A1F6B;color:#1A1F6B;font-weight:600;' : 'color:#888;'"
+            :style="mode === 'url' ? 'border-bottom:3px solid #1A365D;color:#1A365D;font-weight:600;' : 'color:#888;'"
             style="background:none;border:none;padding:10px 16px;cursor:pointer;font-size:14px;transition:all 0.2s;margin-bottom:-2px;"
         >
             <span class="material-icons-round" style="vertical-align:middle;font-size:18px;margin-right:4px;">link</span>
@@ -82,7 +82,7 @@
             <button 
                 type="button" 
                 @click="clearImage()"
-                style="position:absolute;top:8px;right:8px;background:#D4302A;color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);"
+                style="position:absolute;top:8px;right:8px;background:#C53030;color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);"
                 title="Hapus gambar"
             >
                 <span class="material-icons-round" style="font-size:16px;">close</span>

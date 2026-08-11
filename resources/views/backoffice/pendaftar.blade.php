@@ -14,7 +14,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <div class="bo-search">
-                <span class="material-icons-round" style="font-size:18px;color:#8A8478;">search</span>
+                <span class="material-icons-round" style="font-size:18px;color:#718096;">search</span>
                 <input type="text" placeholder="Cari nama, email, hp, atau program..." x-model="search">
             </div>
             <select class="bo-select" style="width:auto;padding:8px 14px;font-size:13px;" x-model="filterStatus">
@@ -53,19 +53,19 @@
                 <tbody>
                     <template x-for="(item, idx) in filteredItems" :key="item.id">
                         <tr>
-                            <td style="font-weight:600;color:#8A8478;" x-text="idx + 1"></td>
+                            <td style="font-weight:600;color:#718096;" x-text="idx + 1"></td>
                             <td style="white-space:nowrap;font-size:12.5px;color:#555;" x-text="item.tgl"></td>
                             <td>
-                                <div style="font-weight:700;color:#101340;" x-text="item.nama"></div>
-                                <div style="font-size:11px;color:#8A8478;" x-text="'Sumber Info: ' + (item.sumber || '-')"></div>
+                                <div style="font-weight:700;color:#0F2440;" x-text="item.nama"></div>
+                                <div style="font-size:11px;color:#718096;" x-text="'Sumber Info: ' + (item.sumber || '-')"></div>
                             </td>
                             <td>
                                 <div style="font-weight:600;" x-text="item.hp"></div>
                                 <div style="font-size:12px;color:#666;" x-text="item.email"></div>
                             </td>
                             <td>
-                                <div style="font-weight:600;color:#1A1F6B;" x-text="item.program"></div>
-                                <div style="font-size:11px;color:#8A8478;" x-text="'Kategori: ' + item.kategori"></div>
+                                <div style="font-weight:600;color:#1A365D;" x-text="item.program"></div>
+                                <div style="font-size:11px;color:#718096;" x-text="'Kategori: ' + item.kategori"></div>
                             </td>
                             <td>
                                 <div style="display:flex;flex-direction:column;gap:4px;">
@@ -113,7 +113,7 @@
                         </tr>
                     </template>
                     <tr x-show="filteredItems.length === 0">
-                        <td colspan="8" style="text-align:center;padding:32px;color:#8A8478;">
+                        <td colspan="8" style="text-align:center;padding:32px;color:#718096;">
                             Belum ada pendaftar yang cocok dengan pencarian atau filter.
                         </td>
                     </tr>
@@ -126,12 +126,12 @@
     <div class="bo-modal-backdrop" x-show="selectedItem" x-transition style="display:none;">
         <div class="bo-modal wide" @click.away="selectedItem = null" style="max-width:850px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;">
-                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#101340;">Detail Formulir Pendaftaran</h3>
+                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#0F2440;">Detail Formulir Pendaftaran</h3>
                 <button class="btn-icon" @click="selectedItem = null"><span class="material-icons-round">close</span></button>
             </div>
             
             <template x-if="selectedItem">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <label class="bo-label">Nama Lengkap</label>
                         <div class="bo-input" style="background:#fafafa;font-weight:700;" x-text="selectedItem.nama"></div>
@@ -159,7 +159,7 @@
                     </div>
                     <div>
                         <label class="bo-label">Program Studi Diminati</label>
-                        <div class="bo-input" style="background:#fafafa;font-weight:700;color:#1A1F6B;" x-text="selectedItem.program"></div>
+                        <div class="bo-input" style="background:#fafafa;font-weight:700;color:#1A365D;" x-text="selectedItem.program"></div>
                     </div>
                     <div style="grid-column:1/-1;">
                         <label class="bo-label">Special Request / Catatan Khusus</label>
@@ -172,8 +172,8 @@
 
                     {{-- Section Preview Gambar / Berkas Upload --}}
                     <div style="grid-column:1/-1;border-top:1px solid #eee;padding-top:16px;margin-top:4px;">
-                        <h4 style="font-size:14px;font-weight:700;color:#101340;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                        <h4 style="font-size:14px;font-weight:700;color:#0F2440;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
+                        <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                             {{-- Bukti Pendaftaran --}}
                             <div>
                                 <label class="bo-label">Bukti Biaya Pendaftaran</label>
@@ -200,7 +200,7 @@
                                     </div>
                                 </template>
                                 <template x-if="!selectedItem.bukti_pendaftaran_url">
-                                    <div class="bo-input" style="background:#fafafa;color:#8A8478;font-style:italic;">Tidak ada file diunggah</div>
+                                    <div class="bo-input" style="background:#fafafa;color:#718096;font-style:italic;">Tidak ada file diunggah</div>
                                 </template>
                             </div>
 
@@ -230,7 +230,7 @@
                                     </div>
                                 </template>
                                 <template x-if="!selectedItem.bukti_program_url">
-                                    <div class="bo-input" style="background:#fafafa;color:#8A8478;font-style:italic;">Tidak ada file diunggah</div>
+                                    <div class="bo-input" style="background:#fafafa;color:#718096;font-style:italic;">Tidak ada file diunggah</div>
                                 </template>
                             </div>
                         </div>

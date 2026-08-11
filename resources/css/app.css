@@ -9,23 +9,23 @@
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-serif: 'Playfair Display', Georgia, Cambria, 'Times New Roman', Times, serif;
 
-    --color-primary: #DF1501;
-    --color-dhs-navy: #1A1F6B;
-    --color-dhs-red: #D4302A;
-    --color-dhs-gold: #C7A14D;
-    --color-dhs-lightblue: #EBF0FA;
-    --color-dhs-lightrose: #FDF0EF;
-    --color-dhs-lightgray: #F5F6F8;
-    --color-dhs-darknavy: #101340;
-    --color-dhs-logo-blue: #1A1F6B;
-    --color-dhs-mutedgray: #6B6558;
+    --color-primary: #C53030;
+    --color-dhs-navy: #1A365D;
+    --color-dhs-red: #C53030;
+    --color-dhs-gold: #C53030;
+    --color-dhs-lightblue: #EBF4FF;
+    --color-dhs-lightrose: #F7FAFC;
+    --color-dhs-lightgray: #F7FAFC;
+    --color-dhs-darknavy: #0F2440;
+    --color-dhs-logo-blue: #1A365D;
+    --color-dhs-mutedgray: #718096;
 
-    --color-background-light: #FFFFFF;
-    --color-background-dark: #1A1F6B;
-    --color-surface-light: #EBF0FA;
-    --color-surface-dark: #101340;
-    --color-text-light: #1A1F6B;
-    --color-text-dark: #FFFFFF;
-    --color-muted-light: #6B6558;
-    --color-muted-dark: #8A8478;
+    --color-background-light: #F7FAFC;
+    --color-background-dark: #1A365D;
+    --color-surface-light: #EBF4FF;
+    --color-surface-dark: #0F2440;
+    --color-text-light: #2D3748;
+    --color-text-dark: #F7FAFC;
+    --color-muted-light: #718096;
+    --color-muted-dark: #A0AEC0;
 }

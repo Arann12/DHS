@@ -147,10 +147,10 @@
                     <h3 class="text-[24px] font-semibold font-serif text-text-light mb-4"><span data-id="Visi" data-en="Vision">{{ $visionVisiLabel }}</span></h3>
                     <p class="text-base text-muted-light leading-relaxed"><span data-id="{{ $visionVisi }}" data-en="{{ $visionVisi }}">{{ $visionVisi }}</span></p>
                 </div>
-                <div class="bg-dhs-navy p-10 shadow-sm" data-reveal="fade-left" data-delay="200">
+                <div class="bg-dhs-lightblue p-10 shadow-sm" data-reveal="fade-left" data-delay="200">
                     <span class="material-icons text-primary text-4xl mb-6 block">flag</span>
-                    <h3 class="text-[24px] font-semibold font-serif text-white mb-4"><span data-id="Misi" data-en="Mission">{{ $visionMisiLabel }}</span></h3>
-                    <ul class="space-y-3 text-white/80 text-base">
+                    <h3 class="text-[24px] font-semibold font-serif text-text-light mb-4"><span data-id="Misi" data-en="Mission">{{ $visionMisiLabel }}</span></h3>
+                    <ul class="space-y-3 text-muted-light text-base">
                         @foreach($visionMisi as $misiItem)
                         <li class="flex items-start"><span class="text-primary mr-2 mt-1">•</span> <span data-id="{{ $misiItem }}" data-en="{{ $misiItem }}">{{ $misiItem }}</span></li>
                         @endforeach
@@ -173,7 +173,7 @@
     </section>
 
     <!-- Sejarah Timeline -->
-    <section class="py-20 md:py-24 bg-dhs-lightblue px-5 md:px-16 max-w-[1280px] mx-auto">
+    <section class="py-20 md:py-24 bg-dhs-lightblue px-5 md:px-16 w-full">
         <div class="text-center mb-16" data-reveal="fade-up">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                 <span data-id="Perjalanan Kami" data-en="Our Journey">{{ $timelineSectionLabel }}</span>
@@ -387,17 +387,17 @@
     </script>
 
     <!-- CTA Section -->
-    <section class="bg-dhs-navy py-20 md:py-24 px-5 md:px-16">
+    <section class="bg-dhs-lightblue py-20 md:py-24 px-5 md:px-16">
         <div class="max-w-3xl mx-auto text-center" data-reveal="zoom-in">
-            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-white mb-6">
+            <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6">
                 <span data-id="Jadilah Bagian dari Keluarga DHS" data-en="Become Part of the DHS Family">Jadilah Bagian dari Keluarga DHS</span>
             </h2>
-            <p class="text-lg text-white/70 mb-10 leading-relaxed">
+            <p class="text-lg text-muted-light mb-10 leading-relaxed">
                 <span data-id="Bergabunglah dengan ribuan alumni kami yang telah berhasil membangun karir gemilang di industri hospitality global." data-en="Join thousands of our alumni who have successfully built brilliant careers in the global hospitality industry.">Bergabunglah dengan ribuan alumni kami yang telah berhasil membangun karir gemilang di industri hospitality global.</span>
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4" data-reveal="fade-up" data-delay="200">
                 <a class="px-8 py-4 bg-primary text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:opacity-90 transition-opacity" href="{{ $ctaBtn1Url }}"><span data-id="Jelajahi Program" data-en="Explore Programs">{{ $ctaBtn1 }}</span></a>
-                <a class="px-8 py-4 bg-transparent border border-white text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-white hover:text-dhs-navy transition-colors" href="{{ $ctaBtn2Url }}"><span data-id="Daftar Sekarang" data-en="Register Now">{{ $ctaBtn2 }}</span></a>
+                <a class="px-8 py-4 bg-transparent border border-dhs-navy text-dhs-navy text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-dhs-navy hover:text-white transition-colors" href="{{ $ctaBtn2Url }}"><span data-id="Daftar Sekarang" data-en="Register Now">{{ $ctaBtn2 }}</span></a>
             </div>
         </div>
     </section>

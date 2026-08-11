@@ -1,5 +1,5 @@
 <nav id="main-nav"
-    class="fixed w-full z-50 py-5 px-8 md:px-16 flex justify-between items-center nav-transparent relative">
+    class="fixed w-full z-50 py-3 sm:py-5 px-4 sm:px-8 md:px-16 flex justify-between items-center nav-transparent relative">
 
     <!-- ── Left Menu: Beranda, Tentang Kami, Akademi ── -->
     <div class="hidden md:flex items-center justify-start space-x-8 text-xs font-light tracking-wide flex-1">
@@ -15,7 +15,7 @@
     <a class="nav-logo absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center focus:outline-none transition-transform hover:scale-105"
         href="/">
         <img src="{{ isset($navLogo) ? asset(ltrim($navLogo, '/')) : asset('image/LogoDHS.png') }}" alt="Logo DHS"
-            class="h-10 md:h-11 lg:h-12 w-auto object-contain shrink-0"
+            class="h-8 sm:h-9 md:h-11 lg:h-12 w-auto object-contain shrink-0"
             style="max-height: 46px; width: auto; aspect-ratio: auto; image-rendering: -webkit-optimize-contrast;">
     </a>
 
@@ -31,15 +31,15 @@
     </div>
 
     <!-- ── Mobile Menu Toggle Button (Mobile Only) ── -->
-    <button class="md:hidden focus:outline-none nav-link ml-auto" onclick="toggleMobileMenu()">
-        <span class="material-icons">menu</span>
+    <button class="md:hidden focus:outline-none nav-link ml-auto p-2" onclick="toggleMobileMenu()">
+        <span class="material-icons text-2xl">menu</span>
     </button>
 
 </nav>
 
 <!-- ── Mobile Menu Dropdown ── -->
 <div id="mobile-menu"
-    class="fixed top-[73px] left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/10 hidden flex-col px-8 py-6 space-y-4 md:hidden shadow-lg">
+    class="fixed top-[60px] sm:top-[73px] left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/10 hidden flex-col px-4 sm:px-8 py-6 space-y-4 md:hidden shadow-lg">
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
         href="/"><span data-id="Beranda" data-en="Home">Beranda</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
@@ -102,13 +102,18 @@
 
     .nav-glass .nav-logo,
     .nav-glass .nav-link {
-        color: #1A1F6B;
+        color: #1A365D;
     }
 
     .nav-glass .nav-link-active {
-        border-bottom: 2px solid #D4302A;
+        border-bottom: 2px solid #C53030;
         padding-bottom: 4px;
-        color: #D4302A;
+        color: #C53030;
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+        #main-nav { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+        .nav-logo img { height: 28px !important; }
     }
 </style>
 

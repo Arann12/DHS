@@ -10,14 +10,14 @@
         <span class="material-icons-round">check_circle</span> Seluruh pengaturan Logo DHS & Branding berhasil disimpan.
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
+    <div class="bo-grid-sidebar" style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
 
         <div style="display:flex;flex-direction:column;gap:20px;">
 
             {{-- Logo Variants --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A1F6B;margin:0 0 20px;">1. File Logo DHS & Asset Branding</h2>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A365D;margin:0 0 20px;">1. File Logo DHS & Asset Branding</h2>
+                <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
                     {{-- Logo Utama --}}
                     <div>
@@ -77,16 +77,16 @@
 
             {{-- Color Palette --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A1F6B;margin:0 0 6px;">2. Palet Warna Resmi Logo DHS</h2>
-                <p style="font-size:13px;color:#8A8478;margin:0 0 20px;">Sesuai panduan resmi DESIGN.md & warna logo asli.</p>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A365D;margin:0 0 6px;">2. Palet Warna Resmi Logo DHS</h2>
+                <p style="font-size:13px;color:#718096;margin:0 0 20px;">Sesuai panduan resmi DESIGN.md & warna logo asli.</p>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <template x-for="color in colors" :key="color.key">
                         <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
                             <input type="color" :value="color.value" @input="color.value = $event.target.value" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;">
                             <div>
-                                <div style="font-weight:700;font-size:13px;color:#1a1a2e;" x-text="color.name"></div>
-                                <div style="font-size:12px;color:#8A8478;font-family:monospace;" x-text="color.value.toUpperCase()"></div>
+                                <div style="font-weight:700;font-size:13px;color:#1A365D;" x-text="color.name"></div>
+                                <div style="font-size:12px;color:#718096;font-family:monospace;" x-text="color.value.toUpperCase()"></div>
                             </div>
                         </div>
                     </template>
@@ -95,7 +95,7 @@
 
             {{-- Typography & Font Family --}}
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A1F6B;margin:0 0 20px;">3. Font Tipografi</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#1A365D;margin:0 0 20px;">3. Font Tipografi</h2>
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label class="bo-label">Font Headings (Judul)</label>
@@ -111,11 +111,11 @@
 
         {{-- Live Preview Branding --}}
         <div class="bo-card" style="position:sticky;top:88px;">
-            <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#1A1F6B;margin:0 0 16px;">Preview Brand Color</h3>
+            <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:#1A365D;margin:0 0 16px;">Preview Brand Color</h3>
             <div style="display:flex;flex-direction:column;gap:8px;">
                 <template x-for="color in colors" :key="color.key">
                     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;color:#fff;font-weight:700;font-size:12px;"
-                         :style="'background:' + color.value + ';color:' + (color.key === 'cream' || color.key === 'beige' ? '#1a1a2e' : '#fff')">
+                         :style="'background:' + color.value + ';color:' + (color.key === 'cream' || color.key === 'beige' ? '#1A365D' : '#fff')">
                         <span x-text="color.name"></span>
                         <span style="font-family:monospace;" x-text="color.value.toUpperCase()"></span>
                     </div>
@@ -145,12 +145,12 @@ function brandingCompleteData() {
             favicon: '{{ $settings["logo_favicon"]->setting_value ?? "/favicon.ico" }}'
         },
         colors: [
-            { key:'color_primary',   name:'DHS Royal Blue (Dominan)', value:'{{ $settings["color_primary"]->setting_value ?? "#1A1F6B" }}' },
-            { key:'color_navy',      name:'Dark Navy (Header/Sidebar)', value:'{{ $settings["color_navy"]->setting_value ?? "#101340" }}' },
-            { key:'color_secondary', name:'DHS Red (Aksen/Tombol)',     value:'{{ $settings["color_secondary"]->setting_value ?? "#D4302A" }}' },
-            { key:'color_gold',      name:'DHS Gold (Aksen Premium)',   value:'{{ $settings["color_gold"]->setting_value ?? "#C7A14D" }}' },
-            { key:'color_cream',     name:'Light Gray (Background)',    value:'{{ $settings["color_cream"]->setting_value ?? "#F5F6F8" }}' },
-            { key:'color_beige',     name:'Light Blue (Section)',       value:'{{ $settings["color_beige"]->setting_value ?? "#EBF0FA" }}' }
+            { key:'color_primary',   name:'DHS Royal Blue (Dominan)', value:'{{ $settings["color_primary"]->setting_value ?? "#1A365D" }}' },
+            { key:'color_navy',      name:'Dark Navy (Header/Sidebar)', value:'{{ $settings["color_navy"]->setting_value ?? "#0F2440" }}' },
+            { key:'color_secondary', name:'DHS Red (Aksen/Tombol)',     value:'{{ $settings["color_secondary"]->setting_value ?? "#C53030" }}' },
+            { key:'color_gold',      name:'DHS Gold (Aksen Premium)',   value:'{{ $settings["color_gold"]->setting_value ?? "#C53030" }}' },
+            { key:'color_cream',     name:'Light Gray (Background)',    value:'{{ $settings["color_cream"]->setting_value ?? "#F7FAFC" }}' },
+            { key:'color_beige',     name:'Light Blue (Section)',       value:'{{ $settings["color_beige"]->setting_value ?? "#EBF4FF" }}' }
         ],
         fonts: {
             heading: '{{ $settings["font_heading"]->setting_value ?? "Playfair Display, serif" }}',

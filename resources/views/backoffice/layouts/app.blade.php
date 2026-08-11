@@ -21,14 +21,14 @@
 
     <style>
         :root {
-            --bo-blue:       #1A1F6B;
-            --bo-dark-blue:  #101340;
-            --bo-red:        #D4302A;
-            --bo-gold:       #C7A14D;
-            --bo-cream:      #F5F6F8;
-            --bo-beige:      #EBF0FA;
-            --bo-gray:       #8A8478;
-            --bo-text:       #1a1a2e;
+            --bo-blue:       #1A365D;
+            --bo-dark-blue:  #0F2440;
+            --bo-red:        #C53030;
+            --bo-gold:       #C53030;
+            --bo-cream:      #F7FAFC;
+            --bo-beige:      #EBF4FF;
+            --bo-gray:       #718096;
+            --bo-text:       #1A365D;
             --sidebar-w:     260px;
             --topbar-h:      64px;
         }
@@ -52,7 +52,7 @@
 
         .nav-item { display: flex; align-items: center; gap: 13px; padding: 9px 18px; margin: 1px 10px; border-radius: 10px; color: rgba(255,255,255,0.62); text-decoration: none; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; transition: background 0.2s, color 0.2s; cursor: pointer; }
         .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .nav-item.active { background: var(--bo-blue); color: #fff; box-shadow: 0 4px 16px rgba(14,6,180,0.45); }
+        .nav-item.active { background: rgba(255,255,255,0.15); color: #fff; box-shadow: inset 3px 0 0 #C53030; }
         .nav-item .mat-icon { font-size: 19px; width: 19px; flex-shrink: 0; }
         .nav-label { overflow: hidden; transition: opacity 0.2s, width 0.2s; }
         #bo-sidebar.collapsed .nav-label { opacity: 0; width: 0; }
@@ -84,15 +84,15 @@
 
         /* BUTTONS */
         .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--bo-blue); color: #fff; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-        .btn-primary:hover { background: var(--bo-dark-blue); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(14,6,180,0.3); }
+        .btn-primary:hover { background: var(--bo-dark-blue); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(26,54,93,0.3); }
         .btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: transparent; color: var(--bo-blue); border: 1.5px solid var(--bo-blue); border-radius: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-        .btn-secondary:hover { background: rgba(14,6,180,0.06); }
+        .btn-secondary:hover { background: rgba(26,54,93,0.06); }
         .btn-danger { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: transparent; color: var(--bo-red); border: 1.5px solid var(--bo-red); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-        .btn-danger:hover { background: rgba(225,0,1,0.07); }
+        .btn-danger:hover { background: rgba(197,48,48,0.07); }
         .btn-icon { width: 34px; height: 34px; border-radius: 8px; background: var(--bo-cream); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--bo-dark-blue); transition: background 0.2s; text-decoration: none; flex-shrink: 0; }
         .btn-icon:hover { background: var(--bo-beige); }
         .btn-icon.danger { color: var(--bo-red); }
-        .btn-icon.danger:hover { background: rgba(225,0,1,0.08); }
+        .btn-icon.danger:hover { background: rgba(197,48,48,0.08); }
 
         /* TABLE */
         .bo-table { width: 100%; border-collapse: collapse; }
@@ -104,11 +104,11 @@
         /* FORMS */
         .bo-label { display: block; font-size: 12.5px; font-weight: 600; color: #444; margin-bottom: 6px; }
         .bo-input { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--bo-text); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
-        .bo-input:focus { border-color: var(--bo-blue); box-shadow: 0 0 0 3px rgba(14,6,180,0.1); }
+        .bo-input:focus { border-color: var(--bo-blue); box-shadow: 0 0 0 3px rgba(26,54,93,0.12); }
         .bo-select { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--bo-text); background: #fff; outline: none; cursor: pointer; }
-        .bo-select:focus { border-color: var(--bo-blue); box-shadow: 0 0 0 3px rgba(14,6,180,0.1); }
+        .bo-select:focus { border-color: var(--bo-blue); box-shadow: 0 0 0 3px rgba(26,54,93,0.12); }
         .bo-textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--bo-text); background: #fff; transition: border-color 0.2s; outline: none; resize: vertical; min-height: 100px; }
-        .bo-textarea:focus { border-color: var(--bo-blue); box-shadow: 0 0 0 3px rgba(14,6,180,0.1); }
+        .bo-textarea:focus { border-color: var(--bo-blue); box-shadow: 0 0 0 3px rgba(26,54,93,0.12); }
 
         /* MODAL */
         .bo-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -118,10 +118,10 @@
 
         /* BADGES */
         .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .badge-blue { background: rgba(14,6,180,0.1); color: var(--bo-blue); }
+        .badge-blue { background: rgba(26,54,93,0.1); color: var(--bo-blue); }
         .badge-green { background: rgba(34,197,94,0.12); color: #16a34a; }
         .badge-gray { background: rgba(138,132,120,0.15); color: #666; }
-        .badge-red { background: rgba(225,0,1,0.1); color: var(--bo-red); }
+        .badge-red { background: rgba(197,48,48,0.1); color: var(--bo-red); }
 
         /* SEARCH */
         .bo-search { display: flex; align-items: center; gap: 8px; background: var(--bo-cream); border: 1.5px solid transparent; border-radius: 10px; padding: 8px 14px; transition: border-color 0.2s; }
@@ -151,6 +151,23 @@
         .form-group { margin-bottom: 18px; }
         .divider { border: none; border-top: 1px solid #eee; margin: 24px 0; }
         @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
+
+        /* RESPONSIVE BACKOFFICE */
+        @media (max-width: 768px) {
+            .bo-grid-2 { grid-template-columns: 1fr !important; }
+            .bo-grid-3 { grid-template-columns: 1fr !important; }
+            .bo-grid-4 { grid-template-columns: 1fr 1fr !important; }
+            .bo-grid-stats { grid-template-columns: 1fr 1fr !important; }
+            .bo-grid-cv { grid-template-columns: 1fr !important; }
+            .bo-grid-sidebar { grid-template-columns: 1fr !important; }
+            .bo-card { padding: 16px !important; }
+            .user-name { display: none !important; }
+            .user-pill { padding: 5px !important; }
+            .page-title { font-size: 15px !important; }
+        }
+        @media (max-width: 480px) {
+            .bo-grid-4 { grid-template-columns: 1fr !important; }
+        }
     </style>
     @stack('styles')
 </head>
@@ -184,13 +201,13 @@
         <!-- Tab Navigation -->
         <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;">
             <button @@click="mode = 'url'"
-                    :style="mode === 'url' ? 'border-bottom:2px solid #101340;color:#101340;margin-bottom:-2px;' : 'color:#999;'"
+                    :style="mode === 'url' ? 'border-bottom:2px solid #0F2440;color:#0F2440;margin-bottom:-2px;' : 'color:#999;'"
                     style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;transition:all 0.15s;">
                 <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">link</span>
                 Via URL
             </button>
             <button @@click="mode = 'upload'"
-                    :style="mode === 'upload' ? 'border-bottom:2px solid #101340;color:#101340;margin-bottom:-2px;' : 'color:#999;'"
+                    :style="mode === 'upload' ? 'border-bottom:2px solid #0F2440;color:#0F2440;margin-bottom:-2px;' : 'color:#999;'"
                     style="padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;transition:all 0.15s;">
                 <span class="material-icons-round" style="font-size:18px;vertical-align:middle;">upload_file</span>
                 Upload Lokal
@@ -220,10 +237,10 @@
         <div x-show="mode === 'upload'" style="padding:4px 0;">
             <div @@click="$refs.globalFileInput.click()"
                  style="border:2px dashed #cbd5e1;border-radius:12px;padding:36px;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.2s;"
-                 @@mouseenter="$el.style.borderColor='#101340'; $el.style.background='#f0f4ff'"
+                 @@mouseenter="$el.style.borderColor='#0F2440'; $el.style.background='#EBF4FF'"
                  @@mouseleave="$el.style.borderColor='#cbd5e1'; $el.style.background='#fafafa'">
-                <span class="material-icons-round" style="font-size:44px;color:#101340;display:block;margin-bottom:10px;">cloud_upload</span>
-                <div style="font-weight:600;color:#101340;margin-bottom:4px;">Klik untuk pilih gambar</div>
+                <span class="material-icons-round" style="font-size:44px;color:#0F2440;display:block;margin-bottom:10px;">cloud_upload</span>
+                <div style="font-weight:600;color:#0F2440;margin-bottom:4px;">Klik untuk pilih gambar</div>
                 <div style="font-size:12px;color:#999;">JPG, PNG, GIF, WebP, SVG — Maks 5MB</div>
             </div>
             <input type="file" x-ref="globalFileInput" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" @@change="handleFile($event)" style="display:none;">
@@ -250,13 +267,16 @@
         Alpine.store('imageUpload', {
             isOpen: false,
             callback: null,
-            open(callback) {
+            folder: 'uploads',
+            open(callback, folder) {
                 this.isOpen = true;
                 this.callback = callback;
+                this.folder = folder || 'uploads';
             },
             close() {
                 this.isOpen = false;
                 this.callback = null;
+                this.folder = 'uploads';
             },
             apply(value) {
                 if (this.callback) this.callback(value);
@@ -301,6 +321,7 @@
                     .then(blob => {
                         const fd = new FormData();
                         fd.append('file', blob, 'image.jpg');
+                        fd.append('folder', Alpine.store('imageUpload').folder);
                         fd.append('_token', '{{ csrf_token() }}');
                         return fetch('/backoffice/upload/image', { method: 'POST', body: fd });
                     })

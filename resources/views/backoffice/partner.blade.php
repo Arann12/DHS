@@ -12,12 +12,13 @@
     {{-- List Card --}}
     <div class="bo-card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0;">Daftar Partner & Mitra</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0;">Daftar Partner & Mitra</h2>
             <button class="btn-primary" @click="openModal('add')">
                 <span class="material-icons-round" style="font-size:18px;">add</span> Tambah Partner
             </button>
         </div>
 
+        <div style="overflow-x:auto;">
         <table class="bo-table">
             <thead>
                 <tr>
@@ -35,11 +36,11 @@
                 <template x-for="(item, idx) in items" :key="item.id">
                     <tr>
                         <td x-text="item.name" style="font-weight:600;"></td>
-                        <td><span :class="item.partner_group === 'mitra_industri' ? 'badge-green' : 'badge-blue'" x-text="item.partner_group === 'mitra_industri' ? 'Mitra Industri' : 'Partnership'"></span></td>
+                        <td><span :class="'badge ' + (item.partner_group === 'mitra_industri' ? 'badge-green' : 'badge-blue')" x-text="item.partner_group === 'mitra_industri' ? 'Mitra Industri' : 'Partnership'"></span></td>
                         <td><span class="badge badge-blue" x-text="item.type"></span></td>
                         <td x-text="item.country || '-'"></td>
-                        <td><a :href="item.website_url" target="_blank" x-text="item.website_url ? 'Link' : '-'" style="color:#1A1F6B;"></a></td>
-                        <td><span :class="item.is_active ? 'badge-green' : 'badge-gray'" x-text="item.is_active ? 'Aktif' : 'Nonaktif'"></span></td>
+                        <td><a :href="item.website_url" target="_blank" x-text="item.website_url ? 'Link' : '-'" style="color:#1A365D;"></a></td>
+                        <td><span :class="'badge ' + (item.is_active ? 'badge-green' : 'badge-gray')" x-text="item.is_active ? 'Aktif' : 'Nonaktif'"></span></td>
                         <td x-text="item.display_order"></td>
                         <td>
                             <button class="btn-icon" @click="openModal('edit', item)" title="Edit">
@@ -52,22 +53,23 @@
                     </tr>
                 </template>
                 <tr x-show="items.length === 0">
-                    <td colspan="7" style="text-align:center;padding:40px;color:#8A8478;">Belum ada data partner.</td>
+                    <td colspan="7" style="text-align:center;padding:40px;color:#718096;">Belum ada data partner.</td>
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     {{-- Modal Form --}}
     <div class="bo-modal-backdrop" x-show="modal.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:550px;" @click.stop>
-            <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;" x-text="modal.mode === 'add' ? 'Tambah Partner Baru' : 'Edit Partner'"></h3>
+            <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;" x-text="modal.mode === 'add' ? 'Tambah Partner Baru' : 'Edit Partner'"></h3>
             <div class="form-group">
-                <label class="bo-label">Nama Partner <span style="color:#D4302A;">*</span></label>
+                <label class="bo-label">Nama Partner <span style="color:#C53030;">*</span></label>
                 <input type="text" class="bo-input" x-model="modal.form.name" placeholder="Nama perusahaan/partner">
             </div>
             <div class="form-group">
-                <label class="bo-label">Kelompok <span style="color:#D4302A;">*</span></label>
+                <label class="bo-label">Kelompok <span style="color:#C53030;">*</span></label>
                 <select class="bo-input" x-model="modal.form.partner_group">
                     <option value="mitra_industri">Mitra Industri (Hotel/Restoran/Kapal)</option>
                     <option value="partnership">Partnership (Pendidikan/Kerjasama)</option>
@@ -126,10 +128,10 @@
             </div>
             <div style="display:flex;gap:20px;">
                 <label style="display:flex;align-items:center;gap:6px;font-size:13px;">
-                    <input type="checkbox" x-model="modal.form.is_active" style="accent-color:#1A1F6B;"> Aktif
+                    <input type="checkbox" x-model="modal.form.is_active" style="accent-color:#1A365D;"> Aktif
                 </label>
                 <label style="display:flex;align-items:center;gap:6px;font-size:13px;">
-                    <input type="checkbox" x-model="modal.form.is_featured" style="accent-color:#1A1F6B;"> Featured
+                    <input type="checkbox" x-model="modal.form.is_featured" style="accent-color:#1A365D;"> Featured
                 </label>
             </div>
             <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
@@ -144,8 +146,8 @@
     {{-- Confirm Delete --}}
     <div class="bo-modal-backdrop" x-show="deleteConfirm.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
-            <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 12px;">Hapus Partner?</h3>
-            <p style="font-size:14px;color:#8A8478;margin-bottom:20px;">Data partner akan dihapus permanen.</p>
+            <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 12px;">Hapus Partner?</h3>
+            <p style="font-size:14px;color:#718096;margin-bottom:20px;">Data partner akan dihapus permanen.</p>
             <div style="display:flex;gap:12px;justify-content:flex-end;">
                 <button class="btn-secondary" @click="deleteConfirm.open = false">Batal</button>
                 <button class="btn-danger" @click="confirmDeleteItem()">

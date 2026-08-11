@@ -1,4 +1,4 @@
-﻿@extends('backoffice.layouts.app')
+@extends('backoffice.layouts.app')
 @section('title', 'Editor Academy & Program')
 @section('page-title', 'Editor Lengkap Halaman Academy & Program')
 
@@ -17,7 +17,7 @@
 
     {{-- Hero Section --}}
     <div class="bo-card" style="margin-bottom:20px;">
-        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 16px;">Hero Section — Halaman Akademi</h2>
+        <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 16px;">Hero Section � Halaman Akademi</h2>
         <div class="form-group">
             <label class="bo-label">Judul Utama (H1)</label>
             <input type="text" class="bo-input" x-model="hero.title" placeholder="Program Vokasi & Kursus">
@@ -73,10 +73,10 @@
             <div x-show="activeCat === cat.id">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
                     <div>
-                        <h2 style="font-family:'Playfair Display',serif;font-size:20px;color:#101340;margin:0 0 4px;">
-                            <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:20px;color:#101340;border:none;padding:0;background:transparent;font-weight:700;" x-model="cat.name" placeholder="Nama Kategori">
+                        <h2 style="font-family:'Playfair Display',serif;font-size:20px;color:#0F2440;margin:0 0 4px;">
+                            <input type="text" class="bo-input" style="font-family:'Playfair Display',serif;font-size:20px;color:#0F2440;border:none;padding:0;background:transparent;font-weight:700;" x-model="cat.name" placeholder="Nama Kategori">
                         </h2>
-                        <p style="font-size:13px;color:#8A8478;margin:0;">Pengaturan deskripsi & daftar kursus</p>
+                        <p style="font-size:13px;color:#718096;margin:0;">Pengaturan deskripsi & daftar kursus</p>
                     </div>
                     <button class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="addCourse(cat.id)">
                         <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Kursus
@@ -85,30 +85,30 @@
 
                 {{-- Panel Description --}}
                 <div style="padding:16px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;margin-bottom:24px;">
-                    <p style="font-size:11px;color:#8A8478;margin:0 0 14px;font-weight:600;">
-                        <span class="material-icons-round" style="font-size:14px;vertical-align:middle;">edit</span> Edit Sidebar — data di bawah ini tampil di panel kiri halaman Akademi
+                    <p style="font-size:11px;color:#718096;margin:0 0 14px;font-weight:600;">
+                        <span class="material-icons-round" style="font-size:14px;vertical-align:middle;">edit</span> Edit Sidebar � data di bawah ini tampil di panel kiri halaman Akademi
                     </p>
                     <div class="form-group">
-                        <label class="bo-label">Nama Kategori <span style="color:#8A8478;font-weight:400;font-size:11px;">— Teks merah & judul besar di sidebar</span></label>
+                        <label class="bo-label">Nama Kategori <span style="color:#718096;font-weight:400;font-size:11px;">� Teks merah & judul besar di sidebar</span></label>
                         <input type="text" class="bo-input" x-model="cat.name" placeholder="Contoh: Program Internasional">
                     </div>
                     <div class="form-group">
-                        <label class="bo-label">Subtitle / Sub-header <span style="color:#8A8478;font-weight:400;font-size:11px;">— Teks kecil di bawah judul</span></label>
+                        <label class="bo-label">Subtitle / Sub-header <span style="color:#718096;font-weight:400;font-size:11px;">� Teks kecil di bawah judul</span></label>
                         <input type="text" class="bo-input" x-model="cat.subtitle" placeholder="Contoh: Diploma Vokasi">
                     </div>
                     <div class="form-group">
-                        <label class="bo-label">Deskripsi Kategori <span style="color:#8A8478;font-weight:400;font-size:11px;">— Paragraf penjelasan di sidebar</span></label>
+                        <label class="bo-label">Deskripsi Kategori <span style="color:#718096;font-weight:400;font-size:11px;">� Paragraf penjelasan di sidebar</span></label>
                         <textarea class="bo-textarea" rows="3" x-model="cat.desc" placeholder="Deskripsi singkat tentang kategori program ini..."></textarea>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="bo-label">Peluang Kerja Lulusan <span style="color:#8A8478;font-weight:400;font-size:11px;">— Teks di bawah garis pemisah</span></label>
+                        <label class="bo-label">Peluang Kerja Lulusan <span style="color:#718096;font-weight:400;font-size:11px;">� Teks di bawah garis pemisah</span></label>
                         <input type="text" class="bo-input" x-model="cat.careers" placeholder="Contoh: Hotel Bintang 5, Kapal Pesiar, Restoran Internasional">
                     </div>
                 </div>
 
                 {{-- Courses List Grid --}}
-                <h3 style="font-size:15px;font-weight:700;color:#101340;margin-bottom:14px;">Daftar Kursus / Modul</h3>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <h3 style="font-size:15px;font-weight:700;color:#0F2440;margin-bottom:14px;">Daftar Kursus / Modul</h3>
+                <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <template x-for="(course, idx) in cat.courses" :key="idx">
                         <div style="padding:16px;background:#fff;border-radius:12px;border:1.5px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -123,7 +123,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="bo-label" style="font-size:11px;">Negara / Badge</label>
-                                <input type="text" class="bo-input" style="padding:7px;" x-model="course.country" placeholder="🇩🇪 JERMAN / 🇮🇩 BALI">
+                                <input type="text" class="bo-input" style="padding:7px;" x-model="course.country" placeholder="???? JERMAN / ???? BALI">
                             </div>
                             <div class="form-group">
                                 <label class="bo-label" style="font-size:11px;">Deskripsi Kursus</label>
@@ -175,15 +175,15 @@
     <div class="bo-modal-backdrop" x-show="addModal.open" x-transition style="display:none;" @keydown.escape.window="addModal.open=false">
         <div class="bo-modal" style="max-width:480px;" @click.stop>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#101340;">Tambah Kursus Baru</h3>
+                <h3 style="margin:0;font-family:'Playfair Display',serif;color:#0F2440;">Tambah Kursus Baru</h3>
                 <button class="btn-icon" @click="addModal.open=false"><span class="material-icons-round">close</span></button>
             </div>
             <div class="form-group">
-                <label class="bo-label">Judul Program / Kursus <span style="color:#D4302A;">*</span></label>
+                <label class="bo-label">Judul Program / Kursus <span style="color:#C53030;">*</span></label>
                 <input type="text" class="bo-input" x-model="addModal.title" placeholder="Contoh: Diploma Perhotelan Internasional" @keydown.enter="submitAddCourse()">
             </div>
-            <p style="font-size:12px;color:#8A8478;margin:0 0 16px;">
-                Kategori: <strong x-text="addModal.catName"></strong> — Program akan langsung aktif setelah ditambahkan.
+            <p style="font-size:12px;color:#718096;margin:0 0 16px;">
+                Kategori: <strong x-text="addModal.catName"></strong> � Program akan langsung aktif setelah ditambahkan.
             </p>
             <div style="display:flex;gap:12px;justify-content:flex-end;">
                 <button class="btn-secondary" @click="addModal.open=false">Batal</button>
@@ -198,11 +198,11 @@
     <div class="bo-modal-backdrop" x-show="delModal.open" x-transition style="display:none;" @keydown.escape.window="delModal.open=false">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#C53030;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Kursus?</h3>
-                <p style="font-size:14px;color:#8A8478;margin:0;">Program <strong x-text="delModal.title"></strong> akan dihapus permanen dari database.</p>
+                <p style="font-size:14px;color:#718096;margin:0;">Program <strong x-text="delModal.title"></strong> akan dihapus permanen dari database.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-secondary" @click="delModal.open=false">Batal</button>

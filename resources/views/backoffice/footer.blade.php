@@ -8,12 +8,12 @@
         <span class="material-icons-round">check_circle</span> Pengaturan Footer berhasil disimpan ke database.
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
 
         {{-- Kiri: Info Sekolah + Sosmed --}}
         <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Informasi Sekolah</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">Informasi Sekolah</h2>
                 <div class="form-group">
                     <label class="bo-label">Nama Sekolah</label>
                     <input type="text" class="bo-input" x-model="form.site_name">
@@ -29,7 +29,7 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Kampus Denpasar</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">Kampus Denpasar</h2>
                 <div class="form-group">
                     <label class="bo-label">Alamat</label>
                     <textarea class="bo-textarea" rows="2" x-model="form.address_denpasar"></textarea>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Kampus Klungkung</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">Kampus Klungkung</h2>
                 <div class="form-group">
                     <label class="bo-label">Alamat</label>
                     <textarea class="bo-textarea" rows="2" x-model="form.address_klungkung"></textarea>
@@ -65,11 +65,11 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Link Media Sosial</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">Link Media Sosial</h2>
                 <template x-for="(sosmed, key) in form.sosmed" :key="key">
                     <div class="form-group" style="display:flex;align-items:center;gap:12px;">
-                        <div style="width:38px;height:38px;border-radius:10px;background:rgba(14,6,180,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <span class="material-icons-round" style="font-size:20px;color:#1A1F6B;" x-text="sosmed.icon"></span>
+                        <div style="width:38px;height:38px;border-radius:10px;background:rgba(197,48,48,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <span class="material-icons-round" style="font-size:20px;color:#1A365D;" x-text="sosmed.icon"></span>
                         </div>
                         <input type="text" class="bo-input" :placeholder="sosmed.platform + ' URL'" x-model="sosmed.url">
                     </div>
@@ -80,7 +80,7 @@
         {{-- Kanan: Link Kolom + Extra --}}
         <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Kolom "Eksplorasi"</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">Kolom "Eksplorasi"</h2>
                 <template x-for="(link, idx) in form.exploreLinks" :key="idx">
                     <div style="display:flex;gap:10px;margin-bottom:10px;">
                         <input type="text" class="bo-input" style="flex:1;" placeholder="Label" x-model="link.label">
@@ -96,7 +96,7 @@
             </div>
 
             <div class="bo-card">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 20px;">Kolom "Pendaftaran & Link"</h2>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">Kolom "Pendaftaran & Link"</h2>
                 <template x-for="(link, idx) in form.admissionLinks" :key="idx">
                     <div style="display:flex;gap:10px;margin-bottom:10px;">
                         <input type="text" class="bo-input" style="flex:1;" placeholder="Label" x-model="link.label">

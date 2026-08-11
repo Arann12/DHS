@@ -15,22 +15,21 @@ The design should feel:
 
 ## 2. Color Palette & Roles
 
-The color palette represents a refined hospitality environment. It uses the official logo brand colors (Bright Red + Navy Blue) balanced with warm resort tones.
+The color palette follows a classic navy-dominant, crimson-accent approach. Navy blue covers ~70% of the UI for a professional, trustworthy feel. Crimson red is used sparingly (~10%) for CTAs and active states to draw attention.
 
 | Descriptive Name      | HEX Code  | Functional Role                                                                                                                                                            |
 | :-------------------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **DHS Royal Blue**    | `#0010B8` | Primary dominant color (~70% usage). Used for major headings, navigation bar text, solid primary CTA buttons, and main body text. Matches the logo's royal blue exactly.   |
-| **DHS Red**           | `#DF1501` | Accent color (~10% usage). Used sparingly for small focus elements: icons, quote highlights, categories/badges (e.g., "Pendaftaran Dibuka"), and the active tab underline. Matches the logo's red exactly. |
-| **Cream / Off-White** | `#F6F2EA` | Primary background color for major sections.                                                                                                                               |
-| **Warm Beige**        | `#EFE7D8` | Alternating section background color (e.g., Visionary Standards, Footer) to separate sections without using lines.                                                         |
-| **Deep Royal Blue**   | `#000B82` | Secondary body text. A deeper shade of the logo blue for paragraph copy and surface elements.                                                                              |
-| **Muted Gray**        | `#6B6558` | Small capitalization labels (overlines). _Note: Ensure `#6B6558` or darker is used to maintain WCAG AA contrast compliance._                                               |
-| **White**             | `#FFFFFF` | Background for cards, form fields, and text labels placed on top of Navy or Red backgrounds.                                                                               |
+| **Navy Blue**         | `#1A365D` | Primary dominant color (~70%). Navbar, sidebar, footer, hero backgrounds, body text on light backgrounds. Professional and authoritative.                                  |
+| **Deep Navy**         | `#0F2440` | Darkest sections, gradient ends, deepest backgrounds.                                                      |
+| **Crimson Red**       | `#C53030` | Accent color (~10%). CTA buttons, active underlines, badges, highlights. Draws attention without overwhelming.                                                             |
+| **Ice Blue**          | `#EBF4FF` | Alternating section backgrounds, surface elements, hover states. Cool and fresh.                                                                                           |
+| **Cool White**        | `#F7FAFC` | Primary background for body, cards, and forms. Clean and neutral.                                                                                                         |
+| **Muted Gray**        | `#718096` | Small capitalization labels (overlines), descriptions, metadata. _Ensure sufficient contrast on light backgrounds._                                                       |
 
 ### Color Rules:
 
-- **Navy Dominance:** Navy must remain the dominant color. Red is strictly an accent and should never cover large surface areas (like background sections) to avoid looking too aggressive.
-- **Contrast Compliance:** Avoid gray text on Red backgrounds. White text on Navy or Red is fully compliant.
+- **Navy Dominance:** Navy must remain the dominant color. Crimson is strictly an accent and should never cover large surface areas.
+- **Contrast Compliance:** Use `#F7FAFC` (cool white) text on navy backgrounds. Use `#2D3748` (dark text) on light backgrounds. Crimson on ice blue or cool white is fully compliant.
 
 ## 3. Typography Rules
 
@@ -46,8 +45,8 @@ Typography balances editorial elegance with modern legibility.
 ## 4. Component Stylings
 
 - **Buttons:**
-    - **Primary CTA:** Solid DHS Navy Blue (`#1B2A6B`) background, white text, uppercase, strictly sharp corners (0px border-radius). Text must be descriptive (e.g., "JELAJAHI PROGRAM").
-    - **Secondary CTA:** Transparent background, thin 1px DHS Navy Blue (`#1B2A6B`) border, DHS Navy Blue text, uppercase, sharp corners (0px border-radius).
+    - **Primary CTA:** Solid Crimson (`#C53030`) background, white text, uppercase, strictly sharp corners (0px border-radius). Text must be descriptive (e.g., "JELAJAHI PROGRAM").
+    - **Secondary CTA:** Transparent background, thin 1px Navy (`#1A365D`) border, navy text, uppercase, sharp corners (0px border-radius).
 - **Cards/Containers:**
     - Shape: Strictly sharp corners (0px border-radius) for all cards and image frames.
     - Background: White (`#FFFFFF`).
@@ -59,7 +58,7 @@ Typography balances editorial elegance with modern legibility.
     - Colors: White background, placeholder text in Muted Gray.
 - **Navigation:**
     - Minimalist top bar. Left-aligned logo, center/right menu: _Beranda · Tentang Kami · Akademi · Berita · Karier_.
-    - Active menu indicator: Underline in DHS Red (`#D62828`).
+    - Active menu indicator: Underline in Crimson (`#C53030`).
 - **Footer:**
     - Background: Warm Beige (`#EFE7D8`).
     - Structure: Left column with logo, school name, brief description, and social media links. Right columns with grouped links ("Explore" and "Admissions"), plus sitemap, privacy policies, and newsletter signup.

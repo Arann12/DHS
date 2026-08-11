@@ -9,8 +9,8 @@
     <div class="bo-card" style="margin-bottom:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
             <div>
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#101340;margin:0 0 4px;">Galeri Foto</h2>
-                <p style="font-size:13px;color:#8A8478;margin:0;" x-text="'Total: ' + items.length + ' foto'"></p>
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 4px;">Galeri Foto</h2>
+                <p style="font-size:13px;color:#718096;margin:0;" x-text="'Total: ' + items.length + ' foto'"></p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;">
                 <label style="cursor:pointer;">
@@ -28,22 +28,22 @@
              @dragover.prevent="dragOver = true"
              @dragleave="dragOver = false"
              @drop.prevent="handleDrop($event)"
-             :style="dragOver ? 'border-color:#1A1F6B;background:#eef0ff;' : ''">
+             :style="dragOver ? 'border-color:#1A365D;background:#eef0ff;' : ''">
             <span class="material-icons-round" style="font-size:42px;color:#ccc;display:block;margin-bottom:8px;">cloud_upload</span>
-            <div style="font-size:14px;color:#8A8478;">Drag & drop foto ke sini, atau klik tombol <strong>Upload</strong> di atas</div>
+            <div style="font-size:14px;color:#718096;">Drag & drop foto ke sini, atau klik tombol <strong>Upload</strong> di atas</div>
             <div style="font-size:12px;color:#bbb;margin-top:6px;">JPG, PNG, WebP — maks 5MB per foto</div>
         </div>
     </div>
 
     {{-- Grid --}}
-    <div x-show="items.length > 0" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+    <div x-show="items.length > 0" class="bo-grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
         <template x-for="(item, idx) in items" :key="item.id">
             <div style="border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.07);position:relative;group;" class="galeri-item">
                 <div style="aspect-ratio:4/3;overflow:hidden;background:#eee;">
                     <img :src="item.src" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 </div>
                 <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
-                    <div style="font-size:12px;color:#8A8478;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;" x-text="item.name"></div>
+                    <div style="font-size:12px;color:#718096;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;" x-text="item.name"></div>
                     <div style="display:flex;gap:6px;">
                         <button class="btn-icon" style="width:28px;height:28px;" @click="moveUp(idx)" :disabled="idx === 0" title="Pindah ke atas" :style="idx === 0 ? 'opacity:0.3;' : ''">
                             <span class="material-icons-round" style="font-size:15px;">arrow_upward</span>
@@ -60,7 +60,7 @@
         </template>
     </div>
 
-    <div x-show="items.length === 0" class="bo-card" style="text-align:center;padding:60px;color:#8A8478;">
+    <div x-show="items.length === 0" class="bo-card" style="text-align:center;padding:60px;color:#718096;">
         <span class="material-icons-round" style="font-size:48px;color:#ddd;display:block;margin-bottom:12px;">photo_library</span>
         <div style="font-size:16px;font-weight:600;margin-bottom:6px;">Belum ada foto di galeri</div>
         <div style="font-size:13px;">Upload foto pertama Anda menggunakan tombol di atas.</div>
@@ -70,11 +70,11 @@
     <div class="bo-modal-backdrop" x-show="confirmDelete.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:400px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#C53030;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Foto?</h3>
-                <p style="font-size:14px;color:#8A8478;margin:0;">Foto akan dihapus dari galeri.</p>
+                <p style="font-size:14px;color:#718096;margin:0;">Foto akan dihapus dari galeri.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-secondary" @click="confirmDelete.open=false">Batal</button>

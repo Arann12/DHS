@@ -9,7 +9,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
             <div class="bo-search">
-                <span class="material-icons-round" style="font-size:18px;color:#8A8478;">search</span>
+                <span class="material-icons-round" style="font-size:18px;color:#718096;">search</span>
                 <input type="text" placeholder="Cari berita..." x-model="search">
             </div>
             <select class="bo-select" style="width:auto;" x-model="filterStatus">
@@ -27,6 +27,7 @@
 
     {{-- Table --}}
     <div class="bo-card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
         <table class="bo-table">
             <thead>
                 <tr>
@@ -50,10 +51,10 @@
                             </div>
                         </td>
                         <td>
-                            <div style="font-weight:700;color:#1a1a2e;font-size:13.5px;" x-text="item.judul"></div>
+                            <div style="font-weight:700;color:#1A365D;font-size:13.5px;" x-text="item.judul"></div>
                         </td>
                         <td><span class="badge badge-blue" x-text="item.kategori"></span></td>
-                        <td style="color:#8A8478;font-size:13px;" x-text="item.tanggal"></td>
+                        <td style="color:#718096;font-size:13px;" x-text="item.tanggal"></td>
                         <td>
                             <span :class="item.status === 'Dipublikasikan' ? 'badge badge-green' : 'badge badge-gray'" x-text="item.status"></span>
                         </td>
@@ -70,10 +71,11 @@
                     </tr>
                 </template>
                 <tr x-show="filtered.length === 0">
-                    <td colspan="6" style="text-align:center;color:#8A8478;padding:40px;">Tidak ada berita ditemukan.</td>
+                    <td colspan="6" style="text-align:center;color:#718096;padding:40px;">Tidak ada berita ditemukan.</td>
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     {{-- Modal Add/Edit --}}
@@ -88,7 +90,7 @@
                 <label class="bo-label">Judul Berita</label>
                 <input type="text" class="bo-input" x-model="modal.form.judul" placeholder="Judul berita yang menarik...">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;">
+            <div class="bo-grid-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;">
                 <div>
                     <label class="bo-label">Kategori</label>
                     <select class="bo-select" x-model="modal.form.kategori">
@@ -124,7 +126,7 @@
                 <label class="bo-label">Thumbnail</label>
                 <div style="display:flex;align-items:flex-start;gap:14px;">
                     <div style="width:140px;height:80px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
-                         @click="$store.imageUpload.open(url => { modal.form.thumbnail = url })">
+                         @click="$store.imageUpload.open(url => { modal.form.thumbnail = url }, 'uploads/berita')">
                         <template x-if="modal.form.thumbnail">
                             <img :src="modal.form.thumbnail" style="width:100%;height:100%;object-fit:cover;">
                         </template>
@@ -134,7 +136,7 @@
                     </div>
                     <div>
                         <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
-                                @click="$store.imageUpload.open(url => { modal.form.thumbnail = url })">
+                                @click="$store.imageUpload.open(url => { modal.form.thumbnail = url }, 'uploads/berita')">
                             <span class="material-icons-round" style="font-size:16px;">edit</span> Ganti Thumbnail
                         </button>
                         <button type="button" x-show="modal.form.thumbnail" class="btn-danger" style="font-size:11px;padding:5px 10px;margin-top:6px;"
@@ -161,11 +163,11 @@
     <div class="bo-modal-backdrop" x-show="confirmDelete.open" x-transition style="display:none;">
         <div class="bo-modal" style="max-width:420px;" @click.stop>
             <div style="text-align:center;margin-bottom:20px;">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(225,0,1,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                    <span class="material-icons-round" style="font-size:28px;color:#D4302A;">delete_forever</span>
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span class="material-icons-round" style="font-size:28px;color:#C53030;">delete_forever</span>
                 </div>
                 <h3 style="margin:0 0 8px;">Hapus Berita?</h3>
-                <p style="font-size:14px;color:#8A8478;margin:0;">Berita ini akan dihapus permanen dari sistem.</p>
+                <p style="font-size:14px;color:#718096;margin:0;">Berita ini akan dihapus permanen dari sistem.</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-secondary" @click="confirmDelete.open=false">Batal</button>

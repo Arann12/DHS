@@ -10,6 +10,8 @@
     $heroCta2Link = $heroContent['cta2_link'] ?? '/cara-mendaftar';
     $heroScrollText = $heroContent['scroll_text'] ?? 'Geser Untuk Scroll';
     $heroBgImage = !empty($heroContent['background_image']) ? $heroContent['background_image'] : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBaJKFYExsjON0pHP43rfmOAIqTkD_R2sTlmKK5Y3CMDGPSja6oJ9DR5erhpkcJFaGwf8hwJZD58ClcpjuTPYEL5LyfjSjhB-t-AumWxxUO-avGgwTwc2wPhoyV6tw23si9SHWgb-5qyJtdTi6WaHdheSZI6A0nWVeXVQ69zkjhtBFvmGPvNvIy5vgQ3-jvlnbQ4bpVLKjjmedqgkXlfk0i_oXHtaIcsJSv5idQg1RZWqqLN8RrwIF70A';
+    $heroVideoType = $heroContent['background_video_type'] ?? '';
+    $heroVideoUrl  = $heroContent['background_video_url'] ?? '';
 
     $aboutContent = isset($sections['about']) ? (is_array($sections['about']->section_content) ? $sections['about']->section_content : json_decode($sections['about']->section_content ?? '[]', true)) : [];
     $aboutLabel = $aboutContent['label'] ?? 'SEKILAS DHS';
@@ -39,9 +41,9 @@
     $campusContent = isset($sections['campus']) ? (is_array($sections['campus']->section_content) ? $sections['campus']->section_content : json_decode($sections['campus']->section_content ?? '[]', true)) : [];
     $campusTitle = $campusContent['title'] ?? 'Kehidupan & Lingkungan Kampus';
     $campusFotos = $campusContent['fotos'] ?? [
-        [ 'src' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbRFStu23zaKKqIJeoNTPdSOcPof73N6z-I-QsGizCu594Eha4Mz0SejvG2hnF6yR68hPeN7xD_S1jEZRkzyCBrs8vDdvREWF-3OAPOgH3qHLgtcUvnZe8Rn1IBJAWejpEp4WOENNj0cc7gOgDOekzGxeBw1_w1YoCEDF65kipejrZCRT_xlGbzjwQUJm4_CNr8F3jauVVHFX03WogUy7RZO30XkuqCSw4mJEZ3cNqvzP0L5HyEQTniA', 'alt' => 'Siswa dalam seragam' ],
-        [ 'src' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDTY_0q-eeJ-lg9SUN09cLtSeVQR488pa_Xwag_o53lQzWT6mJR5WZs7yr6XbePzFxR3qxgiFvrEoNRgTdBGXSDDjwndYp88gIFAbcxGsNUdAZhXNledP3kFKkUXRYQkqkNW-yjqNZuHAtYEw1dMPKqJnAeTZFdyzrZPK3Opj_kuWb_k7Th8YmDJkdeDzKN1uwEyWzuDzSZ-ONuUd0TRqQTctN_cqSFal0SCwZhd6WmrTA8-CwwcCNwoQ', 'alt' => 'Resort Pool' ],
-        [ 'src' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDV0lh3gGKxkEZoxy7owBdHzRVEZvkTUx_cLcTOGAorH2W5Hlj93QcVs4ZTcVZhy6ReTblju-pImR6huMYYKK3Ht_2BydhaglchgK_UjAw6j0_cBbtChI08T9-9SrN4y7LPA0hvtQx8P7Ro6tEHZJwQYTY1SK15KI-kaVZnE7hYSv9HI7UerrDb0fPLXglYz0YNzfv5YcT60EHMmhqSQ4yMT6QGwO7ZAyM-JwghKblh8sWSOMmwJGfTKA', 'alt' => 'Praktikum Dapur Chef' ]
+        [ 'src' => 'https://images.unsplash.com/photo-1549057446-9f5c6ac91a04?w=800&auto=format&fit=crop', 'alt' => 'Siswa dalam seragam' ],
+        [ 'src' => 'https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?w=800&auto=format&fit=crop', 'alt' => 'Resort Pool' ],
+        [ 'src' => 'https://images.unsplash.com/photo-1588416820614-f8d6ac6cea56?w=800&auto=format&fit=crop', 'alt' => 'Praktikum Dapur Chef' ]
     ];
 
     $academyContent = isset($sections['academy']) ? (is_array($sections['academy']->section_content) ? $sections['academy']->section_content : json_decode($sections['academy']->section_content ?? '[]', true)) : [];
@@ -58,9 +60,9 @@
     $facilitiesTitle = $facilitiesContent['title'] ?? 'FASILITAS KELAS DUNIA';
     $facilitiesLabel = $facilitiesTitle; // alias used in view
     $facilitiesItems = $facilitiesContent['items'] ?? [
-        [ 'label' => 'DAPUR INDUSTRI', 'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuAuTCak20mOeB9LQyn2XonJILtYY9k6DyYGKEQ_2nztbxQWXwrVPOL29MgalMVIKCAW04dx_vIrTJCd_XfZmfX9_9hbLrXB0cPP_Z2UsA4IYQswE7_qtBrSAXUCYqMucBYQEqjuiG38mvQaMG5r26TUh-29dvwJ_34-CjtOGQkO16jk6q2OBqzcfV9-nc_yifBoKLwOk3ZQgc4Y8cMYrRz7pnjfbDsJcv_KI3heB7aNsCudsGWesMK0CA' ],
-        [ 'label' => 'KAMAR SUITE SIMULASI', 'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCyOX_hVvTkAG09wnSm_vRW8D4osAWduBcFAjzCZ1wV4i4GPLit9wTP_i2XtVSYgamC--GK74WFus4JzhyZYBIq4uQo7edkXb7qbkbYZSD7tyTMmm-avYEYkfxEHRv3d-UVeXaNEwoeW8jpXjQnhYk1Ixp0oGDWNB4GRjOVwWJw9-VOBMkmWx-HYymiZmpE5WXj8wKO1j_zVtxaJ0IuVTJ7-kam2tSORas5a52dmUAOG2LK1tpKCHpOFg' ],
-        [ 'label' => 'BAR PELATIHAN', 'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDA-3TVgjqn3rAEEMHDMk4BdnH6XnDlEPUP2Nc_9LrVXk3EsldakTpUoLH42IgL4tS_sVrXfm3KbpdvDhxRTcJUyVrKQmhaPn_BBDJ0FQiIz9SJi62qfc9pDjuHpvzqiMNxJPWxI8ctpmx-Bz4jTY1IKMeJRtHAnb_9GJQUvK8bEsDw0ux1S4BVwNd1eC9utAz77RQgpUE8mrqmszl64keLmdWPNOJCyYE2gv5BmNUXFWMpsee-QQJ53A' ]
+        [ 'label' => 'DAPUR INDUSTRI', 'image' => 'https://images.unsplash.com/photo-1589109807644-924edf14ee09?w=800&auto=format&fit=crop' ],
+        [ 'label' => 'KAMAR SUITE SIMULASI', 'image' => 'https://images.unsplash.com/photo-1610428469734-51339d2600bf?w=800&auto=format&fit=crop' ],
+        [ 'label' => 'BAR PELATIHAN', 'image' => 'https://images.unsplash.com/photo-1597241693839-07d7fb803af1?w=800&auto=format&fit=crop' ]
     ];
 
     $directorContent = isset($sections['director']) ? (is_array($sections['director']->section_content) ? $sections['director']->section_content : json_decode($sections['director']->section_content ?? '[]', true)) : [];
@@ -122,8 +124,22 @@
     <!-- Hero Section -->
     <section class="relative h-screen flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/35 z-10"></div>
-        <img alt="Hotel Lobby" class="absolute inset-0 w-full h-full object-cover"
-            src="<?php echo e($heroBgImage); ?>">
+        <?php if(($heroVideoType === 'youtube' || $heroVideoType === 'vimeo') && $heroVideoUrl): ?>
+            <iframe class="absolute inset-0 w-full h-full object-cover"
+                    src="<?php echo e($heroVideoUrl); ?><?php echo e(str_contains($heroVideoUrl, '?') ? '&autoplay=1&mute=1' : '?autoplay=1&mute=1'); ?>"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media" allowfullscreen
+                    style="pointer-events:none;"></iframe>
+        <?php elseif($heroVideoType === 'uploaded' && $heroVideoUrl): ?>
+            <video autoplay muted loop playsinline
+                   class="absolute inset-0 w-full h-full object-cover"
+                   poster="<?php echo e($heroBgImage); ?>">
+                <source src="<?php echo e($heroVideoUrl); ?>" type="video/mp4">
+            </video>
+        <?php else: ?>
+            <img alt="Hotel Lobby" class="absolute inset-0 w-full h-full object-cover"
+                 src="<?php echo e($heroBgImage); ?>">
+        <?php endif; ?>
 
         <div class="relative z-20 px-6 max-w-4xl mx-auto mt-20">
             <div class="mb-6 inline-flex items-center space-x-3 text-white">
@@ -182,7 +198,7 @@
     <section class="py-24 md:py-32 px-6 md:px-16 max-w-7xl mx-auto">
         <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
             <div data-reveal="fade-right">
-                <!-- text-primary resolved to DHS Red (#D4302A) as per DESIGN.md -->
+                <!-- text-primary resolved to DHS Red (#C53030) as per DESIGN.md -->
                 <span class="label-text text-primary mb-4 block" data-id="<?php echo e($aboutLabel); ?>" data-en="ABOUT US"><?php echo e($aboutLabel); ?></span>
                 <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-tight text-text-light">
                     <span data-id="<?php echo e($aboutHeadline); ?>" data-en="<?php echo e($aboutHeadline); ?>"><?php echo e($aboutHeadline); ?></span>
@@ -344,15 +360,15 @@
     </section>
 
     <!-- Message from Director Section -->
-    <section class="py-32 bg-dhs-darknavy px-6 md:px-16 relative">
-        <div class="max-w-4xl mx-auto text-center relative z-10 text-white" data-reveal="zoom-in">
-            <span class="label-text text-dhs-gold mb-8 block"><?php echo e($directorLabel); ?></span>
+    <section class="py-32 bg-dhs-lightblue px-6 md:px-16 relative">
+        <div class="max-w-4xl mx-auto text-center relative z-10 text-text-light" data-reveal="zoom-in">
+            <span class="label-text text-dhs-red mb-8 block"><?php echo e($directorLabel); ?></span>
             <h2 class="text-2xl md:text-3xl font-serif leading-relaxed mb-8">
                 <span>"<?php echo e($directorMessage); ?>"</span>
             </h2>
             <div>
                 <h4 class="font-bold text-sm tracking-widest uppercase mb-1"><?php echo e($directorName); ?></h4>
-                <p class="label-text text-white/60"><?php echo e($directorTitle); ?></p>
+                <p class="label-text text-muted-light"><?php echo e($directorTitle); ?></p>
             </div>
         </div>
     </section>
@@ -682,13 +698,13 @@
             border-bottom: 1.5px solid rgba(0,0,0,0.15);
             outline: none;
             padding: 9px 0;
-            color: #1a1a2e;
+            color: #1A365D;
             font-size: 0.9rem;
             font-family: 'Inter', sans-serif;
             transition: border-color 0.2s;
         }
         .contact-field::placeholder { color: rgba(0,0,0,0.28); }
-        .contact-field:focus { border-bottom-color: #1A1F6B; }
+        .contact-field:focus { border-bottom-color: #1A365D; }
         .contact-select-wrap {
             position: relative;
             transition: opacity 0.2s;
@@ -700,7 +716,7 @@
             border-bottom: 1.5px solid rgba(0,0,0,0.15);
             outline: none;
             padding: 9px 28px 9px 0;
-            color: #1a1a2e;
+            color: #1A365D;
             font-size: 0.9rem;
             font-family: 'Inter', sans-serif;
             appearance: none;
@@ -708,8 +724,8 @@
             cursor: pointer;
             transition: border-color 0.2s;
         }
-        .contact-select:focus { border-bottom-color: #1A1F6B; }
-        .contact-select option { background: #fff; color: #1a1a2e; }
+        .contact-select:focus { border-bottom-color: #1A365D; }
+        .contact-select option { background: #fff; color: #1A365D; }
         .contact-select:disabled { cursor: not-allowed; color: rgba(0,0,0,0.3); }
         .contact-chevron {
             position: absolute;

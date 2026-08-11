@@ -540,7 +540,7 @@ if (isset($categories) && $categories->count() > 0) {
     $emailAddr = $helpdesk['helpdesk_email'] ?? 'sahabat@dhs.or.id';
     $serviceHours = $helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA';
 @endphp
-<section class="bg-dhs-navy py-16 px-6 md:px-16">
+<section class="bg-dhs-lightblue py-16 px-6 md:px-16">
     <div class="max-w-[850px] mx-auto">
         <div class="bg-white border border-black/10 rounded-2xl p-8 md:p-10 shadow-sm">
             <div class="flex flex-col md:flex-row md:items-center gap-8">
@@ -675,7 +675,7 @@ function showFileName(input, labelId) {
             label.textContent = 'Choose File | No file chosen';
         } else {
             label.textContent = '✓ ' + file.name;
-            label.style.color = '#1A1F6B';
+            label.style.color = '#1A365D';
         }
     }
 }
