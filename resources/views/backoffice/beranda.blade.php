@@ -656,10 +656,19 @@
 
 @php
     $statsJson = $stats->map(fn($s) => ['id' => $s->id, 'stat_key' => $s->stat_key, 'stat_value' => $s->stat_value, 'stat_label' => $s->stat_label, 'stat_icon' => $s->stat_icon ?? '', 'is_active' => (bool)$s->is_active])->values()->toArray();
+    $dbSections = [];
+    foreach ($sections as $key => $sec) {
+        $dbSections[$key] = is_array($sec->section_content) ? $sec->section_content : json_decode($sec->section_content ?? '{}', true) ?? [];
+    }
 @endphp
+<script>window.__DB_SECTIONS__ = @json($dbSections);</script>
 @push('scripts')
 <script>
 function berandaCompleteData() {
+    const db = window.__DB_SECTIONS__ || {};
+    const h = db.hero || {}, a = db.about || {}, v = db.vision || {}, c = db.campus || {};
+    const ac = db.academy || {}, f = db.facilities || {}, d = db.director || {};
+    const n = db.news || {}, p = db.partners || {}, ct = db.contact || {};
     return {
         saved: false,
         saving: false,
@@ -677,35 +686,35 @@ function berandaCompleteData() {
             { id:'contact',    label:'10. Kontak & Lokasi',   icon:'place' },
         ],
         hero: {
-            overline: 'DENPASAR HOTEL SCHOOL — PUSAT PELATIHAN VOKASI INTERNASIONAL DI BALI',
-            headline: 'Membentuk Masa Depan Perhotelan Global',
-            cta1Text: 'JELAJAHI PROGRAM',
-            cta1Link: '/akademi',
-            cta2Text: 'DAFTAR SEKARANG',
-            cta2Link: '/cara-mendaftar',
-            scrollText: 'Geser Untuk Scroll',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBaJKFYExsjON0pHP43rfmOAIqTkD_R2sTlmKK5Y3CMDGPSja6oJ9DR5erhpkcJFaGwf8hwJZD58ClcpjuTPYEL5LyfjSjhB-t-AumWxxUO-avGgwTwc2wPhoyV6tw23si9SHWgb-5qyJtdTi6WaHdheSZI6A0nWVeXVQ69zkjhtBFvmGPvNvIy5vgQ3-jvlnbQ4bpVLKjjmedqgkXlfk0i_oXHtaIcsJSv5idQg1RZWqqLN8RrwIF70A',
-            videoType: '',
-            videoUrl: ''
+            overline: h.overline || 'DENPASAR HOTEL SCHOOL — PUSAT PELATIHAN VOKASI INTERNASIONAL DI BALI',
+            headline: h.headline || 'Membentuk Masa Depan Perhotelan Global',
+            cta1Text: h.cta1_text || 'JELAJAHI PROGRAM',
+            cta1Link: h.cta1_link || '/akademi',
+            cta2Text: h.cta2_text || 'DAFTAR SEKARANG',
+            cta2Link: h.cta2_link || '/cara-mendaftar',
+            scrollText: h.scroll_text || 'Geser Untuk Scroll',
+            image: h.background_image || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBaJKFYExsjON0pHP43rfmOAIqTkD_R2sTlmKK5Y3CMDGPSja6oJ9DR5erhpkcJFaGwf8hwJZD58ClcpjuTPYEL5LyfjSjhB-t-AumWxxUO-avGgwTwc2wPhoyV6tw23si9SHWgb-5qyJtdTi6WaHdheSZI6A0nWVeXVQ69zkjhtBFvmGPvNvIy5vgQ3-jvlnbQ4bpVLKjjmedqgkXlfk0i_oXHtaIcsJSv5idQg1RZWqqLN8RrwIF70A',
+            videoType: h.background_video_type || '',
+            videoUrl: h.background_video_url || ''
         },
         about: {
-            label: 'SEKILAS DHS',
-            headline: 'Transformasi Menuju Unggul.',
-            p1: 'Denpasar Hotel School (DHS) adalah lembaga pendidikan dan pelatihan bidang perhotelan yang mengusung pendidikan luar negeri dengan mengintegrasikan lembaga pendidikan dan pelatihan dengan dunia industri. DHS bernaung di bawah Yayasan Guna Widya Paramesthi.',
-            p2: 'Lembaga ini didirikan untuk memberi kesempatan generasi muda Indonesia menjadi tenaga profesional bidang perhotelan, hospitality, kapal pesiar dan pariwisata, serta belajar sambil bekerja di luar negeri.',
-            note: 'Mencetak SDM pariwisata yang unggul, kompeten, dan siap bersaing di tingkat global.',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA5jkBzd0EqrT-cphGIkzHYDH2a7dpxzv95e4cWzjIaFRYe8B3poCp2NncsdrneEW_ldLWrzvbO4JcdyzzGiQ-Mvb33B6kEHzU80DleUBPVkvlrCikONCi2W8yS5aMmee0S50iv_AYi1wUI-pnY1lPSKs2H7rnAXGxAPLvpZ9j5QBG9pWjHTb3FiXnNHZa6j5uJnKPdjulHepAKqk6Eb1zivof6CfMQt0IRObJoQROAn60P6jzRyfcrAQ'
+            label: a.label || 'SEKILAS DHS',
+            headline: a.headline || 'Transformasi Menuju Unggul.',
+            p1: a.paragraph1 || 'Denpasar Hotel School (DHS) adalah lembaga pendidikan dan pelatihan bidang perhotelan yang mengusung pendidikan luar negeri dengan mengintegrasikan lembaga pendidikan dan pelatihan dengan dunia industri. DHS bernaung di bawah Yayasan Guna Widya Paramesthi.',
+            p2: a.paragraph2 || 'Lembaga ini didirikan untuk memberi kesempatan generasi muda Indonesia menjadi tenaga profesional bidang perhotelan, hospitality, kapal pesiar dan pariwisata, serta belajar sambil bekerja di luar negeri.',
+            note: a.note || 'Mencetak SDM pariwisata yang unggul, kompeten, dan siap bersaing di tingkat global.',
+            image: a.image || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA5jkBzd0EqrT-cphGIkzHYDH2a7dpxzv95e4cWzjIaFRYe8B3poCp2NncsdrneEW_ldLWrzvbO4JcdyzzGiQ-Mvb33B6kEHzU80DleUBPVkvlrCikONCi2W8yS5aMmee0S50iv_AYi1wUI-pnY1lPSKs2H7rnAXGxAPLvpZ9j5QBG9pWjHTb3FiXnNHZa6j5uJnKPdjulHepAKqk6Eb1zivof6CfMQt0IRObJoQROAn60P6jzRyfcrAQ'
         },
         vision: {
-            sectionTitle: 'Standar Visioner.',
-            visiLabel: 'VISI',
-            visiText: 'Mentransformasi lulusan SMA, SMK, dan sederajat menjadi tenaga profesional di bidang perhotelan dan pariwisata yang mau dan mampu bersaing di tingkat global.',
-            misiItems: [
+            sectionTitle: v.sectionTitle || 'Standar Visioner.',
+            visiLabel: v.visiLabel || 'VISI',
+            visiText: v.vision_text || 'Mentransformasi lulusan SMA, SMK, dan sederajat menjadi tenaga profesional di bidang perhotelan dan pariwisata yang mau dan mampu bersaing di tingkat global.',
+            misiItems: v.misiItems || [
                 'Melaksanakan program pendidikan inovatif sesuai kebutuhan industri.',
                 'Mengembangkan sumberdaya pendidikan dan pelatihan secara profesional.',
                 'Memberikan kesempatan mahasiswa untuk belajar sambil bekerja di Australia, Jerman dan Asia Tenggara.'
             ],
-            coreValues: [
+            coreValues: v.coreValues || [
                 { icon:'verified',   title:'Integritas',     desc:'Membentuk insan pariwisata yang kompeten dan berdaya saing tinggi.' },
                 { icon:'fact_check', title:'Tanggung Jawab', desc:'Menghasilkan lulusan yang sesuai kriteria dunia kerja masa depan.' },
                 { icon:'star',       title:'Kualitas',        desc:'Berfokus pada penyediaan solusi dan kualitas pembelajaran terbaik.' },
@@ -713,78 +722,71 @@ function berandaCompleteData() {
             ]
         },
         campus: {
-            title: 'Kehidupan & Lingkungan Kampus',
-            fotos: [
+            title: c.title || 'Kehidupan & Lingkungan Kampus',
+            fotos: c.fotos || [
                 { src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbRFStu23zaKKqIJeoNTPdSOcPof73N6z-I-QsGizCu594Eha4Mz0SejvG2hnF6yR68hPeN7xD_S1jEZRkzyCBrs8vDdvREWF-3OAPOgH3qHLgtcUvnZe8Rn1IBJAWejpEp4WOENNj0cc7gOgDOekzGxeBw1_w1YoCEDF65kipejrZCRT_xlGbzjwQUJm4_CNr8F3jauVVHFX03WogUy7RZO30XkuqCSw4mJEZ3cNqvzP0L5HyEQTniA', alt: 'Siswa dalam seragam' },
                 { src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDTY_0q-eeJ-lg9SUN09cLtSeVQR488pa_Xwag_o53lQzWT6mJR5WZs7yr6XbePzFxR3qxgiFvrEoNRgTdBGXSDDjwndYp88gIFAbcxGsNUdAZhXNledP3kFKkUXRYQkqkNW-yjqNZuHAtYEw1dMPKqJnAeTZFdyzrZPK3Opj_kuWb_k7Th8YmDJkdeDzKN1uwEyWzuDzSZ-ONuUd0TRqQTctN_cqSFal0SCwZhd6WmrTA8-CwwcCNwoQ', alt: 'Kolam Resort Simulasi' },
                 { src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDV0lh3gGKxkEZoxy7owBdHzRVEZvkTUx_cLcTOGAorH2W5Hlj93QcVs4ZTcVZhy6ReTblju-pImR6huMYYKK3Ht_2BydhaglchgK_UjAw6j0_cBbtChI08T9-9SrN4y7LPA0hvtQx8P7Ro6tEHZJwQYTY1SK15KI-kaVZnE7hYSv9HI7UerrDb0fPLXglYz0YNzfv5YcT60EHMmhqSQ4yMT6QGwO7ZAyM-JwghKblh8sWSOMmwJGfTKA', alt: 'Praktikum Dapur Chef' }
             ]
         },
         academy: {
-            label: 'AKADEMI UNGGULAN',
-            headline: 'Disiplin & Pelatihan Profesional Kami',
-            cards: [
+            label: ac.label || 'AKADEMI UNGGULAN',
+            headline: ac.headline || 'Disiplin & Pelatihan Profesional Kami',
+            cards: ac.cards || [
                 { title: 'Program Internasional', desc: 'Pendidikan luar negeri berpartner dengan TAFE Australia & The Hotel School, serta Ausbildung Jerman.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDXptvnod1HxEn1Bx6IezKWRBCwkykUPMcRW74guW5_55XXUaalkhFqPnoliMwG70kGUvZe7BZdcexnivnWW1-lK7WedS10yZF0nB7J_ZTIXnug_xa2_b0l7ZH3uXNLTJROPIqkEBqhJapvitg8WQoVxzwTyJuSq4r3rcPwfmvU8uPENXrzHnh0AbgLiOgwmys8JVmMCyf7XQYs5X0T0iaZxtDoi7jQJeSzDcGZwmF17aEOKwCkODnBOQ', link: '/akademi?filter=internasional' },
                 { title: 'Vokasi 2 Tahun', desc: 'Jurusan Culinary Arts, Perhotelan, & F&B Service dengan jaminan OJT hotel bintang 4 & 5.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAxW5mY_zGD0HDOuwOrmrluxFe62YYnMPXOVLSqWRlgjb2vMXfJRycIhaY-CD9oObxiUpXDfsNqINeygV8X8D-cGXIgF1TsGf1oTPgW6_TY1GU8KeHFIgeVZgBDZxo-77h1BWpzJ4Z6JQaflVOHy1jq3aT80-6ua894112IvlKWSK8uWYLygVc8fO53xwVQEVcu7Od_VANVKjmstsZjgZrBxMmHgC8V-HwKbyyG_7PWWcGVDbWh2uLnNw', link: '/akademi?filter=2-tahun' },
                 { title: 'Program Eksekutif', desc: 'Program singkat 6 bulan kapal pesiar (Cook, Steward, Bartender) dengan bonus gratis paspor & seaman book.', image: '/image/Kapal.jpg', link: '/akademi?filter=eksekutif' }
             ]
         },
         facilities: {
-            title: 'FASILITAS KELAS DUNIA',
-            items: [
+            title: f.title || 'FASILITAS KELAS DUNIA',
+            items: f.items || [
                 { label: 'DAPUR INDUSTRI', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAuTCak20mOeB9LQyn2XonJILtYY9k6DyYGKEQ_2nztbxQWXwrVPOL29MgalMVIKCAW04dx_vIrTJCd_XfZmfX9_9hbLrXB0cPP_Z2UsA4IYQswE7_qtBrSAXUCYqMucBYQEqjuiG38mvQaMG5r26TUh-29dvwJ_34-CjtOGQkO16jk6q2OBqzcfV9-nc_yifBoKLwOk3ZQgc4Y8cMYrRz7pnjfbDsJcv_KI3heB7aNsCudsGWesMK0CA' },
                 { label: 'KAMAR SUITE SIMULASI', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCyOX_hVvTkAG09wnSm_vRW8D4osAWduBcFAjzCZ1wV4i4GPLit9wTP_i2XtVSYgamC--GK74WFus4JzhyZYBIq4uQo7edkXb7qbkbYZSD7tyTMmm-avYEYkfxEHRv3d-UVeXaNEwoeW8jpXjQnhYk1Ixp0oGDWNB4GRjOVwWJw9-VOBMkmWx-HYymiZmpE5WXj8wKO1j_zVtxaJ0IuVTJ7-kam2tSORas5a52dmUAOG2LK1tpKCHpOFg' },
                 { label: 'BAR PELATIHAN', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDA-3TVgjqn3rAEEMHDMk4BdnH6XnDlEPUP2Nc_9LrVXk3EsldakTpUoLH42IgL4tS_sVrXfm3KbpdvDhxRTcJUyVrKQmhaPn_BBDJ0FQiIz9SJi62qfc9pDjuHpvzqiMNxJPWxI8ctpmx-Bz4jTY1IKMeJRtHAnb_9GJQUvK8bEsDw0ux1S4BVwNd1eC9utAz77RQgpUE8mrqmszl64keLmdWPNOJCyYE2gv5BmNUXFWMpsee-QQJ53A' }
             ]
         },
         director: {
-            label: 'PESAN DIREKTUR',
-            message: 'Halo sahabat excellent, Denpasar Hotel School hadir dengan sebuah komitmen untuk mengantarkan calon profesional muda menjadi SDM Indonesia yang unggul dan kompeten. Di Denpasar Hotel School, Anda akan dilatih oleh para praktisi yang telah berpengalaman di bidangnya masing-masing. Mari bergabung bersama kami, Denpasar Hotel School, kami siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global.',
-            name: 'I Made Dwija Suastana, S.H., M.H.',
-            title: 'DIREKTUR DENPASAR HOTEL SCHOOL — SALAM EXCELLENT!'
+            label: d.label || 'PESAN DIREKTUR',
+            message: d.message || 'Halo sahabat excellent, Denpasar Hotel School hadir dengan sebuah komitmen untuk mengantarkan calon profesional muda menjadi SDM Indonesia yang unggul dan kompeten. Di Denpasar Hotel School, Anda akan dilatih oleh para praktisi yang telah berpengalaman di bidangnya masing-masing. Mari bergabung bersama kami, Denpasar Hotel School, kami siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global.',
+            name: d.name || 'I Made Dwija Suastana, S.H., M.H.',
+            title: d.title || 'DIREKTUR DENPASAR HOTEL SCHOOL — SALAM EXCELLENT!'
         },
         news: {
-            label: 'WAWASAN',
-            title: 'Berita & Artikel.',
-            featured: {
+            label: n.label || 'WAWASAN',
+            title: n.title || 'Berita & Artikel.',
+            featured: n.featured || {
                 category: 'KEGIATAN',
                 date: '12 SEP 2024',
                 title: 'Kemitraan DHS dengan Kapal Pesiar Mewah 2026',
                 excerpt: 'Denpasar Hotel School mengumumkan kemitraan eksklusif dengan tiga perusahaan kapal pesiar global...'
             },
-            smallArticles: [
+            smallArticles: n.smallArticles || [
                 { category: 'LOKAKARYA', date: '25 AGU 2024', title: 'Masterclass Kuliner bersama Chef Michelin' },
                 { category: 'KARIER', date: '15 AGU 2024', title: 'Lulusan Memimpin Resort Butik di Asia' },
                 { category: 'KEBERLANJUTAN', date: '05 AGU 2024', title: 'Inisiatif Kampus Hospitality Berkelanjutan' }
             ]
         },
         partner: {
-            label: 'Kemitraan & Jaringan Global',
-            title: 'Partnership Program (PP DHS)',
-            desc: 'DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 & 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).'
+            label: p.label || 'Kemitraan & Jaringan Global',
+            title: p.title || 'Partnership Program (PP DHS)',
+            desc: p.desc || 'DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 & 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).'
         },
         contact: {
             denpasar: {
-                address: 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali',
-                wa: '+62 81 246 319966',
-                email: 'sahabat@dhs.or.id'
+                address: ct.denpasar_address || 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali',
+                wa: ct.denpasar_wa || '+62 81 246 319966',
+                email: ct.denpasar_email || 'sahabat@dhs.or.id'
             },
             klungkung: {
-                address: 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali',
-                phone: '+0366 5582998',
-                wa: '+62 81 337 106480'
+                address: ct.klungkung_address || 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali',
+                phone: ct.klungkung_phone || '+0366 5582998',
+                wa: ct.klungkung_wa || '+62 81 337 106480'
             },
-@php
-    $contactSection = isset($sections['contact'])
-        ? (is_array($sections['contact']->section_content)
-            ? $sections['contact']->section_content
-            : json_decode($sections['contact']->section_content ?? '{}', true))
-        : [];
-@endphp
             links: {
-                linktree: '{{ addslashes($contactSection['linktree'] ?? 'https://linktr.ee/BiayaPendidikan_DHS') }}',
-                googleMaps: '{{ addslashes($contactSection['google_maps'] ?? '') }}',
-                googleMapsDir: '{{ addslashes($contactSection['google_maps_dir'] ?? 'https://maps.google.com/?q=Denpasar+Hotel+School') }}',
+                linktree: ct.linktree || 'https://linktr.ee/BiayaPendidikan_DHS',
+                googleMaps: ct.google_maps || '',
+                googleMapsDir: ct.google_maps_dir || 'https://maps.google.com/?q=Denpasar+Hotel+School',
             }
         },
         stats: @json($statsJson),
