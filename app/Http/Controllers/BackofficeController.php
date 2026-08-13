@@ -49,7 +49,7 @@ class BackofficeController extends Controller
         ]);
     }
 
-    private function deleteOldFile(string $path): void
+    private function deleteOldFile(?string $path): void
     {
         if ($path && file_exists(public_path($path))) {
             @unlink(public_path($path));

@@ -17,6 +17,7 @@
             </button>
         </div>
 
+        <div style="overflow-x:auto;">
         <table class="bo-table">
             <thead>
                 <tr>
@@ -55,6 +56,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     

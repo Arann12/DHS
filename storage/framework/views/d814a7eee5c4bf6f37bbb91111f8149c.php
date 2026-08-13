@@ -104,8 +104,8 @@
     </section>
 
     <!-- Tagline / Intro -->
-    <section class="bg-white pt-24 md:pt-32 pb-20 md:pb-28 px-5 md:px-16 max-w-[1280px] mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <section class="bg-white pt-24 md:pt-32 pb-20 md:pb-28">
+        <div class="max-w-[1280px] mx-auto px-5 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div data-reveal="fade-right">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                     <span data-id="<?php echo e($introLabel); ?>" data-en="ABOUT DHS"><?php echo e($introLabel); ?></span>

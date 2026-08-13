@@ -130,7 +130,7 @@
             </div>
             
             <template x-if="selectedItem">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <label class="bo-label">Nama Lengkap</label>
                         <div class="bo-input" style="background:#fafafa;font-weight:700;" x-text="selectedItem.nama"></div>
@@ -172,7 +172,7 @@
                     
                     <div style="grid-column:1/-1;border-top:1px solid #eee;padding-top:16px;margin-top:4px;">
                         <h4 style="font-size:14px;font-weight:700;color:#0F2440;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                        <div class="bo-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                             
                             <div>
                                 <label class="bo-label">Bukti Biaya Pendaftaran</label>

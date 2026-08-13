@@ -60,9 +60,9 @@
     $facilitiesTitle = $facilitiesContent['title'] ?? 'FASILITAS KELAS DUNIA';
     $facilitiesLabel = $facilitiesTitle; // alias used in view
     $facilitiesItems = $facilitiesContent['items'] ?? [
-        [ 'label' => 'DAPUR INDUSTRI', 'image' => 'https://images.unsplash.com/photo-1589109807644-924edf14ee09?w=800&auto=format&fit=crop' ],
-        [ 'label' => 'KAMAR SUITE SIMULASI', 'image' => 'https://images.unsplash.com/photo-1610428469734-51339d2600bf?w=800&auto=format&fit=crop' ],
-        [ 'label' => 'BAR PELATIHAN', 'image' => 'https://images.unsplash.com/photo-1597241693839-07d7fb803af1?w=800&auto=format&fit=crop' ]
+        [ 'label' => 'DAPUR INDUSTRI', 'image' => 'https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?w=800&auto=format&fit=crop' ],
+        [ 'label' => 'KAMAR SUITE SIMULASI', 'image' => 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop' ],
+        [ 'label' => 'BAR PELATIHAN', 'image' => 'https://images.unsplash.com/photo-1598994671512-395d7a6147e0?w=800&auto=format&fit=crop' ]
     ];
 
     $directorContent = isset($sections['director']) ? (is_array($sections['director']->section_content) ? $sections['director']->section_content : json_decode($sections['director']->section_content ?? '[]', true)) : [];
