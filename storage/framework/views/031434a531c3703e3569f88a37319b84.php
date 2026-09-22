@@ -6,6 +6,13 @@
     <title><?php echo $__env->yieldContent('title', 'Backoffice'); ?> — DHS Admin</title>
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
+    <?php $favicon = \App\Models\BrandingSetting::where('setting_key', 'logo_favicon')->value('setting_value') ?? ''; ?>
+    <?php if($favicon): ?>
+        <link rel="icon" type="image/x-icon" href="<?php echo e(asset(ltrim($favicon, '/'))); ?>">
+    <?php else: ?>
+        <link rel="icon" href="/favicon.ico">
+    <?php endif; ?>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">

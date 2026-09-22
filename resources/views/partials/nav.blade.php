@@ -19,8 +19,10 @@
             style="max-height: 46px; width: auto; aspect-ratio: auto; image-rendering: -webkit-optimize-contrast;">
     </a>
 
-    <!-- ── Right Menu: Berita, FAQ, Formulir Pendaftaran ── -->
-    <div class="hidden md:flex items-center justify-end space-x-8 text-xs font-light tracking-wide flex-1">
+    <!-- ── Right Menu: Berita, FAQ, Layanan, Formulir Pendaftaran ── -->
+    <div class="hidden md:flex items-center justify-end space-x-6 lg:space-x-8 text-xs font-light tracking-wide flex-1">
+        <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('layanan*') || Request::is('pengajuan*') ? 'nav-link-active' : '' }}"
+            href="/layanan"><span data-id="Layanan" data-en="Services">Layanan</span></a>
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('berita') ? 'nav-link-active' : '' }}"
             href="/berita"><span data-id="Berita" data-en="News">Berita</span></a>
         <a class="nav-link hover:opacity-70 transition-opacity {{ Request::is('faq') ? 'nav-link-active' : '' }}"
@@ -47,6 +49,8 @@
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
         href="/akademi"><span data-id="Akademi" data-en="Academy">Akademi</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
+        href="/layanan"><span data-id="Layanan" data-en="Services">Layanan Pengajuan</span></a>
+    <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
         href="/berita"><span data-id="Berita" data-en="News">Berita</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
         href="/faq"><span data-id="FAQ" data-en="FAQ">FAQ</span></a>
@@ -54,6 +58,7 @@
         href="/formulir-pendaftaran"><span data-id="Formulir Pendaftaran" data-en="Registration Form">Formulir
             Pendaftaran</span></a>
 </div>
+
 
 <style>
     /* Base style for sticky nav */
@@ -73,7 +78,7 @@
 
     /* ── Transparent state (above hero / initial state) ── */
     .nav-transparent {
-        background: transparent;
+        background: linear-gradient(to bottom, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0) 100%);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         box-shadow: none;
     }
@@ -81,13 +86,16 @@
     .nav-transparent .nav-logo,
     .nav-transparent .nav-link {
         color: #ffffff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
 
     .nav-transparent .nav-link-active {
         border-bottom: 2px solid rgba(255, 255, 255, 0.9);
         padding-bottom: 4px;
         color: #ffffff;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
     }
+
 
     /* ── Glass state (scrolled / active sticky) ── */
     .nav-glass {

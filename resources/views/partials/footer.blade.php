@@ -25,10 +25,12 @@
     if (empty($admissionLinks)) {
         $admissionLinks = [
             ['label' => 'Pendaftaran Online', 'url' => '/formulir-pendaftaran'],
+            ['label' => 'Layanan & Beasiswa', 'url' => '/layanan'],
             ['label' => 'FAQ', 'url' => '/faq'],
             ['label' => 'Karier', 'url' => '/karier'],
         ];
     }
+
 @endphp
 
 <footer class="bg-dhs-darknavy pt-16 pb-8 px-6 md:px-16 border-t border-white/10">

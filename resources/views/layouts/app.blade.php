@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Denpasar Hotel School')</title>
 
+    @php $favicon = \App\Models\BrandingSetting::where('setting_key', 'logo_favicon')->value('setting_value') ?? ''; @endphp
+    @if($favicon)
+        <link rel="icon" type="image/x-icon" href="{{ asset(ltrim($favicon, '/')) }}">
+    @else
+        <link rel="icon" href="/favicon.ico">
+    @endif
+
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link
@@ -694,24 +701,52 @@
             // ── Loading Overlay ─────────────────────────────────────────────
             var loader = document.getElementById('dhs-loader');
 
-            function dismissLoader() {
+            function dismissLoader(instant) {
                 if (!loader || loader.dataset.dismissed) return;
                 loader.dataset.dismissed = '1';
+                if (instant) {
+                    loader.style.display = 'none';
+                    document.body.classList.add('page-ready');
+                    if (loader.parentNode) loader.parentNode.removeChild(loader);
+                    return;
+                }
                 loader.classList.add('loader-hidden');
                 document.body.classList.add('page-ready');
                 setTimeout(function () { if (loader && loader.parentNode) loader.parentNode.removeChild(loader); }, 800);
             }
 
-            // Dismiss once all assets (images, fonts, scripts) are loaded
-            if (document.readyState === 'complete') {
-                setTimeout(dismissLoader, 300);
+            // If previous navigation was marked no-loader, skip instantly
+            if (sessionStorage.getItem('dhs-skip-loader') === '1') {
+                sessionStorage.removeItem('dhs-skip-loader');
+                dismissLoader(true);
             } else {
-                window.addEventListener('load', function () {
-                    setTimeout(dismissLoader, 400);
-                });
+                // Dismiss once all assets (images, fonts, scripts) are loaded
+                if (document.readyState === 'complete') {
+                    setTimeout(dismissLoader, 300);
+                } else {
+                    window.addEventListener('load', function () {
+                        setTimeout(dismissLoader, 400);
+                    });
+                }
+                // Safety: always dismiss after 6s no matter what
+                setTimeout(dismissLoader, 6000);
             }
-            // Safety: always dismiss after 6s no matter what
-            setTimeout(dismissLoader, 6000);
+
+            // Handle browser back/forward (bfcache restore)
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) {
+                    document.body.classList.remove('page-leaving');
+                    // Ensure page-ready is set even if loader was already dismissed
+                    if (!document.body.classList.contains('page-ready')) {
+                        dismissLoader(true);
+                    }
+                }
+            });
+
+            // Clean up page-leaving before page is cached by browser
+            window.addEventListener('pagehide', function () {
+                document.body.classList.remove('page-leaving');
+            });
 
             // Intersection Observer with both Enter (Fade In) & Exit (Fade Out)
             var revealObs = new IntersectionObserver(function (entries) {
@@ -738,6 +773,12 @@
                 if (!href || href.startsWith('#') || href.startsWith('http') ||
                     href.startsWith('//') || href.startsWith('javascript') ||
                     link.getAttribute('target') === '_blank') return;
+
+                // Skip loader for filter/category links
+                if (link.hasAttribute('data-no-loader')) {
+                    sessionStorage.setItem('dhs-skip-loader', '1');
+                    return; // let browser navigate normally without overlay
+                }
 
                 e.preventDefault();
                 document.body.classList.add('page-leaving');

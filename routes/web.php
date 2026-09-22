@@ -24,6 +24,23 @@ Route::get('/formulir-pendaftaran', function () { return app(FrontendController:
 
 Route::post('/pendaftaran', [FrontendController::class, 'submitRegistration'])->middleware('throttle:3,1');
 
+// Portal Layanan (Formulir Pengajuan Beasiswa & Dokumen)
+Route::get('/layanan',              [FrontendController::class, 'layanan']);
+Route::post('/layanan',             [FrontendController::class, 'submitLayanan'])->middleware('throttle:3,1');
+Route::get('/pengajuan-beasiswa',   [FrontendController::class, 'layanan']);
+Route::get('/pengajuan-dokumen',    [FrontendController::class, 'layanan']);
+Route::get('/pendaftaran-beasiswa', function () { return redirect('/layanan?' . http_build_query(request()->all())); });
+Route::get('/pendaftaran-dokumen',  function () { return redirect('/layanan?' . http_build_query(request()->all())); });
+
+// Halaman Detail Informasi Layanan Dokumen & Beasiswa
+Route::get('/dokumen/{type}',   [FrontendController::class, 'detailDokumen']);
+Route::get('/beasiswa/{type}',  [FrontendController::class, 'detailBeasiswa']);
+
+// Halaman Katalog Semua Program & Detail Program
+Route::get('/program',          [FrontendController::class, 'programIndex']);
+Route::get('/program/{slug}',   [FrontendController::class, 'detailProgram']);
+
+
 /*
 |--------------------------------------------------------------------------
 | BACKOFFICE AUTH ROUTES
@@ -55,6 +72,25 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::get('/backoffice/footer-cms',    [BackofficeController::class, 'footer']);
     Route::get('/backoffice/users',         [BackofficeController::class, 'users']);
 
+    // Pengajuan Layanan (Beasiswa & Dokumen)
+    Route::get('/backoffice/layanan',                          [BackofficeController::class, 'layanan']);
+    Route::get('/backoffice/layanan-settings',                 [BackofficeController::class, 'layananSettings']);
+    Route::post('/backoffice/layanan-settings/update',        [BackofficeController::class, 'layananSettingsUpdate']);
+    Route::get('/backoffice/layanan/{id}',                     [BackofficeController::class, 'layananDetail']);
+    Route::post('/backoffice/layanan/{id}/update-status',      [BackofficeController::class, 'layananUpdateStatus']);
+    Route::post('/backoffice/layanan/{id}/update-reply',       [BackofficeController::class, 'layananUpdateReply']);
+    Route::post('/backoffice/layanan/{id}/delete',             [BackofficeController::class, 'layananDestroy']);
+
+    // CMS Editor Halaman Dokumen Sertifikasi (Passport, BST, SDSD, CCM, SSAT, PSCRB, C1/D Visa)
+    Route::get('/backoffice/dokumen-sertifikasi',                [BackofficeController::class, 'dokumenSertifikasiIndex']);
+    Route::get('/backoffice/dokumen-sertifikasi/{type}',        [BackofficeController::class, 'dokumenSertifikasiEdit']);
+    Route::post('/backoffice/dokumen-sertifikasi/{type}/update', [BackofficeController::class, 'dokumenSertifikasiUpdate']);
+
+    // CMS Editor Konten Halaman Detail Program (Ausbildung Jerman, Kapal Pesiar, dll)
+    Route::get('/backoffice/program-detail',                     [BackofficeController::class, 'programDetailIndex']);
+    Route::get('/backoffice/program-detail/{slug}',              [BackofficeController::class, 'programDetailEdit']);
+    Route::post('/backoffice/program-detail/{slug}/update',      [BackofficeController::class, 'programDetailUpdate']);
+
 /*
 |--------------------------------------------------------------------------
 | BACKOFFICE CRUD ENDPOINTS (POST/PUT/DELETE) - Protected by BackofficeAuth
@@ -84,6 +120,7 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::post('/backoffice/statistik/{id}/delete',[BackofficeController::class, 'statistikDestroy']);
 
     // Program
+    Route::get('/backoffice/program/{id}/edit',  [BackofficeController::class, 'programEdit']);
     Route::post('/backoffice/program/store',        [BackofficeController::class, 'programStore']);
     Route::post('/backoffice/program/{id}/update',  [BackofficeController::class, 'programUpdate']);
     Route::post('/backoffice/program/{id}/delete',  [BackofficeController::class, 'programDestroy']);

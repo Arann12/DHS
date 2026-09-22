@@ -346,6 +346,18 @@ class BackofficeController extends Controller
         return view('backoffice.program', ['user' => session('backoffice_user'), 'programs' => $programs, 'categories' => $categories]);
     }
 
+    public function programEdit($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $program    = Program::with('category')->findOrFail($id);
+        $categories = ProgramCategory::where('is_active', 1)->orderBy('display_order')->get();
+        return view('backoffice.program-edit', [
+            'user'       => session('backoffice_user'),
+            'program'    => $program,
+            'categories' => $categories,
+        ]);
+    }
+
     public function programStore(Request $request)
     {
         if ($redirect = $this->guard()) return $redirect;
@@ -386,9 +398,19 @@ class BackofficeController extends Controller
         if ($redirect = $this->guard()) return $redirect;
         $program = Program::findOrFail($id);
         $old = $program->toArray();
-        $data = $request->only(['title', 'description', 'duration', 'country_badge', 'category_id', 'thumbnail_url']);
+        $data = $request->only([
+            'title', 'description', 'duration', 'country_badge', 'category_id',
+            'thumbnail_url', 'brochure_url', 'tuition_fee',
+            'curriculum', 'requirements', 'facilities',
+            'display_order',
+        ]);
         $data['is_active']   = $request->input('is_active') ? 1 : 0;
         $data['is_featured'] = $request->input('is_featured') ? 1 : 0;
+
+        // Regenerate slug if title changed
+        if (!empty($data['title']) && $data['title'] !== $program->title) {
+            $data['slug'] = Str::slug($data['title']);
+        }
 
         if ($request->hasFile('thumbnail')) {
             $this->deleteOldFile($program->thumbnail_url);
@@ -440,13 +462,16 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $request->validate([
-            'file' => 'required|image|mimes:jpeg,png,gif,webp|max:5120',
+            'file' => 'required|image|mimes:jpeg,png,gif,webp,svg,jpg|max:5120',
         ]);
         $file = $request->file('file');
-        $allowedFolders = ['uploads', 'uploads/hero', 'uploads/beranda', 'uploads/berita', 'uploads/galeri', 'uploads/galeri/foto', 'uploads/galeri/video', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding', 'uploads/pendaftaran', 'uploads/pendaftaran/bukti'];
+        $allowedFolders = ['uploads', 'uploads/hero', 'uploads/dokumen', 'uploads/layanan', 'uploads/beranda', 'uploads/berita', 'uploads/galeri', 'uploads/galeri/foto', 'uploads/galeri/video', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding', 'uploads/pendaftaran', 'uploads/pendaftaran/bukti'];
         $dir = $request->input('folder', 'uploads');
+        if (!str_starts_with($dir, 'uploads')) {
+            $dir = 'uploads/' . trim($dir, '/');
+        }
         if (!in_array($dir, $allowedFolders)) {
-            return response()->json(['error' => 'Folder tidak valid.'], 422);
+            $dir = 'uploads';
         }
         $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
         $this->moveUploadedFile($file, $dir, $name);
@@ -593,11 +618,6 @@ class BackofficeController extends Controller
             'image_url'     => $imageUrl,
             'alt_text'      => $request->input('alt_text', ''),
             'category'      => $category,
-            'title'         => $request->input('title', ''),
-            'description'   => $request->input('description', ''),
-            'image_url'     => $imageUrl,
-            'alt_text'      => $request->input('alt_text', ''),
-            'category'      => $request->input('category', 'umum'),
             'display_order' => (Gallery::max('display_order') ?? 0) + 1,
             'is_active'     => 1,
         ]);
@@ -1080,10 +1100,16 @@ class BackofficeController extends Controller
             $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $this->moveUploadedFile($file, 'uploads/partner', $name);
             $validated['logo_url'] = '/uploads/partner/' . $name;
+        } elseif ($request->filled('logo_url')) {
+            $validated['logo_url'] = $request->input('logo_url');
         }
 
         $p = Partner::create($validated);
         $this->logActivity('create', 'partners', $p->id, null, $p->toArray());
+
+        if ($request->wantsJson() || $request->ajax() || $request->header('Accept') === 'application/json' || $request->isJson()) {
+            return response()->json(['success' => true, 'id' => $p->id, 'partner' => $p]);
+        }
         return back()->with('success', 'Partner berhasil ditambahkan.');
     }
 
@@ -1108,7 +1134,7 @@ class BackofficeController extends Controller
 
         $p->update($data);
         $this->logActivity('update', 'partners', $id, $old, $p->fresh()->toArray());
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'partner' => $p]);
     }
 
     public function partnerDestroy($id)
@@ -1119,4 +1145,601 @@ class BackofficeController extends Controller
         $p->delete();
         return response()->json(['success' => true]);
     }
+
+    /* ═══════════════ PENGAJUAN LAYANAN (BEASISWA & DOKUMEN) ══════════════ */
+
+    public function layanan(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $tipe   = $request->get('tipe', 'semua');
+        $status = $request->get('status', 'semua');
+        $search = $request->get('search', '');
+
+        $beasiswaKeys = ['beasiswa', 'beasiswa-prestasi', 'beasiswa-stt', 'beasiswa-khusus'];
+        $dokumenKeys  = ['layanan-dokumen'];
+
+        $query = Registration::query();
+
+        if ($tipe === 'beasiswa') {
+            $query->where('category_key', '!=', 'layanan-dokumen')
+                  ->where(function($q) {
+                      $q->where('category_key', 'like', '%beasiswa%')
+                        ->orWhere('special_request', 'like', '%Tipe: PENGAJUAN BEASISWA%');
+                  });
+        } elseif ($tipe === 'dokumen') {
+            $query->where(function($q) {
+                $q->where('category_key', 'layanan-dokumen')
+                  ->orWhere('special_request', 'like', '%Tipe: PENGAJUAN LAYANAN DOKUMEN%');
+            });
+        } else {
+            $query->where(function ($q) {
+                $q->where('category_key', 'like', '%beasiswa%')
+                  ->orWhere('category_key', 'layanan-dokumen')
+                  ->orWhere('special_request', 'like', '%PENGAJUAN%');
+            });
+        }
+
+        if ($status !== 'semua') {
+            $query->where('status', $status);
+        }
+
+        if ($search) {
+            $s = addcslashes($search, '%_');
+            $query->where(function ($q) use ($s) {
+                $q->where('full_name', 'like', "%$s%")
+                  ->orWhere('email', 'like', "%$s%")
+                  ->orWhere('phone', 'like', "%$s%")
+                  ->orWhere('program_title', 'like', "%$s%");
+            });
+        }
+
+        $items = $query->orderBy('created_at', 'desc')->get();
+
+        $stats = [
+            'total'     => Registration::where(function($q) { $q->where('category_key', 'like', '%beasiswa%')->orWhere('category_key', 'layanan-dokumen')->orWhere('special_request', 'like', '%PENGAJUAN%'); })->count(),
+            'pending'   => Registration::where(function($q) { $q->where('category_key', 'like', '%beasiswa%')->orWhere('category_key', 'layanan-dokumen')->orWhere('special_request', 'like', '%PENGAJUAN%'); })->where('status', 'pending')->count(),
+            'accepted'  => Registration::where(function($q) { $q->where('category_key', 'like', '%beasiswa%')->orWhere('category_key', 'layanan-dokumen')->orWhere('special_request', 'like', '%PENGAJUAN%'); })->where('status', 'accepted')->count(),
+            'beasiswa'  => Registration::where('category_key', '!=', 'layanan-dokumen')->where(function($q) { $q->where('category_key', 'like', '%beasiswa%')->orWhere('special_request', 'like', '%Tipe: PENGAJUAN BEASISWA%'); })->count(),
+            'dokumen'   => Registration::where(function($q) { $q->where('category_key', 'layanan-dokumen')->orWhere('special_request', 'like', '%Tipe: PENGAJUAN LAYANAN DOKUMEN%'); })->count(),
+        ];
+
+        return view('backoffice.layanan', compact('items', 'stats', 'tipe', 'status', 'search'));
+    }
+
+    public function layananDetail($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $item = Registration::findOrFail($id);
+        return view('backoffice.layanan-detail', compact('item'));
+    }
+
+    public function layananUpdateStatus(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $item = Registration::findOrFail($id);
+        $old  = $item->toArray();
+
+        $statusMap = [
+            'Baru'      => 'pending',
+            'Diproses'  => 'verified',
+            'Diterima'  => 'accepted',
+            'Ditolak'   => 'rejected',
+            'pending'   => 'pending',
+            'verified'  => 'verified',
+            'accepted'  => 'accepted',
+            'rejected'  => 'rejected',
+        ];
+
+        $rawStatus = $request->input('status', 'pending');
+        $dbStatus  = $statusMap[$rawStatus] ?? 'pending';
+
+        $item->update([
+            'status' => $dbStatus,
+            'notes'  => $request->input('notes', $item->notes),
+        ]);
+
+        $this->logActivity('update', 'registrations', $id, $old, $item->fresh()->toArray());
+        return response()->json(['success' => true, 'status' => $dbStatus]);
+    }
+
+    public function layananUpdateReply(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $item = Registration::findOrFail($id);
+        $old  = $item->toArray();
+
+        $item->update([
+            'admin_reply' => $request->input('admin_reply'),
+            'notes'       => $request->input('notes', $item->notes),
+            'replied_at'  => now(),
+        ]);
+
+        $this->logActivity('update', 'registrations', $id, $old, $item->fresh()->toArray());
+        return response()->json(['success' => true]);
+    }
+
+    public function layananDestroy($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $item = Registration::findOrFail($id);
+        $this->logActivity('delete', 'registrations', $id, $item->toArray());
+        $item->delete();
+        return response()->json(['success' => true]);
+    }
+
+    public function layananSettings()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $section = HomepageSection::where('section_key', 'layanan_form_settings')->first();
+        $content = $section ? (is_array($section->section_content) ? $section->section_content : json_decode($section->section_content ?? '[]', true) ?? []) : [];
+
+        $defaultSettings = [
+            'header_title'    => 'Formulir Pengajuan Beasiswa & Dokumen',
+            'header_subtitle' => 'Pilih Jenis Pengajuan & Daftarkan Diri Anda secara Online di DHS',
+            'badge_text'      => 'PENGAJUAN ONLINE DHS',
+            'notice_text'     => 'Unggah berkas kelengkapan Anda ke Google Drive dan cantumkan link publik pada formulir di bawah. Tim DHS akan segera memproses pengajuan Anda.',
+            'beasiswa_options' => [
+                ['key' => 'Beasiswa Prestasi', 'name' => 'Beasiswa Prestasi', 'desc' => 'Keringanan Biaya Pendidikan s/d 50%', 'is_active' => true],
+                ['key' => 'Beasiswa STT / Desa', 'name' => 'Beasiswa STT / Desa', 'desc' => 'Utusan Sekaa Teruna & Desa Adat Bali', 'is_active' => true],
+                ['key' => 'Beasiswa Khusus', 'name' => 'Beasiswa Khusus', 'desc' => 'Keluarga Kurang Mampu / KIP', 'is_active' => true],
+            ],
+            'dokumen_options' => [
+                ['key' => 'Passport', 'name' => 'Passport (Paspor 48 Hal / Pelaut)', 'issuer' => 'Ditjen Imigrasi & Dephub RI', 'duration' => '7 – 14 hari kerja', 'is_active' => true],
+                ['key' => 'BST', 'name' => 'BST (Basic Safety Training)', 'issuer' => 'STCW 2010 / Dephub RI', 'duration' => '5 – 7 hari pelatihan', 'is_active' => true],
+                ['key' => 'SDSD', 'name' => 'SDSD (Security Duties on Ships)', 'issuer' => 'ISPS Code & STCW VI/6', 'duration' => '2 – 3 hari pelatihan', 'is_active' => true],
+                ['key' => 'CCM', 'name' => 'CCM (Crowd Control Management)', 'issuer' => 'STCW V/2 (Passenger Ships)', 'duration' => '2 – 3 hari pelatihan', 'is_active' => true],
+                ['key' => 'SSAT', 'name' => 'SSAT (Ship Security Awareness)', 'issuer' => 'STCW VI/6', 'duration' => '1 – 2 hari pelatihan', 'is_active' => true],
+                ['key' => 'PSCRB', 'name' => 'PSCRB (Proficiency in Survival Craft)', 'issuer' => 'STCW VI/2', 'duration' => '3 – 5 hari pelatihan', 'is_active' => true],
+                ['key' => 'C1/D Visa', 'name' => 'C1/D VISA (US Seaman Visa)', 'issuer' => 'US Embassy Jakarta & Surabaya', 'duration' => '3 – 6 minggu', 'is_active' => true],
+                ['key' => 'Surat Keterangan Alumni', 'name' => 'Surat Keterangan Alumni / Lulus', 'issuer' => 'Akademik DHS', 'duration' => '1 – 3 hari kerja', 'is_active' => true],
+                ['key' => 'Transkrip Nilai', 'name' => 'Transkrip Nilai Akademik', 'issuer' => 'Akademik DHS', 'duration' => '1 – 3 hari kerja', 'is_active' => true],
+                ['key' => 'Surat Rekomendasi Kerja', 'name' => 'Surat Rekomendasi Kerja / Magang', 'issuer' => 'Admisi & Placement DHS', 'duration' => '1 – 3 hari kerja', 'is_active' => true],
+                ['key' => 'Legalisir Dokumen', 'name' => 'Legalisir Dokumen DHS', 'issuer' => 'Akademik DHS', 'duration' => '1 – 2 hari kerja', 'is_active' => true],
+            ],
+            'helpdesk_wa'    => '+62 81 246 319966',
+            'helpdesk_email' => 'sahabat@dhs.or.id',
+            'helpdesk_hours' => 'Senin - Sabtu: 08:00 - 17:00 WITA',
+        ];
+
+        $settings = array_merge($defaultSettings, $content);
+        return view('backoffice.layanan-settings', compact('settings'));
+    }
+
+    public function layananSettingsUpdate(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $content = $request->input('settings', []);
+        
+        $section = HomepageSection::where('section_key', 'layanan_form_settings')->first();
+        if ($section) {
+            $old = $section->toArray();
+            $section->update([
+                'section_title'   => 'Editor Form Layanan Beasiswa & Dokumen',
+                'section_content' => $content,
+                'is_active'       => 1,
+            ]);
+            $this->logActivity('update', 'homepage_sections', $section->id, $old, $section->fresh()->toArray());
+        } else {
+            $newSection = HomepageSection::create([
+                'section_key'     => 'layanan_form_settings',
+                'section_title'   => 'Editor Form Layanan Beasiswa & Dokumen',
+                'section_content' => $content,
+                'display_order'   => 15,
+                'is_active'       => 1,
+            ]);
+            $this->logActivity('create', 'homepage_sections', $newSection->id, null, $newSection->toArray());
+        }
+
+        return response()->json(['success' => true, 'message' => 'Pengaturan isian formulir berhasil disimpan.']);
+    }
+
+    /* ═══════════════ CMS DOKUMEN SERTIFIKASI ══════════════ */
+
+    private function getDokumenCatalogDefaults()
+    {
+        return [
+            'passport' => [
+                'title'       => 'Passport (Paspor 48 Hal & Buku Pelaut)',
+                'slug'        => 'passport',
+                'icon'        => 'card_travel',
+                'color'       => '#1A3A5C',
+                'badge'       => 'Imigrasi & Dephub RI',
+                'category'    => 'Dokumen Perjalanan & Identitas Pelaut',
+                'peruntukan'  => 'Kru Kapal Pesiar, Pekerja Hotel Luar Negeri & Pelaut Internasional',
+                'waktu'       => '7 – 14 hari kerja',
+                'biaya'       => 'Pendampingan Resmi DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Paspor adalah dokumen perjalanan resmi yang diterbitkan oleh Ditjen Imigrasi Kemenkumham RI, sedangkan Buku Pelaut (Seaman Book) diterbitkan oleh Ditjen Perhubungan Laut Kemenhub RI.',
+                'key_features'=> ['Pemeriksaan & Verifikasi Dokumen 1x24 Jam', 'Bantuan Pengisian Aplikasi M-Paspor & Seaman Book', 'Jadwal Perekaman Biometrik & Wawancara Terpandu', 'Jaminan Dokumen Asli & Resmi Ditjen Imigrasi'],
+                'syarat'      => ['KTP / NIK asli yang masih berlaku', 'Kartu Keluarga (KK) terbaru + fotokopi', 'Akta Kelahiran / Ijazah Terakhir / Surat Nikah', 'Pas foto terbaru (background putih & pakaian berkerah)', 'Surat Rekomendasi Kerja / Magang dari DHS (jika diperlukan)', 'Bukti pembayaran PNBP resmi imigrasi / Dephub'],
+                'proses'      => ['Konsultasi berkas awal bersama tim admisi DHS', 'Pengecekan kelengkapan & validasi data pemohon', 'Registrasi akun M-Paspor / Portal Seaman Book Kemenhub', 'Penjadwalan antrean biometrik & wawancara di Kantor Imigrasi / KSOP', 'Perekaman foto, sidik jari, dan verifikasi wawancara', 'Penerbitan paspor / buku pelaut & penyerahan ke pemohon'],
+                'faq'         => [['q' => 'Berapa lama masa berlaku Paspor RI?', 'a' => 'Paspor RI diterbitkan dengan masa berlaku 10 tahun bagi warga negara Indonesia dewasa.'], ['q' => 'Apakah DHS bisa mendampingi jika paspor hilang atau rusak?', 'a' => 'Ya, tim admisi DHS dapat membantu proses penggantian paspor rusak/hilang dengan pendampingan BAP.']]
+            ],
+            'bst' => [
+                'title'       => 'BST (Basic Safety Training)',
+                'slug'        => 'bst',
+                'icon'        => 'anchor',
+                'color'       => '#0F4C75',
+                'badge'       => 'Wajib STCW 2010',
+                'category'    => 'Sertifikasi Keselamatan Laut',
+                'peruntukan'  => 'Awak Kapal Pesiar, Merchant Navy & Pelaut Pemula',
+                'waktu'       => '5 – 7 hari pelatihan',
+                'biaya'       => 'Pendampingan Resmi DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Basic Safety Training (BST) adalah sertifikasi wajib berdasarkan amandemen STCW 2010 yang wajib dimiliki oleh seluruh kru kapal pesiar tanpa terkecuali.',
+                'key_features'=> ['Kurikulum Standar IMO / STCW 2010', 'Praktik Basah (Kolam Renang & Fire House)', 'Sertifikat Garuda / Dephub Resmi & Terverifikasi online', 'Penjadwalan Pelatihan Cepat & Fleksibel'],
+                'syarat'      => ['KTP / NIK yang masih berlaku', 'Ijazah SMA / SMK / Sederajat atau Ijazah DHS', 'Pas foto 3x4 & 4x6 (background merah, kemeja putih polos)', 'Surat Keterangan Sehat & Bebas Buta Warna dari Dokter', 'Biaya registrasi & sertifikasi diklat maritim'],
+                'proses'      => ['Pendaftaran & penyerahan kelengkapan berkas di DHS', 'Penetapan jadwal gelombang pelatihan diklat maritim', 'Mengikuti sesi teori keselamatan di kelas terakreditasi', 'Praktik lapangan (evakuasi laut, pemadam kebakaran, P3K)', 'Uji evaluasi & penilaian kompetensi keselamatan laut', 'Penerbitan sertifikat BST resmi dari Perhubungan Laut'],
+                'faq'         => [['q' => 'Berapa lama masa berlaku sertifikat BST?', 'a' => 'Sertifikat BST berlaku selama 5 tahun dan dapat diperbarui melalui revalidasi diklat.'], ['q' => 'Apakah belum bisa berenang tetap bisa ikut BST?', 'a' => 'Bisa. Instruktur diklat akan melatih pengunaan Life Jacket (pelampung) dan teknik dasar bertahan di air secara aman.']]
+            ],
+            'sdsd' => [
+                'title'       => 'SDSD (Security Duties on Ships)',
+                'slug'        => 'sdsd',
+                'icon'        => 'security',
+                'color'       => '#1B4F72',
+                'badge'       => 'ISPS Code & STCW VI/6',
+                'category'    => 'Sertifikasi Keamanan Kapal',
+                'peruntukan'  => 'Kru Kapal Pesiar dengan Tugas Keamanan Spesifik',
+                'waktu'       => '2 – 3 hari pelatihan',
+                'biaya'       => 'Pendampingan Resmi DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Security Duties on Ships (SDSD) adalah sertifikasi kompetensi keamanan maritim sesuai regulasi STCW VI/6 dan standar ISPS Code.',
+                'key_features'=> ['Simulasi Ancaman & Prosedur ISPS Code', 'Sertifikasi Resmi Kementerian Perhubungan RI', 'Syarat Utama Kontrak Kerja Kapal Pesiar Mewah', 'Materi Pelatihan Berstandar Komersial Internasional'],
+                'syarat'      => ['Sertifikat BST aktif / fotokopi pengurusan', 'KTP / Passport & Ijazah terakhir', 'Pas foto terbaru (3x4 cm background merah)', 'Buku Pelaut (jika sudah memiliki)', 'Biaya pelatihan & pendaftaran'],
+                'proses'      => ['Verifikasi dokumen kelayakan & registrasi peserta', 'Pengenalan regulasi ISPS Code & penilaian risiko keamanan', 'Studi kasus mitigasi konflik & pemeriksaan akses kapal', 'Ujian kompetensi tertulis & praktik peran keamanan', 'Penerbitan sertifikat SDSD resmi dari Perhubungan Laut'],
+                'faq'         => [['q' => 'Apa bedanya SDSD dengan SSAT?', 'a' => 'SSAT diperuntukkan bagi seluruh kru umum (kesadaran dasar), sedangkan SDSD mencakup tugas dan peran keamanan fisik khusus di kapal.']]
+            ],
+            'ccm' => [
+                'title'       => 'CCM (Crowd & Crisis Management)',
+                'slug'        => 'ccm',
+                'icon'        => 'groups',
+                'color'       => '#154360',
+                'badge'       => 'STCW V/2 (Passenger Ships)',
+                'category'    => 'Manajemen Penumpang & Darurat',
+                'peruntukan'  => 'Staf F&B, Housekeeping, Guest Service & Kru Kapal Pesiar',
+                'waktu'       => '2 – 3 hari pelatihan',
+                'biaya'       => 'Pendampingan Resmi DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Crowd and Crisis Management (CCM) adalah sertifikasi wajib bagi seluruh staf yang bekerja di kapal penumpang / kapal pesiar berkapasitas besar.',
+                'key_features'=> ['Simulasi Manajemen Kerumunan Massal', 'Teknik Komunikasi Kritis & Penanganan Kepanikan', 'Akreditasi Diklat Pelayaran Resmi', 'Persyaratan Mutlak Agen Kapal Pesiar Global'],
+                'syarat'      => ['Sertifikat BST aktif', 'KTP / Passport (fotokopi)', 'Pas foto terbaru 3x4 cm background merah', 'Biaya administrasi & sertifikasi diklat'],
+                'proses'      => ['Pendaftaran & konfirmasi jadwal kelas CCM', 'Pembekalan teori psikologi massa & prosedur krisis kapal', 'Simulasi pengarahan muster station & evakuasi sekoci', 'Evaluasi penanganan krisis & penugasan tim', 'Penerbitan sertifikat CCM resmi'],
+                'faq'         => [['q' => 'Apakah semua departemen di kapal pesiar wajib punya CCM?', 'a' => 'Ya, seluruh departemen layanan (F&B, Housekeeping, Entertainment, Front Office) wajib memegang sertifikat CCM.']]
+            ],
+            'ssat' => [
+                'title'       => 'SSAT (Ship Security Awareness Training)',
+                'slug'        => 'ssat',
+                'icon'        => 'verified_user',
+                'color'       => '#1A5276',
+                'badge'       => 'STCW VI/6 (Security Awareness)',
+                'category'    => 'Kesadaran Keamanan Kapal',
+                'peruntukan'  => 'Seluruh Kru & Pekerja Kapal Laut',
+                'waktu'       => '1 – 2 hari pelatihan',
+                'biaya'       => 'Pendampingan Resmi DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Ship Security Awareness Training (SSAT) melatih setiap kru kapal untuk memiliki kewaspadaan terhadap potensi ancaman keamanan di pelabuhan dan laut lepas.',
+                'key_features'=> ['Pemahaman Dasar Prosedur Keamanan Kapal', 'Pelatihan Cepat 1-2 Hari', 'Sertifikat Resmi Terdaftar On-line', 'Biaya Sangat Terjangkau'],
+                'syarat'      => ['KTP / Passport yang masih berlaku', 'Ijazah / Identitas Resmi Pemohon', 'Pas foto 3x4 cm background merah', 'Biaya pelatihan SSAT'],
+                'proses'      => ['Registrasi peserta di portal DHS', 'Mengikuti pembekalan teori keamanan maritim', 'Ujian evaluasi pemahaman keamanan', 'Penerbitan sertifikat SSAT resmi'],
+                'faq'         => [['q' => 'Apakah SSAT perlu diperbarui secara berkala?', 'a' => 'Sertifikat SSAT berlaku seumur hidup selama regulasi STCW tidak mengalami perubahan mendasar.']]
+            ],
+            'pscrb' => [
+                'title'       => 'PSCRB (Survival Craft & Rescue Boats)',
+                'slug'        => 'pscrb',
+                'icon'        => 'sailing',
+                'color'       => '#1B4F72',
+                'badge'       => 'STCW VI/2 (Advanced Lifeboat)',
+                'category'    => 'Penyelamatan & Operasi Sekoci',
+                'peruntukan'  => 'Senior Kru, Supervisor & Petugas Operasi Sekoci',
+                'waktu'       => '3 – 5 hari pelatihan',
+                'biaya'       => 'Pendampingan Resmi DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Proficiency in Survival Craft and Rescue Boats (PSCRB) adalah sertifikasi tingkat lanjut yang melatih kru untuk mengambil alih komando sekoci penyelamat.',
+                'key_features'=> ['Praktik Penurunan & Peluncuran Sekoci Penyelamat', 'Pelatihan Komando & Kepemimpinan Tim Evakuasi', 'Peralatan Simulator & Fasilitas Laut Standar IMO', 'Sertifikasi Tingkat Lanjut Terkreditasi'],
+                'syarat'      => ['Sertifikat BST aktif', 'Pengalaman atau rekomendasi medis sehat fisik & mental', 'KTP / Passport & Pas foto 3x4 background merah', 'Biaya diklat PSCRB'],
+                'proses'      => ['Pendaftaran & verifikasi syarat kelayakan diklat', 'Pemberian materi struktur sekoci & metode peluncuran', 'Praktik lapangan pengoperasian mesin & alat keselamatan sekoci', 'Uji komando evakuasi darurat di air', 'Penerbitan sertifikat PSCRB resmi'],
+                'faq'         => [['q' => 'Siapa yang membutuhkan sertifikat PSCRB?', 'a' => 'Senior kru, coxswain, deck department, serta posisi dengan tugas spesifik memimpin kapal penyelamat.']]
+            ],
+            'c1d-visa' => [
+                'title'       => 'C1/D VISA (US Seaman & Transit Visa)',
+                'slug'        => 'c1d-visa',
+                'icon'        => 'badge',
+                'color'       => '#1A3A5C',
+                'badge'       => 'US Embassy Jakarta & Surabaya',
+                'category'    => 'Visa Kerja & Transit Amerika Serikat',
+                'peruntukan'  => 'Kru Kapal Pesiar Rute Karibia, Amerika & Internasional',
+                'waktu'       => '3 – 6 minggu (termasuk jadwal wawancara)',
+                'biaya'       => 'Pendampingan Khusus DHS',
+                'hero_image'  => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600',
+                'description' => 'Visa C1/D adalah kombinasi visa transit (C-1) dan visa anggota kru (D) yang diwajibkan oleh Pemerintah Amerika Serikat bagi seluruh pelaut dan kru kapal pesiar.',
+                'key_features'=> ['Pengisian Formulir DS-160 Tanpa Kesalahan', 'Pembayaran MRV Fee & Penjadwalan Antrean Cepat', 'Simulasi Wawancara (Mock Interview) Bahasa Inggris', 'Pendampingan Kelengkapan Berkas & Contract Letter'],
+                'syarat'      => ['Paspor RI aktif dengan masa berlaku minimal 8 bulan', 'Surat Jaminan / Letter of Employment (LoE) dari Agen Kapal', 'Sertifikat STCW lengkap (BST, SDSD, CCM, dll.)', 'Pas Foto Visa Amerika (5x5 cm background putih polos)', 'Formulir DS-160 & Bukti Pembayaran MRV Fee', 'Rekening Koran / Bukti Keuangan & Dokumen Identitas'],
+                'proses'      => ['Review berkas & kontrak kerja kapal pesiar bersama DHS', 'Pengisian formulir DS-160 online secara presisi', 'Pembayaran biaya visa MRV & pembuat akun ustraveldocs', 'Penjadwalan tanggal wawancara di Kedutaan/Konsulat AS', 'Sesi briefing & simulasi wawancara langsung bersama Tim DHS', 'Pelaksanaan wawancara & pengambilan paspor ter-stempel visa'],
+                'faq'         => [['q' => 'Berapa lama masa berlaku Visa C1/D Amerika?', 'a' => 'Visa C1/D umumnya diberikan dengan masa berlaku hingga 5 (lima) tahun dengan multiple entry.'], ['q' => 'Bagaimana jika belum memiliki Letter of Employment (LoE)?', 'a' => 'Wawancara Visa C1/D memerlukan LoE resmi. Tim DHS akan membantu memastikan jadwal visa disesuaikan dengan proses rekrutmen agen Anda.']]
+            ],
+        ];
+    }
+
+    public function dokumenSertifikasiIndex()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $defaults = $this->getDokumenCatalogDefaults();
+        $documents = [];
+
+        foreach ($defaults as $type => $def) {
+            $sectionKey = 'dokumen_sertifikasi_' . $type;
+            $sec = HomepageSection::where('section_key', $sectionKey)->first();
+            $content = $sec ? (is_array($sec->section_content) ? $sec->section_content : json_decode($sec->section_content ?? '[]', true) ?? []) : [];
+            $doc = array_replace_recursive($def, $content);
+            $doc['updated_at'] = $sec ? \Carbon\Carbon::parse($sec->updated_at)->format('d M Y H:i') : 'Standar Default';
+            $documents[$type] = $doc;
+        }
+
+        return view('backoffice.dokumen-sertifikasi-index', compact('documents'));
+    }
+
+    public function dokumenSertifikasiEdit($type)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $defaults = $this->getDokumenCatalogDefaults();
+        if (!array_key_exists($type, $defaults)) {
+            abort(404);
+        }
+
+        $def = $defaults[$type];
+        $sectionKey = 'dokumen_sertifikasi_' . $type;
+        $sec = HomepageSection::where('section_key', $sectionKey)->first();
+        $content = $sec ? (is_array($sec->section_content) ? $sec->section_content : json_decode($sec->section_content ?? '[]', true) ?? []) : [];
+        $doc = array_replace_recursive($def, $content);
+
+        return view('backoffice.dokumen-sertifikasi-edit', compact('doc', 'type'));
+    }
+
+    public function dokumenSertifikasiUpdate(Request $request, $type)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $defaults = $this->getDokumenCatalogDefaults();
+        if (!array_key_exists($type, $defaults)) {
+            return response()->json(['success' => false, 'message' => 'Tipe dokumen tidak valid.'], 404);
+        }
+
+        $data = $request->input('doc', []);
+        $sectionKey = 'dokumen_sertifikasi_' . $type;
+
+        $section = HomepageSection::where('section_key', $sectionKey)->first();
+        if ($section) {
+            $old = $section->toArray();
+            $section->update([
+                'section_title'   => 'CMS Halaman ' . ($data['title'] ?? $type),
+                'section_content' => $data,
+                'is_active'       => 1,
+            ]);
+            $this->logActivity('update', 'homepage_sections', $section->id, $old, $section->fresh()->toArray());
+        } else {
+            $newSection = HomepageSection::create([
+                'section_key'     => $sectionKey,
+                'section_title'   => 'CMS Halaman ' . ($data['title'] ?? $type),
+                'section_content' => $data,
+                'display_order'   => 20,
+                'is_active'       => 1,
+            ]);
+            $this->logActivity('create', 'homepage_sections', $newSection->id, null, $newSection->toArray());
+        }
+
+        return response()->json(['success' => true, 'message' => 'Halaman Dokumen Sertifikasi berhasil diperbarui!']);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROGRAM DETAIL CMS METHODS (Full page content editor like Dokumen Sertifikasi)
+    |--------------------------------------------------------------------------
+    */
+    public function getProgramDetailDefaults($slug)
+    {
+        $program = Program::with('category')->where('slug', $slug)->first();
+        if (!$program) {
+            $program = Program::with('category')->first();
+        }
+
+        $title = $program ? $program->title : 'Program 1 Tahun + Ausbildung Jerman';
+        $category = $program && $program->category ? $program->category->category_name : 'Program Internasional';
+        $country = $program ? ($program->country_badge ?: 'JERMAN') : 'JERMAN';
+        $duration = $program ? ($program->duration ?: '2 Tahun') : '2 Tahun';
+        $heroImage = $program && $program->thumbnail_url ? $program->thumbnail_url : 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600';
+        $desc = $program && $program->description ? $program->description : 'Program pendidikan vokasi siap kerja yang memadukan teori industri pariwisata terkini dengan praktik intensif (70% Praktik & 30% Teori). Peserta didik dibimbing langsung oleh instruktur berpengalaman dari hotel berbintang dan kapal pesiar.';
+
+        return [
+            'slug'                  => $slug,
+            'title'                 => $title,
+            'category'              => $category,
+            'country_badge'         => $country,
+            'duration'              => $duration,
+            'sertifikasi'           => 'Resmi DHS & Industri',
+            'status_akreditasi'     => 'Terakreditasi',
+            'hero_image'            => $heroImage,
+            'cta_text'              => 'Daftar Program Ini Online',
+            'tuition_fee'           => $program ? ($program->tuition_fee ?: '') : '',
+            'brochure_url'          => $program ? ($program->brochure_url ?: '') : '',
+
+            // Card 1: Deskripsi & Profil
+            'desc_title'            => 'Deskripsi & Profil Program',
+            'desc_subtitle'         => 'Gambaran umum kurikulum dan fokus pembelajaran.',
+            'description'           => $desc,
+            'desc_p2'               => 'Melalui kurikulum berbasis kompetensi yang disesuaikan dengan kebutuhan pasar kerja global, lulusan program ini dipersiapkan untuk langsung diserap oleh jaringan hotel berbintang, restoran internasional, serta perusahaan kapal pesiar terkemuka di dalam dan luar negeri.',
+
+            // Card 2: 4 Box Aktivitas & Kegiatan Pembelajaran
+            'activities_title'      => 'Aktivitas & Kegiatan Pembelajaran',
+            'activities_subtitle'   => 'Rincian kegiatan praktik dan pelatihan selama masa studi.',
+            'activities'            => [
+                [
+                    'icon'  => 'science',
+                    'color' => '#4f46e5',
+                    'title' => '70% Praktik Laboratorium',
+                    'desc'  => 'Simulasi kerja di Kitchen Lab, Bar & Restaurant, Mockup Hotel Room, dan Front Office Counter.'
+                ],
+                [
+                    'icon'  => 'flight_takeoff',
+                    'color' => '#d97706',
+                    'title' => 'On the Job Training (OJT)',
+                    'desc'  => 'Praktik kerja lapangan selama 6 bulan di hotel bintang 4 & 5 Bali, Jakarta, atau kapal pesiar internasional.'
+                ],
+                [
+                    'icon'  => 'translate',
+                    'color' => '#059669',
+                    'title' => 'English for Hospitality',
+                    'desc'  => 'Pembekalan intensif percakapan Bahasa Inggris maritim dan perhotelan untuk persiapan wawancara kerja.'
+                ],
+                [
+                    'icon'  => 'record_voice_over',
+                    'color' => '#c53030',
+                    'title' => 'Mockup Interview & Mentoring',
+                    'desc'  => 'Bimbingan khusus pembuatan CV internasional dan simulasi wawancara bersama praktisi senior.'
+                ]
+            ],
+
+            // Card 3: 5 Benefit & Keuntungan
+            'benefits_title'        => 'Manfaat & Benefit yang Didapatkan',
+            'benefits_subtitle'     => 'Keunggulan dan fasilitas eksklusif bagi setiap peserta program.',
+            'benefits'              => [
+                [
+                    'title' => 'Sertifikat Resmi Terakreditasi & Garuda Dephub',
+                    'desc'  => 'Memperoleh Ijazah Vokasi DHS dan Sertifikat Kompetensi resmi yang diakui secara nasional maupun industri maritim & perhotelan global.'
+                ],
+                [
+                    'title' => 'Penyaluran Kerja & Kerjasama 50+ Hotel Bintang 5',
+                    'desc'  => 'Jaminan pendampingan karir sampai bekerja melalui jaringan kemitraan DHS di Bali, nasional, dan internasional.'
+                ],
+                [
+                    'title' => 'Fasilitas Lab Lengkap Tanpa Biaya Tersembunyi',
+                    'desc'  => 'Seluruh bahan masakan, peralatan bar, dan sarana laboratorium disiapkan kampus tanpa ada pungutan biaya tambahan selama praktik.'
+                ],
+                [
+                    'title' => 'Bimbingan Praktisi Aktif Perhotelan & Kapal Pesiar',
+                    'desc'  => 'Diajar langsung oleh Ex-Executive Chef, Head Bartender, dan General Manager yang masih aktif berkarir di industri hospitality.'
+                ],
+                [
+                    'title' => 'Akses Beasiswa Keringanan Biaya s/d 50%',
+                    'desc'  => 'Berhak mengklaim Beasiswa Prestasi, Beasiswa STT/Desa, atau Beasiswa Khusus DHS bagi peserta didik berprestasi dan kurang mampu.'
+                ]
+            ],
+
+            // Card 4: Kurikulum
+            'curriculum_title'      => 'Materi & Kurikulum Pelatihan',
+            'curriculum_subtitle'   => 'Modul keahlian yang dipelajari selama masa studi.',
+            'curriculum'            => $program && $program->curriculum ? $program->curriculum : "• Pengantar Industri Pariwisata & Perhotelan Modern\n• Operasional Dapur Profesional (Food Production & Culinary Art)\n• Food & Beverage Service & Mixology Bar\n• Housekeeping & Room Management Standar Internasional\n• Front Office Operation & Reservation System\n• Bahasa Asing Khusus Maritim & Hospitality (English & Deutsch)\n• On the Job Training (OJT) 6 Bulan di Hotel Bintang 5 / Kapal Pesiar",
+
+            // Card 5: Persyaratan
+            'requirements_title'    => 'Persyaratan Pendaftaran',
+            'requirements_subtitle' => 'Kelengkapan administrasi dan kriteria calon peserta.',
+            'requirements'          => [
+                'Pria / Wanita, usia minimal 17 tahun.',
+                'Lulusan SMA / SMK / MA / Paket C sederajat.',
+                'Sehat jasmani dan rohani serta bebas narkoba.',
+                'Memiliki motivasi tinggi untuk berkarir di industri pariwisata & kapal pesiar.',
+                'Menyerahkan fotokopi KTP, KK, Akta Kelahiran, Ijazah & Pas Foto terbaru.'
+            ],
+
+            // Card 6: Fasilitas
+            'facilities_title'      => 'Fasilitas & Sarana Pendukung',
+            'facilities_subtitle'   => 'Sarana laboratorium dan fasilitas praktik yang disediakan.',
+            'facilities'            => $program && $program->facilities ? $program->facilities : "• Kitchen Laboratory lengkap berstandar hotel bintang 5\n• Bar & Restaurant Praktek Modern\n• Mock-up Hotel Suite Room & Front Office System\n• Free Seragam Praktek, Modul Pembelajaran & Bahan Lab",
+
+            // Sidebar & Helpdesk
+            'sidebar_gelombang'     => 'Pendaftaran Gelombang Baru',
+            'sidebar_kuota'         => 'Kuota terbatas untuk setiap gelombang pelatihan.',
+            'sidebar_phone'         => '(0361) 222-123',
+            'sidebar_wa'            => '+62 81 246 319966',
+            'sidebar_helpdesk_title'=> 'Butuh Info Lebih Lanjut?',
+            'sidebar_helpdesk_sub'  => 'Tim Admisi DHS Siap Membantu',
+            'sidebar_helpdesk_desc' => 'Konsultasikan jadwal kelas, rincian biaya pendidikan, dan opsi beasiswa melalui sekretariat DHS.'
+        ];
+    }
+
+    public function programDetailIndex()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $programs = Program::with('category')->where('is_active', 1)->orderBy('category_id')->orderBy('display_order')->get();
+        return view('backoffice.program-detail-index', compact('programs'));
+    }
+
+    public function programDetailEdit($slug)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $program = Program::with('category')->where('slug', $slug)->first();
+        if (!$program) {
+            abort(404);
+        }
+
+        $def = $this->getProgramDetailDefaults($slug);
+        $sectionKey = 'program_detail_' . $slug;
+        $sec = HomepageSection::where('section_key', $sectionKey)->first();
+        $content = $sec ? (is_array($sec->section_content) ? $sec->section_content : json_decode($sec->section_content ?? '[]', true) ?? []) : [];
+        $doc = array_replace_recursive($def, $content);
+
+        $categories = ProgramCategory::where('is_active', 1)->orderBy('display_order')->get();
+
+        return view('backoffice.program-detail-edit', compact('doc', 'slug', 'program', 'categories'));
+    }
+
+    public function programDetailUpdate(Request $request, $slug)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $program = Program::where('slug', $slug)->first();
+        $data = $request->input('doc', []);
+        $sectionKey = 'program_detail_' . $slug;
+
+        $section = HomepageSection::where('section_key', $sectionKey)->first();
+        if ($section) {
+            $old = $section->toArray();
+            $section->update([
+                'section_title'   => 'CMS Detail Halaman ' . ($data['title'] ?? $slug),
+                'section_content' => $data,
+                'is_active'       => 1,
+            ]);
+            $this->logActivity('update', 'homepage_sections', $section->id, $old, $section->fresh()->toArray());
+        } else {
+            $newSection = HomepageSection::create([
+                'section_key'     => $sectionKey,
+                'section_title'   => 'CMS Detail Halaman ' . ($data['title'] ?? $slug),
+                'section_content' => $data,
+                'display_order'   => 30,
+                'is_active'       => 1,
+            ]);
+            $this->logActivity('create', 'homepage_sections', $newSection->id, null, $newSection->toArray());
+        }
+
+        // Sync base attributes with the Program model if it exists
+        if ($program) {
+            $programUpdates = [];
+            if (!empty($data['title'])) $programUpdates['title'] = $data['title'];
+            if (!empty($data['description'])) $programUpdates['description'] = $data['description'];
+            if (!empty($data['duration'])) $programUpdates['duration'] = $data['duration'];
+            if (!empty($data['country_badge'])) $programUpdates['country_badge'] = $data['country_badge'];
+            if (isset($data['hero_image'])) $programUpdates['thumbnail_url'] = $data['hero_image'];
+            if (isset($data['tuition_fee'])) $programUpdates['tuition_fee'] = $data['tuition_fee'];
+            if (isset($data['brochure_url'])) $programUpdates['brochure_url'] = $data['brochure_url'];
+            if (isset($data['curriculum'])) $programUpdates['curriculum'] = is_array($data['curriculum']) ? implode("\n", $data['curriculum']) : $data['curriculum'];
+            if (isset($data['facilities'])) $programUpdates['facilities'] = is_array($data['facilities']) ? implode("\n", $data['facilities']) : $data['facilities'];
+            if (isset($data['requirements']) && is_array($data['requirements'])) $programUpdates['requirements'] = implode("\n", $data['requirements']);
+
+            if (!empty($programUpdates)) {
+                $program->update($programUpdates);
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Konten Halaman Program berhasil disimpan!']);
+    }
 }
+
+
+
+

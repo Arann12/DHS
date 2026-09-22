@@ -1,6 +1,11 @@
 <aside id="bo-sidebar">
     <div class="sidebar-logo">
-        <img src="<?php echo e(asset('image/LogoDHS_2.jpeg')); ?>" alt="DHS Logo" class="sidebar-logo-img">
+        <?php $sidebarLogo = \App\Models\BrandingSetting::where('setting_key', 'logo_primary')->value('setting_value') ?? ''; ?>
+        <?php if($sidebarLogo): ?>
+            <img src="<?php echo e(asset(ltrim($sidebarLogo, '/'))); ?>" alt="DHS Logo" class="sidebar-logo-img">
+        <?php else: ?>
+            <img src="<?php echo e(asset('image/LogoDHS_2.jpeg')); ?>" alt="DHS Logo" class="sidebar-logo-img">
+        <?php endif; ?>
         <div class="logo-text">Denpasar<br>Hotel School</div>
     </div>
 
@@ -22,7 +27,11 @@
         </a>
         <a href="/backoffice/program" class="nav-item <?php echo e(Request::is('backoffice/program') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">school</span>
-            <span class="nav-label">Academy</span>
+            <span class="nav-label">Academy (Kategori)</span>
+        </a>
+        <a href="/backoffice/program-detail" class="nav-item <?php echo e(Request::is('backoffice/program-detail*') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">auto_stories</span>
+            <span class="nav-label">Editor Halaman Program</span>
         </a>
         <a href="/backoffice/branding" class="nav-item <?php echo e(Request::is('backoffice/branding') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">palette</span>
@@ -48,11 +57,59 @@
             <span class="material-icons-round mat-icon">how_to_reg</span>
             <span class="nav-label">Data Pendaftar</span>
         </a>
+        <a href="/backoffice/layanan" class="nav-item <?php echo e(Request::is('backoffice/layanan') && !Request::is('backoffice/layanan-settings') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">folder_shared</span>
+            <span class="nav-label">Data Pengajuan Layanan</span>
+        </a>
+        <a href="/backoffice/layanan-settings" class="nav-item <?php echo e(Request::is('backoffice/layanan-settings') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">tune</span>
+            <span class="nav-label">Editor Isian Form</span>
+        </a>
 
         <div class="nav-group-label">Konten Tambahan</div>
         <a href="/backoffice/testimoni" class="nav-item <?php echo e(Request::is('backoffice/testimoni') ? 'active' : ''); ?>">
             <span class="material-icons-round mat-icon">format_quote</span>
             <span class="nav-label">Testimoni</span>
+        </a>
+
+        <div class="nav-group-label">Layanan & Beasiswa</div>
+        <a href="/backoffice/layanan" class="nav-item <?php echo e(Request::is('backoffice/layanan') && !Request::is('backoffice/layanan-settings') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">manage_search</span>
+            <span class="nav-label">Kelola Beasiswa & Dokumen</span>
+        </a>
+
+        <div class="nav-group-label">Dokumen Sertifikasi</div>
+        <a href="/backoffice/dokumen-sertifikasi" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">folder_special</span>
+            <span class="nav-label">Semua Dokumen (7 CMS)</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/passport" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/passport') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">card_travel</span>
+            <span class="nav-label">Passport & Buku Pelaut</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/bst" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/bst') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">anchor</span>
+            <span class="nav-label">BST (Basic Safety)</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/sdsd" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/sdsd') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">security</span>
+            <span class="nav-label">SDSD (Security Duties)</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/ccm" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/ccm') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">groups</span>
+            <span class="nav-label">CCM (Crowd & Crisis)</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/ssat" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/ssat') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">verified_user</span>
+            <span class="nav-label">SSAT (Security Aware)</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/pscrb" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/pscrb') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">sailing</span>
+            <span class="nav-label">PSCRB (Survival Craft)</span>
+        </a>
+        <a href="/backoffice/dokumen-sertifikasi/c1d-visa" class="nav-item <?php echo e(Request::is('backoffice/dokumen-sertifikasi/c1d-visa') ? 'active' : ''); ?>">
+            <span class="material-icons-round mat-icon">badge</span>
+            <span class="nav-label">C1/D Visa (US Seaman)</span>
         </a>
 
         <div class="nav-group-label">Pengaturan System</div>

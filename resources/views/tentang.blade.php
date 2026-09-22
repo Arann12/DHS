@@ -122,9 +122,24 @@
                     <span data-id="{{ $introP2 }}" data-en="{{ $introP2 }}">{{ $introP2 }}</span>
                 </p>
             </div>
-            <div class="flex items-center justify-center bg-white p-8 text-center h-full" data-reveal="fade-left" data-delay="200">
-                <div class="text-muted-light italic text-sm">
-                    <span data-id="{{ $introQuote }}" data-en="{{ $introQuote }}">{{ $introQuote }}</span>
+            <div class="relative overflow-hidden rounded-sm shadow-lg" data-reveal="fade-left" data-delay="200" style="min-height: 420px;">
+                @php
+                    $introImage = !empty($aboutIntro['image']) ? $aboutIntro['image'] : '/image/about_dhs.jpg';
+                @endphp
+                <img
+                    src="{{ $introImage }}"
+                    alt="Mahasiswa DHS berprestasi di dunia hospitality internasional"
+                    class="w-full h-full object-cover absolute inset-0"
+                    style="min-height: 420px;"
+                >
+                <!-- Overlay with quote -->
+                <div class="absolute inset-0 bg-gradient-to-t from-dhs-navy/80 via-dhs-navy/20 to-transparent flex items-end p-8">
+                    <blockquote class="text-white">
+                        <p class="font-serif text-lg md:text-xl italic leading-relaxed mb-3">
+                            <span data-id="{{ $introQuote }}" data-en="{{ $introQuote }}">{{ $introQuote }}</span>
+                        </p>
+                        <footer class="text-white/60 text-xs uppercase tracking-widest font-semibold">— Denpasar Hotel School</footer>
+                    </blockquote>
                 </div>
             </div>
         </div>
@@ -287,16 +302,16 @@
 
         @php
             $renderCard = function($item) {
-                $name = e($item['name'] ?? '');
-                $sub  = e($item['sub'] ?? '');
-                $logo = $item['logo_url'] ?? '';
+                $name = e(is_array($item) ? ($item['name'] ?? '') : ($item->name ?? ''));
+                $sub  = e(is_array($item) ? ($item['sub'] ?? ($item['country'] ?? '')) : ($item->country ?? ''));
+                $logo = is_array($item) ? ($item['logo_url'] ?? '') : ($item->logo_url ?? '');
                 $font = 'font-sans text-sm font-bold tracking-wider';
                 $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex items-center justify-center w-48 h-24 p-4 cursor-default select-none shrink-0 rounded-lg">';
-                if ($logo) {
-                    $out .= '<div class="flex items-center justify-center w-full h-full"><img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy"></div>';
+                if (!empty($logo)) {
+                    $out .= '<div class="flex items-center justify-center w-full h-full p-2"><img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy"></div>';
                 } else {
-                    $out .= '<div class="text-center">';
-                    $out .= '<div class="' . $font . ' text-dhs-navy">' . $name . '</div>';
+                    $out .= '<div class="text-center px-2">';
+                    $out .= '<div class="' . $font . ' text-dhs-navy line-clamp-2">' . $name . '</div>';
                     if ($sub) {
                         $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
                     }
@@ -307,8 +322,11 @@
             };
             $marqueeItems = function($items) use ($renderCard) {
                 $out = '';
-                foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'logo_url' => $item['logo_url'] ?? '']); }
-                foreach ($items as $item) { $out .= $renderCard(['name' => $item['name'], 'sub' => $item['country'] ?? null, 'logo_url' => $item['logo_url'] ?? '']); }
+                for ($i = 0; $i < 3; $i++) {
+                    foreach ($items as $item) {
+                        $out .= $renderCard($item);
+                    }
+                }
                 return $out;
             };
             $mitraIndustri = ($partners ?? collect())->filter(fn($p) => $p->partner_group === 'mitra_industri')->values();

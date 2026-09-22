@@ -6,6 +6,13 @@
     <title>@yield('title', 'Backoffice') — DHS Admin</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    @php $favicon = \App\Models\BrandingSetting::where('setting_key', 'logo_favicon')->value('setting_value') ?? ''; @endphp
+    @if($favicon)
+        <link rel="icon" type="image/x-icon" href="{{ asset(ltrim($favicon, '/')) }}">
+    @else
+        <link rel="icon" href="/favicon.ico">
+    @endif
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
