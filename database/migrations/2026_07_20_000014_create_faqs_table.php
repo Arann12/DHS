@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (!Schema::hasTable('faqs')) {
+            Schema::create('faqs', function (Blueprint $table) {
+                $table->id();
+                $table->string('question', 500);
+                $table->longText('answer');
+                $table->enum('category', ['akademi', 'pendaftaran', 'biaya', 'kampus', 'umum'])->default('umum')->index('idx_category');
+                $table->boolean('is_active')->default(true);
+                $table->integer('display_order')->default(0)->index('idx_display_order');
+                $table->timestamps();
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('faqs');
+    }
+};
