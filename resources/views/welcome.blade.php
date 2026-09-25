@@ -133,7 +133,7 @@
         @elseif($heroVideoType === 'uploaded' && $heroVideoUrl)
             <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"
                 poster="{{ $heroBgImage }}">
-                <source src="{{ $heroVideoUrl }}" type="video/mp4">
+                <source src="{{ $heroVideoUrl }}" type="{{ str_ends_with(strtolower($heroVideoUrl), '.webm') ? 'video/webm' : 'video/mp4' }}">
             </video>
         @else
             <img alt="Hotel Lobby" class="absolute inset-0 w-full h-full object-cover" src="{{ $heroBgImage }}">
