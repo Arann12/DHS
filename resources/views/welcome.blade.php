@@ -166,9 +166,9 @@
                 data-en="{{ $heroScrollText }}">{{ $heroScrollText }}</span>
             <!-- Animated down arrow -->
             <div class="flex flex-col items-center">
-                <span class="material-icons text-white/80 scroll-arrow"
+                <span class="material-icons-round text-white/80 scroll-arrow"
                     style="animation: scrollArrow 1.5s ease-in-out infinite;">expand_more</span>
-                <span class="material-icons text-white/80 scroll-arrow"
+                <span class="material-icons-round text-white/80 scroll-arrow"
                     style="animation: scrollArrow 1.5s ease-in-out 0.3s infinite;">expand_more</span>
             </div>
         </div>

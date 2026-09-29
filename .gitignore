@@ -22,3 +22,11 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Large backup files and database dumps
+FILE HOST/
+_hosted_compare/
+*.zip
+*.sql
+*.tar.gz
+*.rar
