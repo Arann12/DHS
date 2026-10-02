@@ -33,29 +33,31 @@
     </div>
 
     <!-- ── Mobile Menu Toggle Button (Mobile Only) ── -->
-    <button class="md:hidden focus:outline-none nav-link ml-auto p-2" onclick="toggleMobileMenu()">
-        <span class="material-icons text-2xl">menu</span>
+    <button id="mobile-menu-btn" type="button" class="md:hidden focus:outline-none nav-link ml-auto p-2"
+        onclick="toggleMobileMenu()" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="mobile-menu">
+        <span id="mobile-menu-icon" class="material-icons text-2xl">menu</span>
     </button>
 
 </nav>
 
-<!-- ── Mobile Menu Dropdown ── -->
-<div id="mobile-menu"
-    class="fixed top-[60px] sm:top-[73px] left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/10 hidden flex-col px-4 sm:px-8 py-6 space-y-4 md:hidden shadow-lg">
+<!-- ── Mobile Menu Dropdown ──
+     Positioning + visibility via CSS below (not Tailwind utilities) so the menu
+     always shows above page content even if arbitrary-value classes are purged. -->
+<div id="mobile-menu" class="px-4 sm:px-8 py-6 space-y-4 md:hidden shadow-lg" hidden>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
-        href="/"><span data-id="Beranda" data-en="Home">Beranda</span></a>
+        href="/" onclick="closeMobileMenu()"><span data-id="Beranda" data-en="Home">Beranda</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
-        href="/tentang-kami"><span data-id="Tentang Kami" data-en="About Us">Tentang Kami</span></a>
+        href="/tentang-kami" onclick="closeMobileMenu()"><span data-id="Tentang Kami" data-en="About Us">Tentang Kami</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
-        href="/akademi"><span data-id="Akademi" data-en="Academy">Akademi</span></a>
+        href="/akademi" onclick="closeMobileMenu()"><span data-id="Akademi" data-en="Academy">Akademi</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
-        href="/layanan"><span data-id="Layanan" data-en="Services">Layanan Pengajuan</span></a>
+        href="/layanan" onclick="closeMobileMenu()"><span data-id="Layanan" data-en="Services">Layanan Pengajuan</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
-        href="/berita"><span data-id="Berita" data-en="News">Berita</span></a>
+        href="/berita" onclick="closeMobileMenu()"><span data-id="Berita" data-en="News">Berita</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2 border-b border-black/5"
-        href="/faq"><span data-id="FAQ" data-en="FAQ">FAQ</span></a>
+        href="/faq" onclick="closeMobileMenu()"><span data-id="FAQ" data-en="FAQ">FAQ</span></a>
     <a class="text-sm font-medium text-text-light hover:text-primary transition-colors py-2"
-        href="/formulir-pendaftaran"><span data-id="Formulir Pendaftaran" data-en="Registration Form">Formulir
+        href="/formulir-pendaftaran" onclick="closeMobileMenu()"><span data-id="Formulir Pendaftaran" data-en="Registration Form">Formulir
             Pendaftaran</span></a>
 </div>
 
@@ -81,6 +83,13 @@
         background: linear-gradient(to bottom, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0) 100%);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         box-shadow: none;
+    }
+
+    /* When mobile menu is open, make nav fully opaque so gradient doesn't bleed through menu */
+    #main-nav.menu-open {
+        background: rgba(15, 23, 42, 0.95) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
     .nav-transparent .nav-logo,
@@ -123,14 +132,68 @@
         #main-nav { padding-top: 0.4rem; padding-bottom: 0.4rem; }
         .nav-logo img { height: 28px !important; }
     }
+
+    /* ── Mobile menu: own CSS so it never depends on Tailwind utility build ──
+       z-index must beat page content (hero uses position:relative; fixed with
+       z-index:auto paints below later positioned siblings → menu "invisible"). */
+    #mobile-menu {
+        display: none;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        right: 0;
+        z-index: 60;
+        background: #ffffff;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        max-height: calc(100vh - 56px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #mobile-menu.is-open {
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media (min-width: 640px) {
+        #mobile-menu {
+            top: 73px;
+            max-height: calc(100vh - 73px);
+        }
+    }
+
+    @media (min-width: 768px) {
+        #mobile-menu,
+        #mobile-menu.is-open {
+            display: none !important;
+        }
+    }
 </style>
 
 <script>
     /* ─── Mobile menu toggle ─── */
-    function toggleMobileMenu() {
+    function setMobileMenu(open) {
         var menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-        menu.classList.toggle('flex');
+        var nav = document.getElementById('main-nav');
+        var icon = document.getElementById('mobile-menu-icon');
+        var btn = document.getElementById('mobile-menu-btn');
+        if (!menu) return;
+        menu.classList.toggle('is-open', !!open);
+        if (open) menu.removeAttribute('hidden');
+        else menu.setAttribute('hidden', '');
+        if (nav) nav.classList.toggle('menu-open', !!open);
+        if (icon) icon.textContent = open ? 'close' : 'menu';
+        if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.style.overflow = open ? 'hidden' : '';
     }
-
+    function isMobileMenuOpen() {
+        var menu = document.getElementById('mobile-menu');
+        return !!(menu && menu.classList.contains('is-open'));
+    }
+    function toggleMobileMenu() {
+        setMobileMenu(!isMobileMenuOpen());
+    }
+    function closeMobileMenu() {
+        setMobileMenu(false);
+    }
 </script>

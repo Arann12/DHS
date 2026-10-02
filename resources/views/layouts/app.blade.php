@@ -36,6 +36,9 @@
 
         html {
             scroll-behavior: smooth;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -44,12 +47,33 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
             /* Body is always visible — loader covers it instead */
             overflow: hidden;
+            /* Android/Chrome + Google Translate often set these; pin full-bleed */
+            left: 0 !important;
+            right: 0 !important;
+            position: relative;
         }
 
         body.page-ready {
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Keep page chrome full-bleed even if an ancestor gets transformed */
+        main {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        #main-nav {
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
         }
 
         h1,
@@ -818,6 +842,30 @@
             autoDisplay: false
         }, 'google_translate_element2');
     }
+    // Re-assert full-bleed layout after Translate mutates body styles (Android).
+    function dhsFixTranslateLayout() {
+        try {
+            var b = document.body, h = document.documentElement;
+            if (!b || !h) return;
+            b.style.setProperty('top', '0', 'important');
+            b.style.setProperty('left', '0', 'important');
+            b.style.setProperty('right', '0', 'important');
+            b.style.setProperty('margin', '0', 'important');
+            b.style.setProperty('width', '100%', 'important');
+            b.style.setProperty('max-width', '100%', 'important');
+            b.style.setProperty('position', 'relative', 'important');
+            h.style.setProperty('overflow-x', 'hidden', 'important');
+            h.style.setProperty('width', '100%', 'important');
+            var nav = document.getElementById('main-nav');
+            if (nav) {
+                nav.style.setProperty('left', '0', 'important');
+                nav.style.setProperty('right', '0', 'important');
+                nav.style.setProperty('width', '100%', 'important');
+            }
+        } catch (e) {}
+    }
+    setTimeout(dhsFixTranslateLayout, 800);
+    setTimeout(dhsFixTranslateLayout, 2500);
     </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
@@ -877,7 +925,9 @@
     .goog-tooltip,
     .goog-text-highlight,
     .goog-te-menu-frame,
-    .skiptranslate {
+    .skiptranslate,
+    .goog-te-combo,
+    .goog-logo-link {
         display: none !important;
         visibility: hidden !important;
         position: absolute !important;
@@ -890,8 +940,29 @@
     #google_translate_element2 {
         display: none !important;
     }
+
+    /* Google Translate on Android shifts body (top/left/position) and can
+       shrink the layout viewport → white strip / broken fixed nav. Pin it. */
+    html,
+    body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        overflow-x: hidden !important;
+    }
     body {
         top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+    /* Translate injects a toolbar frame above the page; keep it out of layout */
+    body > div.skiptranslate,
+    body > iframe[src*="translate"] {
+        display: none !important;
+        height: 0 !important;
+        overflow: hidden !important;
     }
 
     /* ── Custom Language Switcher ── */

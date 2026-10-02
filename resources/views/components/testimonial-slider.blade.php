@@ -380,6 +380,18 @@
             padding: 60px 0;
         }
 
+        .section-title {
+            font-size: 1.8rem;
+        }
+
+        .section-overline {
+            font-size: 0.6rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.85rem;
+        }
+
         .testimonial-slider {
             padding: 0 16px;
         }

@@ -123,8 +123,9 @@
 @endphp
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+    <!-- Hero Section — w-full so Android never leaves a side gutter -->
+    <section class="relative w-full flex items-center justify-center text-center overflow-hidden"
+        style="min-height: 100vh; min-height: 100svh;">
         <div class="absolute inset-0 bg-black/35 z-10"></div>
         @if(($heroVideoType === 'youtube' || $heroVideoType === 'vimeo') && $heroVideoUrl)
             <iframe class="absolute inset-0 w-full h-full object-cover"
@@ -139,30 +140,30 @@
             <img alt="Hotel Lobby" class="absolute inset-0 w-full h-full object-cover" src="{{ $heroBgImage }}">
         @endif
 
-        <div class="relative z-20 px-6 max-w-4xl mx-auto mt-20">
-            <div class="mb-6 inline-flex items-center space-x-3 text-white">
-                <span class="h-[1px] w-8 bg-white/60"></span>
-                <span class="label-text text-white/90" data-id="{{ $heroOverline }}"
+        <div class="relative z-20 px-4 sm:px-6 max-w-4xl mx-auto mt-16 sm:mt-20">
+            <div class="mb-4 sm:mb-6 inline-flex items-center space-x-2 sm:space-x-3 text-white">
+                <span class="h-[1px] w-6 sm:w-8 bg-white/60"></span>
+                <span class="label-text text-white/90 text-[0.6rem] sm:text-xs" data-id="{{ $heroOverline }}"
                     data-en="{{ $heroOverline }}">{{ $heroOverline }}</span>
-                <span class="h-[1px] w-8 bg-white/60"></span>
+                <span class="h-[1px] w-6 sm:w-8 bg-white/60"></span>
             </div>
-            <h1 class="text-5xl md:text-7xl font-serif text-white mb-10 leading-tight">
+            <h1 class="text-3xl sm:text-5xl md:text-7xl font-serif text-white mb-6 sm:mb-10 leading-tight">
                 <span data-id="{{ $heroHeadline }}" data-en="{{ $heroHeadline }}">{{ $heroHeadline }}</span>
             </h1>
 
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-0 sm:space-x-6">
                 <!-- Used bg-dhs-navy instead of #1C1A17 as per DESIGN.md -->
-                <a class="px-8 py-4 bg-dhs-navy text-white text-sm font-bold tracking-widest uppercase hover:bg-dhs-darknavy transition-colors rounded-md"
+                <a class="px-6 sm:px-8 py-3 sm:py-4 bg-dhs-navy text-white text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-dhs-darknavy transition-colors rounded-md"
                     href="{{ $heroCta1Link }}"><span data-id="{{ $heroCta1Text }}"
                         data-en="{{ $heroCta1Text }}">{{ $heroCta1Text }}</span></a>
-                <a class="px-8 py-4 bg-white/20 backdrop-blur-sm text-white text-sm font-bold tracking-widest uppercase border border-white/40 hover:bg-white/30 transition-colors rounded-md"
+                <a class="px-6 sm:px-8 py-3 sm:py-4 bg-white/20 backdrop-blur-sm text-white text-xs sm:text-sm font-bold tracking-widest uppercase border border-white/40 hover:bg-white/30 transition-colors rounded-md"
                     href="{{ $heroCta2Link }}"><span data-id="{{ $heroCta2Text }}"
                         data-en="{{ $heroCta2Text }}">{{ $heroCta2Text }}</span></a>
             </div>
         </div>
 
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center">
-            <span class="text-xs uppercase tracking-widest text-white mb-3" data-id="{{ $heroScrollText }}"
+        <div class="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center">
+            <span class="text-[0.6rem] sm:text-xs uppercase tracking-widest text-white mb-2 sm:mb-3" data-id="{{ $heroScrollText }}"
                 data-en="{{ $heroScrollText }}">{{ $heroScrollText }}</span>
             <!-- Animated down arrow -->
             <div class="flex flex-col items-center">
@@ -193,13 +194,13 @@
     </section>
 
     <!-- About Intro Section -->
-    <section class="py-24 md:py-32 px-6 md:px-16 max-w-7xl mx-auto">
-        <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+    <section class="py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-16 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-10 sm:gap-16 md:gap-24 items-center">
             <div data-reveal="fade-right">
                 <!-- text-primary resolved to DHS Red (#C53030) as per DESIGN.md -->
                 <span class="label-text text-primary mb-4 block" data-id="{{ $aboutLabel }}"
                     data-en="ABOUT US">{{ $aboutLabel }}</span>
-                <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-tight text-text-light">
+                <h2 class="text-3xl sm:text-5xl md:text-6xl font-serif mb-6 sm:mb-8 leading-tight text-text-light">
                     <span data-id="{{ $aboutHeadline }}" data-en="{{ $aboutHeadline }}">{{ $aboutHeadline }}</span>
                 </h2>
 
@@ -208,20 +209,20 @@
                     <p><span data-id="{{ $aboutP2 }}" data-en="{{ $aboutP2 }}">{{ $aboutP2 }}</span></p>
                 </div>
 
-                <div class="flex space-x-16 mt-12 pt-12 border-t border-black/10">
+                <div class="flex flex-wrap gap-8 sm:gap-16 mt-8 sm:mt-12 pt-8 sm:pt-12 border-t border-black/10">
                     @foreach($stats->take(2) as $stat)
                         <div>
-                            <div class="text-4xl font-serif mb-2 flex items-start text-text-light">{{ $stat->stat_value }}</div>
+                            <div class="text-3xl sm:text-4xl font-serif mb-2 flex items-start text-text-light">{{ $stat->stat_value }}</div>
                             <div class="label-text text-muted-light text-[0.6rem]">{{ strtoupper($stat->stat_label) }}</div>
                         </div>
                     @endforeach
-                    <div class="text-sm italic text-muted-light" data-id="{{ $aboutNote }}" data-en="{{ $aboutNote }}">
+                    <div class="text-xs sm:text-sm italic text-muted-light w-full sm:w-auto mt-2 sm:mt-0" data-id="{{ $aboutNote }}" data-en="{{ $aboutNote }}">
                         {{ $aboutNote }}
                     </div>
                 </div>
             </div>
 
-            <div class="relative h-[600px] md:h-[700px] w-full ml-auto md:w-[85%]" data-reveal="fade-left" data-delay="200">
+            <div class="relative h-[350px] sm:h-[500px] md:h-[700px] w-full ml-auto md:w-[85%]" data-reveal="fade-left" data-delay="200">
                 <div class="absolute -inset-4 bg-dhs-lightblue -z-10 translate-x-4 translate-y-4"></div>
                 <img alt="Hotel Interior" class="w-full h-full object-cover shadow-sm" src="{{ $aboutImage }}">
             </div>
@@ -229,17 +230,17 @@
     </section>
 
     <!-- Vision & Mission Section -->
-    <section class="py-24 bg-dhs-lightblue px-6 md:px-16">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
+    <section class="py-16 sm:py-24 bg-dhs-lightblue px-4 sm:px-6 md:px-16">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 sm:gap-16 md:gap-24">
             <div data-reveal="fade-right">
-                <h2 class="text-5xl md:text-6xl font-serif mb-16 leading-tight text-text-light">
+                <h2 class="text-3xl sm:text-5xl md:text-6xl font-serif mb-10 sm:mb-16 leading-tight text-text-light">
                     <span data-id="{{ $visionSectionTitle }}" data-en="Vision & Mission">{{ $visionSectionTitle }}</span>
                 </h2>
 
-                <div class="mb-12">
+                <div class="mb-8 sm:mb-12">
                     <span class="label-text text-primary mb-4 block" data-id="{{ $visionVisiLabel }}"
                         data-en="VISION">{{ $visionVisiLabel }}</span>
-                    <p class="font-serif text-2xl italic leading-relaxed text-muted-light">
+                    <p class="font-serif text-lg sm:text-2xl italic leading-relaxed text-muted-light">
                         <span>"{{ $visionText }}"</span>
                     </p>
                 </div>
@@ -277,13 +278,13 @@
     </section>
 
     <!-- Campus Life Gallery -->
-    <section class="py-12 bg-white px-6 md:px-16">
+    <section class="py-8 sm:py-12 bg-white px-4 sm:px-6 md:px-16">
         <div class="max-w-7xl mx-auto">
-            <h3 class="text-center font-serif text-2xl mb-12 text-text-light" data-reveal="fade-up"><span
+            <h3 class="text-center font-serif text-xl sm:text-2xl mb-8 sm:mb-12 text-text-light" data-reveal="fade-up"><span
                     data-id="{{ $campusTitle }}" data-en="{{ $campusTitle }}">{{ $campusTitle }}</span></h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 @foreach($campusFotos as $idx => $foto)
-                    <img alt="{{ $foto['alt'] ?? 'Foto Kampus' }}" class="w-full h-[400px] object-cover shadow-sm"
+                    <img alt="{{ $foto['alt'] ?? 'Foto Kampus' }}" class="w-full h-[250px] sm:h-[350px] md:h-[400px] object-cover shadow-sm"
                         data-reveal="zoom-up" data-delay="{{ ($idx + 1) * 150 }}" src="{{ $foto['src'] ?? '' }}">
                 @endforeach
             </div>
@@ -291,13 +292,13 @@
     </section>
 
     <!-- Disciplines & Programs Section -->
-    <section class="py-24 bg-dhs-lightblue">
-        <div class="px-6 md:px-16 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16" data-reveal="fade-up">
+    <section class="py-16 sm:py-24 bg-dhs-lightblue">
+        <div class="px-4 sm:px-6 md:px-16 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 sm:mb-16" data-reveal="fade-up">
                 <div>
                     <span class="label-text text-primary mb-4 block" data-id="{{ $academyLabel }}"
                         data-en="ACADEMY">{{ $academyLabel }}</span>
-                    <h2 class="text-5xl md:text-6xl font-serif leading-tight text-text-light">
+                    <h2 class="text-3xl sm:text-5xl md:text-6xl font-serif leading-tight text-text-light">
                         <span data-id="{{ $academySectionTitle }}"
                             data-en="{{ $academySectionTitle }}">{{ $academySectionTitle }}</span>
                     </h2>
@@ -309,11 +310,11 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 @foreach($academyCards as $idx => $card)
                     <div class="border border-black/10 group cursor-pointer bg-white shadow-sm transition-shadow duration-300 hover:shadow-md card-hover"
                         data-reveal="fade-up" data-delay="{{ ($idx + 1) * 150 }}">
-                        <div class="overflow-hidden h-[300px]">
+                        <div class="overflow-hidden h-[200px] sm:h-[250px] md:h-[300px]">
                             <img alt="{{ $card['title'] ?? '' }}"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 src="{{ $card['image'] ?? '' }}">
@@ -335,15 +336,15 @@
     </section>
 
     <!-- Facilities Showcase -->
-    <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto border-t border-black/10">
-        <div class="text-center mb-16" data-reveal="fade-up">
+    <section class="py-16 sm:py-24 px-4 sm:px-6 md:px-16 max-w-7xl mx-auto border-t border-black/10">
+        <div class="text-center mb-10 sm:mb-16" data-reveal="fade-up">
             <span class="label-text text-text-light" data-id="{{ $facilitiesLabel }}"
                 data-en="FACILITIES">{{ $facilitiesLabel }}</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             @if(isset($facilitiesItems[0]))
-                <div class="md:col-span-2 relative h-[500px] md:h-[600px] group overflow-hidden" data-reveal="fade-right">
+                <div class="md:col-span-2 relative h-[300px] sm:h-[400px] md:h-[600px] group overflow-hidden" data-reveal="fade-right">
                     <img alt="{{ $facilitiesItems[0]['label'] ?? 'Fasilitas' }}"
                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         src="{{ $facilitiesItems[0]['image'] ?? '' }}">
@@ -352,7 +353,7 @@
                 </div>
             @endif
 
-            <div class="flex flex-col gap-6 h-[500px] md:h-[600px]" data-reveal="fade-left" data-delay="200">
+            <div class="flex flex-col gap-4 sm:gap-6 h-[300px] sm:h-[400px] md:h-[600px]" data-reveal="fade-left" data-delay="200">
                 @foreach(array_slice($facilitiesItems, 1, 2) as $fac)
                     <div class="relative h-1/2 group overflow-hidden">
                         <img alt="{{ $fac['label'] ?? 'Fasilitas' }}"
@@ -367,10 +368,10 @@
     </section>
 
     <!-- Message from Director Section -->
-    <section class="py-32 bg-dhs-lightblue px-6 md:px-16 relative">
+    <section class="py-20 sm:py-32 bg-dhs-lightblue px-4 sm:px-6 md:px-16 relative">
         <div class="max-w-4xl mx-auto text-center relative z-10 text-text-light" data-reveal="zoom-in">
-            <span class="label-text text-dhs-red mb-8 block">{{ $directorLabel }}</span>
-            <h2 class="text-2xl md:text-3xl font-serif leading-relaxed mb-8">
+            <span class="label-text text-dhs-red mb-6 sm:mb-8 block">{{ $directorLabel }}</span>
+            <h2 class="text-lg sm:text-2xl md:text-3xl font-serif leading-relaxed mb-6 sm:mb-8">
                 <span>"{{ $directorMessage }}"</span>
             </h2>
             <div>
@@ -381,13 +382,13 @@
     </section>
 
     <!-- Insights & Articles Section -->
-    <section class="py-24">
-        <div class="px-6 md:px-16 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16" data-reveal="fade-up">
+    <section class="py-16 sm:py-24">
+        <div class="px-4 sm:px-6 md:px-16 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 sm:mb-16" data-reveal="fade-up">
                 <div>
                     <span class="label-text text-primary mb-4 block" data-id="{{ $newsLabel }}"
                         data-en="INSIGHTS">{{ $newsLabel }}</span>
-                    <h2 class="text-5xl md:text-6xl font-serif leading-tight text-text-light">
+                    <h2 class="text-3xl sm:text-5xl md:text-6xl font-serif leading-tight text-text-light">
                         <span data-id="{{ $newsSectionTitle }}"
                             data-en="News &amp; Articles.">{{ $newsSectionTitle }}</span>
                     </h2>
@@ -403,7 +404,7 @@
                 @php $mainArticle = $featuredNews->firstWhere('is_featured', 1) ?? $featuredNews->first(); @endphp
                 @if($mainArticle)
                     <div class="group cursor-pointer" data-reveal="fade-right">
-                        <div class="overflow-hidden mb-8 h-[400px]">
+                        <div class="overflow-hidden mb-6 sm:mb-8 h-[250px] sm:h-[350px] md:h-[400px]">
                             <img alt="{{ $mainArticle->title }}"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 src="{{ $mainArticle->thumbnail_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuAO3TjdyecwwVtS9SP20fK3_4C9aPBiHhONLdja28RvyQ_WiSbCtw3yhXXWyIA-_0QjM3PyUVN4YdtPRrVPQKbZXYiLJcuFqUp0dShFMbOX2jWwnoDr2-hu_aUwmAMCP1at0lGcWERGUPEm1WhFlotXnftrEp4j1XKnawHtj_e-Q7d2w3zSUOtfQAFRpOIdTo4Ee8E6dy6fcOnjn_g5oKV5WL04cs1Ghu3nWQ9ErWT5FTk7UVtFtM8_ww' }}">
@@ -503,16 +504,16 @@
 
     <!-- Partnership & Mitra Section — Single Section, Two Rows -->
     @if($partners->count() > 0)
-        <section class="py-20 md:py-24 bg-dhs-lightblue border-t border-b border-black/5 overflow-hidden">
-            <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-10">
+        <section class="py-14 sm:py-20 md:py-24 bg-dhs-lightblue border-t border-b border-black/5 overflow-hidden">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-5 md:px-16 text-center mb-8 sm:mb-10">
                 <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                     <span data-id="{{ $partnerLabel }}" data-en="OUR PARTNERS">{{ $partnerLabel }}</span>
                 </span>
-                <h2 class="text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-6"
+                <h2 class="text-2xl sm:text-[40px] md:text-[48px] leading-[1.2] font-semibold font-serif text-text-light mb-4 sm:mb-6"
                     data-reveal="fade-up">
                     <span data-id="{{ $partnerTitle }}" data-en="Trusted by Leading Institutions">{{ $partnerTitle }}</span>
                 </h2>
-                <p class="text-base text-muted-light max-w-3xl mx-auto leading-relaxed" data-reveal="fade-up" data-delay="100">
+                <p class="text-sm sm:text-base text-muted-light max-w-3xl mx-auto leading-relaxed" data-reveal="fade-up" data-delay="100">
                     {{ strip_tags($partnerDesc) }}
                 </p>
             </div>
@@ -609,12 +610,12 @@
 
     <!-- Contact Form Section -->
     {{-- Nomor WA dapat diubah dari Backoffice > Beranda > Kontak & Lokasi --}}
-    <section id="contact-section" class="py-24 bg-dhs-lightblue px-6 md:px-16">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24">
+    <section id="contact-section" class="py-16 sm:py-24 bg-dhs-lightblue px-4 sm:px-6 md:px-16">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 sm:gap-16 md:gap-24">
             <div class="text-text-light" data-reveal="fade-right">
                 <span class="label-text text-primary mb-4 block" data-id="KONTAK"
                     data-en="CONTACT">{{ $contactSectionLabel }}</span>
-                <h2 class="text-5xl md:text-7xl font-serif mb-10 leading-tight">
+                <h2 class="text-3xl sm:text-5xl md:text-7xl font-serif mb-6 sm:mb-10 leading-tight">
                     <span data-id="Hubungi Kami." data-en="Contact Us.">{{ $contactSectionTitle }}</span>
                 </h2>
 
@@ -658,7 +659,7 @@
 
             <!-- Contact Form Card -->
             <script>window.__dhsContact = { cats: @json($programCategories ?? []), wa: "{{ preg_replace('/[^0-9]/', '', $contactDenpasarWa) }}" };</script>
-            <div class="bg-white p-10 shadow-lg border border-black/5 rounded-2xl" data-reveal="fade-left" data-delay="150"
+            <div class="bg-white p-6 sm:p-10 shadow-lg border border-black/5 rounded-2xl" data-reveal="fade-left" data-delay="150"
                 x-data="contactForm()" x-init="initFromWindow()">
                 <h3 class="text-2xl font-serif mb-1 text-text-light">{{ $contactFormTitle }}</h3>
                 <p class="text-sm text-muted-light mb-8">{{ $contactFormSubtitle }}</p>
