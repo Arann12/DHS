@@ -462,13 +462,13 @@ if (isset($categories) && $categories->count() > 0) {
 
 <!-- HELPDESK ADMISI SECTION (Exact match to registration.blade.php) -->
 @php
-    $waNum = $helpdesk['helpdesk_wa'] ?? '+62 81 246 319966';
+    $waNum = $formSettings['helpdesk_wa'] ?? ($helpdesk['helpdesk_wa'] ?? ($footerSettings['phone_denpasar'] ?? '+62 81 246 319966'));
     $waClean = preg_replace('/[^0-9]/', '', $waNum);
     if (str_starts_with($waClean, '0')) {
         $waClean = '62' . substr($waClean, 1);
     }
-    $emailAddr = $helpdesk['helpdesk_email'] ?? 'sahabat@dhs.or.id';
-    $serviceHours = $helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA';
+    $emailAddr = $formSettings['helpdesk_email'] ?? ($helpdesk['helpdesk_email'] ?? ($footerSettings['email_denpasar'] ?? 'sahabat@dhs.or.id'));
+    $serviceHours = $formSettings['helpdesk_hours'] ?? ($helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA');
 @endphp
 <section class="bg-dhs-lightblue py-16 px-6 md:px-16">
     <div class="max-w-[850px] mx-auto">

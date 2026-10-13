@@ -8,6 +8,27 @@
         $academyHeroTitle = $academyHero['title'] ?? 'Program Vokasi & Kursus';
         $academyHeroSubtitle = $academyHero['subtitle'] ?? 'Program Akademik & Pelatihan';
         $academyHeroBg = $academyHero['bgImage'] ?? '/image/hero_registration.jpg';
+
+        $docBadge = $academyDocs['badge'] ?? 'Layanan Pendampingan Resmi';
+        $docTitle = $academyDocs['title'] ?? 'Layanan Pengurusan Dokumen Sertifikasi';
+        $docDesc = $academyDocs['desc'] ?? 'Denpasar Hotel School mengawal dan mendampingi proses pengurusan sertifikasi maritim serta dokumen kerja luar negeri secara resmi & cepat:';
+        $docItems = !empty($academyDocs['items']) ? $academyDocs['items'] : [
+            ['title' => 'Passport & Buku Pelaut', 'icon' => 'card_travel',   'slug' => 'passport',   'tag' => 'Imigrasi & Dephub'],
+            ['title' => 'BST (Basic Safety)',     'icon' => 'anchor',        'slug' => 'bst',        'tag' => 'STCW 2010'],
+            ['title' => 'SDSD (Security Duties)', 'icon' => 'security',      'slug' => 'sdsd',       'tag' => 'ISPS Code VI/6'],
+            ['title' => 'CCM (Crowd & Crisis)',   'icon' => 'groups',        'slug' => 'ccm',        'tag' => 'STCW V/2 Passenger'],
+            ['title' => 'SSAT (Security Aware)',  'icon' => 'verified_user', 'slug' => 'ssat',       'tag' => 'STCW VI/6 Security'],
+            ['title' => 'PSCRB (Survival Craft)', 'icon' => 'sailing',       'slug' => 'pscrb',      'tag' => 'Advanced Lifeboat'],
+            ['title' => 'C1/D Visa (US Seaman)',  'icon' => 'badge',         'slug' => 'c1d-visa',   'tag' => 'US Embassy Visa'],
+        ];
+        $docCalloutText = $academyDocs['callout_text'] ?? 'Butuh pengurusan dokumen tambahan? Tim admisi DHS siap membantu pendaftaran & konsultasi berkas online.';
+        $docCalloutBtnText = $academyDocs['callout_btn_text'] ?? 'Ajukan Dokumen Online';
+        $docCalloutBtnLink = $academyDocs['callout_btn_link'] ?? '/layanan?type=dokumen';
+
+        $ctaTitle = $academyCta['title'] ?? 'Mulai Karir Sukses Anda';
+        $ctaDesc = $academyCta['desc'] ?? 'Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online.';
+        $ctaBtnText = $academyCta['btn_text'] ?? 'Pendaftaran Online';
+        $ctaBtnLink = $academyCta['btn_link'] ?? '/formulir-pendaftaran';
     @endphp
     <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
@@ -180,19 +201,6 @@
                 </div>
             </div>
             @endforeach
-
-            <!-- Global Link to All Programs Catalog -->
-            <div class="text-center mt-10 mb-20" data-reveal="fade-up">
-                <a href="/program" class="group relative inline-flex items-center gap-4 px-8 py-4 rounded-2xl text-white font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #0F2440 0%, #1e293b 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 12px 28px -6px rgba(15, 36, 64, 0.35);">
-                    <span class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300" style="background: rgba(255, 255, 255, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.25);">
-                        <span class="material-icons text-xl leading-none">grid_view</span>
-                    </span>
-                    <span class="tracking-wide text-slate-100 font-medium text-sm sm:text-base pr-1">Lihat Semua Katalog Program DHS</span>
-                    <span class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:translate-x-1.5" style="background: rgba(255, 255, 255, 0.15); color: #ffffff;">
-                        <span class="material-icons text-sm leading-none">arrow_forward</span>
-                    </span>
-                </a>
-            </div>
         </section>
 
         <!-- Beasiswa Section -->
@@ -252,65 +260,57 @@
             </div>
         </section>
 
-        <!-- Document Assistance Section (1 Single Horizontal Row Grid - Compact Sharper Cards) -->
+        <!-- Document Assistance Section (Desain Bersih & Lengkung seperti PILIH KATEGORI DURASI) -->
         <section class="max-w-6xl mx-auto px-5 md:px-8 mb-24" data-reveal="fade-up">
             <!-- Section Header -->
             <div class="text-center mb-10">
-                <span class="inline-flex items-center gap-2 px-5 py-1.5 md:px-6 md:py-2 rounded-full bg-red-50 text-primary text-[0.7rem] uppercase tracking-wider font-bold border border-red-100/80 mb-3 shadow-2xs">
+                <span class="inline-flex items-center gap-2 text-primary text-[0.7rem] uppercase tracking-wider font-bold mb-3">
                     <span class="material-icons text-xs text-primary">verified</span>
-                    Layanan Pendampingan Resmi
+                    {{ $docBadge }}
                 </span>
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-slate-900 mb-3 leading-snug" data-id="Layanan Pengurusan Dokumen" data-en="Document Processing Services">
-                    Layanan Pengurusan Dokumen Sertifikasi
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-slate-900 mb-3 leading-snug" data-id="{{ $docTitle }}" data-en="{{ $docTitle }}">
+                    {{ $docTitle }}
                 </h3>
-                <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xl mx-auto" data-id="DHS menyediakan bantuan penuh bagi para siswa dan calon pencari kerja kapal pesiar untuk mengurus dokumen sertifikasi wajib:" data-en="DHS provides full assistance for students and prospective cruise ship workers to process mandatory certification documents:">
-                    Denpasar Hotel School mengawal dan mendampingi proses pengurusan sertifikasi maritim serta dokumen kerja luar negeri secara resmi &amp; cepat:
+                <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xl mx-auto" data-id="{{ $docDesc }}" data-en="{{ $docDesc }}">
+                    {{ $docDesc }}
                 </p>
             </div>
 
-            <!-- 1 Deret Horizontal Murni (Ukuran Konsisten Seragam & Spacing Rapi) -->
-            <div class="flex flex-row items-stretch overflow-x-auto gap-4 md:gap-5 pb-4 pt-2 no-scrollbar px-1">
-                @foreach([
-                        ['title' => 'Passport & Buku Pelaut', 'icon' => 'card_travel',   'slug' => 'passport',   'tag' => 'Imigrasi & Dephub'],
-                        ['title' => 'BST (Basic Safety)',     'icon' => 'anchor',        'slug' => 'bst',        'tag' => 'STCW 2010'],
-                        ['title' => 'SDSD (Security Duties)', 'icon' => 'security',      'slug' => 'sdsd',       'tag' => 'ISPS Code VI/6'],
-                        ['title' => 'CCM (Crowd & Crisis)',   'icon' => 'groups',        'slug' => 'ccm',        'tag' => 'STCW V/2 Passenger'],
-                        ['title' => 'SSAT (Security Aware)',  'icon' => 'verified_user', 'slug' => 'ssat',       'tag' => 'STCW VI/6 Security'],
-                        ['title' => 'PSCRB (Survival Craft)', 'icon' => 'sailing',       'slug' => 'pscrb',      'tag' => 'Advanced Lifeboat'],
-                        ['title' => 'C1/D Visa (US Seaman)',  'icon' => 'badge',         'slug' => 'c1d-visa',   'tag' => 'US Embassy Visa'],
-                    ] as $doc)
-                    <a href="/dokumen/{{ $doc['slug'] }}" 
-                       class="group bg-slate-50/70 hover:bg-white rounded-md p-4 md:p-5 border border-slate-200/80 shadow-2xs hover:shadow-xl hover:border-primary/40 hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center justify-between text-center flex-1 min-w-[150px] max-w-[180px] h-[155px] shrink-0 md:shrink relative overflow-hidden">
-                        
-                        <!-- Top Icon Centered with Bottom Spacing -->
-                        <div class="pt-1 mb-3">
-                            <span class="material-icons text-2xl md:text-3xl text-primary group-hover:scale-110 transition-transform duration-300">{{ $doc['icon'] }}</span>
+            <!-- 1 Deret Horizontal Murni (Style Clean & Rounded-2xl dengan Jarak Antar Card Lebih Luwes) -->
+            <div class="flex flex-row items-stretch overflow-x-auto gap-5 md:gap-6 lg:gap-7 pb-5 pt-2 no-scrollbar px-2">
+                @foreach($docItems as $doc)
+                    <a href="/dokumen/{{ $doc['slug'] ?? 'passport' }}"
+                       class="group bg-white hover:bg-slate-50/90 rounded-2xl p-4 md:p-5 border border-slate-200 shadow-xs hover:shadow-md hover:border-primary/40 hover:-translate-y-1 transition-all duration-200 flex flex-col items-center justify-between text-center flex-1 min-w-[155px] max-w-[185px] h-[155px] shrink-0 md:shrink relative overflow-hidden">
+
+                        <!-- Top Icon Box in rounded-xl container -->
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 bg-slate-100/90 text-[#0F2440] group-hover:bg-primary/10 group-hover:text-primary mb-2">
+                            <span class="material-icons text-[1.25rem] group-hover:scale-110 transition-transform duration-200">{{ $doc['icon'] ?? 'description' }}</span>
                         </div>
 
                         <!-- Bottom Title & Sub-tag Centered -->
                         <div class="space-y-1 w-full">
                             <div class="h-9 flex items-center justify-center">
-                                <h4 class="font-serif font-bold text-xs md:text-sm text-slate-900 group-hover:text-primary transition-colors leading-tight line-clamp-2">
-                                    {{ $doc['title'] }}
+                                <h4 class="font-semibold text-xs md:text-[0.82rem] text-slate-800 group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                    {{ $doc['title'] ?? '' }}
                                 </h4>
                             </div>
-                            <span class="text-[0.6rem] font-semibold text-slate-400 block group-hover:text-slate-600 transition-colors truncate">
-                                {{ $doc['tag'] }}
+                            <span class="text-[0.66rem] font-medium text-slate-400 block group-hover:text-slate-600 transition-colors truncate">
+                                {{ $doc['tag'] ?? '' }}
                             </span>
                         </div>
                     </a>
                 @endforeach
             </div>
 
-            <!-- Bottom Action & Info Callout (Simpel & Minimalis) -->
-            <div class="mt-6 p-4 px-5 bg-slate-50 border border-slate-200/80 rounded-md flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <!-- Bottom Action & Info Callout (Clean & Rounded-2xl) -->
+            <div class="mt-6 p-4 px-5 bg-white border border-slate-200 shadow-xs rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
                 <div class="flex items-center gap-2.5 text-xs text-slate-600 font-medium">
                     <span class="material-icons text-base text-primary shrink-0">headset_mic</span>
-                    <span>Butuh pengurusan dokumen tambahan? Tim admisi DHS siap membantu pendaftaran &amp; konsultasi berkas online.</span>
+                    <span>{{ $docCalloutText }}</span>
                 </div>
 
-                <a class="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1 shrink-0 group" href="/layanan?type=dokumen">
-                    <span>Ajukan Dokumen Online</span>
+                <a class="text-xs font-bold text-primary hover:text-red-700 transition-colors flex items-center gap-1 shrink-0 group" href="{{ $docCalloutBtnLink }}">
+                    <span>{{ $docCalloutBtnText }}</span>
                     <span class="material-icons text-sm group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                 </a>
             </div>
@@ -319,13 +319,13 @@
 
         <!-- CTA Section -->
         <section class="py-16 mb-0 border-t border-black/10">
-        <div class="max-w-3xl mx-auto px-5 text-center">
-            <h2 class="text-[48px] leading-[1.2] font-semibold font-serif mb-6 text-text-light" data-id="Mulai Karir Sukses Anda" data-en="Start Your Successful Career">Mulai Karir Sukses Anda</h2>
-            <p class="text-base text-muted-light mb-10" data-id="Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global." data-en="Denpasar Hotel School is ready to guide you to become a competent young professional with global competitiveness.">Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online.</p>
-            <div class="flex justify-center">
-                <a class="px-8 py-4 bg-primary text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-primary/90 transition-colors" href="/formulir-pendaftaran"><span data-id="Pendaftaran Online" data-en="Online Registration">Pendaftaran Online</span></a>
+            <div class="max-w-3xl mx-auto px-5 text-center">
+                <h2 class="text-[48px] leading-[1.2] font-semibold font-serif mb-6 text-text-light" data-id="{{ $ctaTitle }}" data-en="{{ $ctaTitle }}">{{ $ctaTitle }}</h2>
+                <p class="text-base text-muted-light mb-10" data-id="{{ $ctaDesc }}" data-en="{{ $ctaDesc }}">{{ $ctaDesc }}</p>
+                <div class="flex justify-center">
+                    <a class="px-8 py-4 bg-primary text-white text-[0.7rem] uppercase tracking-[0.15em] font-semibold hover:bg-primary/90 transition-colors rounded-md" href="{{ $ctaBtnLink }}"><span data-id="{{ $ctaBtnText }}" data-en="{{ $ctaBtnText }}">{{ $ctaBtnText }}</span></a>
+                </div>
             </div>
-        </div>
         </section>
     </main>
 

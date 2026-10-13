@@ -109,22 +109,37 @@ class HomepageSectionSeeder extends Seeder
                 'section_key' => 'campus',
                 'section_title' => 'Kehidupan Kampus',
                 'section_content' => array (
-  'fotos' => 
+  'fotos' =>
   array (
-    0 => 
+    0 =>
     array (
-      'alt' => 'Siswa dalam seragam',
+      'alt' => 'Praktik Mahasiswa Perhotelan',
       'src' => '/image/campus_students.jpg',
     ),
-    1 => 
+    1 =>
     array (
-      'alt' => 'Lobby Hotel Bintang',
+      'alt' => 'Praktikum Culinary Arts & Kitchen Chef',
+      'src' => '/image/culinary_students.jpg',
+    ),
+    2 =>
+    array (
+      'alt' => 'Pelatihan Restaurant & F&B Service',
+      'src' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop',
+    ),
+    3 =>
+    array (
+      'alt' => 'Praktik Bartending & Mixology',
+      'src' => 'https://images.unsplash.com/photo-1574096079513-d8259312b785?w=800&auto=format&fit=crop',
+    ),
+    4 =>
+    array (
+      'alt' => 'Simulasi Perhotelan & Hospitality Suite',
       'src' => '/image/hotel_lobby.jpg',
     ),
-    2 => 
+    5 =>
     array (
-      'alt' => 'Praktikum Dapur Chef',
-      'src' => '/image/culinary_students.jpg',
+      'alt' => 'Simulasi Front Office & Pelayanan Tamu',
+      'src' => 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop',
     ),
   ),
   'title' => 'Kehidupan & Lingkungan Kampus',
@@ -249,7 +264,7 @@ class HomepageSectionSeeder extends Seeder
                 'section_content' => array (
   'desc' => 'DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 & 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).',
   'label' => 'Kemitraan & Jaringan Global',
-  'title' => 'Partnership Program (PP DHS)',
+  'title' => 'Partnership Program',
 ),
                 'is_active' => true,
                 'display_order' => 0,

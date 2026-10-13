@@ -85,6 +85,31 @@
                 <label class="bo-label">Teks Kutipan Samping (Quote)</label>
                 <textarea class="bo-textarea" rows="2" x-model="intro.quote"></textarea>
             </div>
+            <div class="form-group">
+                <label class="bo-label">Gambar Samping (kanan kolom)</label>
+                <div style="display:flex;align-items:flex-start;gap:14px;">
+                    <div style="width:160px;height:110px;border-radius:10px;overflow:hidden;border:2px dashed #d1d5db;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafafa;"
+                         @click="$store.imageUpload.open(url => { intro.image = url })">
+                        <template x-if="intro.image">
+                            <img :src="intro.image" style="width:100%;height:100%;object-fit:cover;">
+                        </template>
+                        <template x-if="!intro.image">
+                            <span class="material-icons-round" style="color:#aaa;font-size:28px;">add_photo_alternate</span>
+                        </template>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 14px;"
+                                @click="$store.imageUpload.open(url => { intro.image = url })">
+                            <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">edit</span> Ganti Gambar
+                        </button>
+                        <button type="button" x-show="intro.image" class="btn-danger" style="font-size:11px;padding:5px 10px;margin-top:6px;"
+                                @click="intro.image = ''">
+                            <span class="material-icons-round" style="font-size:13px;">delete</span> Hapus
+                        </button>
+                        <p style="font-size:11px;color:#6b7280;margin-top:6px;">Gambar tampil di kolom kanan section intro halaman About Us.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -385,6 +410,7 @@
         'p1'       => $introData['p1'] ?? '',
         'p2'       => $introData['p2'] ?? '',
         'quote'    => $introData['quote'] ?? '',
+        'image'    => $introData['image'] ?? '/image/about_dhs.jpg',
     ];
     $visionJson = [
         'sectionLabel' => $visionData['sectionLabel'] ?? 'Tujuan Kami',
@@ -475,7 +501,7 @@ function aboutUsCompleteData() {
             this.saving = true;
             const sections = {
                 hero: { title: 'Hero Banner', content: { title: this.hero.title, subtitle: this.hero.subtitle, bgImage: this.hero.bgImage } },
-                intro: { title: 'Tagline & Intro', content: { label: this.intro.label, headline: this.intro.headline, p1: this.intro.p1, p2: this.intro.p2, quote: this.intro.quote } },
+                intro: { title: 'Tagline & Intro', content: { label: this.intro.label, headline: this.intro.headline, p1: this.intro.p1, p2: this.intro.p2, quote: this.intro.quote, image: this.intro.image } },
                 vision: { title: 'Visi Misi Core Values', content: { sectionLabel: this.vision.sectionLabel, sectionTitle: this.vision.sectionTitle, visiLabel: this.vision.visiLabel, misiLabel: this.vision.misiLabel, visi: this.vision.visi, misi: this.vision.misi, coreValues: this.vision.coreValues } },
                 timeline: { title: 'Sejarah Timeline', content: { sectionLabel: this.timelineSectionLabel, sectionTitle: this.timelineSectionTitle, items: this.timeline } },
                 director: { title: 'Pesan Direktur', content: { p1: this.director.p1, p2: this.director.p2, photo: this.director.photo } },

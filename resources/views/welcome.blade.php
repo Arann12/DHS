@@ -42,11 +42,26 @@
 
     $campusContent = isset($sections['campus']) ? (is_array($sections['campus']->section_content) ? $sections['campus']->section_content : json_decode($sections['campus']->section_content ?? '[]', true)) : [];
     $campusTitle = $campusContent['title'] ?? 'Kehidupan & Lingkungan Kampus';
-    $campusFotos = $campusContent['fotos'] ?? [
-        ['src' => 'https://images.unsplash.com/photo-1549057446-9f5c6ac91a04?w=800&auto=format&fit=crop', 'alt' => 'Siswa dalam seragam'],
-        ['src' => 'https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?w=800&auto=format&fit=crop', 'alt' => 'Resort Pool'],
-        ['src' => 'https://images.unsplash.com/photo-1588416820614-f8d6ac6cea56?w=800&auto=format&fit=crop', 'alt' => 'Praktikum Dapur Chef']
+
+    $defaultCampusFotos = [
+        ['src' => '/image/campus_students.jpg', 'alt' => 'Praktik Mahasiswa Perhotelan'],
+        ['src' => '/image/culinary_students.jpg', 'alt' => 'Praktikum Culinary Arts & Kitchen Chef'],
+        ['src' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop', 'alt' => 'Pelatihan Restaurant & F&B Service'],
+        ['src' => 'https://images.unsplash.com/photo-1574096079513-d8259312b785?w=800&auto=format&fit=crop', 'alt' => 'Praktik Bartending & Mixology'],
+        ['src' => '/image/hotel_lobby.jpg', 'alt' => 'Simulasi Perhotelan & Hospitality Suite'],
+        ['src' => 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop', 'alt' => 'Simulasi Front Office & Pelayanan Tamu']
     ];
+
+    $savedFotos = $campusContent['fotos'] ?? [];
+    $campusFotos = [];
+    $totalSlots = max(6, count($savedFotos));
+    for ($i = 0; $i < $totalSlots; $i++) {
+        if (!empty($savedFotos[$i]['src'])) {
+            $campusFotos[] = $savedFotos[$i];
+        } elseif (isset($defaultCampusFotos[$i])) {
+            $campusFotos[] = $defaultCampusFotos[$i];
+        }
+    }
 
     $academyContent = isset($sections['academy']) ? (is_array($sections['academy']->section_content) ? $sections['academy']->section_content : json_decode($sections['academy']->section_content ?? '[]', true)) : [];
     $academyLabel = $academyContent['label'] ?? 'AKADEMI UNGGULAN';
@@ -114,7 +129,7 @@
 
     $partnerContent = isset($sections['partner']) ? (is_array($sections['partner']->section_content) ? $sections['partner']->section_content : json_decode($sections['partner']->section_content ?? '[]', true)) : [];
     $partnerLabel = $partnerContent['label'] ?? 'Kemitraan & Jaringan Global';
-    $partnerTitle = $partnerContent['title'] ?? 'Partnership Program (PP DHS)';
+    $partnerTitle = $partnerContent['title'] ?? 'Partnership Program';
     $partnerDesc = $partnerContent['desc'] ?? 'DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 & 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).';
 
     $newsContent = isset($sections['news']) ? (is_array($sections['news']->section_content) ? $sections['news']->section_content : json_decode($sections['news']->section_content ?? '[]', true)) : [];
@@ -278,14 +293,27 @@
     </section>
 
     <!-- Campus Life Gallery -->
-    <section class="py-8 sm:py-12 bg-white px-4 sm:px-6 md:px-16">
-        <div class="max-w-7xl mx-auto">
-            <h3 class="text-center font-serif text-xl sm:text-2xl mb-8 sm:mb-12 text-text-light" data-reveal="fade-up"><span
-                    data-id="{{ $campusTitle }}" data-en="{{ $campusTitle }}">{{ $campusTitle }}</span></h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+    <section class="min-h-screen flex flex-col justify-center py-16 sm:py-20 lg:py-24 bg-white px-4 sm:px-6 md:px-16 border-t border-black/5">
+        <div class="max-w-7xl mx-auto w-full">
+            <div class="text-center mb-8 sm:mb-12 lg:mb-16" data-reveal="fade-up">
+                <span class="label-text text-primary mb-3 block" data-id="KEHIDUPAN KAMPUS" data-en="CAMPUS LIFE">KEHIDUPAN KAMPUS</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-text-light">
+                    <span data-id="{{ $campusTitle }}" data-en="{{ $campusTitle }}">{{ $campusTitle }}</span>
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
                 @foreach($campusFotos as $idx => $foto)
-                    <img alt="{{ $foto['alt'] ?? 'Foto Kampus' }}" class="w-full h-[250px] sm:h-[350px] md:h-[400px] object-cover shadow-sm"
-                        data-reveal="zoom-up" data-delay="{{ ($idx + 1) * 150 }}" src="{{ $foto['src'] ?? '' }}">
+                    <div class="group relative overflow-hidden shadow-sm border border-black/5 bg-gray-100 h-[300px] sm:h-[420px] md:h-[480px] lg:h-[540px] xl:h-[580px]"
+                        data-reveal="fade-up" data-delay="{{ ((($idx % 3) + 1) * 150) }}">
+                        <img alt="{{ $foto['alt'] ?? 'Foto Kampus' }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            src="{{ $foto['src'] ?? '' }}">
+                        @if(!empty($foto['alt']))
+                            <div class="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm px-4 py-2 text-white text-xs uppercase tracking-wider line-clamp-1 pointer-events-none">
+                                {{ $foto['alt'] }}
+                            </div>
+                        @endif
+                    </div>
                 @endforeach
             </div>
         </div>

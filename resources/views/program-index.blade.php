@@ -117,14 +117,33 @@
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Hero & Content Spacer 10cm */
+    .pi-hero-section {
+        height: 75vh;
+        min-height: 580px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .pi-content-spacer {
+        padding-top: 10cm;
+        padding-bottom: 120px;
+    }
+    @media (max-width: 768px) {
+        .pi-content-spacer {
+            padding-top: 4cm;
+            padding-bottom: 60px;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
 
-    {{-- ═══════════════════════════════ HERO ═══════════════════════════════ --}}
-    <section class="relative flex flex-col justify-start items-center text-center overflow-hidden bg-slate-950 text-white"
-             style="min-height: 640px; padding-top: 160px; padding-bottom: 72px;">
+    {{-- ═══════════════════════════════ HERO (3/4 Layar Laptop) ═══════════════════════════════ --}}
+    <section class="relative pi-hero-section text-center overflow-hidden bg-slate-950 text-white pt-24 pb-12 md:pt-32 md:pb-16">
         <div class="absolute inset-0 bg-black/60 z-10"></div>
         <img alt="Katalog Program DHS" width="1920" height="1080"
              class="absolute inset-0 w-full h-full object-cover"
@@ -133,27 +152,29 @@
 
         <div class="relative z-20 px-6 max-w-4xl mx-auto" data-reveal="fade-up">
             {{-- Breadcrumb --}}
-            <nav class="mb-7 inline-flex items-center gap-2 text-white/70 text-xs font-semibold uppercase tracking-wider bg-white/10 px-5 py-2.5 rounded-full border border-white/15 backdrop-blur-sm">
-                <a href="/" class="hover:text-white transition-colors flex items-center gap-1">
+            <nav class="inline-flex items-center gap-2.5 text-white/80 text-xs font-semibold uppercase tracking-wider bg-white/10 px-4 py-2 rounded-full border border-white/15 backdrop-blur-sm shadow-sm"
+                 style="margin-bottom: 24px;">
+                <a href="/" class="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                     <span class="material-icons text-sm leading-none">home</span>Beranda
                 </a>
                 <span class="material-icons text-xs opacity-40">chevron_right</span>
-                <a href="/akademi" class="hover:text-white transition-colors">Akademi</a>
+                <a href="/akademi" class="hover:text-amber-300 transition-colors">Akademi</a>
                 <span class="material-icons text-xs opacity-40">chevron_right</span>
                 <span class="text-amber-400 font-bold">Katalog Program</span>
             </nav>
 
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-serif font-bold text-white mb-4 leading-[1.15] tracking-tight">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-serif font-bold text-white max-w-3xl mx-auto"
+                style="text-shadow: 0 4px 24px rgba(0,0,0,0.85); line-height: 1.45; letter-spacing: 0.02em; margin-bottom: 24px;">
                 Program Studi & Pelatihan Vokasi
             </h1>
-            <p class="text-sm text-white/70 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-sm md:text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
                 Program unggulan berstandar internasional — mencetak profesional perhotelan, tata boga, dan kru kapal pesiar kelas dunia.
             </p>
         </div>
     </section>
 
-    {{-- ════════════════════════ CATALOG SECTION ════════════════════════════ --}}
-    <section class="prog-index-bg pt-20 pb-24 sm:pt-24 sm:pb-28 lg:pt-28 lg:pb-32 px-5 md:px-8">
+    {{-- ════════════════════════ CATALOG SECTION (Jarak Buffer 10cm ke Content) ════════════════════════════ --}}
+    <section class="prog-index-bg pi-content-spacer px-5 md:px-8">
         <div class="max-w-7xl mx-auto">
 
             {{-- Label --}}

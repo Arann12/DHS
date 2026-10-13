@@ -157,13 +157,35 @@
         box-shadow: 0 12px 32px rgba(0,0,0,0.12);
         transform: translateY(-3px);
     }
+
+    /* Hero section 3/4 layar laptop */
+    .pd-hero-section {
+        height: 75vh;
+        min-height: 580px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Jarak pemisah 10cm antara hero section dengan content */
+    .pd-content-spacer {
+        padding-top: 10cm;
+        padding-bottom: 120px;
+    }
+    @media (max-width: 768px) {
+        .pd-content-spacer {
+            padding-top: 4cm;
+            padding-bottom: 60px;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
 
-    {{-- ═══════════════════════════════ HERO ═══════════════════════════════ --}}
-    <section class="relative min-h-[640px] md:min-h-[700px] flex flex-col justify-start items-center overflow-hidden bg-slate-950 text-white" style="padding-top: 160px; padding-bottom: 80px;">
+    {{-- ═══════════════════════════════ HERO (3/4 Layar Laptop) ═══════════════════════════════ --}}
+    <section class="relative pd-hero-section overflow-hidden bg-slate-950 text-white pt-24 pb-12 md:pt-32 md:pb-16">
         <div class="absolute inset-0 bg-black/60 z-10"></div>
         <img
             alt="{{ $cms['title'] ?? $program->title }}"
@@ -173,53 +195,55 @@
             src="{{ $cms['hero_image'] ?? ($program->thumbnail_url ?: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600') }}"
         >
 
-        <div class="relative z-20 px-6 max-w-4xl mx-auto text-center" data-reveal="fade-up">
+        <div class="relative z-20 px-6 max-w-5xl mx-auto text-center" data-reveal="fade-up">
 
-            {{-- Breadcrumb --}}
-            <nav class="mb-7 inline-flex items-center gap-2 text-white/70 text-xs font-semibold uppercase tracking-wider">
-                <a href="/" class="hover:text-white transition-colors flex items-center gap-1">
+            {{-- 1. Breadcrumb: rapi, proporsional, margin bawah lega --}}
+            <nav class="inline-flex items-center gap-2.5 text-white/80 text-xs font-semibold uppercase tracking-wider bg-white/10 px-4 py-2 rounded-full backdrop-blur-md border border-white/15 shadow-sm"
+                 style="margin-bottom: 24px;">
+                <a href="/" class="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                     <span class="material-icons text-sm leading-none">home</span>Beranda
                 </a>
                 <span class="material-icons text-xs opacity-40">chevron_right</span>
-                <a href="/akademi" class="hover:text-white transition-colors">Akademi</a>
+                <a href="/akademi" class="hover:text-amber-300 transition-colors">Akademi</a>
                 <span class="material-icons text-xs opacity-40">chevron_right</span>
-                <a href="/program" class="hover:text-white transition-colors">Program</a>
+                <a href="/program" class="hover:text-amber-300 transition-colors">Program</a>
                 <span class="material-icons text-xs opacity-40">chevron_right</span>
-                <span class="text-amber-400 font-bold truncate max-w-[200px]">{{ $cms['title'] ?? $program->title }}</span>
+                <span class="text-amber-400 font-bold truncate max-w-[240px]">{{ $cms['title'] ?? $program->title }}</span>
             </nav>
 
-            {{-- Badges --}}
-            <div class="my-7 flex items-center justify-center gap-3.5 flex-wrap">
-                <span class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 border border-white/20 backdrop-blur-md text-white shadow-sm">
+            {{-- 2. Badges: jarak teratur ke judul --}}
+            <div class="flex items-center justify-center gap-3 flex-wrap" style="margin-bottom: 28px;">
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/15 border border-white/20 backdrop-blur-md text-white shadow-sm">
                     <span class="material-icons text-sm text-amber-400">school</span>
                     {{ $cms['category'] ?? ($program->category ? $program->category->category_name : 'Program Vokasi') }}
                 </span>
                 @if(!empty($cms['country_badge']) || $program->country_badge)
-                <span class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 border border-white/20 backdrop-blur-md text-white shadow-sm">
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/15 border border-white/20 backdrop-blur-md text-white shadow-sm">
                     <span class="material-icons text-sm text-amber-400">public</span>
                     {{ $cms['country_badge'] ?? $program->country_badge }}
                 </span>
                 @endif
             </div>
 
-            {{-- Title --}}
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-serif font-bold text-white mb-6 leading-[1.15] tracking-tight max-w-3xl mx-auto" style="text-shadow: 0 2px 20px rgba(0,0,0,0.7);">
+            {{-- 3. Title H1: Line-height lapang, jarak antar baris tidak dempet --}}
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-serif font-bold text-white max-w-4xl mx-auto"
+                style="text-shadow: 0 4px 24px rgba(0,0,0,0.85); line-height: 1.45; letter-spacing: 0.02em; margin-bottom: 28px;">
                 {{ $cms['title'] ?? $program->title }}
             </h1>
 
-            {{-- CTA --}}
-            <div class="pt-4 sm:pt-6">
+            {{-- 4. CTA Button --}}
+            <div>
                 <a href="/formulir-pendaftaran?program={{ $program->slug }}"
-                   class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-white font-bold text-xs uppercase tracking-widest border border-white/40 bg-transparent hover:bg-white/15 hover:border-white transition-all">
-                    <span>{{ $cms['cta_text'] ?? 'Daftar Program Ini' }}</span>
+                   class="inline-flex items-center gap-2.5 px-7 py-3 rounded-full text-white font-bold text-xs uppercase tracking-widest border border-white/40 bg-white/10 hover:bg-white/25 hover:border-white transition-all shadow-md">
+                    <span>{{ $cms['cta_text'] ?? 'Daftar Program Ini Online' }}</span>
                     <span class="material-icons text-base">arrow_forward</span>
                 </a>
             </div>
         </div>
     </section>
 
-    {{-- ══════════════════════════ MAIN CONTENT ═════════════════════════════ --}}
-    <div class="prog-detail-bg pt-20 pb-24 sm:pt-24 sm:pb-28 lg:pt-28 lg:pb-32 px-5 md:px-8">
+    {{-- ══════════════════════════ MAIN CONTENT (Pemisah 10cm) ═════════════════════════════ --}}
+    <div class="prog-detail-bg pd-content-spacer px-5 md:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 

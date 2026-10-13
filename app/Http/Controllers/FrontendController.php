@@ -128,15 +128,25 @@ class FrontendController extends Controller
             ->orderBy('display_order')
             ->get();
 
-        // Academy hero data from about_pages
+        // Academy hero, documents, and CTA data from about_pages
         $academyHeroRecord = AboutPage::where('section_key', 'academy_hero')->first();
         $academyHero = $academyHeroRecord
             ? (is_array($academyHeroRecord->section_content) ? $academyHeroRecord->section_content : json_decode($academyHeroRecord->section_content ?? '[]', true) ?? [])
             : [];
 
+        $academyDocRecord = AboutPage::where('section_key', 'academy_documents')->first();
+        $academyDocs = $academyDocRecord
+            ? (is_array($academyDocRecord->section_content) ? $academyDocRecord->section_content : json_decode($academyDocRecord->section_content ?? '[]', true) ?? [])
+            : [];
+
+        $academyCtaRecord = AboutPage::where('section_key', 'academy_cta')->first();
+        $academyCta = $academyCtaRecord
+            ? (is_array($academyCtaRecord->section_content) ? $academyCtaRecord->section_content : json_decode($academyCtaRecord->section_content ?? '[]', true) ?? [])
+            : [];
+
         $shared = $this->shared();
 
-        return view('akademi', array_merge($shared, compact('categories', 'partners', 'academyHero')));
+        return view('akademi', array_merge($shared, compact('categories', 'partners', 'academyHero', 'academyDocs', 'academyCta')));
     }
 
     public function detailBerita($slug)
@@ -681,6 +691,15 @@ class FrontendController extends Controller
                 ]
             ],
         ];
+
+        $type = strtolower($type);
+        if ($type === 'c1-d-visa' || $type === 'c1-d') {
+            $type = 'c1d-visa';
+        }
+
+        if (!array_key_exists($type, $catalog)) {
+            abort(404);
+        }
 
         $doc  = $catalog[$type];
 

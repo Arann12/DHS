@@ -97,6 +97,49 @@ class AboutPageSeeder extends Seeder
                 ],
                 'display_order' => 7,
             ],
+            [
+                'section_key' => 'academy_hero',
+                'section_title' => 'Akademi Hero',
+                'section_content' => [
+                    'title' => 'Program Vokasi & Kursus',
+                    'subtitle' => 'Program Akademik & Pelatihan',
+                    'bgImage' => '/image/hero_registration.jpg',
+                ],
+                'display_order' => 8,
+            ],
+            [
+                'section_key' => 'academy_documents',
+                'section_title' => 'Layanan Pengurusan Dokumen',
+                'section_content' => [
+                    'badge' => 'Layanan Pendampingan Resmi',
+                    'title' => 'Layanan Pengurusan Dokumen Sertifikasi',
+                    'desc' => 'Denpasar Hotel School mengawal dan mendampingi proses pengurusan sertifikasi maritim serta dokumen kerja luar negeri secara resmi & cepat:',
+                    'items' => [
+                        ['title' => 'Passport & Buku Pelaut', 'icon' => 'card_travel',   'slug' => 'passport', 'tag' => 'Imigrasi & Dephub'],
+                        ['title' => 'BST (Basic Safety)',     'icon' => 'anchor',        'slug' => 'bst',      'tag' => 'STCW 2010'],
+                        ['title' => 'SDSD (Security Duties)', 'icon' => 'security',      'slug' => 'sdsd',     'tag' => 'ISPS Code VI/6'],
+                        ['title' => 'CCM (Crowd & Crisis)',   'icon' => 'groups',        'slug' => 'ccm',      'tag' => 'STCW V/2 Passenger'],
+                        ['title' => 'SSAT (Security Aware)',  'icon' => 'verified_user', 'slug' => 'ssat',     'tag' => 'STCW VI/6 Security'],
+                        ['title' => 'PSCRB (Survival Craft)', 'icon' => 'sailing',       'slug' => 'pscrb',    'tag' => 'Advanced Lifeboat'],
+                        ['title' => 'C1/D Visa (US Seaman)',  'icon' => 'badge',         'slug' => 'c1d-visa', 'tag' => 'US Embassy Visa'],
+                    ],
+                    'callout_text' => 'Butuh pengurusan dokumen tambahan? Tim admisi DHS siap membantu pendaftaran & konsultasi berkas online.',
+                    'callout_btn_text' => 'Ajukan Dokumen Online',
+                    'callout_btn_link' => '/layanan?type=dokumen',
+                ],
+                'display_order' => 9,
+            ],
+            [
+                'section_key' => 'academy_cta',
+                'section_title' => 'CTA Akademi (Mulai Karir Sukses)',
+                'section_content' => [
+                    'title' => 'Mulai Karir Sukses Anda',
+                    'desc' => 'Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online.',
+                    'btn_text' => 'Pendaftaran Online',
+                    'btn_link' => '/formulir-pendaftaran',
+                ],
+                'display_order' => 10,
+            ],
         ];
 
         foreach ($sections as $s) {

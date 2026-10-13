@@ -209,6 +209,122 @@
             </template>
         </div>
 
+        {{-- Section: Layanan Pengurusan Dokumen Sertifikasi --}}
+        <div class="bo-card" style="margin-top:24px;margin-bottom:24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 4px;">
+                        Layanan Pengurusan Dokumen Sertifikasi
+                    </h2>
+                    <p style="font-size:13px;color:#718096;margin:0;">Pengaturan judul, deskripsi, daftar kartu dokumen, dan tombol callout di halaman Akademi</p>
+                </div>
+                <button type="button" class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="addDocItem()">
+                    <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Kartu Dokumen
+                </button>
+            </div>
+
+            <div class="form-grid-2" style="margin-bottom:16px;">
+                <div class="form-group">
+                    <label class="bo-label">Badge Label Atas</label>
+                    <input type="text" class="bo-input" x-model="docs.badge" placeholder="Layanan Pendampingan Resmi">
+                </div>
+                <div class="form-group">
+                    <label class="bo-label">Judul Section (H3)</label>
+                    <input type="text" class="bo-input" x-model="docs.title" placeholder="Layanan Pengurusan Dokumen Sertifikasi">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="bo-label">Deskripsi Section</label>
+                <textarea class="bo-textarea" rows="2" x-model="docs.desc" placeholder="Penjelasan singkat mengenai layanan pengurusan dokumen..."></textarea>
+            </div>
+
+            {{-- Grid Kartu Dokumen --}}
+            <h3 style="font-size:15px;font-weight:700;color:#0F2440;margin:20px 0 12px;">Daftar Kartu Dokumen Sertifikasi</h3>
+            <div class="bo-grid-3" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:14px;margin-bottom:20px;">
+                <template x-for="(doc, idx) in docs.items" :key="idx">
+                    <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;position:relative;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:28px;height:28px;border-radius:8px;background:rgba(15,36,64,0.08);display:flex;align-items:center;justify-content:center;color:#0F2440;">
+                                    <span class="material-icons-round" style="font-size:16px;" x-text="doc.icon || 'description'"></span>
+                                </div>
+                                <span style="font-size:12px;font-weight:700;color:#0F2440;" x-text="'Dokumen ' + (idx+1)"></span>
+                            </div>
+                            <button type="button" class="btn-icon danger" style="width:24px;height:24px;" @click="docs.items.splice(idx, 1)" title="Hapus Dokumen">
+                                <span class="material-icons-round" style="font-size:15px;">close</span>
+                            </button>
+                        </div>
+                        <div class="form-group" style="margin-bottom:8px;">
+                            <label class="bo-label" style="font-size:11px;">Nama Dokumen</label>
+                            <input type="text" class="bo-input" style="padding:6px 8px;font-size:12px;font-weight:600;" x-model="doc.title" placeholder="Passport & Buku Pelaut">
+                        </div>
+                        <div class="form-grid-2" style="gap:8px;margin-bottom:8px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="bo-label" style="font-size:11px;">Icon Material</label>
+                                <input type="text" class="bo-input" style="padding:6px 8px;font-size:12px;" x-model="doc.icon" placeholder="card_travel">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="bo-label" style="font-size:11px;">Slug URL</label>
+                                <input type="text" class="bo-input" style="padding:6px 8px;font-size:12px;" x-model="doc.slug" placeholder="passport">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="bo-label" style="font-size:11px;">Tag / Keterangan Subtitle</label>
+                            <input type="text" class="bo-input" style="padding:6px 8px;font-size:12px;" x-model="doc.tag" placeholder="Imigrasi & Dephub">
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            {{-- Callout Box Settings --}}
+            <div style="padding:14px;background:#f0f9ff;border-radius:12px;border:1.5px solid #bae6fd;">
+                <h4 style="font-size:13px;font-weight:700;color:#0369a1;margin:0 0 10px;display:flex;align-items:center;gap:6px;">
+                    <span class="material-icons-round" style="font-size:16px;">headset_mic</span>
+                    Box Bantuan & Tombol Aksi di Bawah Kartu Dokumen
+                </h4>
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label class="bo-label" style="font-size:11px;color:#0369a1;">Teks Bantuan / Informasi</label>
+                    <input type="text" class="bo-input" x-model="docs.callout_text" placeholder="Butuh pengurusan dokumen tambahan? Tim admisi DHS siap membantu...">
+                </div>
+                <div class="form-grid-2" style="gap:10px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="bo-label" style="font-size:11px;color:#0369a1;">Teks Tombol Aksi</label>
+                        <input type="text" class="bo-input" x-model="docs.callout_btn_text" placeholder="Ajukan Dokumen Online">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="bo-label" style="font-size:11px;color:#0369a1;">Link Tombol Aksi</label>
+                        <input type="text" class="bo-input" x-model="docs.callout_btn_link" placeholder="/layanan?type=dokumen">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Section: Mulai Karir Sukses Anda (CTA Banner) --}}
+        <div class="bo-card" style="margin-bottom:24px;">
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 16px;">
+                CTA Banner — Mulai Karir Sukses Anda
+            </h2>
+            <div class="form-group">
+                <label class="bo-label">Judul Banner (H2)</label>
+                <input type="text" class="bo-input" x-model="cta.title" placeholder="Mulai Karir Sukses Anda">
+            </div>
+            <div class="form-group">
+                <label class="bo-label">Paragraf Deskripsi</label>
+                <textarea class="bo-textarea" rows="2" x-model="cta.desc" placeholder="Denpasar Hotel School siap mengawal Anda..."></textarea>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="bo-label">Teks Tombol Pendaftaran</label>
+                    <input type="text" class="bo-input" x-model="cta.btn_text" placeholder="Pendaftaran Online">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="bo-label">Link Tombol Pendaftaran</label>
+                    <input type="text" class="bo-input" x-model="cta.btn_link" placeholder="/formulir-pendaftaran">
+                </div>
+            </div>
+        </div>
+
         {{-- Modal Tambah Kursus --}}
         <div class="bo-modal-backdrop" x-show="addModal.open" x-transition style="display:none;"
             @keydown.escape.window="addModal.open=false">
@@ -275,6 +391,16 @@
             ? (is_array($academyHeroRecord->section_content) ? $academyHeroRecord->section_content : json_decode($academyHeroRecord->section_content ?? '[]', true) ?? [])
             : [];
 
+        $academyDocsRecord = \App\Models\AboutPage::where('section_key', 'academy_documents')->first();
+        $academyDocs = $academyDocsRecord
+            ? (is_array($academyDocsRecord->section_content) ? $academyDocsRecord->section_content : json_decode($academyDocsRecord->section_content ?? '[]', true) ?? [])
+            : [];
+
+        $academyCtaRecord = \App\Models\AboutPage::where('section_key', 'academy_cta')->first();
+        $academyCta = $academyCtaRecord
+            ? (is_array($academyCtaRecord->section_content) ? $academyCtaRecord->section_content : json_decode($academyCtaRecord->section_content ?? '[]', true) ?? [])
+            : [];
+
         $catData = $categories->map(function ($cat) {
             return [
                 'id' => $cat->id,
@@ -300,6 +426,9 @@
 
     <script>
         function academyCompleteData() {
+            const rawDocs = @json($academyDocs);
+            const rawCta = @json($academyCta);
+
             return {
                 saved: false,
                 saving: false,
@@ -307,6 +436,40 @@
                 activeCat: @json($categories->first() ? $categories->first()->id : null),
                 hero: @json($academyHero),
                 categories: @json($catData),
+
+                docs: {
+                    badge: rawDocs.badge || 'Layanan Pendampingan Resmi',
+                    title: rawDocs.title || 'Layanan Pengurusan Dokumen Sertifikasi',
+                    desc: rawDocs.desc || 'Denpasar Hotel School mengawal dan mendampingi proses pengurusan sertifikasi maritim serta dokumen kerja luar negeri secara resmi & cepat:',
+                    items: (rawDocs.items && rawDocs.items.length > 0) ? rawDocs.items : [
+                        { title: 'Passport & Buku Pelaut', icon: 'card_travel',   slug: 'passport', tag: 'Imigrasi & Dephub' },
+                        { title: 'BST (Basic Safety)',     icon: 'anchor',        slug: 'bst',      tag: 'STCW 2010' },
+                        { title: 'SDSD (Security Duties)', icon: 'security',      slug: 'sdsd',     tag: 'ISPS Code VI/6' },
+                        { title: 'CCM (Crowd & Crisis)',   icon: 'groups',        slug: 'ccm',      tag: 'STCW V/2 Passenger' },
+                        { title: 'SSAT (Security Aware)',  icon: 'verified_user', slug: 'ssat',     tag: 'STCW VI/6 Security' },
+                        { title: 'PSCRB (Survival Craft)', icon: 'sailing',       slug: 'pscrb',    tag: 'Advanced Lifeboat' },
+                        { title: 'C1/D Visa (US Seaman)',  icon: 'badge',         slug: 'c1d-visa', tag: 'US Embassy Visa' }
+                    ],
+                    callout_text: rawDocs.callout_text || 'Butuh pengurusan dokumen tambahan? Tim admisi DHS siap membantu pendaftaran & konsultasi berkas online.',
+                    callout_btn_text: rawDocs.callout_btn_text || 'Ajukan Dokumen Online',
+                    callout_btn_link: rawDocs.callout_btn_link || '/layanan?type=dokumen'
+                },
+
+                cta: {
+                    title: rawCta.title || 'Mulai Karir Sukses Anda',
+                    desc: rawCta.desc || 'Denpasar Hotel School siap mengawal Anda menjadi profesional muda yang kompeten dan memiliki daya saing global. Gabung sekarang juga secara online.',
+                    btn_text: rawCta.btn_text || 'Pendaftaran Online',
+                    btn_link: rawCta.btn_link || '/formulir-pendaftaran'
+                },
+
+                addDocItem() {
+                    this.docs.items.push({
+                        title: 'Dokumen Baru',
+                        icon: 'description',
+                        slug: 'dokumen-baru',
+                        tag: 'Sertifikasi Resmi'
+                    });
+                },
 
                 addModal: { open: false, catId: null, catName: '', title: '' },
                 delModal: { open: false, courseId: null, title: '' },
@@ -367,7 +530,7 @@
                     const jsonHeaders = { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest' };
                     const promises = [];
 
-                    // 0. Save hero to about_pages (academy_hero key)
+                    // 0. Save hero, documents, and CTA to about_pages
                     promises.push(fetch('/backoffice/about-us/update', {
                         method: 'POST',
                         headers: jsonHeaders,
@@ -376,6 +539,27 @@
                                 academy_hero: {
                                     title: 'Akademi Hero',
                                     content: { title: this.hero.title || '', subtitle: this.hero.subtitle || '', bgImage: this.hero.bgImage || '' }
+                                },
+                                academy_documents: {
+                                    title: 'Layanan Pengurusan Dokumen',
+                                    content: {
+                                        badge: this.docs.badge || '',
+                                        title: this.docs.title || '',
+                                        desc: this.docs.desc || '',
+                                        items: this.docs.items || [],
+                                        callout_text: this.docs.callout_text || '',
+                                        callout_btn_text: this.docs.callout_btn_text || '',
+                                        callout_btn_link: this.docs.callout_btn_link || ''
+                                    }
+                                },
+                                academy_cta: {
+                                    title: 'CTA Akademi (Mulai Karir Sukses)',
+                                    content: {
+                                        title: this.cta.title || '',
+                                        desc: this.cta.desc || '',
+                                        btn_text: this.cta.btn_text || '',
+                                        btn_link: this.cta.btn_link || ''
+                                    }
                                 }
                             }
                         })

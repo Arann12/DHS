@@ -118,7 +118,7 @@ class BackofficeController extends Controller
                 $existingContent = is_array($section->section_content)
                     ? $section->section_content
                     : json_decode($section->section_content ?? '[]', true);
-                $newContent = array_replace_recursive($existingContent ?: [], $contentData);
+                $newContent = array_merge($existingContent ?: [], $contentData);
 
                 $section->update([
                     'section_title'   => $data['title'] ?? $section->section_title,
@@ -315,8 +315,8 @@ class BackofficeController extends Controller
                 $existingContent = is_array($section->section_content)
                     ? $section->section_content
                     : json_decode($section->section_content ?? '[]', true);
-                // Replace instead of merge — prevents array duplication on indexed arrays
-                $newContent = array_replace_recursive($existingContent ?: [], $contentData);
+                // Merge top-level keys — replaces indexed arrays cleanly
+                $newContent = array_merge($existingContent ?: [], $contentData);
                 $section->update([
                     'section_title'   => $data['title'] ?? $section->section_title,
                     'section_content' => $newContent,

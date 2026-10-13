@@ -320,17 +320,27 @@
 
     {{-- TAB 4: KEHIDUPAN KAMPUS --}}
     <div x-show="activeTab === 'campus'">
-        <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">4. Section Kehidupan & Lingkungan Kampus</h2>
+        <div class="bo-card" style="max-width:900px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0;">4. Section Kehidupan & Lingkungan Kampus (6 Foto)</h2>
+                <button type="button" class="btn-primary" style="font-size:12px;padding:6px 14px;" @click="campus.fotos.push({ src: '', alt: 'Foto ' + (campus.fotos.length + 1) })">
+                    <span class="material-icons-round" style="font-size:16px;vertical-align:middle;">add</span> Tambah Foto
+                </button>
+            </div>
             <div class="form-group">
                 <label class="bo-label">Judul Section</label>
                 <input type="text" class="bo-input" x-model="campus.title">
             </div>
             <div class="bo-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                 <template x-for="(foto, idx) in campus.fotos" :key="idx">
-                    <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
-                        <div style="font-size:12px;font-weight:700;color:#0F2440;margin-bottom:6px;" x-text="'Foto ' + (idx+1)"></div>
-                        <div style="width:100%;height:70px;border-radius:8px;overflow:hidden;border:1.5px dashed #d1d5db;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;"
+                    <div style="padding:12px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;position:relative;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                            <div style="font-size:12px;font-weight:700;color:#0F2440;" x-text="'Foto ' + (idx+1)"></div>
+                            <button type="button" x-show="campus.fotos.length > 3" class="btn-icon danger" style="width:22px;height:22px;" @click="campus.fotos.splice(idx, 1)" title="Hapus Slot Foto">
+                                <span class="material-icons-round" style="font-size:14px;">close</span>
+                            </button>
+                        </div>
+                        <div style="width:100%;height:80px;border-radius:8px;overflow:hidden;border:1.5px dashed #d1d5db;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;"
                              @click="$store.imageUpload.open(url => { campus.fotos[idx].src = url }, 'uploads/beranda')">
                             <template x-if="foto.src">
                                 <img :src="foto.src" style="width:100%;height:100%;object-fit:cover;">
@@ -544,10 +554,10 @@
         </div>
     </div>
 
-    {{-- TAB 9: PARTNERSHIP PROGRAM (PP DHS) --}}
+    {{-- TAB 9: PARTNERSHIP PROGRAM --}}
     <div x-show="activeTab === 'partners'">
         <div class="bo-card" style="max-width:800px;">
-            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">9. Section Partnership Program (PP DHS)</h2>
+            <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 20px;">9. Section Partnership Program</h2>
             <div class="form-group">
                 <label class="bo-label">Label Overline</label>
                 <input type="text" class="bo-input" x-model="partner.label">
@@ -668,7 +678,7 @@ function berandaCompleteData() {
     const db = window.__DB_SECTIONS__ || {};
     const h = db.hero || {}, a = db.about || {}, v = db.vision || {}, c = db.campus || {};
     const ac = db.academy || {}, f = db.facilities || {}, d = db.director || {};
-    const n = db.news || {}, p = db.partners || {}, ct = db.contact || {};
+    const n = db.news || {}, p = db.partner || db.partners || {}, ct = db.contact || {};
     return {
         saved: false,
         saving: false,
@@ -682,7 +692,7 @@ function berandaCompleteData() {
             { id:'facilities', label:'6. Fasilitas Dunia',    icon:'apartment' },
             { id:'director',   label:'7. Pesan Direktur',     icon:'record_voice_over' },
             { id:'news',       label:'8. Berita & Artikel',   icon:'article' },
-            { id:'partners',   label:'9. Kemitraan PP DHS',   icon:'handshake' },
+            { id:'partners',   label:'9. Partnership Program',   icon:'handshake' },
             { id:'contact',    label:'10. Kontak & Lokasi',   icon:'place' },
         ],
         hero: {
@@ -723,11 +733,21 @@ function berandaCompleteData() {
         },
         campus: {
             title: c.title || 'Kehidupan & Lingkungan Kampus',
-            fotos: c.fotos || [
-                { src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbRFStu23zaKKqIJeoNTPdSOcPof73N6z-I-QsGizCu594Eha4Mz0SejvG2hnF6yR68hPeN7xD_S1jEZRkzyCBrs8vDdvREWF-3OAPOgH3qHLgtcUvnZe8Rn1IBJAWejpEp4WOENNj0cc7gOgDOekzGxeBw1_w1YoCEDF65kipejrZCRT_xlGbzjwQUJm4_CNr8F3jauVVHFX03WogUy7RZO30XkuqCSw4mJEZ3cNqvzP0L5HyEQTniA', alt: 'Siswa dalam seragam' },
-                { src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDTY_0q-eeJ-lg9SUN09cLtSeVQR488pa_Xwag_o53lQzWT6mJR5WZs7yr6XbePzFxR3qxgiFvrEoNRgTdBGXSDDjwndYp88gIFAbcxGsNUdAZhXNledP3kFKkUXRYQkqkNW-yjqNZuHAtYEw1dMPKqJnAeTZFdyzrZPK3Opj_kuWb_k7Th8YmDJkdeDzKN1uwEyWzuDzSZ-ONuUd0TRqQTctN_cqSFal0SCwZhd6WmrTA8-CwwcCNwoQ', alt: 'Kolam Resort Simulasi' },
-                { src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDV0lh3gGKxkEZoxy7owBdHzRVEZvkTUx_cLcTOGAorH2W5Hlj93QcVs4ZTcVZhy6ReTblju-pImR6huMYYKK3Ht_2BydhaglchgK_UjAw6j0_cBbtChI08T9-9SrN4y7LPA0hvtQx8P7Ro6tEHZJwQYTY1SK15KI-kaVZnE7hYSv9HI7UerrDb0fPLXglYz0YNzfv5YcT60EHMmhqSQ4yMT6QGwO7ZAyM-JwghKblh8sWSOMmwJGfTKA', alt: 'Praktikum Dapur Chef' }
-            ]
+            fotos: (() => {
+                const defaults = [
+                    { src: '/image/campus_students.jpg', alt: 'Praktik Mahasiswa Perhotelan' },
+                    { src: '/image/culinary_students.jpg', alt: 'Praktikum Culinary Arts & Kitchen Chef' },
+                    { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop', alt: 'Pelatihan Restaurant & F&B Service' },
+                    { src: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?w=800&auto=format&fit=crop', alt: 'Praktik Bartending & Mixology' },
+                    { src: '/image/hotel_lobby.jpg', alt: 'Simulasi Perhotelan & Hospitality Suite' },
+                    { src: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop', alt: 'Simulasi Front Office & Pelayanan Tamu' }
+                ];
+                const list = (c.fotos && Array.isArray(c.fotos)) ? [...c.fotos] : [];
+                while (list.length < 6) {
+                    list.push(defaults[list.length] || { src: '', alt: 'Foto ' + (list.length + 1) });
+                }
+                return list;
+            })()
         },
         academy: {
             label: ac.label || 'AKADEMI UNGGULAN',
@@ -769,7 +789,7 @@ function berandaCompleteData() {
         },
         partner: {
             label: p.label || 'Kemitraan & Jaringan Global',
-            title: p.title || 'Partnership Program (PP DHS)',
+            title: p.title || 'Partnership Program',
             desc: p.desc || 'DHS berkomitmen penuh untuk mengintegrasikan pendidikan vokasi dengan dunia industri global. Program ini menjamin penempatan magang internasional (OJT) berkualitas dan penyaluran kerja langsung di hotel bintang 4 & 5 serta kapal pesiar mewah tanpa potongan agen fee (Zero Agent Fee).'
         },
         contact: {
