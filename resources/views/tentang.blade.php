@@ -287,8 +287,8 @@
     </section>
 
     <!-- Partnership & Mitra Section -->
-    <section class="py-20 md:py-24 bg-white/50 border-t border-b border-black/5 overflow-hidden">
-        <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-16">
+    <section class="py-12 md:py-16 bg-white/50 border-t border-b border-black/5 overflow-hidden">
+        <div class="max-w-[1280px] mx-auto px-5 md:px-16 text-center mb-10">
             <span class="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-primary mb-4 block">
                 <span data-id="Kemitraan &amp; Jaringan Global" data-en="Partnership &amp; Global Network">Kemitraan &amp; Jaringan Global</span>
             </span>
@@ -303,20 +303,24 @@
         @php
             $renderCard = function($item) {
                 $name = e(is_array($item) ? ($item['name'] ?? '') : ($item->name ?? ''));
-                $sub  = e(is_array($item) ? ($item['sub'] ?? ($item['country'] ?? '')) : ($item->country ?? ''));
                 $logo = is_array($item) ? ($item['logo_url'] ?? '') : ($item->logo_url ?? '');
-                $font = 'font-sans text-sm font-bold tracking-wider';
-                $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex items-center justify-center w-48 h-24 p-4 cursor-default select-none shrink-0 rounded-lg">';
+
+                $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center w-48 h-32 p-4 cursor-default select-none shrink-0 rounded-lg gap-3">';
+
+                // Logo area
+                $out .= '<div class="flex items-center justify-center w-full h-16 flex-shrink-0">';
                 if (!empty($logo)) {
-                    $out .= '<div class="flex items-center justify-center w-full h-full p-2"><img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy"></div>';
+                    $out .= '<img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy">';
                 } else {
-                    $out .= '<div class="text-center px-2">';
-                    $out .= '<div class="' . $font . ' text-dhs-navy line-clamp-2">' . $name . '</div>';
-                    if ($sub) {
-                        $out .= '<div class="text-[0.55rem] font-sans tracking-[0.2em] text-muted-light uppercase mt-1">' . $sub . '</div>';
-                    }
-                    $out .= '</div>';
+                    $out .= '<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center"><span class="material-icons text-slate-400 text-2xl">business</span></div>';
                 }
+                $out .= '</div>';
+
+                // Text area below logo
+                $out .= '<div class="text-center w-full pt-2 border-t border-slate-100">';
+                $out .= '<div class="font-sans text-[0.7rem] font-bold tracking-wide text-dhs-navy line-clamp-1 leading-tight">' . $name . '</div>';
+                $out .= '</div>';
+
                 $out .= '</div>';
                 return $out;
             };
@@ -338,7 +342,7 @@
             {{-- Row 1: Mitra Industri — scroll left --}}
             @if($mitraIndustri->count() > 0)
             <div class="marquee-container relative flex overflow-hidden w-full">
-                <div class="marquee-track flex shrink-0 gap-6 py-4 animate-marquee-left" data-direction="left">
+                <div class="marquee-track flex shrink-0 gap-8 py-4 animate-marquee-left" data-direction="left">
                     {!! $marqueeItems($mitraIndustri) !!}
                 </div>
             </div>
@@ -346,7 +350,7 @@
             {{-- Row 2: Partnership — scroll right --}}
             @if($partnershipItems->count() > 0)
             <div class="marquee-container relative flex overflow-hidden w-full">
-                <div class="marquee-track flex shrink-0 gap-6 py-4 animate-marquee-right" data-direction="right">
+                <div class="marquee-track flex shrink-0 gap-8 py-4 animate-marquee-right" data-direction="right">
                     {!! $marqueeItems($partnershipItems) !!}
                 </div>
             </div>

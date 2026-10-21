@@ -168,9 +168,9 @@
         align-items: center;
     }
 
-    /* Jarak pemisah 10cm antara hero section dengan content */
+    /* Jarak pemisah 4cm antara hero section dengan content */
     .pd-content-spacer {
-        padding-top: 10cm;
+        padding-top: 4cm;
         padding-bottom: 120px;
     }
     @media (max-width: 768px) {

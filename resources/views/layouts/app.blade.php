@@ -842,7 +842,7 @@
             autoDisplay: false
         }, 'google_translate_element2');
     }
-    // Re-assert full-bleed layout after Translate mutates body styles (Android).
+    // Re-assert full-bleed layout after Translate mutates body styles
     function dhsFixTranslateLayout() {
         try {
             var b = document.body, h = document.documentElement;
@@ -854,18 +854,69 @@
             b.style.setProperty('width', '100%', 'important');
             b.style.setProperty('max-width', '100%', 'important');
             b.style.setProperty('position', 'relative', 'important');
+            b.style.setProperty('overflow-x', 'hidden', 'important');
             h.style.setProperty('overflow-x', 'hidden', 'important');
             h.style.setProperty('width', '100%', 'important');
+            h.style.setProperty('max-width', '100%', 'important');
             var nav = document.getElementById('main-nav');
             if (nav) {
                 nav.style.setProperty('left', '0', 'important');
                 nav.style.setProperty('right', '0', 'important');
                 nav.style.setProperty('width', '100%', 'important');
+                nav.style.setProperty('max-width', '100%', 'important');
+                nav.style.setProperty('transform', 'none', 'important');
             }
         } catch (e) {}
     }
+    // MutationObserver to detect translate changes
+    var dhsTranslateObserver = null;
+    function dhsWatchTranslate() {
+        if (dhsTranslateObserver) return;
+        dhsTranslateObserver = new MutationObserver(function(mutations) {
+            var needsFix = false;
+            for (var i = 0; i < mutations.length; i++) {
+                var m = mutations[i];
+                if (m.type === 'attributes' && (m.attributeName === 'style' || m.attributeName === 'class')) {
+                    needsFix = true;
+                    break;
+                }
+                if (m.type === 'childList' && m.addedNodes.length > 0) {
+                    for (var j = 0; j < m.addedNodes.length; j++) {
+                        var node = m.addedNodes[j];
+                        if (node.nodeType === 1 && (node.className && node.className.indexOf('goog-te') !== -1)) {
+                            needsFix = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (needsFix) {
+                dhsFixTranslateLayout();
+            }
+        });
+        dhsTranslateObserver.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: false,
+            attributeFilter: ['style', 'class']
+        });
+    }
     setTimeout(dhsFixTranslateLayout, 800);
     setTimeout(dhsFixTranslateLayout, 2500);
+    setTimeout(dhsWatchTranslate, 1000);
+    // Also fix on language switch
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            var combo = document.querySelector('#google_translate_element2 .goog-te-combo');
+            if (combo) {
+                combo.addEventListener('change', function() {
+                    setTimeout(dhsFixTranslateLayout, 100);
+                    setTimeout(dhsFixTranslateLayout, 500);
+                    setTimeout(dhsFixTranslateLayout, 1500);
+                });
+            }
+        }, 2000);
+    });
     </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
@@ -905,8 +956,26 @@
     function switchLang(lang) {
         var combo = document.querySelector('#google_translate_element2 .goog-te-combo');
         if (combo) {
+            // Reload page when switching back to Indonesian (original lang)
+            if (lang === 'id') {
+                var currentLang = combo.value;
+                if (currentLang && currentLang !== 'id' && currentLang !== '') {
+                    // Was translated, now switching back → reload for clean state
+                    combo.value = lang;
+                    combo.dispatchEvent(new Event('change'));
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 300);
+                    document.getElementById('lang-menu').classList.remove('lang-show');
+                    return;
+                }
+            }
             combo.value = lang;
             combo.dispatchEvent(new Event('change'));
+            // Fix layout after switch
+            setTimeout(function() { if (typeof dhsFixTranslateLayout === 'function') dhsFixTranslateLayout(); }, 100);
+            setTimeout(function() { if (typeof dhsFixTranslateLayout === 'function') dhsFixTranslateLayout(); }, 500);
+            setTimeout(function() { if (typeof dhsFixTranslateLayout === 'function') dhsFixTranslateLayout(); }, 1500);
         }
         document.getElementById('lang-menu').classList.remove('lang-show');
     }

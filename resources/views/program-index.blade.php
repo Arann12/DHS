@@ -118,7 +118,7 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Hero & Content Spacer 10cm */
+    /* Hero & Content Spacer 4cm */
     .pi-hero-section {
         height: 75vh;
         min-height: 580px;
@@ -128,7 +128,7 @@
         align-items: center;
     }
     .pi-content-spacer {
-        padding-top: 10cm;
+        padding-top: 4cm;
         padding-bottom: 120px;
     }
     @media (max-width: 768px) {

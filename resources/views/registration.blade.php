@@ -8,10 +8,14 @@
 $programs = [];
 if (isset($categories) && $categories->count() > 0) {
     foreach ($categories as $cat) {
-        $programs[$cat->category_key] = [
-            'label'   => $cat->category_name,
-            'options' => $cat->programs->where('is_active', 1)->pluck('title')->toArray(),
-        ];
+        $activePrograms = $cat->programs->where('is_active', 1)->pluck('title')->toArray();
+        // Only include category if it has active programs
+        if (count($activePrograms) > 0) {
+            $programs[$cat->category_key] = [
+                'label'   => $cat->category_name,
+                'options' => $activePrograms,
+            ];
+        }
     }
 } else {
     // Default fallback if categories not loaded
@@ -162,28 +166,23 @@ if (isset($categories) && $categories->count() > 0) {
                         required>
                 </div>
 
-                <!-- Pilih Kategori Durasi -->
+                <!-- Pilih Program Studi -->
                 <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Pilih Kategori Durasi" data-en="Select Duration Category">Pilih Kategori Durasi</span> <span class="text-red-500">*</span></label>
-                    <select name="kategori" id="reg-kategori"
-                        class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all bg-white cursor-pointer @error('kategori') border-red-400 @enderror"
-                        required>
-                        <option value="" disabled selected>-- Pilih Kategori Durasi --</option>
-                        @foreach($programs as $key => $cat)
-                        <option value="{{ $key }}" {{ old('kategori') === $key ? 'selected' : '' }}>{{ $cat['label'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Daftar Program -->
-                <div>
-                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Daftar Program" data-en="Select Program">Daftar Program</span> <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-text-light mb-2"><span data-id="Pilih Program Studi" data-en="Select Study Program">Pilih Program Studi</span> <span class="text-red-500">*</span></label>
                     <select name="program" id="reg-program"
                         class="w-full border border-black/15 rounded-lg px-4 py-3 text-sm font-['Inter'] outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all bg-white cursor-pointer @error('program') border-red-400 @enderror"
                         required>
-                        <option value="" disabled selected>-- Pilih program setelah memilih kategori --</option>
+                        <option value="" disabled selected>-- Pilih Program Studi --</option>
+                        @foreach($programs as $key => $cat)
+                        <optgroup label="{{ $cat['label'] }}" style="font-weight: 700; color: #1A365D;">
+                            @foreach($cat['options'] as $prog)
+                            <option value="{{ $prog }}" style="padding-left: 1rem; color: #0F2440;" {{ old('program') === $prog ? 'selected' : '' }}>
+                                {{ $prog }}
+                            </option>
+                            @endforeach
+                        </optgroup>
+                        @endforeach
                     </select>
-                    <script id="programs-data" type="application/json">@json($programs)</script>
                 </div>
 
                 <!-- Special Request -->
@@ -312,43 +311,6 @@ if (isset($categories) && $categories->count() > 0) {
 </section>
 
 <script>
-const programsData = JSON.parse(document.getElementById('programs-data').textContent);
-
-// Dropdown Kategori Change
-document.getElementById('reg-kategori').addEventListener('change', function() {
-    updateProgramOptions(this.value);
-});
-
-function updateProgramOptions(kategori, selectedProgram = null) {
-    const programSelect = document.getElementById('reg-program');
-    programSelect.innerHTML = '<option value="" disabled selected>-- Pilih program --</option>';
-
-    if (programsData[kategori]) {
-        programsData[kategori].options.forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt;
-            option.textContent = opt;
-            if (selectedProgram && opt.includes(selectedProgram)) {
-                option.selected = true;
-            }
-            programSelect.appendChild(option);
-        });
-    }
-}
-
-// Select program from course card button
-function selectProgram(kategori, programTitle) {
-    const tabBtn = document.querySelector(`#reg-filter-tabs .filter-tab-btn[data-target="${kategori}"]`);
-    if (tabBtn) tabBtn.click();
-
-    const selectKat = document.getElementById('reg-kategori');
-    selectKat.value = kategori;
-    updateProgramOptions(kategori, programTitle);
-
-    // Smooth scroll down to form
-    document.getElementById('form-pendaftaran').scrollIntoView({ behavior: 'smooth' });
-}
-
 function showFileName(input, labelId) {
     const label = document.getElementById(labelId);
     if (input.files && input.files[0]) {
@@ -367,20 +329,6 @@ function showFileName(input, labelId) {
 function resetFormState() {
     document.getElementById('label-pendaftaran').textContent = 'Choose File | No file chosen';
     document.getElementById('label-program').textContent = 'Choose File | No file chosen';
-}
-
-// Restore old inputs if validation error
-const oldKategori = "{{ old('kategori') }}";
-const oldProgram  = "{{ old('program') }}";
-if (oldKategori) {
-    updateProgramOptions(oldKategori);
-    document.getElementById('reg-kategori').value = oldKategori;
-    if (oldProgram) {
-        document.getElementById('reg-program').value = oldProgram;
-    }
-} else {
-    // Initial default options for first category
-    updateProgramOptions('internasional');
 }
 </script>
 

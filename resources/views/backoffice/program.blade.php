@@ -172,11 +172,12 @@
                                             placeholder="6 Bulan / 1 Tahun">
                                     </div>
                                     <div class="form-group">
-                                        <label class="bo-label" style="font-size:11px;">Status</label>
-                                        <select class="bo-input" style="padding:7px;" x-model="course.is_active">
-                                            <option :value="true">Aktif</option>
-                                            <option :value="false">Nonaktif</option>
-                                        </select>
+                                        <label class="bo-label" style="font-size:11px;">Tampilkan di Formulir</label>
+                                        <button type="button" @click="course.is_active = !course.is_active"
+                                            :style="'padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid;transition:all 0.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;' + (course.is_active ? 'background:#d1fae5;border-color:#6ee7b7;color:#065f46;' : 'background:#fee2e2;border-color:#fca5a5;color:#991b1b;')">
+                                            <span class="material-icons-round" style="font-size:16px;" x-text="course.is_active ? 'visibility' : 'visibility_off'"></span>
+                                            <span x-text="course.is_active ? 'Tampil' : 'Disembunyikan'"></span>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;">
