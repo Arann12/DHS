@@ -468,6 +468,41 @@
             transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1),
                 transform 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
         }
+
+        /* ================================================================
+            PROSE CONTENT RESPONSIVE (Article/CMS Content)
+        ================================================================ */
+        .prose img,
+        .prose video {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block;
+        }
+
+        .prose table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .prose iframe {
+            max-width: 100%;
+        }
+
+        .prose pre {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .prose {
+                font-size: 15px;
+            }
+            .prose h1 { font-size: 1.75rem; }
+            .prose h2 { font-size: 1.5rem; }
+            .prose h3 { font-size: 1.25rem; }
+        }
     </style>
     @stack('styles')
 </head>
