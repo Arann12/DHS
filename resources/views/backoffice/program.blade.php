@@ -17,6 +17,29 @@
             <span class="material-icons-round">error</span> <span x-text="errorMsg"></span>
         </div>
 
+        {{-- Banner Atur Harga Program --}}
+        <div class="bo-card" style="margin-bottom:20px;padding:16px 20px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1.5px solid #bfdbfe;border-radius:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:42px;height:42px;border-radius:10px;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <span class="material-icons-round" style="font-size:24px;">price_change</span>
+                </div>
+                <div>
+                    <h3 style="margin:0;font-size:15px;font-weight:800;color:#1e3a8a;">Pengaturan Harga &amp; Tarif Setiap Program</h3>
+                    <div style="font-size:12.5px;color:#1e40af;margin-top:2px;">Atur biaya pendidikan resmi semua program agar terkunci otomatis di form pendaftaran siswa (Bayar Lunas &amp; Bayar DP).</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <a href="/backoffice/program-kategori" class="btn-secondary" style="font-size:13px;padding:9px 16px;background:#ffffff;border:1.5px solid #bfdbfe;">
+                    <span class="material-icons-round" style="font-size:18px;color:#1e3a8a;">account_tree</span>
+                    <span style="font-weight:700;color:#1e3a8a;">Kelola Kategori &amp; Program</span>
+                </a>
+                <a href="/backoffice/program-tarif" class="btn-primary" style="font-size:13px;padding:9px 18px;box-shadow:0 3px 10px rgba(37,99,235,0.25);">
+                    <span class="material-icons-round" style="font-size:18px;">tune</span>
+                    <span>Buka Pengaturan Tarif Program</span>
+                </a>
+            </div>
+        </div>
+
         {{-- Hero Section --}}
         <div class="bo-card" style="margin-bottom:20px;">
             <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 16px;">Hero Section �

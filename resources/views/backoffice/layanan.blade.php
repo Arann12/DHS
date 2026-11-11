@@ -137,6 +137,18 @@
                                 </div>
                                 <div style="font-weight:700;color:#1A365D;font-size:13px;" x-text="item.program"></div>
                                 <div style="font-size:11px;color:#718096;" x-text="item.skemaOrTujuan"></div>
+                                <template x-if="item.payment_mode === 'dp'">
+                                    <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;">
+                                        <span class="badge badge-green" style="font-size:10.5px;font-weight:700;" x-text="'DP: ' + item.nominal_formatted"></span>
+                                        <span x-show="item.is_dp_pending" class="badge" style="font-size:10.5px;font-weight:700;background:#fef3c7;color:#b45309;border:1px solid #fde68a;" x-text="'Sisa Piutang: ' + item.sisa_formatted"></span>
+                                        <span x-show="item.is_dp_lunas" class="badge badge-blue" style="font-size:10.5px;font-weight:700;">Lunas (Piutang Terbayar)</span>
+                                    </div>
+                                </template>
+                                <template x-if="item.payment_mode !== 'dp' && item.nominal_pembayaran">
+                                    <div style="margin-top:3px;">
+                                        <span class="badge badge-green" style="font-size:10.5px;font-weight:700;" x-text="item.nominal_formatted"></span>
+                                    </div>
+                                </template>
                             </td>
                             <td>
                                 <template x-if="item.link_berkas">
@@ -265,6 +277,50 @@
                             <label class="bo-label">Rincian / Special Request Dari Form</label>
                             <div class="bo-textarea" style="background:#fafafa;min-height:90px;white-space:pre-line;font-size:13px;" x-text="selectedItem.special_request || 'Tidak ada catatan.'"></div>
                         </div>
+
+                        {{-- Informasi Pembayaran & Kas --}}
+                        <div style="grid-column:1/-1;border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;"
+                             :style="selectedItem.is_dp_pending ? 'background:#fffbeb;border:1.5px solid #fde68a;' : 'background:#f0fdf4;border:1px solid #bbf7d0;'">
+                            <div>
+                                <div style="font-size:11px;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:6px;"
+                                     :style="selectedItem.is_dp_pending ? 'color:#b45309;' : 'color:#166534;'">
+                                    <span>Status Pembayaran Layanan</span>
+                                    <span x-show="selectedItem.payment_mode === 'dp'" style="padding:2px 8px;border-radius:99px;font-size:10px;font-weight:800;"
+                                          :style="selectedItem.is_dp_pending ? 'background:#fef3c7;color:#b45309;' : 'background:#dcfce7;color:#15803d;'"
+                                          x-text="selectedItem.is_dp_pending ? 'DP / Belum Lunas' : 'DP — Sudah Lunas'"></span>
+                                </div>
+                                <template x-if="selectedItem.payment_mode === 'dp'">
+                                    <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:14px;font-size:13px;">
+                                        <div>Total Biaya: <strong style="color:#0f172a;" x-text="selectedItem.total_biaya_formatted"></strong></div>
+                                        <div>Terbayar: <strong style="color:#15803d;" x-text="selectedItem.paid_total_formatted"></strong></div>
+                                        <div x-show="selectedItem.is_dp_pending">Sisa Piutang: <strong style="color:#b45309;" x-text="selectedItem.sisa_formatted"></strong></div>
+                                    </div>
+                                </template>
+                                <template x-if="selectedItem.payment_mode !== 'dp'">
+                                    <div style="font-size:18px;font-weight:800;color:#15803d;" x-text="selectedItem.nominal_pembayaran ? selectedItem.nominal_formatted : 'Belum Ada Pembayaran'"></div>
+                                </template>
+                                <div style="font-size:11.5px;margin-top:3px;"
+                                     :style="selectedItem.is_dp_pending ? 'color:#92400e;' : 'color:#166534;'"
+                                     x-text="selectedItem.is_dp_pending ? 'DP tercatat masuk kas & sisa tagihan otomatis tercatat sebagai Piutang (Uang di Lapangan)' : (selectedItem.nominal_pembayaran ? 'Tercatat otomatis sebagai penerimaan kas kampus' : 'Pemohon tidak mengisi nominal pembayaran')"></div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                <template x-if="selectedItem.is_dp_pending">
+                                    <a href="/backoffice/kas" class="btn-secondary" style="font-size:12px;padding:7px 12px;border-color:#d97706;color:#b45309;background:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                                        <span class="material-icons-round" style="font-size:16px;">payments</span> Kelola Piutang di Kas
+                                    </a>
+                                </template>
+                                <template x-if="selectedItem.bukti_pembayaran">
+                                    <a :href="selectedItem.bukti_pembayaran" target="_blank" class="btn-secondary" style="font-size:12px;padding:7px 12px;background:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                        <span class="material-icons-round" style="font-size:16px;">receipt</span> Bukti Transfer
+                                    </a>
+                                </template>
+                                <template x-if="selectedItem.kas_transaction_id">
+                                    <a :href="'/backoffice/kas/' + selectedItem.kas_transaction_id + '/kwitansi'" target="_blank" class="btn-primary" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                                        <span class="material-icons-round" style="font-size:16px;">receipt_long</span> Cetak Kwitansi Kas
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- FORM JAWABAN ADMIN --}}
@@ -335,7 +391,7 @@
             $linkDrive = trim($matches[1]);
         }
 
-        return [
+        return array_merge([
             'id'              => $reg->id,
             'tgl'             => \Carbon\Carbon::parse($reg->created_at)->format('d M Y H:i'),
             'nama'            => $reg->full_name,
@@ -347,11 +403,14 @@
             'skemaOrTujuan'   => $isBeasiswa ? 'Pengajuan Beasiswa' : 'Pengajuan Dokumen',
             'special_request' => $reg->special_request ?? '',
             'link_berkas'     => $linkDrive,
+            'bukti_pembayaran'   => $reg->bukti_pembayaran ? asset($reg->bukti_pembayaran) : null,
+            'kas_transaction_id' => $reg->kas_transaction_id,
+            'piutang_kas_id'     => $reg->piutang_kas_id,
             'status'          => $reg->status ?? 'pending',
             'admin_reply'     => $reg->admin_reply ?? '',
             'notes'           => $reg->notes ?? '',
             'replied_at'      => $reg->replied_at ? \Carbon\Carbon::parse($reg->replied_at)->format('d M Y H:i') : null,
-        ];
+        ], $reg->getPaymentSummary());
     });
     $initialStats = $stats ?? ['total' => 0, 'pending' => 0, 'accepted' => 0, 'beasiswa' => 0, 'dokumen' => 0];
 @endphp

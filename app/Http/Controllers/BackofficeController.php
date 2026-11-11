@@ -19,8 +19,13 @@ use App\Models\Registration;
 use App\Models\Admission;
 use App\Models\AboutPage;
 use App\Models\ActivityLog;
+use App\Models\KasTransaction;
+use App\Models\KasCategory;
+use App\Models\KasProject;
+use App\Models\KasUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class BackofficeController extends Controller
@@ -342,7 +347,7 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $programs   = Program::with('category')->orderBy('category_id')->orderBy('display_order')->get();
-        $categories = ProgramCategory::with('programs')->where('is_active', 1)->orderBy('display_order')->get();
+        $categories = ProgramCategory::with('programs')->orderBy('display_order')->get();
         return view('backoffice.program', ['user' => session('backoffice_user'), 'programs' => $programs, 'categories' => $categories]);
     }
 
@@ -350,7 +355,7 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $program    = Program::with('category')->findOrFail($id);
-        $categories = ProgramCategory::where('is_active', 1)->orderBy('display_order')->get();
+        $categories = ProgramCategory::orderBy('display_order')->get();
         return view('backoffice.program-edit', [
             'user'       => session('backoffice_user'),
             'program'    => $program,
@@ -412,6 +417,19 @@ class BackofficeController extends Controller
             $data['slug'] = Str::slug($data['title']);
         }
 
+        // Handle tuition_fee cleanly (accepts formatted "15.000.000" or blank to clear)
+        $hasTuitionKey = $request->has('tuition_fee');
+        $rawTuition = $hasTuitionKey ? trim((string) ($request->input('tuition_fee') ?? '')) : null;
+        if ($hasTuitionKey) {
+            if ($rawTuition === '') {
+                unset($data['tuition_fee']);
+                $program->tuition_fee = null;
+            } else {
+                $cleanTuition = preg_replace('/[^\d]/', '', $rawTuition);
+                $data['tuition_fee'] = $cleanTuition !== '' ? (float) $cleanTuition : null;
+            }
+        }
+
         if ($request->hasFile('thumbnail')) {
             $this->deleteOldFile($program->thumbnail_url);
             $file = $request->file('thumbnail');
@@ -421,6 +439,9 @@ class BackofficeController extends Controller
         }
 
         $program->update(array_filter($data, fn($v) => $v !== null));
+        if ($hasTuitionKey && $rawTuition === '') {
+            $program->save();
+        }
         $this->logActivity('update', 'programs', $id, $old, $program->fresh()->toArray());
 
         if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
@@ -436,6 +457,111 @@ class BackofficeController extends Controller
         $this->logActivity('delete', 'programs', $id, $program->toArray());
         $program->delete();
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Halaman Pengaturan Tarif & Harga Setiap Program
+     * Route: GET /backoffice/program-tarif
+     */
+    public function programTarifIndex()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $categories = ProgramCategory::with(['programs' => function ($q) {
+            $q->orderBy('display_order')->orderBy('title');
+        }])->orderBy('display_order')->get();
+
+        $allPrograms = Program::with('category')->orderBy('category_id')->orderBy('display_order')->get();
+
+        $totalPrograms = $allPrograms->count();
+        $pricedCount   = $allPrograms->filter(fn($p) => (float)$p->tuition_fee > 0)->count();
+        $unpricedCount = $totalPrograms - $pricedCount;
+
+        return view('backoffice.program-tarif', [
+            'user'          => session('backoffice_user'),
+            'categories'    => $categories,
+            'allPrograms'   => $allPrograms,
+            'totalPrograms' => $totalPrograms,
+            'pricedCount'   => $pricedCount,
+            'unpricedCount' => $unpricedCount,
+        ]);
+    }
+
+    /**
+     * Update Tarif 1 Program Cepat (via AJAX / Form)
+     * Route: POST /backoffice/program-tarif/update-single
+     */
+    public function programTarifUpdateSingle(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'program_id'  => 'required|exists:programs,id',
+            'tuition_fee' => 'nullable|string',
+        ]);
+
+        $program = Program::findOrFail($validated['program_id']);
+        $old = $program->toArray();
+
+        $rawFee = trim((string) ($request->input('tuition_fee') ?? ''));
+        if ($rawFee === '') {
+            $program->tuition_fee = null;
+        } else {
+            $cleanFee = preg_replace('/[^\d]/', '', $rawFee);
+            $program->tuition_fee = $cleanFee !== '' ? (float) $cleanFee : null;
+        }
+        $program->save();
+
+        $this->logActivity('update_tuition_fee', 'programs', $program->id, $old, $program->fresh()->toArray());
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success'     => true,
+                'program_id'  => $program->id,
+                'tuition_fee' => $program->tuition_fee,
+                'fee_display' => $program->tuition_fee ? 'Rp ' . number_format($program->tuition_fee, 0, ',', '.') : '-',
+                'message'     => 'Tarif untuk ' . $program->title . ' berhasil diperbarui.',
+            ]);
+        }
+
+        return back()->with('success', 'Tarif untuk ' . $program->title . ' berhasil diperbarui.');
+    }
+
+    /**
+     * Update Semua Tarif Program Sekaligus
+     * Route: POST /backoffice/program-tarif/update-all
+     */
+    public function programTarifUpdateAll(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $fees = $request->input('fees', []);
+        $updatedCount = 0;
+
+        foreach ($fees as $progId => $rawFee) {
+            $program = Program::find($progId);
+            if (!$program) continue;
+
+            $val = trim((string) $rawFee);
+            if ($val === '') {
+                $newFee = null;
+            } else {
+                $digits = preg_replace('/[^\d]/', '', $val);
+                $newFee = $digits !== '' ? (float) $digits : null;
+            }
+
+            if ($program->tuition_fee != $newFee) {
+                $program->tuition_fee = $newFee;
+                $program->save();
+                $updatedCount++;
+            }
+        }
+
+        $msg = $updatedCount > 0
+            ? "Berhasil memperbarui tarif untuk {$updatedCount} program."
+            : 'Tidak ada perubahan tarif program yang disimpan.';
+
+        return back()->with('success', $msg);
     }
 
     public function programCategoryUpdate(Request $request, $id)
@@ -458,6 +584,290 @@ class BackofficeController extends Controller
         return back()->with('success', 'Kategori berhasil diperbarui.');
     }
 
+    /**
+     * DEDICATED MENU: Kelola Kategori & Anak Program
+     * Route: GET /backoffice/program-kategori
+     */
+    public function programKategoriIndex()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $categories = ProgramCategory::with(['programs' => function ($q) {
+            $q->orderBy('display_order')->orderBy('id');
+        }])->orderBy('display_order')->orderBy('id')->get();
+
+        $totalCategories = $categories->count();
+        $totalPrograms   = Program::count();
+        $activePrograms  = Program::where('is_active', 1)->count();
+        $activeCats      = $categories->where('is_active', 1)->count();
+
+        return view('backoffice.program-kategori', [
+            'user'            => session('backoffice_user'),
+            'categories'      => $categories,
+            'totalCategories' => $totalCategories,
+            'totalPrograms'   => $totalPrograms,
+            'activePrograms'  => $activePrograms,
+            'activeCats'      => $activeCats,
+        ]);
+    }
+
+    /**
+     * Simpan Kategori Program Baru
+     * Route: POST /backoffice/program-kategori/store
+     */
+    public function programCategoryStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'category_name'         => 'required|string|max:255',
+            'subtitle'              => 'nullable|string|max:255',
+            'description'           => 'nullable|string',
+            'career_opportunities'  => 'nullable|string',
+            'initial_program_title' => 'nullable|string|max:255',
+            'display_order'         => 'nullable|integer',
+            'is_active'             => 'nullable',
+        ]);
+
+        $baseKey = Str::slug($validated['category_name']) ?: ('kategori-' . time());
+        $key     = $baseKey;
+        $seq     = 2;
+        while (ProgramCategory::where('category_key', $key)->exists()) {
+            $key = $baseKey . '-' . $seq;
+            $seq++;
+        }
+
+        $nextOrder = (isset($validated['display_order']) && $validated['display_order'] !== '' && $validated['display_order'] !== null)
+            ? (int) $validated['display_order']
+            : (int) (ProgramCategory::max('display_order') ?? 0) + 1;
+
+        $category = ProgramCategory::create([
+            'category_key'         => $key,
+            'category_name'        => trim($validated['category_name']),
+            'subtitle'             => trim((string) ($validated['subtitle'] ?? '')) ?: null,
+            'description'          => trim((string) ($validated['description'] ?? '')) ?: null,
+            'career_opportunities' => trim((string) ($validated['career_opportunities'] ?? '')) ?: null,
+            'is_active'            => $request->boolean('is_active', true) ? 1 : 0,
+            'display_order'        => $nextOrder,
+        ]);
+
+        $this->logActivity('create', 'program_categories', $category->id, null, $category->toArray());
+
+        // Buat anak program perdana jika diisi
+        $initTitle = trim((string) ($validated['initial_program_title'] ?? ''));
+        if ($initTitle !== '') {
+            $baseSlug = Str::slug($initTitle) ?: ('program-' . time());
+            $slug     = $baseSlug;
+            $sSeq     = 2;
+            while (Program::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $sSeq;
+                $sSeq++;
+            }
+            Program::create([
+                'category_id'   => $category->id,
+                'title'         => $initTitle,
+                'slug'          => $slug,
+                'is_active'     => $category->is_active,
+                'is_featured'   => 0,
+                'display_order' => 1,
+            ]);
+        }
+
+        return redirect('/backoffice/program-kategori')
+            ->with('success', 'Kategori program "' . $category->category_name . '" berhasil ditambahkan.');
+    }
+
+    /**
+     * Update Kategori Program (Direct from Dedicated Menu)
+     * Route: POST /backoffice/program-kategori/{id}/update
+     */
+    public function programCategoryUpdateDirect(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $cat = ProgramCategory::findOrFail($id);
+        $old = $cat->toArray();
+
+        $validated = $request->validate([
+            'category_name'        => 'required|string|max:255',
+            'subtitle'             => 'nullable|string|max:255',
+            'description'          => 'nullable|string',
+            'career_opportunities' => 'nullable|string',
+            'display_order'        => 'nullable|integer',
+            'is_active'            => 'nullable',
+        ]);
+
+        $cat->category_name        = trim($validated['category_name']);
+        $cat->subtitle             = trim((string) ($validated['subtitle'] ?? '')) ?: null;
+        $cat->description          = trim((string) ($validated['description'] ?? '')) ?: null;
+        $cat->career_opportunities = trim((string) ($validated['career_opportunities'] ?? '')) ?: null;
+        if (isset($validated['display_order']) && $validated['display_order'] !== '' && $validated['display_order'] !== null) {
+            $cat->display_order = (int) $validated['display_order'];
+        }
+        $cat->is_active            = $request->boolean('is_active') ? 1 : 0;
+        $cat->save();
+
+        $this->logActivity('update', 'program_categories', $id, $old, $cat->fresh()->toArray());
+
+        return redirect('/backoffice/program-kategori')
+            ->with('success', 'Kategori program "' . $cat->category_name . '" berhasil diperbarui.');
+    }
+
+    /**
+     * Hapus Kategori Program & Seluruh Anak Programnya
+     * Route: POST /backoffice/program-kategori/{id}/delete
+     */
+    public function programCategoryDestroyDirect(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $cat = ProgramCategory::with('programs')->findOrFail($id);
+        $catName = $cat->category_name;
+        $childCount = $cat->programs->count();
+
+        // Dissociate transactions if any
+        $progIds = $cat->programs->pluck('id')->toArray();
+        if (!empty($progIds)) {
+            \App\Models\KasTransaction::whereIn('program_id', $progIds)->update(['program_id' => null]);
+        }
+
+        $this->logActivity('delete', 'program_categories', $id, $cat->toArray());
+        $cat->delete();
+
+        return redirect('/backoffice/program-kategori')
+            ->with('success', 'Kategori program "' . $catName . '"' . ($childCount > 0 ? " beserta {$childCount} anak programnya" : '') . ' berhasil dihapus.');
+    }
+
+    /**
+     * Tambah Anak Program ke Kategori Tertentu
+     * Route: POST /backoffice/program-kategori/item/store
+     */
+    public function programItemStoreDirect(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'category_id'   => 'required|integer|exists:program_categories,id',
+            'title'         => 'required|string|max:255',
+            'duration'      => 'nullable|string|max:100',
+            'country_badge' => 'nullable|string|max:100',
+            'tuition_fee'   => 'nullable|string',
+            'description'   => 'nullable|string',
+            'display_order' => 'nullable|integer',
+            'is_active'     => 'nullable',
+        ]);
+
+        $title = trim($validated['title']);
+        $baseSlug = Str::slug($title) ?: ('program-' . time());
+        $slug = $baseSlug;
+        $seq = 2;
+        while (Program::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $seq;
+            $seq++;
+        }
+
+        $rawFee = trim((string) ($validated['tuition_fee'] ?? ''));
+        $cleanFee = $rawFee !== '' ? (float) preg_replace('/[^\d]/', '', $rawFee) : null;
+
+        $nextOrder = (isset($validated['display_order']) && $validated['display_order'] !== '' && $validated['display_order'] !== null)
+            ? (int) $validated['display_order']
+            : (int) (Program::where('category_id', $validated['category_id'])->max('display_order') ?? 0) + 1;
+
+        $program = Program::create([
+            'category_id'   => (int) $validated['category_id'],
+            'title'         => $title,
+            'slug'          => $slug,
+            'duration'      => trim((string) ($validated['duration'] ?? '')) ?: null,
+            'country_badge' => trim((string) ($validated['country_badge'] ?? '')) ?: null,
+            'tuition_fee'   => $cleanFee,
+            'description'   => trim((string) ($validated['description'] ?? '')) ?: null,
+            'display_order' => $nextOrder,
+            'is_active'     => $request->boolean('is_active', true) ? 1 : 0,
+            'is_featured'   => 0,
+        ]);
+
+        $this->logActivity('create', 'programs', $program->id, null, $program->toArray());
+
+        return redirect('/backoffice/program-kategori')
+            ->with('success', 'Anak program "' . $title . '" berhasil ditambahkan ke kategori.');
+    }
+
+    /**
+     * Update Anak Program
+     * Route: POST /backoffice/program-kategori/item/{id}/update
+     */
+    public function programItemUpdateDirect(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $program = Program::findOrFail($id);
+        $old = $program->toArray();
+
+        $validated = $request->validate([
+            'category_id'   => 'required|integer|exists:program_categories,id',
+            'title'         => 'required|string|max:255',
+            'duration'      => 'nullable|string|max:100',
+            'country_badge' => 'nullable|string|max:100',
+            'tuition_fee'   => 'nullable|string',
+            'description'   => 'nullable|string',
+            'display_order' => 'nullable|integer',
+            'is_active'     => 'nullable',
+        ]);
+
+        $newTitle = trim($validated['title']);
+        if ($newTitle !== $program->title) {
+            $baseSlug = Str::slug($newTitle) ?: ('program-' . time());
+            $slug = $baseSlug;
+            $seq = 2;
+            while (Program::where('slug', $slug)->where('id', '!=', $program->id)->exists()) {
+                $slug = $baseSlug . '-' . $seq;
+                $seq++;
+            }
+            $program->slug = $slug;
+        }
+
+        $rawFee = trim((string) ($validated['tuition_fee'] ?? ''));
+        $cleanFee = $rawFee !== '' ? (float) preg_replace('/[^\d]/', '', $rawFee) : null;
+
+        $program->category_id   = (int) $validated['category_id'];
+        $program->title         = $newTitle;
+        $program->duration      = trim((string) ($validated['duration'] ?? '')) ?: null;
+        $program->country_badge = trim((string) ($validated['country_badge'] ?? '')) ?: null;
+        $program->tuition_fee   = $cleanFee;
+        $program->description   = trim((string) ($validated['description'] ?? '')) ?: null;
+        if (isset($validated['display_order']) && $validated['display_order'] !== '' && $validated['display_order'] !== null) {
+            $program->display_order = (int) $validated['display_order'];
+        }
+        $program->is_active     = $request->boolean('is_active') ? 1 : 0;
+        $program->save();
+
+        $this->logActivity('update', 'programs', $id, $old, $program->fresh()->toArray());
+
+        return redirect('/backoffice/program-kategori')
+            ->with('success', 'Anak program "' . $newTitle . '" berhasil diperbarui.');
+    }
+
+    /**
+     * Hapus Anak Program
+     * Route: POST /backoffice/program-kategori/item/{id}/delete
+     */
+    public function programItemDestroyDirect(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $program = Program::findOrFail($id);
+        $title = $program->title;
+
+        // Dissociate from transactions if any
+        \App\Models\KasTransaction::where('program_id', $program->id)->update(['program_id' => null]);
+
+        $this->logActivity('delete', 'programs', $id, $program->toArray());
+        $program->delete();
+
+        return redirect('/backoffice/program-kategori')
+            ->with('success', 'Anak program "' . $title . '" berhasil dihapus.');
+    }
+
     public function uploadImage(Request $request)
     {
         if ($redirect = $this->guard()) return $redirect;
@@ -465,7 +875,7 @@ class BackofficeController extends Controller
             'file' => 'required|image|mimes:jpeg,png,gif,webp,svg,jpg|max:5120',
         ]);
         $file = $request->file('file');
-        $allowedFolders = ['uploads', 'uploads/hero', 'uploads/dokumen', 'uploads/layanan', 'uploads/beranda', 'uploads/berita', 'uploads/galeri', 'uploads/galeri/foto', 'uploads/galeri/video', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding', 'uploads/pendaftaran', 'uploads/pendaftaran/bukti'];
+        $allowedFolders = ['uploads', 'uploads/hero', 'uploads/hero/faq', 'uploads/hero/berita', 'uploads/dokumen', 'uploads/layanan', 'uploads/beranda', 'uploads/berita', 'uploads/galeri', 'uploads/galeri/foto', 'uploads/galeri/video', 'uploads/program', 'uploads/testimoni', 'uploads/partner', 'uploads/branding', 'uploads/pendaftaran', 'uploads/pendaftaran/bukti', 'uploads/kas'];
         $dir = $request->input('folder', 'uploads');
         if (!str_starts_with($dir, 'uploads')) {
             $dir = 'uploads/' . trim($dir, '/');
@@ -500,7 +910,36 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $articles = NewsArticle::with('author')->orderBy('created_at', 'desc')->get();
-        return view('backoffice.berita', ['user' => session('backoffice_user'), 'articles' => $articles]);
+        $heroImage = FooterSetting::where('setting_key', 'hero_image_berita')->value('setting_value');
+        return view('backoffice.berita', ['user' => session('backoffice_user'), 'articles' => $articles, 'heroImage' => $heroImage]);
+    }
+
+    public function beritaHeroUpdate(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'hero_image' => 'nullable|string|max:1000',
+        ]);
+
+        $imageUrl = $request->input('hero_image', '');
+
+        // If a file was uploaded directly
+        if ($request->hasFile('hero_image_file')) {
+            $request->validate(['hero_image_file' => 'file|mimes:jpg,jpeg,png,webp|max:5120']);
+            $file = $request->file('hero_image_file');
+            $name = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $this->moveUploadedFile($file, 'uploads/hero/berita', $name);
+            $imageUrl = '/uploads/hero/berita/' . $name;
+        }
+
+        $old = FooterSetting::where('setting_key', 'hero_image_berita')->value('setting_value');
+        FooterSetting::updateOrCreate(
+            ['setting_key' => 'hero_image_berita'],
+            ['setting_value' => $imageUrl, 'setting_group' => 'hero']
+        );
+        $this->logActivity('update', 'footer_settings', null, ['hero_image_berita' => $old], ['hero_image_berita' => $imageUrl]);
+
+        return response()->json(['success' => true, 'url' => $imageUrl]);
     }
 
     public function beritaStore(Request $request)
@@ -726,7 +1165,36 @@ class BackofficeController extends Controller
     {
         if ($redirect = $this->guard()) return $redirect;
         $faqs = Faq::orderBy('category')->orderBy('id', 'desc')->get();
-        return view('backoffice.faq', ['user' => session('backoffice_user'), 'faqs' => $faqs]);
+        $heroImage = FooterSetting::where('setting_key', 'hero_image_faq')->value('setting_value');
+        return view('backoffice.faq', ['user' => session('backoffice_user'), 'faqs' => $faqs, 'heroImage' => $heroImage]);
+    }
+
+    public function faqHeroUpdate(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $request->validate([
+            'hero_image' => 'nullable|string|max:1000',
+        ]);
+
+        $imageUrl = $request->input('hero_image', '');
+
+        // If a file was uploaded directly
+        if ($request->hasFile('hero_image_file')) {
+            $request->validate(['hero_image_file' => 'file|mimes:jpg,jpeg,png,webp|max:5120']);
+            $file = $request->file('hero_image_file');
+            $name = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $this->moveUploadedFile($file, 'uploads/hero/faq', $name);
+            $imageUrl = '/uploads/hero/faq/' . $name;
+        }
+
+        $old = FooterSetting::where('setting_key', 'hero_image_faq')->value('setting_value');
+        FooterSetting::updateOrCreate(
+            ['setting_key' => 'hero_image_faq'],
+            ['setting_value' => $imageUrl, 'setting_group' => 'hero']
+        );
+        $this->logActivity('update', 'footer_settings', null, ['hero_image_faq' => $old], ['hero_image_faq' => $imageUrl]);
+
+        return response()->json(['success' => true, 'url' => $imageUrl]);
     }
 
     public function faqStore(Request $request)
@@ -824,7 +1292,7 @@ class BackofficeController extends Controller
     public function pendaftar()
     {
         if ($redirect = $this->guard()) return $redirect;
-        $pendaftarList = Registration::orderBy('created_at', 'desc')->get();
+        $pendaftarList = Registration::with(['kasTransaction', 'piutangKas'])->orderBy('created_at', 'desc')->get();
         return view('backoffice.pendaftar', ['user' => session('backoffice_user'), 'pendaftarList' => $pendaftarList]);
     }
 
@@ -857,6 +1325,10 @@ class BackofficeController extends Controller
                 'Email',
                 'Kategori Program',
                 'Nama Program',
+                'Metode Pembayaran',
+                'Total Biaya',
+                'Nominal Dibayar',
+                'Sisa Tagihan (Piutang)',
                 'Permintaan Khusus',
                 'Sumber Informasi',
                 'Status',
@@ -874,6 +1346,7 @@ class BackofficeController extends Controller
                 $infoSources = is_array($reg->info_sources) 
                     ? implode(', ', $reg->info_sources) 
                     : '-';
+                $paySum = $reg->getPaymentSummary();
                 
                 fputcsv($file, [
                     $reg->id,
@@ -882,6 +1355,10 @@ class BackofficeController extends Controller
                     $reg->email,
                     $reg->category_key ?? '-',
                     $reg->program_title ?? '-',
+                    strtoupper($paySum['payment_mode']),
+                    $paySum['total_biaya'] ?? 0,
+                    $paySum['paid_total'] ?? 0,
+                    $paySum['sisa_tagihan'] ?? 0,
                     $reg->special_request ?? '-',
                     $infoSources,
                     ucfirst($reg->status),
@@ -1159,7 +1636,7 @@ class BackofficeController extends Controller
         $beasiswaKeys = ['beasiswa', 'beasiswa-prestasi', 'beasiswa-stt', 'beasiswa-khusus'];
         $dokumenKeys  = ['layanan-dokumen'];
 
-        $query = Registration::query();
+        $query = Registration::with(['kasTransaction', 'piutangKas']);
 
         if ($tipe === 'beasiswa') {
             $query->where('category_key', '!=', 'layanan-dokumen')
@@ -1684,7 +2161,7 @@ class BackofficeController extends Controller
         $content = $sec ? (is_array($sec->section_content) ? $sec->section_content : json_decode($sec->section_content ?? '[]', true) ?? []) : [];
         $doc = array_replace_recursive($def, $content);
 
-        $categories = ProgramCategory::where('is_active', 1)->orderBy('display_order')->get();
+        $categories = ProgramCategory::orderBy('display_order')->get();
 
         return view('backoffice.program-detail-edit', compact('doc', 'slug', 'program', 'categories'));
     }
@@ -1737,6 +2214,995 @@ class BackofficeController extends Controller
         }
 
         return response()->json(['success' => true, 'message' => 'Konten Halaman Program berhasil disimpan!']);
+    }
+
+    /* ═══════════════════ KAS & KEUANGAN ══════════════════════ */
+    private function kasKategoriOptions(): array
+    {
+        $defaultMasuk = [
+            'Pembayaran SPP / Uang Kuliah', 'Uang Pendaftaran Mahasiswa', 'Pembayaran Biaya Wisuda',
+            'Pembayaran Biaya Sertifikasi', 'Penjualan Produk Praktik (F&B)', 'Sewa Fasilitas Kampus',
+            'Dana Beasiswa Masuk', 'Hibah / Donasi', 'Pendapatan Lain-lain',
+        ];
+        $defaultKeluar = [
+            'Gaji & Honor Pegawai', 'Gaji & Honor Dosen/Instruktur', 'Biaya Operasional Kantor',
+            'Pembelian Bahan Praktik', 'Pembelian Perlengkapan Dapur', 'Perawatan Fasilitas & Gedung',
+            'Biaya Listrik & Air & Internet', 'Biaya Marketing & Promosi', 'Biaya Administrasi & ATK',
+            'Biaya Perjalanan Dinas', 'Biaya Acara & Event', 'Pengeluaran Lain-lain',
+        ];
+        $defaultUmumMasuk = [
+            'Sewa Fasilitas Kampus', 'Hibah / Donasi', 'Pendapatan Lain-lain',
+        ];
+        $defaultUmumKeluar = [
+            'Biaya Listrik & Air & Internet', 'Biaya Operasional Kantor', 'Perawatan Fasilitas & Gedung',
+            'Biaya Administrasi & ATK', 'Gaji & Honor Pegawai', 'Biaya Marketing & Promosi',
+            'Biaya Perjalanan Dinas', 'Biaya Acara & Event', 'Pengeluaran Lain-lain',
+        ];
+        $defaultProgramMasuk = [
+            'Pembayaran SPP / Uang Kuliah', 'Uang Pendaftaran Mahasiswa', 'Pembayaran Biaya Wisuda',
+            'Pembayaran Biaya Sertifikasi', 'Penjualan Produk Praktik (F&B)', 'Dana Beasiswa Masuk',
+        ];
+        $defaultProgramKeluar = [
+            'Gaji & Honor Dosen/Instruktur', 'Pembelian Bahan Praktik', 'Pembelian Perlengkapan Dapur',
+        ];
+
+        $kategoriMasuk  = KasCategory::where('type', 'masuk')->where('is_active', true)->orderBy('display_order')->pluck('nama')->unique()->values()->toArray();
+        $kategoriKeluar = KasCategory::where('type', 'keluar')->where('is_active', true)->orderBy('display_order')->pluck('nama')->unique()->values()->toArray();
+        $kategoriUmum   = KasCategory::where('type', 'umum')->where('is_active', true)->orderBy('display_order')->pluck('nama')->unique()->values()->toArray();
+
+        // Pisahkan jenis pemasukan umum vs pengeluaran umum agar tidak tercampur
+        $umumMasukNames   = ['Sewa Fasilitas Kampus', 'Hibah / Donasi', 'Pendapatan Lain-lain'];
+        $kategoriUmumOut  = array_values(array_diff($kategoriUmum, $umumMasukNames));
+        $mergedUmumKeluar = !empty($kategoriUmumOut)
+            ? array_values(array_unique(array_merge($kategoriUmumOut, $defaultUmumKeluar)))
+            : $defaultUmumKeluar;
+        $mergedUmumMasuk  = $defaultUmumMasuk;
+
+        return [
+            'kategoriMasuk'    => $kategoriMasuk,
+            'kategoriKeluar'   => $kategoriKeluar,
+            'kategoriUmum'     => $kategoriUmum,
+            'optMasuk'         => !empty($kategoriMasuk) ? $kategoriMasuk : $defaultMasuk,
+            'optKeluar'        => !empty($kategoriKeluar) ? $kategoriKeluar : $defaultKeluar,
+            'optUmumMasuk'     => $mergedUmumMasuk,
+            'optUmumKeluar'    => $mergedUmumKeluar,
+            'optProgramMasuk'  => !empty($kategoriMasuk) ? $kategoriMasuk : $defaultProgramMasuk,
+            'optProgramKeluar' => !empty($kategoriKeluar) ? $kategoriKeluar : $defaultProgramKeluar,
+        ];
+    }
+
+    private function kasUnitsList(): array
+    {
+        $defaults = ['Orang', 'Unit', 'Hari', 'Paket', 'Jam', 'Bulan', 'Pcs', 'Sesi', 'Semester', 'Lot', 'Set'];
+        if (Schema::hasTable('kas_units')) {
+            $dbUnits = KasUnit::orderBy('id')->pluck('nama')->toArray();
+            return !empty($dbUnits) ? array_values(array_unique(array_merge($dbUnits, $defaults))) : $defaults;
+        }
+        return $defaults;
+    }
+
+    private function mapProjectWithSummary(KasProject $proj): array
+    {
+        $summary = $proj->computeFinancialSummary();
+        return array_merge([
+            'id'              => $proj->id,
+            'kode_proyek'     => $proj->kode_proyek ?: ('PRG-' . str_pad($proj->id, 5, '0', STR_PAD_LEFT)),
+            'program_id'      => $proj->program_id,
+            'program_title'   => $proj->display_program_title,
+            'judul_program'   => $proj->judul_program,
+            'nama_proyek'     => $proj->nama_proyek,
+            'pic'             => $proj->pic,
+            'tanggal_mulai'   => $proj->tanggal_mulai ? $proj->tanggal_mulai->format('Y-m-d') : null,
+            'tanggal_selesai' => $proj->tanggal_selesai ? $proj->tanggal_selesai->format('Y-m-d') : null,
+            'keterangan'      => $proj->keterangan,
+        ], $summary);
+    }
+
+    /**
+     * Hitung total Piutang (Uang di Lapangan) dari transaksi masuk berstatus piutang yang belum lunas.
+     */
+    private function computePiutangOverview($transactions, $projects = null): array
+    {
+        $piutangTxAll = $transactions
+            ->filter(fn($t) => $t->type === 'masuk' && $t->is_piutang && !$t->piutang_lunas_at)
+            ->values();
+
+        $totalPiutang = (float) $piutangTxAll->sum('jumlah');
+
+        return [
+            'piutangProjects'          => collect(),
+            'piutangTxPendingList'     => $piutangTxAll,
+            'piutangTxStandalone'      => $piutangTxAll,
+            'totalPiutangProgram'      => 0.0,
+            'totalPiutangTxStandalone' => $totalPiutang,
+            'totalPiutang'             => $totalPiutang,
+        ];
+    }
+
+    public function kas()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        // Keuangan Umum menampilkan seluruh arus kas pemasukan & pengeluaran (Umum + Per Program)
+        $transactions    = KasTransaction::with(['program.category'])->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->get();
+        $programKategori = ProgramCategory::with('programs')->orderBy('display_order')->get();
+        $programs        = Program::where('is_active', true)->orderBy('display_order')->get();
+        $projects        = collect();
+        $units           = $this->kasUnitsList();
+
+        // Hanya hitung masuk yang sudah terealisasi (bukan piutang belum lunas)
+        $totalMasuk  = $transactions->where('type', 'masuk')
+            ->filter(fn($t) => !$t->is_piutang || $t->piutang_lunas_at)->sum('jumlah');
+        $totalKeluar = $transactions->where('type', 'keluar')->sum('jumlah');
+        $saldo       = $totalMasuk - $totalKeluar;
+        $persenKeuntungan = $totalMasuk > 0 ? round(($saldo / $totalMasuk) * 100, 1) : 0;
+
+        // Piutang / Uang di Lapangan keseluruhan tanpa double counting
+        $piutangData = $this->computePiutangOverview($transactions, $projects);
+
+        // Helper: hitung masuk terealisasi dari koleksi
+        $masukRealisasi = fn($col) => $col->where('type', 'masuk')
+            ->filter(fn($t) => !$t->is_piutang || $t->piutang_lunas_at)->sum('jumlah');
+        $piutangPending = fn($col) => $col->filter(fn($t) => $t->is_piutang && !$t->piutang_lunas_at && $t->type === 'masuk')->sum('jumlah');
+
+        // Akumulasi per ProgramCategory
+        $perKategori = [];
+        foreach ($programKategori as $kat) {
+            $programIds = $kat->programs->pluck('id')->toArray();
+            $trx    = $transactions->whereIn('program_id', $programIds);
+            $masuk  = $masukRealisasi($trx);
+            $keluar = $trx->where('type', 'keluar')->sum('jumlah');
+            $net    = $masuk - $keluar;
+            $perKategori[] = [
+                'id'      => $kat->id,
+                'title'   => $kat->category_name,
+                'masuk'   => $masuk,
+                'keluar'  => $keluar,
+                'saldo'   => $net,
+                'persen'  => $masuk > 0 ? round(($net / $masuk) * 100, 1) : 0,
+                'piutang' => $piutangPending($trx),
+                'count'   => $trx->count(),
+            ];
+        }
+        // Transaksi tanpa program (Umum)
+        $trxTanpa = $transactions->whereNull('program_id')->whereNull('project_id');
+        if ($trxTanpa->count() > 0) {
+            $m = $masukRealisasi($trxTanpa);
+            $k = $trxTanpa->where('type', 'keluar')->sum('jumlah');
+            $n = $m - $k;
+            $perKategori[] = [
+                'id'      => null,
+                'title'   => 'Umum (Operasional Non-Program)',
+                'masuk'   => $m,
+                'keluar'  => $k,
+                'saldo'   => $n,
+                'persen'  => $m > 0 ? round(($n / $m) * 100, 1) : 0,
+                'piutang' => $piutangPending($trxTanpa),
+                'count'   => $trxTanpa->count(),
+            ];
+        }
+
+        $opt = $this->kasKategoriOptions();
+
+        return view('backoffice.kas', array_merge(compact(
+            'transactions', 'programs', 'programKategori', 'projects', 'units',
+            'totalMasuk', 'totalKeluar', 'saldo', 'persenKeuntungan', 'perKategori'
+        ), $piutangData, $opt));
+    }
+
+    public function kasExportCsv(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $query = KasTransaction::with(['program', 'project'])->orderBy('tanggal', 'desc')->orderBy('id', 'desc');
+
+        // Filter periode / tanggal
+        $periode = $request->query('periode', 'all');
+        $tahun   = $request->query('tahun');
+        $bulan   = $request->query('bulan');
+
+        if ($periode === 'harian' && $request->filled('tanggal')) {
+            $query->whereDate('tanggal', $request->query('tanggal'));
+        } elseif ($periode === 'rentang_tanggal') {
+            if ($request->filled('tgl_dari'))   $query->whereDate('tanggal', '>=', $request->query('tgl_dari'));
+            if ($request->filled('tgl_sampai')) $query->whereDate('tanggal', '<=', $request->query('tgl_sampai'));
+        } elseif ($periode === 'bulanan') {
+            if ($tahun) $query->whereYear('tanggal', $tahun);
+            if ($bulan) $query->whereMonth('tanggal', $bulan);
+        } elseif ($periode === 'rentang_bulan') {
+            if ($tahun) $query->whereYear('tanggal', $tahun);
+            $dari   = (int) $request->query('bulan_dari', 1);
+            $sampai = (int) $request->query('bulan_sampai', 12);
+            $query->whereMonth('tanggal', '>=', $dari)->whereMonth('tanggal', '<=', $sampai);
+        } elseif ($periode === 'tahunan' && $tahun) {
+            $query->whereYear('tanggal', $tahun);
+        }
+
+        if ($request->filled('tipe') && in_array($request->query('tipe'), ['masuk', 'keluar'])) {
+            $query->where('type', $request->query('tipe'));
+        }
+
+        if ($request->query('status') === 'piutang') {
+            $query->where('is_piutang', true)->whereNull('piutang_lunas_at');
+        } elseif ($request->query('status') === 'lunas') {
+            $query->where(function ($q) {
+                $q->where('is_piutang', false)->orWhereNotNull('piutang_lunas_at');
+            });
+        }
+
+        if ($request->query('scope') === 'umum') {
+            $query->whereNull('project_id')->whereNull('program_id');
+        } elseif ($request->filled('category_id')) {
+            $kat = ProgramCategory::with('programs')->find((int) $request->query('category_id'));
+            $progIds = $kat ? $kat->programs->pluck('id')->toArray() : [];
+            $query->whereIn('program_id', $progIds);
+        }
+
+        if ($request->filled('filter_rel')) {
+            $rel = $request->query('filter_rel');
+            if ($rel === 'null') {
+                $query->whereNull('project_id')->whereNull('program_id');
+            } elseif (str_starts_with($rel, 'proj:')) {
+                $query->where('project_id', (int) substr($rel, 5));
+            } elseif (str_starts_with($rel, 'prog:')) {
+                $query->where('program_id', (int) substr($rel, 5));
+            }
+        }
+
+        if ($request->filled('cari')) {
+            $s = addcslashes($request->query('cari'), '%_');
+            $query->where(function ($q) use ($s) {
+                $q->where('kode', 'like', "%$s%")
+                  ->orWhere('jenis', 'like', "%$s%")
+                  ->orWhere('deskripsi', 'like', "%$s%")
+                  ->orWhere('keterangan', 'like', "%$s%")
+                  ->orWhere('piutang_nama', 'like', "%$s%");
+            });
+        }
+
+        $rows = $query->get();
+        $filename = 'laporan_keuangan_dhs_' . date('Y-m-d_His') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
+        ];
+
+        $callback = function () use ($rows) {
+            $out = fopen('php://output', 'w');
+            fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($out, [
+                'Tanggal', 'Kode', 'Program', 'Tipe', 'Kategori',
+                'Deskripsi', 'Volume', 'Satuan', 'Harga Satuan', 'Total (Rp)', 'Keterangan', 'Status'
+            ]);
+            foreach ($rows as $r) {
+                $relName = $r->project
+                    ? $r->project->nama_proyek
+                    : ($r->program ? $r->program->title : 'Umum');
+                $statusStr = ($r->is_piutang && !$r->piutang_lunas_at) ? 'Belum Lunas (Piutang)' : 'Lunas';
+                $vol = $r->volume ?? 1;
+                $hrg = $r->harga_satuan ?? $r->jumlah;
+                fputcsv($out, [
+                    $r->tanggal ? $r->tanggal->format('Y-m-d') : '',
+                    $r->kode ?: '-',
+                    $relName,
+                    $r->type === 'masuk' ? 'Pemasukan' : 'Pengeluaran',
+                    $r->jenis,
+                    $r->deskripsi ?: '-',
+                    $vol,
+                    $r->satuan ?: 'Paket',
+                    $hrg,
+                    $r->jumlah,
+                    $r->keterangan ?: '-',
+                    $statusStr,
+                ]);
+            }
+            fclose($out);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function kasKategoriKasIndex()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $first = ProgramCategory::orderBy('display_order')->first();
+        return $first
+            ? redirect('/backoffice/kas-kategori-kas/' . $first->id)
+            : redirect('/backoffice/kas')->with('info', 'Belum ada kategori program.');
+    }
+
+    private function generateUniqueKasCode(string $type, string $tanggal): string
+    {
+        $prefix   = $type === 'masuk' ? 'KM' : 'KK';
+        $datePart = date('Ymd', strtotime($tanggal));
+        $seq      = KasTransaction::whereDate('tanggal', $tanggal)->count() + 1;
+        do {
+            $candidate = sprintf('%s-%s-%04d', $prefix, $datePart, $seq);
+            $exists = KasTransaction::where('kode', $candidate)->exists();
+            $seq++;
+        } while ($exists);
+
+        return $candidate;
+    }
+
+    public function kasKategoriKas($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $kategori   = ProgramCategory::with('programs')->findOrFail($id);
+        $allKategori = ProgramCategory::orderBy('display_order')->get();
+        $programIds = $kategori->programs->pluck('id')->toArray();
+
+        $transactions = KasTransaction::with(['program'])
+            ->whereIn('program_id', $programIds)
+            ->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->get();
+
+        $mappedProjects = collect();
+
+        $piutangOverview = $this->computePiutangOverview($transactions, $mappedProjects);
+        $totalPiutang    = $piutangOverview['totalPiutang'];
+
+        $totalMasuk   = $transactions->where('type', 'masuk')
+            ->filter(fn($t) => !$t->is_piutang || $t->piutang_lunas_at)->sum('jumlah');
+        $totalKeluar  = $transactions->where('type', 'keluar')->sum('jumlah');
+        $saldo        = $totalMasuk - $totalKeluar;
+        $persenKeuntungan = $totalMasuk > 0 ? round(($saldo / $totalMasuk) * 100, 1) : 0;
+
+        $opt      = $this->kasKategoriOptions();
+        $programs = $kategori->programs;
+        $programKategori = $allKategori;
+        $units    = $this->kasUnitsList();
+        $projects = $mappedProjects;
+
+        return view('backoffice.kas-program', array_merge(compact(
+            'kategori', 'allKategori', 'programKategori', 'transactions', 'programs', 'projects', 'units',
+            'totalMasuk', 'totalKeluar', 'saldo', 'persenKeuntungan', 'totalPiutang'
+        ), $piutangOverview, $opt));
+    }
+
+    public function kasPiutangLunas(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        $kas = KasTransaction::findOrFail($id);
+
+        $validated = $request->validate([
+            'nominal_bayar' => 'nullable|numeric|min:0',
+            'tanggal_bayar' => 'nullable|date',
+            'catatan'       => 'nullable|string|max:255',
+        ]);
+
+        $tglBayar = $validated['tanggal_bayar'] ?? now()->toDateString();
+        $catatan  = trim((string) ($validated['catatan'] ?? ''));
+        $redirect = $request->input('redirect_to');
+
+        if ($kas->is_piutang && !$kas->piutang_lunas_at && isset($validated['nominal_bayar'])) {
+            $bayar = (float) $validated['nominal_bayar'];
+            $totalSaatIni = (float) $kas->jumlah;
+
+            // Jika dibayar sebagian / cicilan (0 < bayar < sisa)
+            if ($bayar > 0 && $bayar < $totalSaatIni) {
+                $sisaBaru = round($totalSaatIni - $bayar, 2);
+                $u = session('backoffice_user');
+
+                KasTransaction::create([
+                    'type'         => 'masuk',
+                    'jenis'        => $kas->jenis,
+                    'kode'         => $this->generateUniqueKasCode('masuk', $tglBayar),
+                    'deskripsi'    => '[Cicilan Piutang] ' . ($kas->deskripsi ?: 'Pembayaran cicilan tagihan'),
+                    'satuan'       => 'Paket',
+                    'volume'       => 1,
+                    'harga_satuan' => $bayar,
+                    'jumlah'       => $bayar,
+                    'keterangan'   => trim('Cicilan dari tagihan ' . ($kas->kode ?: '#' . $kas->id)
+                        . ($kas->piutang_nama ? ' | Penanggung: ' . $kas->piutang_nama : '')
+                        . ($catatan !== '' ? ' | ' . $catatan : '')),
+                    'tanggal'      => $tglBayar,
+                    'program_id'   => $kas->program_id,
+                    'project_id'   => $kas->project_id,
+                    'is_piutang'   => false,
+                    'piutang_nama' => $kas->piutang_nama,
+                    'created_by'   => $u ? $u['id'] : null,
+                ]);
+
+                $ketUpdate = $kas->keterangan;
+                if ($catatan !== '') {
+                    $ketUpdate = trim(($ketUpdate ? $ketUpdate . ' | ' : '') . 'Cicil ' . $tglBayar . ': ' . $catatan);
+                }
+
+                $kas->update([
+                    'volume'       => 1,
+                    'harga_satuan' => $sisaBaru,
+                    'jumlah'       => $sisaBaru,
+                    'keterangan'   => $ketUpdate,
+                ]);
+
+                $msg = 'Cicilan Rp ' . number_format($bayar, 0, ',', '.') . ' masuk kas. Sisa piutang: Rp ' . number_format($sisaBaru, 0, ',', '.') . '.';
+                return $redirect ? redirect($redirect)->with('success', $msg) : back()->with('success', $msg);
+            }
+        }
+
+        // Lunasi penuh
+        $lunasAt = \Carbon\Carbon::parse($tglBayar)->setTimeFrom(now());
+        $ketBaru = $kas->keterangan;
+        if ($catatan !== '') {
+            $ketBaru = trim(($ketBaru ? $ketBaru . ' | ' : '') . 'Lunas ' . $tglBayar . ': ' . $catatan);
+        }
+
+        $kas->update([
+            'piutang_lunas_at' => $lunasAt,
+            'keterangan'       => $ketBaru,
+        ]);
+
+        $msg = 'Piutang berhasil dilunasi & masuk ke saldo kas.';
+        return $redirect ? redirect($redirect)->with('success', $msg) : back()->with('success', $msg);
+    }
+
+    private function prepareTransactionPayload(Request $request, ?KasTransaction $existing = null): array
+    {
+        $data = $request->validate([
+            'type'         => 'required|in:masuk,keluar',
+            'jenis'        => 'required|string|max:100',
+            'kode'         => 'nullable|string|max:50',
+            'deskripsi'    => 'nullable|string',
+            'satuan'       => 'nullable|string|max:50',
+            'volume'       => 'nullable|numeric|min:0.01',
+            'harga_satuan' => 'nullable|numeric|min:0',
+            'jumlah'       => 'nullable|numeric|min:0',
+            'keterangan'   => 'nullable|string',
+            'tanggal'      => 'required|date',
+            'bukti_gambar' => 'nullable|string',
+            'bukti_file'   => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'program_id'   => 'nullable|integer|exists:programs,id',
+            'project_id'   => 'nullable|integer|exists:kas_projects,id',
+            'program_ref'  => 'nullable|string|max:50',
+            'is_piutang'   => 'nullable|boolean',
+            'piutang_nama' => 'nullable|string|max:150',
+            'payment_mode' => 'nullable|in:lunas,dp,piutang,cicil',
+            'dp_nominal'   => 'nullable|numeric|min:0',
+        ]);
+        unset($data['payment_mode'], $data['dp_nominal']);
+
+        // Resolusi dropdown tunggal "Pilih Program" (program_ref = 'proj:<id>' atau 'prog:<id>')
+        if ($request->has('program_ref')) {
+            $ref = (string) $request->input('program_ref', '');
+            if ($ref === '') {
+                $data['project_id'] = null;
+                $data['program_id'] = null;
+            } elseif (str_starts_with($ref, 'proj:')) {
+                $pid = (int) substr($ref, 5);
+                $data['project_id'] = $pid ?: null;
+                $proj = $pid && Schema::hasTable('kas_projects') ? KasProject::find($pid) : null;
+                $data['program_id'] = ($proj && $proj->program_id) ? $proj->program_id : null;
+            } elseif (str_starts_with($ref, 'prog:')) {
+                $prid = (int) substr($ref, 5);
+                $data['project_id'] = null;
+                $data['program_id'] = $prid ?: null;
+            }
+        }
+        unset($data['program_ref']);
+
+        // Hitung volume, harga satuan & total transaksi otomatis
+        $volume = isset($data['volume']) && (float) $data['volume'] > 0 ? (float) $data['volume'] : 1;
+        $hargaSatuan = isset($data['harga_satuan']) && $data['harga_satuan'] !== null && $data['harga_satuan'] !== ''
+            ? (float) $data['harga_satuan']
+            : (float) ($data['jumlah'] ?? 0);
+        $data['volume']       = $volume;
+        $data['harga_satuan'] = $hargaSatuan;
+        $data['jumlah']       = round($volume * $hargaSatuan, 2);
+
+        // Simpan satuan baru otomatis jika belum ada
+        $satuanVal = trim($data['satuan'] ?? '');
+        if ($satuanVal !== '') {
+            $data['satuan'] = $satuanVal;
+            if (Schema::hasTable('kas_units')) {
+                KasUnit::firstOrCreate(['nama' => $satuanVal]);
+            }
+        } else {
+            $data['satuan'] = 'Paket';
+        }
+
+        // Jika memilih proyek dan program_id belum dipilih, ambil program_id dari proyek
+        if (!empty($data['project_id']) && empty($data['program_id']) && Schema::hasTable('kas_projects')) {
+            $proj = KasProject::find($data['project_id']);
+            if ($proj && $proj->program_id) {
+                $data['program_id'] = $proj->program_id;
+            }
+        }
+
+        // Handle upload file bukti (PDF/JPG/PNG) langsung jika ada
+        if ($request->hasFile('bukti_file')) {
+            $file = $request->file('bukti_file');
+            $ext  = strtolower($file->getClientOriginalExtension());
+            $name = 'kas_' . Str::random(24) . '.' . $ext;
+            $this->moveUploadedFile($file, 'uploads/kas', $name);
+            if ($existing && $existing->bukti_gambar && str_starts_with($existing->bukti_gambar, '/uploads/kas/')) {
+                $this->deleteOldFile(ltrim($existing->bukti_gambar, '/'));
+            }
+            $data['bukti_gambar'] = '/uploads/kas/' . $name;
+        }
+        unset($data['bukti_file']);
+
+        // Auto-generate kode jika kosong
+        if (empty($data['kode'])) {
+            if ($existing && !empty($existing->kode)) {
+                $data['kode'] = $existing->kode;
+            } else {
+                $data['kode'] = $this->generateUniqueKasCode($data['type'], $data['tanggal']);
+            }
+        }
+
+        // Status pembayaran / piutang (khusus Pemasukan)
+        if ($data['type'] === 'keluar') {
+            $data['is_piutang']       = false;
+            $data['piutang_nama']     = null;
+            $data['piutang_lunas_at'] = null;
+        } else {
+            $mode = $request->input('payment_mode');
+            if (in_array($mode, ['piutang', 'cicil']) || ($mode === null && $request->boolean('is_piutang'))) {
+                $dpNom = (float) $request->input('dp_nominal', 0);
+                if ($mode === 'piutang' || ($mode === 'cicil' && $dpNom <= 0)) {
+                    $data['is_piutang']       = true;
+                    $data['piutang_lunas_at'] = ($existing && $existing->is_piutang && $existing->piutang_lunas_at)
+                        ? $existing->piutang_lunas_at
+                        : null;
+                } else {
+                    // Jika cicilan > 0, kasStore akan split menjadi DP/cicilan kas masuk + sisa piutang
+                    $data['is_piutang']       = ($existing && $existing->is_piutang);
+                }
+            } else {
+                $data['is_piutang']       = false;
+                $data['piutang_lunas_at'] = null;
+                if ($mode === 'lunas' && !$request->filled('piutang_nama')) {
+                    $data['piutang_nama'] = null;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    public function kasStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $data = $this->prepareTransactionPayload($request);
+        $u = session('backoffice_user');
+        $createdBy = $u ? $u['id'] : null;
+        $data['created_by'] = $createdBy;
+
+        $redirect = $request->input('redirect_to', '/backoffice/kas');
+
+        // Mode Bayar Cicil / DP: Catat transaksi cicilan masuk kas + sisa tagihan sebagai Piutang di lapangan
+        if ($data['type'] === 'masuk' && in_array($request->input('payment_mode'), ['cicil', 'dp'])) {
+            $totalTagihan = (float) $data['jumlah'];
+            $dpNominal    = (float) $request->input('dp_nominal', 0);
+            $penanggung   = trim((string) ($data['piutang_nama'] ?? ''));
+            $baseDesc     = trim((string) ($data['deskripsi'] ?? 'Pembayaran'));
+            $baseKet      = trim((string) ($data['keterangan'] ?? ''));
+            $kodeDp       = $data['kode'];
+
+            // Skenario 1: Bayar Sebagian (Cicilan disetor sekarang, sisanya jadi Piutang)
+            if ($dpNominal > 0 && $dpNominal < $totalTagihan) {
+                $sisaPiutang = round($totalTagihan - $dpNominal, 2);
+
+                // 1. Transaksi Cicilan yang benar-benar masuk kas hari ini
+                $dpPayload = array_merge($data, [
+                    'satuan'           => 'Paket',
+                    'volume'           => 1,
+                    'harga_satuan'     => $dpNominal,
+                    'jumlah'           => $dpNominal,
+                    'deskripsi'        => str_starts_with($baseDesc, '[Cicilan]') ? $baseDesc : '[Cicilan] ' . $baseDesc,
+                    'keterangan'       => trim('Cicilan diterima Rp ' . number_format($dpNominal, 0, ',', '.')
+                        . ' dari total Rp ' . number_format($totalTagihan, 0, ',', '.')
+                        . ($penanggung !== '' ? ' | Penanggung: ' . $penanggung : '')
+                        . ($baseKet !== '' ? ' | ' . $baseKet : '')),
+                    'is_piutang'       => false,
+                    'piutang_lunas_at' => null,
+                    'piutang_nama'     => $penanggung ?: null,
+                ]);
+                KasTransaction::create($dpPayload);
+
+                // 2. Transaksi Sisa Tagihan (Piutang di lapangan)
+                $kodeSisa = $request->filled('kode')
+                    ? ($kodeDp . '-PTG')
+                    : $this->generateUniqueKasCode('masuk', $data['tanggal']);
+
+                $sisaPayload = array_merge($data, [
+                    'kode'             => $kodeSisa,
+                    'satuan'           => 'Paket',
+                    'volume'           => 1,
+                    'harga_satuan'     => $sisaPiutang,
+                    'jumlah'           => $sisaPiutang,
+                    'deskripsi'        => '[Sisa Tagihan / Piutang] ' . $baseDesc,
+                    'keterangan'       => trim('Sisa tagihan setelah cicilan ' . $kodeDp
+                        . ($penanggung !== '' ? ' | Penanggung: ' . $penanggung : '')
+                        . ($baseKet !== '' ? ' | ' . $baseKet : '')),
+                    'is_piutang'       => true,
+                    'piutang_lunas_at' => null,
+                    'piutang_nama'     => $penanggung ?: 'Belum Dinamai',
+                ]);
+                KasTransaction::create($sisaPayload);
+
+                return redirect($redirect)->with(
+                    'success',
+                    'Cicilan Rp ' . number_format($dpNominal, 0, ',', '.')
+                    . ' masuk kas & sisa piutang Rp ' . number_format($sisaPiutang, 0, ',', '.') . ' tercatat di lapangan.'
+                );
+            } elseif ($dpNominal <= 0) {
+                // Skenario 2: Belum setor cicilan (Rp 0) -> 100% tercatat sebagai Piutang di Lapangan
+                $data['is_piutang']       = true;
+                $data['piutang_lunas_at'] = null;
+                $data['piutang_nama']     = $penanggung ?: 'Belum Dinamai';
+                if (!str_starts_with($data['deskripsi'], '[Piutang]')) {
+                    $data['deskripsi'] = '[Piutang] ' . $data['deskripsi'];
+                }
+                KasTransaction::create($data);
+
+                return redirect($redirect)->with(
+                    'success',
+                    'Transaksi dicatat sebagai Piutang di Lapangan sebesar Rp ' . number_format($totalTagihan, 0, ',', '.') . ' (Belum masuk saldo kas).'
+                );
+            }
+        }
+
+        KasTransaction::create($data);
+
+        return redirect($redirect)->with('success', 'Transaksi berhasil ditambahkan.');
+    }
+
+    public function kasUpdate(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $kas  = KasTransaction::findOrFail($id);
+        $data = $this->prepareTransactionPayload($request, $kas);
+
+        $kas->update($data);
+
+        $redirect = $request->input('redirect_to', '/backoffice/kas');
+        return redirect($redirect)->with('success', 'Transaksi berhasil diperbarui.');
+    }
+
+    public function kasKwitansi($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $kas = KasTransaction::with(['creator', 'project', 'program'])->findOrFail($id);
+
+        // Jika transaksi lama belum ada kode, berikan otomatis
+        if (empty($kas->kode)) {
+            $prefix = $kas->type === 'masuk' ? 'KM' : 'KK';
+            $datePart = date('Ymd', strtotime($kas->tanggal));
+            $kas->kode = sprintf('%s-%s-%04d', $prefix, $datePart, $kas->id);
+            $kas->save();
+        }
+
+        $logo = BrandingSetting::where('setting_key', 'logo_primary')->value('setting_value') ?? '/image/LogoDHS.png';
+        $address = FooterSetting::where('setting_key', 'address_denpasar')->value('setting_value') ?? 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali';
+        $phone = FooterSetting::where('setting_key', 'phone_denpasar')->value('setting_value') ?? '+62 81 246 319966';
+        $email = FooterSetting::where('setting_key', 'email_denpasar')->value('setting_value') ?? 'sahabat@dhs.or.id';
+
+        return view('backoffice.kas-kwitansi', compact('kas', 'logo', 'address', 'phone', 'email'));
+    }
+
+    public function kasDestroy(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $kas = KasTransaction::findOrFail($id);
+        $kas->delete();
+
+        $redirect = $request->input('redirect_to', '/backoffice/kas');
+        return redirect($redirect)->with('success', 'Transaksi berhasil dihapus.');
+    }
+
+    /* ═══════════════════ KEUANGAN PER PROGRAM & JENIS PROGRAM ═══ */
+    private function validateProgramPayload(Request $request): array
+    {
+        $data = $request->validate([
+            'program_id'      => 'nullable|integer|exists:programs,id',
+            'judul_program'   => 'nullable|string|max:150',
+            'nama_proyek'     => 'required|string|max:200',
+            'pic'             => 'required|string|max:150',
+            'tanggal_mulai'   => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date',
+            'nilai_proyek'    => 'required|numeric|min:0',
+            'keterangan'      => 'nullable|string',
+        ]);
+
+        if (!empty($data['program_id']) && empty($data['judul_program'])) {
+            $prog = Program::find($data['program_id']);
+            if ($prog) $data['judul_program'] = $prog->title;
+        }
+
+        return $data;
+    }
+
+    public function kasKeuanganProgram(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $programKategori = ProgramCategory::with('programs')->orderBy('display_order')->orderBy('id')->get();
+
+        return view('backoffice.kas-keuangan-program', compact('programKategori'));
+    }
+
+    public function kasProgramCategoryStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'category_name' => 'required|string|max:255',
+            'program_title' => 'nullable|string|max:255',
+            'subtitle'      => 'nullable|string|max:255',
+            'is_active'     => 'nullable|boolean',
+        ]);
+
+        $baseKey = Str::slug($validated['category_name']) ?: ('kategori-' . time());
+        $key     = $baseKey;
+        $seq     = 2;
+        while (ProgramCategory::where('category_key', $key)->exists()) {
+            $key = $baseKey . '-' . $seq;
+            $seq++;
+        }
+
+        $showPublic = $request->boolean('is_active');
+        $nextOrder  = (int) (ProgramCategory::max('display_order') ?? 0) + 1;
+
+        $kategori = ProgramCategory::create([
+            'category_key'  => $key,
+            'category_name' => trim($validated['category_name']),
+            'subtitle'      => trim((string) ($validated['subtitle'] ?? '')) ?: null,
+            'is_active'     => $showPublic ? 1 : 0,
+            'display_order' => $nextOrder,
+        ]);
+
+        // Otomatis buatkan minimal 1 program di dalamnya agar langsung bisa dipilih saat input transaksi
+        $progTitle = trim((string) ($validated['program_title'] ?? '')) ?: $kategori->category_name;
+        $baseSlug  = Str::slug($progTitle) ?: ('program-' . time());
+        $slug      = $baseSlug;
+        $sSeq      = 2;
+        while (Program::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $sSeq;
+            $sSeq++;
+        }
+
+        Program::create([
+            'category_id'   => $kategori->id,
+            'title'         => $progTitle,
+            'slug'          => $slug,
+            'is_active'     => $showPublic ? 1 : 0,
+            'is_featured'   => 0,
+            'display_order' => 1,
+        ]);
+
+        return redirect('/backoffice/kas-keuangan-program')
+            ->with('success', 'Kategori program "' . $kategori->category_name . '" berhasil ditambahkan.');
+    }
+
+    public function kasProgramItemStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $validated = $request->validate([
+            'category_id' => 'required|integer|exists:program_categories,id',
+            'title'       => 'required|string|max:255',
+            'duration'    => 'nullable|string|max:100',
+            'is_active'   => 'nullable|boolean',
+        ]);
+
+        $title    = trim($validated['title']);
+        $baseSlug = Str::slug($title) ?: ('program-' . time());
+        $slug     = $baseSlug;
+        $seq      = 2;
+        while (Program::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $seq;
+            $seq++;
+        }
+
+        $nextOrder = (int) (Program::where('category_id', $validated['category_id'])->max('display_order') ?? 0) + 1;
+
+        Program::create([
+            'category_id'   => (int) $validated['category_id'],
+            'title'         => $title,
+            'slug'          => $slug,
+            'duration'      => trim((string) ($validated['duration'] ?? '')) ?: null,
+            'is_active'     => $request->boolean('is_active') ? 1 : 0,
+            'is_featured'   => 0,
+            'display_order' => $nextOrder,
+        ]);
+
+        $redirect = $request->input('redirect_to', '/backoffice/kas-keuangan-program');
+        return redirect($redirect)->with('success', 'Program "' . $title . '" berhasil ditambahkan ke kategori.');
+    }
+
+    public function kasJenisProgramIndex(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        return redirect('/backoffice/kas-keuangan-program');
+    }
+
+    public function kasJenisProgramStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $data = $this->validateProgramPayload($request);
+        $u = session('backoffice_user');
+        $data['created_by'] = $u ? $u['id'] : null;
+
+        $project = KasProject::create($data);
+        $project->update([
+            'kode_proyek' => 'PRG-' . str_pad($project->id, 5, '0', STR_PAD_LEFT),
+        ]);
+
+        if ($request->filled('redirect_to')) {
+            return redirect($request->input('redirect_to'))->with('success', 'Program berhasil ditambahkan.');
+        }
+
+        return redirect('/backoffice/kas-program-detail/' . $project->id)
+            ->with('success', 'Program berhasil ditambahkan.');
+    }
+
+    public function kasProgramDetail($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $project = KasProject::with(['program', 'transactions.creator'])->findOrFail($id);
+        $summary = $project->computeFinancialSummary();
+
+        $pemasukanList     = $project->transactions->where('type', 'masuk')->values();
+        $pengeluaranList   = $project->transactions->where('type', 'keluar')->values();
+        $pendingPiutangTrx = $pemasukanList->filter(fn($t) => $t->is_piutang && !$t->piutang_lunas_at)->values();
+
+        // List semua program yang belum lunas (Piutang Program) untuk pilihan tab Piutang
+        $allProjects    = KasProject::with(['program', 'transactions'])->orderBy('id', 'desc')->get();
+        $mappedProjects = $allProjects->map(fn($p) => $this->mapProjectWithSummary($p))->values();
+        $unpaidProjects = $mappedProjects->filter(fn($p) => $p['is_piutang'])->values();
+
+        $programKategori = ProgramCategory::with('programs')->orderBy('display_order')->get();
+        $units           = $this->kasUnitsList();
+        $opt             = $this->kasKategoriOptions();
+
+        return view('backoffice.kas-program-detail', array_merge(compact(
+            'project', 'summary', 'pemasukanList', 'pengeluaranList', 'pendingPiutangTrx',
+            'mappedProjects', 'unpaidProjects', 'programKategori', 'units'
+        ), $opt));
+    }
+
+    public function kasJenisProgramUpdate(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $project = KasProject::findOrFail($id);
+        $data    = $this->validateProgramPayload($request);
+
+        $project->update($data);
+
+        $redirect = $request->input('redirect_to', '/backoffice/kas-program-detail/' . $project->id);
+        return redirect($redirect)->with('success', 'Data program berhasil diperbarui.');
+    }
+
+    public function kasJenisProgramUpdateNilai(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $project = KasProject::findOrFail($id);
+        $raw     = $request->input('nilai_proyek', '0');
+        $clean   = (float) preg_replace('/[^\d]/', '', (string) $raw);
+
+        $project->update(['nilai_proyek' => $clean]);
+
+        return back()->with('success', 'Nilai program berhasil diperbarui.');
+    }
+
+    public function kasJenisProgramDestroy(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $project = KasProject::findOrFail($id);
+        KasTransaction::where('project_id', $project->id)->delete();
+        $project->delete();
+
+        $redirect = $request->input('redirect_to', '/backoffice/kas-keuangan-program');
+        return redirect($redirect)->with('success', 'Program beserta transaksinya berhasil dihapus.');
+    }
+
+    public function kasProgramKwitansi($id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $project = KasProject::with(['program', 'transactions'])->findOrFail($id);
+        $summary = $project->computeFinancialSummary();
+        $pemasukanList = $project->transactions->where('type', 'masuk')->values();
+
+        $logo    = BrandingSetting::where('setting_key', 'logo_primary')->value('setting_value') ?? '/image/LogoDHS.png';
+        $address = FooterSetting::where('setting_key', 'address_denpasar')->value('setting_value') ?? 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali';
+        $phone   = FooterSetting::where('setting_key', 'phone_denpasar')->value('setting_value') ?? '+62 81 246 319966';
+        $email   = FooterSetting::where('setting_key', 'email_denpasar')->value('setting_value') ?? 'sahabat@dhs.or.id';
+
+        return view('backoffice.kas-program-kwitansi', compact('project', 'summary', 'pemasukanList', 'logo', 'address', 'phone', 'email'));
+    }
+
+    public function kasSatuanStore(Request $request)
+    {
+        if (!session('backoffice_user')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $validated = $request->validate([
+            'nama' => 'required|string|max:50',
+        ]);
+
+        $nama = trim($validated['nama']);
+        KasUnit::firstOrCreate(['nama' => $nama]);
+
+        return response()->json([
+            'success' => true,
+            'unit'    => $nama,
+            'units'   => $this->kasUnitsList(),
+        ]);
+    }
+
+    /* ═══════════════════ PILIHAN JENIS KAS (KATEGORI) ═════════════ */
+    public function kasKategori()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $categories = KasCategory::orderBy('type')->orderBy('display_order')->orderBy('nama')->get();
+
+        return view('backoffice.kas-kategori', compact('categories'));
+    }
+
+    public function kasKategoriStore(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $data = $request->validate([
+            'type'          => 'required|in:masuk,keluar,umum',
+            'nama'          => 'required|string|max:100',
+            'deskripsi'     => 'nullable|string',
+            'display_order' => 'nullable|integer',
+        ]);
+
+        $data['display_order'] = $data['display_order'] ?? 0;
+        $data['is_active']     = $request->has('is_active') ? (bool)$request->is_active : true;
+
+        KasCategory::create($data);
+
+        return redirect('/backoffice/kas-kategori')->with('success', 'Jenis kas berhasil ditambahkan.');
+    }
+
+    public function kasKategoriUpdate(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $category = KasCategory::findOrFail($id);
+
+        $data = $request->validate([
+            'type'          => 'required|in:masuk,keluar,umum',
+            'nama'          => 'required|string|max:100',
+            'deskripsi'     => 'nullable|string',
+            'display_order' => 'nullable|integer',
+        ]);
+
+        $data['display_order'] = $data['display_order'] ?? 0;
+        $data['is_active']     = $request->has('is_active') ? (bool)$request->is_active : true;
+
+        $category->update($data);
+
+        return redirect('/backoffice/kas-kategori')->with('success', 'Jenis kas berhasil diperbarui.');
+    }
+
+    public function kasKategoriDestroy(Request $request, $id)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $category = KasCategory::findOrFail($id);
+        $category->delete();
+
+        return redirect('/backoffice/kas-kategori')->with('success', 'Pilihan jenis kas berhasil dihapus.');
     }
 }
 

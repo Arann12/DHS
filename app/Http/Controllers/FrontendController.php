@@ -15,7 +15,9 @@ use App\Models\Registration;
 use App\Models\FooterSetting;
 use App\Models\BrandingSetting;
 use App\Models\AboutPage;
+use App\Models\KasTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -259,18 +261,167 @@ class FrontendController extends Controller
         return view('registration', array_merge($shared, compact('categories', 'helpdesk')));
     }
 
+    private function parseRupiahAmount($value): float
+    {
+        if ($value === null || $value === '') {
+            return 0.0;
+        }
+        $clean = preg_replace('/[^\d]/', '', (string) $value);
+        return $clean !== '' ? (float) $clean : 0.0;
+    }
+
+    private function generateUniqueKasCode(string $type = 'masuk', ?string $tanggal = null): string
+    {
+        $tgl      = $tanggal ?: now()->toDateString();
+        $prefix   = $type === 'masuk' ? 'KM' : 'KK';
+        $datePart = date('Ymd', strtotime($tgl));
+        $seq      = KasTransaction::whereDate('tanggal', $tgl)->count() + 1;
+        do {
+            $candidate = sprintf('%s-%s-%04d', $prefix, $datePart, $seq);
+            $exists    = KasTransaction::where('kode', $candidate)->exists();
+            $seq++;
+        } while ($exists);
+
+        return $candidate;
+    }
+
+    /**
+     * Catat pembayaran pendaftaran / layanan ke KasTransaction.
+     * Mendukung mode:
+     * - 'belum': tidak membuat transaksi kas
+     * - 'lunas': 1 transaksi masuk penuh
+     * - 'dp'   : 1 transaksi [DP] lunas masuk kas sekarang + 1 transaksi [Sisa Tagihan / Piutang] is_piutang = true
+     */
+    private function recordKasPayment(array $params): array
+    {
+        $paymentMode  = $params['payment_mode'] ?? 'belum';
+        $nominalClean = (float) ($params['nominal'] ?? 0);
+        $totalBiaya   = (float) ($params['total_biaya'] ?? 0);
+        $jenis        = (string) ($params['jenis'] ?? 'Uang Pendaftaran Mahasiswa');
+        $deskripsi    = (string) ($params['deskripsi'] ?? '');
+        $studentName  = trim((string) ($params['student_name'] ?? ''));
+        $studentPhone = trim((string) ($params['student_phone'] ?? ''));
+        $programId    = $params['program_id'] ?? null;
+        $buktiPath    = $params['bukti_path'] ?? null;
+        $today        = now()->toDateString();
+
+        if ($paymentMode === 'belum' || $nominalClean <= 0) {
+            return [
+                'payment_mode'   => 'belum',
+                'total_biaya'    => $totalBiaya > 0 ? $totalBiaya : null,
+                'nominal'        => null,
+                'sisa_tagihan'   => null,
+                'kas_id'         => null,
+                'piutang_kas_id' => null,
+            ];
+        }
+
+        if ($paymentMode === 'dp' && $totalBiaya > $nominalClean) {
+            $sisaTagihan = round($totalBiaya - $nominalClean, 2);
+            $kodeDp      = $this->generateUniqueKasCode('masuk', $today);
+
+            $kasDp = KasTransaction::create([
+                'type'             => 'masuk',
+                'jenis'            => $jenis,
+                'kode'             => $kodeDp,
+                'deskripsi'        => '[DP] ' . $deskripsi,
+                'satuan'           => 'Paket',
+                'volume'           => 1,
+                'harga_satuan'     => $nominalClean,
+                'jumlah'           => $nominalClean,
+                'keterangan'       => trim('DP diterima Rp ' . number_format($nominalClean, 0, ',', '.')
+                    . ' dari total biaya Rp ' . number_format($totalBiaya, 0, ',', '.')
+                    . ($studentName !== '' ? ' | Siswa/Pemohon: ' . $studentName : '')
+                    . ($studentPhone !== '' ? ' | HP: ' . $studentPhone : '')),
+                'tanggal'          => $today,
+                'program_id'       => $programId,
+                'is_piutang'       => false,
+                'piutang_lunas_at' => null,
+                'piutang_nama'     => $studentName ?: null,
+                'bukti_gambar'     => $buktiPath,
+                'created_by'       => null,
+            ]);
+
+            $kodePiutang = $this->generateUniqueKasCode('masuk', $today);
+            $kasPiutang  = KasTransaction::create([
+                'type'             => 'masuk',
+                'jenis'            => $jenis,
+                'kode'             => $kodePiutang,
+                'deskripsi'        => '[Sisa Tagihan / Piutang] ' . $deskripsi,
+                'satuan'           => 'Paket',
+                'volume'           => 1,
+                'harga_satuan'     => $sisaTagihan,
+                'jumlah'           => $sisaTagihan,
+                'keterangan'       => trim('Sisa tagihan DP ' . $kodeDp
+                    . ' (Total Rp ' . number_format($totalBiaya, 0, ',', '.')
+                    . ', DP Rp ' . number_format($nominalClean, 0, ',', '.') . ')'
+                    . ($studentName !== '' ? ' | Siswa/Pemohon: ' . $studentName : '')
+                    . ($studentPhone !== '' ? ' | HP: ' . $studentPhone : '')),
+                'tanggal'          => $today,
+                'program_id'       => $programId,
+                'is_piutang'       => true,
+                'piutang_lunas_at' => null,
+                'piutang_nama'     => $studentName ?: 'Belum Dinamai',
+                'bukti_gambar'     => $buktiPath,
+                'created_by'       => null,
+            ]);
+
+            return [
+                'payment_mode'   => 'dp',
+                'total_biaya'    => $totalBiaya,
+                'nominal'        => $nominalClean,
+                'sisa_tagihan'   => $sisaTagihan,
+                'kas_id'         => $kasDp->id,
+                'piutang_kas_id' => $kasPiutang->id,
+            ];
+        }
+
+        // Lunas (Masuk Penuh)
+        $kode = $this->generateUniqueKasCode('masuk', $today);
+        $kas  = KasTransaction::create([
+            'type'             => 'masuk',
+            'jenis'            => $jenis,
+            'kode'             => $kode,
+            'deskripsi'        => $deskripsi,
+            'satuan'           => 'Paket',
+            'volume'           => 1,
+            'harga_satuan'     => $nominalClean,
+            'jumlah'           => $nominalClean,
+            'keterangan'       => trim(($studentName !== '' ? 'Siswa/Pemohon: ' . $studentName : '')
+                . ($studentPhone !== '' ? ' | HP: ' . $studentPhone : '')),
+            'tanggal'          => $today,
+            'program_id'       => $programId,
+            'is_piutang'       => false,
+            'piutang_lunas_at' => null,
+            'piutang_nama'     => $studentName ?: null,
+            'bukti_gambar'     => $buktiPath,
+            'created_by'       => null,
+        ]);
+
+        return [
+            'payment_mode'   => 'lunas',
+            'total_biaya'    => $nominalClean,
+            'nominal'        => $nominalClean,
+            'sisa_tagihan'   => 0.0,
+            'kas_id'         => $kas->id,
+            'piutang_kas_id' => null,
+        ];
+    }
+
     public function submitRegistration(Request $request)
     {
         $validated = $request->validate([
-            'nama_lengkap'      => 'required|string|max:255',
-            'hp_wa'             => 'required|string|max:50',
-            'email'             => 'required|email|max:255',
-            'program'           => 'required|string',
-            'special_request'   => 'nullable|string',
-            'bukti_pendaftaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'bukti_program'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'sumber_info'       => 'nullable|array',
+            'nama_lengkap'       => 'required|string|max:255',
+            'hp_wa'              => 'required|string|max:50',
+            'email'              => 'required|email|max:255',
+            'program'            => 'required|string',
+            'special_request'    => 'nullable|string',
+            'bukti_pendaftaran'  => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'bukti_program'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'sumber_info'        => 'nullable|array',
         ]);
+
+        $programModel = Program::with('category')->where('title', $validated['program'])->first();
 
         $buktiPendaftaranPath = null;
         if ($request->hasFile('bukti_pendaftaran')) {
@@ -292,16 +443,19 @@ class FrontendController extends Controller
             'full_name'              => $validated['nama_lengkap'],
             'phone'                  => $validated['hp_wa'],
             'email'                  => $validated['email'],
+            'category_key'           => $programModel?->category?->category_key,
             'program_title'          => $validated['program'],
             'special_request'        => $validated['special_request'] ?? null,
             'registration_fee_proof' => $buktiPendaftaranPath,
             'program_fee_proof'      => $buktiProgramPath,
-            'info_sources'           => $request->input('sumber_info', []),
+            'info_sources'           => $validated['sumber_info'] ?? [],
             'status'                 => 'pending',
             'registration_date'      => now()->toDateString(),
         ]);
 
-        return back()->with('reg_success', 'Terima kasih ' . $validated['nama_lengkap'] . '! Pendaftaran Anda telah kami terima. Tim admisi DHS akan menghubungi WhatsApp Anda dalam 1x24 jam.');
+        $msg = 'Terima kasih ' . $validated['nama_lengkap'] . '! Pendaftaran Anda telah kami terima. Tim admisi DHS akan menghubungi WhatsApp Anda dalam 1x24 jam.';
+
+        return back()->with('reg_success', $msg);
     }
     public function layanan()
     {
@@ -319,25 +473,34 @@ class FrontendController extends Controller
 
     public function submitLayanan(Request $request)
     {
-        $tipe = $request->input('tipe_pengajuan', 'beasiswa');
+        $tipe       = $request->input('tipe_pengajuan', 'beasiswa');
         $jenisUtama = $request->input('jenis_pengajuan_utama', '');
 
         if ($tipe === 'beasiswa') {
             $validated = $request->validate([
-                'nama_lengkap'   => 'required|string|max:255',
-                'hp_wa'          => 'required|string|max:50',
-                'email'          => 'required|email|max:255',
-                'asal_sekolah'   => 'nullable|string|max:255',
-                'kategori'       => 'nullable|string',
-                'program'        => 'nullable|string',
-                'skema_beasiswa' => 'nullable|string',
-                'link_berkas'    => 'required|url|max:1000',
-                'motivasi'       => 'nullable|string|max:2000',
-                'catatan'        => 'nullable|string|max:2000',
+                'nama_lengkap'       => 'required|string|max:255',
+                'hp_wa'              => 'required|string|max:50',
+                'email'              => 'required|email|max:255',
+                'asal_sekolah'       => 'nullable|string|max:255',
+                'kategori'           => 'nullable|string',
+                'program'            => 'nullable|string',
+                'skema_beasiswa'     => 'nullable|string',
+                'bukti_pembayaran'   => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                'link_berkas'        => 'required|url|max:1000',
+                'motivasi'           => 'nullable|string|max:2000',
+                'catatan'            => 'nullable|string|max:2000',
             ]);
 
-            $skema = ($validated['skema_beasiswa'] ?? null) ?: ($jenisUtama ?: 'Beasiswa DHS');
+            $skema        = ($validated['skema_beasiswa'] ?? null) ?: ($jenisUtama ?: 'Beasiswa DHS');
             $programTitle = ($validated['program'] ?? null) ?: $skema;
+
+            $buktiPembayaranPath = null;
+            if ($request->hasFile('bukti_pembayaran')) {
+                $file = $request->file('bukti_pembayaran');
+                $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $this->moveUploadedFile($file, 'uploads/layanan', $name);
+                $buktiPembayaranPath = '/uploads/layanan/' . $name;
+            }
 
             $specialRequestLines = array_filter([
                 'Tipe: PENGAJUAN BEASISWA',
@@ -350,19 +513,23 @@ class FrontendController extends Controller
             ]);
 
             Registration::create([
-                'full_name'         => $validated['nama_lengkap'],
-                'phone'             => $validated['hp_wa'],
-                'email'             => $validated['email'],
-                'category_key'      => ($validated['kategori'] ?? null) ?: 'beasiswa',
-                'program_title'     => $programTitle,
-                'special_request'   => implode("\n", $specialRequestLines),
-                'status'            => 'pending',
-                'registration_date' => now()->toDateString(),
+                'full_name'          => $validated['nama_lengkap'],
+                'phone'              => $validated['hp_wa'],
+                'email'              => $validated['email'],
+                'category_key'       => ($validated['kategori'] ?? null) ?: 'beasiswa',
+                'program_title'      => $programTitle,
+                'bukti_pembayaran'   => $buktiPembayaranPath,
+                'special_request'    => implode("\n", $specialRequestLines),
+                'status'             => 'pending',
+                'registration_date'  => now()->toDateString(),
             ]);
 
-            return back()->with('reg_success', 'Terima kasih ' . $validated['nama_lengkap'] . '! Pengajuan beasiswa (' . $skema . ') Anda telah diterima. Tim DHS akan mengkonfirmasi berkas Anda via WhatsApp dalam 1x24 jam.');
+            $msg = 'Terima kasih ' . $validated['nama_lengkap'] . '! Pengajuan beasiswa (' . $skema . ') Anda telah diterima. Tim DHS akan mengkonfirmasi berkas Anda via WhatsApp dalam 1x24 jam.';
+
+            return back()->with('reg_success', $msg);
 
         } else {
+            // Tipe DOKUMEN: tidak ada pembayaran — admin yang akan menentukan biaya & proses
             $validated = $request->validate([
                 'nama_lengkap'  => 'required|string|max:255',
                 'hp_wa'         => 'required|string|max:50',
@@ -387,18 +554,31 @@ class FrontendController extends Controller
                 !empty($validated['nomor_induk']) ? 'No. Induk: ' . $validated['nomor_induk'] : '',
             ]);
 
-            Registration::create([
-                'full_name'         => $validated['nama_lengkap'],
-                'phone'             => $validated['hp_wa'],
-                'email'             => $validated['email'],
-                'category_key'      => 'layanan-dokumen',
-                'program_title'     => $docType,
-                'special_request'   => implode("\n", $specialRequestLines),
-                'status'            => 'pending',
-                'registration_date' => now()->toDateString(),
-            ]);
+            DB::transaction(function () use ($validated, $docType, $specialRequestLines) {
+                Registration::create([
+                    'full_name'          => $validated['nama_lengkap'],
+                    'phone'              => $validated['hp_wa'],
+                    'email'              => $validated['email'],
+                    'category_key'       => 'layanan-dokumen',
+                    'program_title'      => $docType,
+                    'payment_mode'       => 'belum',
+                    'total_biaya'        => null,
+                    'nominal_pembayaran' => null,
+                    'sisa_tagihan'       => null,
+                    'bukti_pembayaran'   => null,
+                    'special_request'    => implode("\n", $specialRequestLines),
+                    'kas_transaction_id' => null,
+                    'piutang_kas_id'     => null,
+                    'status'             => 'pending',
+                    'registration_date'  => now()->toDateString(),
+                ]);
+            });
 
-            return back()->with('reg_success', 'Terima kasih ' . $validated['nama_lengkap'] . '! Permintaan pengurusan dokumen (' . $docType . ') Anda telah diterima. Tim administrasi DHS akan memproses permintaan Anda.');
+            $msg = 'Terima kasih ' . $validated['nama_lengkap'] . '! Pengajuan dokumen ('
+                . $docType . ') telah kami terima. '
+                . 'Tim administrasi DHS akan memverifikasi berkas dan menghubungi Anda via WhatsApp dalam 1×24 jam.';
+
+            return back()->with('reg_success', $msg);
         }
     }
 

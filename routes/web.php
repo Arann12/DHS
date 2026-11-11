@@ -62,6 +62,8 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::get('/backoffice/color-palette', [BackofficeController::class, 'colorPalette']);
     Route::get('/backoffice/statistik',     [BackofficeController::class, 'aboutUs']);
     Route::get('/backoffice/program',       [BackofficeController::class, 'program']);
+    Route::get('/backoffice/program-kategori', [BackofficeController::class, 'programKategoriIndex']);
+    Route::get('/backoffice/program-tarif', [BackofficeController::class, 'programTarifIndex']);
     Route::get('/backoffice/berita',        [BackofficeController::class, 'berita']);
     Route::get('/backoffice/galeri',        [BackofficeController::class, 'galeri']);
     Route::get('/backoffice/testimoni',     [BackofficeController::class, 'testimoni']);
@@ -125,9 +127,20 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::post('/backoffice/program/{id}/update',  [BackofficeController::class, 'programUpdate']);
     Route::post('/backoffice/program/{id}/delete',  [BackofficeController::class, 'programDestroy']);
     Route::post('/backoffice/program-category/{id}/update', [BackofficeController::class, 'programCategoryUpdate']);
+    Route::post('/backoffice/program-tarif/update-single',   [BackofficeController::class, 'programTarifUpdateSingle']);
+    Route::post('/backoffice/program-tarif/update-all',      [BackofficeController::class, 'programTarifUpdateAll']);
+
+    // Dedicated Menu: Kelola Kategori & Anak Program
+    Route::post('/backoffice/program-kategori/store',            [BackofficeController::class, 'programCategoryStore']);
+    Route::post('/backoffice/program-kategori/{id}/update',      [BackofficeController::class, 'programCategoryUpdateDirect']);
+    Route::post('/backoffice/program-kategori/{id}/delete',      [BackofficeController::class, 'programCategoryDestroyDirect']);
+    Route::post('/backoffice/program-kategori/item/store',       [BackofficeController::class, 'programItemStoreDirect']);
+    Route::post('/backoffice/program-kategori/item/{id}/update', [BackofficeController::class, 'programItemUpdateDirect']);
+    Route::post('/backoffice/program-kategori/item/{id}/delete', [BackofficeController::class, 'programItemDestroyDirect']);
 
     // Berita
     Route::post('/backoffice/berita/store',         [BackofficeController::class, 'beritaStore']);
+    Route::post('/backoffice/berita/hero/update',   [BackofficeController::class, 'beritaHeroUpdate']);
     Route::post('/backoffice/berita/{id}/update',   [BackofficeController::class, 'beritaUpdate']);
     Route::post('/backoffice/berita/{id}/delete',   [BackofficeController::class, 'beritaDestroy']);
 
@@ -143,6 +156,7 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
 
     // FAQ
     Route::post('/backoffice/faq/store',            [BackofficeController::class, 'faqStore']);
+    Route::post('/backoffice/faq/hero/update',      [BackofficeController::class, 'faqHeroUpdate']);
     Route::post('/backoffice/faq/{id}/update',      [BackofficeController::class, 'faqUpdate']);
     Route::post('/backoffice/faq/{id}/delete',      [BackofficeController::class, 'faqDestroy']);
 
@@ -173,4 +187,44 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::post('/backoffice/users/store',          [BackofficeController::class, 'usersStore']);
     Route::post('/backoffice/users/{id}/update',    [BackofficeController::class, 'usersUpdate']);
     Route::post('/backoffice/users/{id}/delete',    [BackofficeController::class, 'usersDestroy']);
+
+    // Kas & Keuangan
+    Route::get('/backoffice/kas',                        [BackofficeController::class, 'kas']);
+    Route::get('/backoffice/kas/export-csv',             [BackofficeController::class, 'kasExportCsv']);
+    Route::get('/backoffice/kas/{id}/kwitansi',          [BackofficeController::class, 'kasKwitansi']);
+    Route::get('/backoffice/kas-keuangan-program',       [BackofficeController::class, 'kasKeuanganProgram']);
+    Route::post('/backoffice/kas-kategori-program/store', [BackofficeController::class, 'kasProgramCategoryStore']);
+    Route::post('/backoffice/kas-program-item/store',    [BackofficeController::class, 'kasProgramItemStore']);
+    Route::get('/backoffice/kas-kategori-kas',           [BackofficeController::class, 'kasKategoriKasIndex']);
+    Route::get('/backoffice/kas-kategori-kas/{id}',      [BackofficeController::class, 'kasKategoriKas']);
+    Route::post('/backoffice/kas/store',                 [BackofficeController::class, 'kasStore']);
+    Route::post('/backoffice/kas/{id}/update',           [BackofficeController::class, 'kasUpdate']);
+    Route::post('/backoffice/kas/{id}/delete',           [BackofficeController::class, 'kasDestroy']);
+    Route::post('/backoffice/kas/{id}/piutang-lunas',    [BackofficeController::class, 'kasPiutangLunas']);
+
+    // Kelola Program Keuangan (via Keuangan per Program) + Detail Keuangan per Program
+    Route::post('/backoffice/kas-program/store',                [BackofficeController::class, 'kasJenisProgramStore']);
+    Route::post('/backoffice/kas-program/{id}/update',          [BackofficeController::class, 'kasJenisProgramUpdate']);
+    Route::post('/backoffice/kas-program/{id}/update-nilai',    [BackofficeController::class, 'kasJenisProgramUpdateNilai']);
+    Route::post('/backoffice/kas-program/{id}/delete',          [BackofficeController::class, 'kasJenisProgramDestroy']);
+    Route::get('/backoffice/kas-program-detail/{id}/kwitansi',  [BackofficeController::class, 'kasProgramKwitansi']);
+    Route::get('/backoffice/kas-program-detail/{id}',           [BackofficeController::class, 'kasProgramDetail']);
+
+    // Redirect legacy /backoffice/kas-jenis-program & /backoffice/kas-proyek paths
+    Route::get('/backoffice/kas-jenis-program',                 fn() => redirect('/backoffice/kas-keuangan-program'));
+    Route::post('/backoffice/kas-jenis-program/store',          [BackofficeController::class, 'kasJenisProgramStore']);
+    Route::post('/backoffice/kas-jenis-program/{id}/update',    [BackofficeController::class, 'kasJenisProgramUpdate']);
+    Route::post('/backoffice/kas-jenis-program/{id}/update-nilai', [BackofficeController::class, 'kasJenisProgramUpdateNilai']);
+    Route::post('/backoffice/kas-jenis-program/{id}/delete',    [BackofficeController::class, 'kasJenisProgramDestroy']);
+    Route::get('/backoffice/kas-proyek',       fn() => redirect('/backoffice/kas-keuangan-program'));
+    Route::get('/backoffice/kas-proyek/{id}',  fn($id) => redirect('/backoffice/kas-program-detail/' . $id));
+
+    // Satuan Dinamis Kas
+    Route::post('/backoffice/kas-satuan/store',          [BackofficeController::class, 'kasSatuanStore']);
+
+    // Pilihan Jenis Kas (Kategori)
+    Route::get('/backoffice/kas-kategori',              [BackofficeController::class, 'kasKategori']);
+    Route::post('/backoffice/kas-kategori/store',       [BackofficeController::class, 'kasKategoriStore']);
+    Route::post('/backoffice/kas-kategori/{id}/update', [BackofficeController::class, 'kasKategoriUpdate']);
+    Route::post('/backoffice/kas-kategori/{id}/delete', [BackofficeController::class, 'kasKategoriDestroy']);
 });

@@ -8,7 +8,10 @@
 $programs = [];
 if (isset($categories) && $categories->count() > 0) {
     foreach ($categories as $cat) {
-        $activePrograms = $cat->programs->where('is_active', 1)->pluck('title')->toArray();
+        $activePrograms = $cat->programs->where('is_active', 1)->map(fn($p) => [
+            'title' => $p->title,
+            'fee'   => $p->tuition_fee ? (float) $p->tuition_fee : 0,
+        ])->values()->toArray();
         // Only include category if it has active programs
         if (count($activePrograms) > 0) {
             $programs[$cat->category_key] = [
@@ -23,55 +26,55 @@ if (isset($categories) && $categories->count() > 0) {
         'internasional' => [
             'label'   => 'Program Internasional',
             'options' => [
-                'Program 1 Tahun + Ausbildung Jerman',
-                'Program 2 Tahun + 1 Semester TAFE Australia',
-                'TAFE Australia Pathway',
-                'THS Australia Pathway',
-                'Australia Short Course',
-                'Study Visit (Australia & Singapura)',
+                ['title' => 'Program 1 Tahun + Ausbildung Jerman', 'fee' => 0],
+                ['title' => 'Program 2 Tahun + 1 Semester TAFE Australia', 'fee' => 0],
+                ['title' => 'TAFE Australia Pathway', 'fee' => 0],
+                ['title' => 'THS Australia Pathway', 'fee' => 0],
+                ['title' => 'Australia Short Course', 'fee' => 0],
+                ['title' => 'Study Visit (Australia & Singapura)', 'fee' => 0],
             ]
         ],
         '2-tahun' => [
             'label'   => 'Vokasi 2 Tahun',
             'options' => [
-                'Perhotelan (FO & HK) — 2 Tahun',
-                'Tata Boga (Culinary Art) — 2 Tahun',
-                'Tata Hidangan (FBS & Bartender) — 2 Tahun',
+                ['title' => 'Perhotelan (FO & HK) — 2 Tahun', 'fee' => 0],
+                ['title' => 'Tata Boga (Culinary Art) — 2 Tahun', 'fee' => 0],
+                ['title' => 'Tata Hidangan (FBS & Bartender) — 2 Tahun', 'fee' => 0],
             ]
         ],
         '1-tahun' => [
             'label'   => 'Vokasi 1 Tahun',
             'options' => [
-                'Perhotelan (FO & HK) — 1 Tahun',
-                'Tata Boga (Culinary Art) — 1 Tahun',
-                'Tata Hidangan (FBS & Bartender) — 1 Tahun',
+                ['title' => 'Perhotelan (FO & HK) — 1 Tahun', 'fee' => 0],
+                ['title' => 'Tata Boga (Culinary Art) — 1 Tahun', 'fee' => 0],
+                ['title' => 'Tata Hidangan (FBS & Bartender) — 1 Tahun', 'fee' => 0],
             ]
         ],
         '1-tahun-kapal-pesiar' => [
             'label'   => '1 Tahun Kapal Pesiar',
             'options' => [
-                'Cook (Asisten Koki) — Kapal Pesiar',
-                'Waiter & Bartender — Kapal Pesiar',
-                'Hotel Steward — Kapal Pesiar',
+                ['title' => 'Cook (Asisten Koki) — Kapal Pesiar', 'fee' => 0],
+                ['title' => 'Waiter & Bartender — Kapal Pesiar', 'fee' => 0],
+                ['title' => 'Hotel Steward — Kapal Pesiar', 'fee' => 0],
             ]
         ],
         '6-bulan' => [
             'label'   => 'Short Course 6 Bulan',
             'options' => [
-                'Perhotelan (FO & HK) — 6 Bulan',
-                'Tata Boga (Culinary Art) — 6 Bulan',
-                'Tata Hidangan (FBS & Bartender) — 6 Bulan',
+                ['title' => 'Perhotelan (FO & HK) — 6 Bulan', 'fee' => 0],
+                ['title' => 'Tata Boga (Culinary Art) — 6 Bulan', 'fee' => 0],
+                ['title' => 'Tata Hidangan (FBS & Bartender) — 6 Bulan', 'fee' => 0],
             ]
         ],
         'eksekutif' => [
             'label'   => 'Program Eksekutif (6 Bln)',
             'options' => [
-                'FBS & Bar (Cruise Line)',
-                'Hotel Steward (Cruise Line)',
-                'Cook (Cruise Line)',
-                'Flair Bartending & Sommelier',
-                'Butler',
-                'SPA Therapist',
+                ['title' => 'FBS & Bar (Cruise Line)', 'fee' => 0],
+                ['title' => 'Hotel Steward (Cruise Line)', 'fee' => 0],
+                ['title' => 'Cook (Cruise Line)', 'fee' => 0],
+                ['title' => 'Flair Bartending & Sommelier', 'fee' => 0],
+                ['title' => 'Butler', 'fee' => 0],
+                ['title' => 'SPA Therapist', 'fee' => 0],
             ]
         ],
     ];
@@ -136,7 +139,7 @@ if (isset($categories) && $categories->count() > 0) {
             </div>
             @endif
 
-            <form action="/pendaftaran" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="/pendaftaran" method="POST" enctype="multipart/form-data" class="space-y-6" id="form-pendaftaran">
                 @csrf
 
                 <!-- Nama Lengkap -->
@@ -176,8 +179,8 @@ if (isset($categories) && $categories->count() > 0) {
                         @foreach($programs as $key => $cat)
                         <optgroup label="{{ $cat['label'] }}" style="font-weight: 700; color: #1A365D;">
                             @foreach($cat['options'] as $prog)
-                            <option value="{{ $prog }}" style="padding-left: 1rem; color: #0F2440;" {{ old('program') === $prog ? 'selected' : '' }}>
-                                {{ $prog }}
+                            <option value="{{ $prog['title'] }}" style="padding-left: 1rem; color: #0F2440;" {{ old('program') === $prog['title'] ? 'selected' : '' }}>
+                                {{ $prog['title'] }}
                             </option>
                             @endforeach
                         </optgroup>

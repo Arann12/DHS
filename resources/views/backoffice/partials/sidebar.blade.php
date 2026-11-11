@@ -25,9 +25,13 @@
             <span class="material-icons-round mat-icon">info</span>
             <span class="nav-label">About Us</span>
         </a>
+        <a href="/backoffice/program-tarif" class="nav-item {{ Request::is('backoffice/program-tarif*') ? 'active' : '' }}">
+            <span class="material-icons-round mat-icon">price_change</span>
+            <span class="nav-label">Atur Harga Program</span>
+        </a>
         <a href="/backoffice/program" class="nav-item {{ Request::is('backoffice/program') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">school</span>
-            <span class="nav-label">Academy (Kategori)</span>
+            <span class="nav-label">Editor Landing Academy</span>
         </a>
         <a href="/backoffice/program-detail" class="nav-item {{ Request::is('backoffice/program-detail*') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">auto_stories</span>
@@ -110,6 +114,24 @@
         <a href="/backoffice/dokumen-sertifikasi/c1d-visa" class="nav-item {{ Request::is('backoffice/dokumen-sertifikasi/c1d-visa') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">badge</span>
             <span class="nav-label">C1/D Visa (US Seaman)</span>
+        </a>
+
+        <div class="nav-group-label">Manajemen Keuangan</div>
+        <a href="/backoffice/kas" class="nav-item {{ Request::is('backoffice/kas') ? 'active' : '' }}">
+            <span class="material-icons-round mat-icon">account_balance_wallet</span>
+            <span class="nav-label">Keuangan Umum</span>
+        </a>
+        <a href="/backoffice/kas-keuangan-program" class="nav-item {{ Request::is('backoffice/kas-keuangan-program*') || Request::is('backoffice/kas-program-detail*') || Request::is('backoffice/kas-kategori-kas*') ? 'active' : '' }}">
+            <span class="material-icons-round mat-icon">folder_open</span>
+            <span class="nav-label">Keuangan Program</span>
+        </a>
+        <a href="/backoffice/program-kategori" class="nav-item {{ Request::is('backoffice/program-kategori*') ? 'active' : '' }}">
+            <span class="material-icons-round mat-icon">account_tree</span>
+            <span class="nav-label">Kategori &amp; Program</span>
+        </a>
+        <a href="/backoffice/kas-kategori" class="nav-item {{ Request::is('backoffice/kas-kategori*') && !Request::is('backoffice/kas-kategori-kas*') ? 'active' : '' }}">
+            <span class="material-icons-round mat-icon">category</span>
+            <span class="nav-label">Jenis Kas</span>
         </a>
 
         <div class="nav-group-label">Pengaturan System</div>

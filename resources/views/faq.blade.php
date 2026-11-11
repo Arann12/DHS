@@ -4,10 +4,14 @@
 
 @section('content')
     <!-- Hero Section -->
+    @php
+        $faqHeroImage = \App\Models\FooterSetting::where('setting_key', 'hero_image_faq')->value('setting_value');
+        $faqHeroImage = $faqHeroImage ?: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1600&auto=format&fit=crop';
+    @endphp
     <section class="relative h-[75vh] min-h-[520px] flex items-center justify-center text-center overflow-hidden">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
         <img alt="Hospitality Support" class="absolute inset-0 w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1600&auto=format&fit=crop">
+            src="{{ $faqHeroImage }}">
 
         <div class="relative z-20 px-6 max-w-5xl mx-auto pt-24 text-white" data-reveal="fade-up">
             <div class="mb-6 inline-flex items-center space-x-2 justify-center text-white/80 text-xs font-semibold uppercase tracking-wider">

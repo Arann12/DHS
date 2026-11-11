@@ -66,6 +66,18 @@
                             <td>
                                 <div style="font-weight:600;color:#1A365D;" x-text="item.program"></div>
                                 <div style="font-size:11px;color:#718096;" x-text="'Kategori: ' + item.kategori"></div>
+                                <template x-if="item.payment_mode === 'dp'">
+                                    <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;">
+                                        <span class="badge badge-green" style="font-size:10.5px;font-weight:700;" x-text="'DP: ' + item.nominal_formatted"></span>
+                                        <span x-show="item.is_dp_pending" class="badge" style="font-size:10.5px;font-weight:700;background:#fef3c7;color:#b45309;border:1px solid #fde68a;" x-text="'Sisa Piutang: ' + item.sisa_formatted"></span>
+                                        <span x-show="item.is_dp_lunas" class="badge badge-blue" style="font-size:10.5px;font-weight:700;">Lunas (Piutang Terbayar)</span>
+                                    </div>
+                                </template>
+                                <template x-if="item.payment_mode !== 'dp' && item.nominal_pembayaran">
+                                    <div style="margin-top:3px;">
+                                        <span class="badge badge-green" style="font-size:10.5px;font-weight:700;" x-text="item.nominal_formatted"></span>
+                                    </div>
+                                </template>
                             </td>
                             <td>
                                 <div style="display:flex;flex-direction:column;gap:4px;">
@@ -170,6 +182,45 @@
                         <div class="bo-input" style="background:#fafafa;" x-text="selectedItem.sumber || '-'"></div>
                     </div>
 
+                    {{-- Informasi Pembayaran & Kas --}}
+                    <div style="grid-column:1/-1;border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;"
+                         :style="selectedItem.is_dp_pending ? 'background:#fffbeb;border:1.5px solid #fde68a;' : 'background:#f0fdf4;border:1px solid #bbf7d0;'">
+                        <div>
+                            <div style="font-size:11px;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:6px;"
+                                 :style="selectedItem.is_dp_pending ? 'color:#b45309;' : 'color:#166534;'">
+                                <span>Pembayaran Pendaftaran</span>
+                                <span x-show="selectedItem.payment_mode === 'dp'" style="padding:2px 8px;border-radius:99px;font-size:10px;font-weight:800;"
+                                      :style="selectedItem.is_dp_pending ? 'background:#fef3c7;color:#b45309;' : 'background:#dcfce7;color:#15803d;'"
+                                      x-text="selectedItem.is_dp_pending ? 'DP / Belum Lunas' : 'DP — Sudah Lunas'"></span>
+                            </div>
+                            <template x-if="selectedItem.payment_mode === 'dp'">
+                                <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:14px;font-size:13px;">
+                                    <div>Total Biaya: <strong style="color:#0f172a;" x-text="selectedItem.total_biaya_formatted"></strong></div>
+                                    <div>Terbayar: <strong style="color:#15803d;" x-text="selectedItem.paid_total_formatted"></strong></div>
+                                    <div x-show="selectedItem.is_dp_pending">Sisa Piutang: <strong style="color:#b45309;" x-text="selectedItem.sisa_formatted"></strong></div>
+                                </div>
+                            </template>
+                            <template x-if="selectedItem.payment_mode !== 'dp'">
+                                <div style="font-size:18px;font-weight:800;color:#15803d;" x-text="selectedItem.nominal_pembayaran ? selectedItem.nominal_formatted : 'Belum Ada Pembayaran'"></div>
+                            </template>
+                            <div style="font-size:11.5px;margin-top:3px;"
+                                 :style="selectedItem.is_dp_pending ? 'color:#92400e;' : 'color:#166534;'"
+                                 x-text="selectedItem.is_dp_pending ? 'DP tercatat di kas & sisa tagihan otomatis masuk daftar Piutang (Uang di Lapangan)' : (selectedItem.nominal_pembayaran ? 'Otomatis tercatat masuk ke Kas Denpasar Hotel School' : 'Calon mahasiswa belum mengisi nominal pembayaran')"></div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <template x-if="selectedItem.is_dp_pending">
+                                <a href="/backoffice/kas" class="btn-secondary" style="font-size:12px;padding:7px 12px;border-color:#d97706;color:#b45309;background:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                                    <span class="material-icons-round" style="font-size:16px;">payments</span> Kelola Piutang di Kas
+                                </a>
+                            </template>
+                            <template x-if="selectedItem.kas_transaction_id">
+                                <a :href="'/backoffice/kas/' + selectedItem.kas_transaction_id + '/kwitansi'" target="_blank" class="btn-primary" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                                    <span class="material-icons-round" style="font-size:16px;">receipt_long</span> Cetak Kwitansi Kas
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+
                     {{-- Section Preview Gambar / Berkas Upload --}}
                     <div style="grid-column:1/-1;border-top:1px solid #eee;padding-top:16px;margin-top:4px;">
                         <h4 style="font-size:14px;font-weight:700;color:#0F2440;margin:0 0 14px;">Berkas Upload & Bukti Pembayaran</h4>
@@ -263,7 +314,7 @@
             'cancelled' => 'Ditolak'
         ];
 
-        return [
+        return array_merge([
             'id' => $reg->id,
             'tgl' => \Carbon\Carbon::parse($reg->created_at)->format('d M Y H:i'),
             'nama' => $reg->full_name,
@@ -273,12 +324,14 @@
             'program' => $reg->program_title ?? '-',
             'special_request' => $reg->special_request ?? '',
             'sumber' => count($sources) > 0 ? implode(', ', $sources) : '-',
+            'kas_transaction_id' => $reg->kas_transaction_id,
+            'piutang_kas_id' => $reg->piutang_kas_id,
             'bukti_pendaftaran_url' => $reg->registration_fee_proof ? asset($reg->registration_fee_proof) : null,
             'bukti_pendaftaran_name' => $reg->registration_fee_proof ? basename($reg->registration_fee_proof) : '',
             'bukti_program_url' => $reg->program_fee_proof ? asset($reg->program_fee_proof) : null,
             'bukti_program_name' => $reg->program_fee_proof ? basename($reg->program_fee_proof) : '',
             'status' => $statusMap[$reg->status] ?? 'Baru',
-        ];
+        ], $reg->getPaymentSummary());
     });
 @endphp
 

@@ -10,7 +10,10 @@ if (isset($categories) && $categories->count() > 0) {
     foreach ($categories as $cat) {
         $programs[$cat->category_key] = [
             'label'   => $cat->category_name,
-            'options' => $cat->programs->where('is_active', 1)->pluck('title')->toArray(),
+            'options' => $cat->programs->where('is_active', 1)->map(fn($p) => [
+                'title' => $p->title,
+                'fee'   => $p->tuition_fee ? (float) $p->tuition_fee : 0,
+            ])->values()->toArray(),
         ];
     }
 } else {
@@ -18,55 +21,55 @@ if (isset($categories) && $categories->count() > 0) {
         'internasional' => [
             'label'   => 'Program Internasional',
             'options' => [
-                'Program 1 Tahun + Ausbildung Jerman',
-                'Program 2 Tahun + 1 Semester TAFE Australia',
-                'TAFE Australia Pathway',
-                'THS Australia Pathway',
-                'Australia Short Course',
-                'Study Visit (Australia & Singapura)',
+                ['title' => 'Program 1 Tahun + Ausbildung Jerman', 'fee' => 0],
+                ['title' => 'Program 2 Tahun + 1 Semester TAFE Australia', 'fee' => 0],
+                ['title' => 'TAFE Australia Pathway', 'fee' => 0],
+                ['title' => 'THS Australia Pathway', 'fee' => 0],
+                ['title' => 'Australia Short Course', 'fee' => 0],
+                ['title' => 'Study Visit (Australia & Singapura)', 'fee' => 0],
             ]
         ],
         '2-tahun' => [
             'label'   => 'Vokasi 2 Tahun',
             'options' => [
-                'Perhotelan (FO & HK) — 2 Tahun',
-                'Tata Boga (Culinary Art) — 2 Tahun',
-                'Tata Hidangan (FBS & Bartender) — 2 Tahun',
+                ['title' => 'Perhotelan (FO & HK) — 2 Tahun', 'fee' => 0],
+                ['title' => 'Tata Boga (Culinary Art) — 2 Tahun', 'fee' => 0],
+                ['title' => 'Tata Hidangan (FBS & Bartender) — 2 Tahun', 'fee' => 0],
             ]
         ],
         '1-tahun' => [
             'label'   => 'Vokasi 1 Tahun',
             'options' => [
-                'Perhotelan (FO & HK) — 1 Tahun',
-                'Tata Boga (Culinary Art) — 1 Tahun',
-                'Tata Hidangan (FBS & Bartender) — 1 Tahun',
+                ['title' => 'Perhotelan (FO & HK) — 1 Tahun', 'fee' => 0],
+                ['title' => 'Tata Boga (Culinary Art) — 1 Tahun', 'fee' => 0],
+                ['title' => 'Tata Hidangan (FBS & Bartender) — 1 Tahun', 'fee' => 0],
             ]
         ],
         '1-tahun-kapal-pesiar' => [
             'label'   => '1 Tahun Kapal Pesiar',
             'options' => [
-                'Cook (Asisten Koki) — Kapal Pesiar',
-                'Waiter & Bartender — Kapal Pesiar',
-                'Hotel Steward — Kapal Pesiar',
+                ['title' => 'Cook (Asisten Koki) — Kapal Pesiar', 'fee' => 0],
+                ['title' => 'Waiter & Bartender — Kapal Pesiar', 'fee' => 0],
+                ['title' => 'Hotel Steward — Kapal Pesiar', 'fee' => 0],
             ]
         ],
         '6-bulan' => [
             'label'   => 'Short Course 6 Bulan',
             'options' => [
-                'Perhotelan (FO & HK) — 6 Bulan',
-                'Tata Boga (Culinary Art) — 6 Bulan',
-                'Tata Hidangan (FBS & Bartender) — 6 Bulan',
+                ['title' => 'Perhotelan (FO & HK) — 6 Bulan', 'fee' => 0],
+                ['title' => 'Tata Boga (Culinary Art) — 6 Bulan', 'fee' => 0],
+                ['title' => 'Tata Hidangan (FBS & Bartender) — 6 Bulan', 'fee' => 0],
             ]
         ],
         'eksekutif' => [
             'label'   => 'Program Eksekutif (6 Bln)',
             'options' => [
-                'FBS & Bar (Cruise Line)',
-                'Hotel Steward (Cruise Line)',
-                'Cook (Cruise Line)',
-                'Flair Bartending & Sommelier',
-                'Butler',
-                'SPA Therapist',
+                ['title' => 'FBS & Bar (Cruise Line)', 'fee' => 0],
+                ['title' => 'Hotel Steward (Cruise Line)', 'fee' => 0],
+                ['title' => 'Cook (Cruise Line)', 'fee' => 0],
+                ['title' => 'Flair Bartending & Sommelier', 'fee' => 0],
+                ['title' => 'Butler', 'fee' => 0],
+                ['title' => 'SPA Therapist', 'fee' => 0],
             ]
         ],
     ];
@@ -135,7 +138,7 @@ if (isset($categories) && $categories->count() > 0) {
             @endif
 
             <!-- Form Body -->
-            <form action="/layanan" method="POST" class="space-y-6" id="form-layanan">
+            <form action="/layanan" method="POST" enctype="multipart/form-data" class="space-y-6" id="form-layanan">
                 @csrf
 
                 <!-- 1. PILIH JENIS PENGAJUAN (DROPDOWN DIRECT UTAMA) -->
@@ -162,8 +165,8 @@ if (isset($categories) && $categories->count() > 0) {
                             @endphp
                             @foreach($beasiswaList as $bItem)
                                 @if(!isset($bItem['is_active']) || $bItem['is_active'])
-                                    @php $bVal = $bItem['name']; @endphp
-                                    <option value="{{ $bVal }}" data-type="beasiswa" {{ old('jenis_pengajuan_utama') === $bVal || (!old('jenis_pengajuan_utama') && ($beasiswaParam === $bVal || (!$beasiswaParam && !request('doc') && request('type') === 'beasiswa' && $loop->first))) ? 'selected' : '' }}>
+                                    @php $bVal = $bItem['name']; $bFee = (float)($bItem['fee'] ?? 0); @endphp
+                                    <option value="{{ $bVal }}" data-type="beasiswa" data-fee="{{ $bFee }}" {{ old('jenis_pengajuan_utama') === $bVal || (!old('jenis_pengajuan_utama') && ($beasiswaParam === $bVal || (!$beasiswaParam && !request('doc') && request('type') === 'beasiswa' && $loop->first))) ? 'selected' : '' }}>
                                         🎓 {{ $bVal }} {{ !empty($bItem['desc']) ? '(' . $bItem['desc'] . ')' : '' }}
                                     </option>
                                 @endif
@@ -190,8 +193,8 @@ if (isset($categories) && $categories->count() > 0) {
                             @endphp
                             @foreach($docList as $dItem)
                                 @if(!isset($dItem['is_active']) || $dItem['is_active'])
-                                    @php $dVal = $dItem['name']; @endphp
-                                    <option value="{{ $dVal }}" data-type="dokumen" {{ old('jenis_pengajuan_utama') === $dVal || (!old('jenis_pengajuan_utama') && ($docParam === $dVal || (!$docParam && request('type') === 'dokumen' && $loop->first))) ? 'selected' : '' }}>
+                                    @php $dVal = $dItem['name']; $dFee = (float)($dItem['fee'] ?? 0); @endphp
+                                    <option value="{{ $dVal }}" data-type="dokumen" data-fee="{{ $dFee }}" {{ old('jenis_pengajuan_utama') === $dVal || (!old('jenis_pengajuan_utama') && ($docParam === $dVal || (!$docParam && request('type') === 'dokumen' && $loop->first))) ? 'selected' : '' }}>
                                         📑 {{ $dVal }} {{ !empty($dItem['desc']) ? '(' . $dItem['desc'] . ')' : '' }}
                                     </option>
                                 @endif
@@ -248,7 +251,7 @@ if (isset($categories) && $categories->count() > 0) {
                             @foreach($programs as $catKey => $cat)
                             <optgroup label="{{ $cat['label'] }}">
                                 @foreach($cat['options'] as $progOpt)
-                                <option value="{{ $progOpt }}" data-cat="{{ $catKey }}" {{ old('program') === $progOpt ? 'selected' : '' }}>{{ $progOpt }}</option>
+                                <option value="{{ $progOpt['title'] }}" data-cat="{{ $catKey }}" data-fee="{{ $progOpt['fee'] }}" {{ old('program') === $progOpt['title'] ? 'selected' : '' }}>{{ $progOpt['title'] }}</option>
                                 @endforeach
                             </optgroup>
                             @endforeach
@@ -413,8 +416,32 @@ if (isset($categories) && $categories->count() > 0) {
                     </div>
                 </div>
 
+                {{-- 6. UPLOAD BUKTI PEMBAYARAN JIKA ADA (KHUSUS BEASISWA) --}}
+                <div id="payment-beasiswa-wrapper" class="hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-text-light mb-1">
+                                <span>Unggah Bukti Pembayaran / Transfer (jika ada)</span>
+                                <span class="text-xs text-muted-light font-normal">(opsional)</span>
+                            </label>
+                            <p class="text-xs text-muted-light mb-2">Format: JPG, PNG, atau PDF (maks. 2MB)</p>
+                            <div class="border-2 border-dashed border-black/15 rounded-lg px-4 py-4 flex items-center gap-3 hover:border-primary/40 transition-colors cursor-pointer" onclick="document.getElementById('bukti_pembayaran_layanan').click()">
+                                <span class="material-icons text-muted-light">upload_file</span>
+                                <div class="flex-1">
+                                    <input type="file" id="bukti_pembayaran_layanan" name="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf"
+                                        class="hidden" onchange="showLayananFileName(this, 'label-bukti-layanan')">
+                                    <span id="label-bukti-layanan" class="text-sm text-muted-light">Choose File | No file chosen</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-
+                {{-- Notifikasi khusus dokumen: tidak ada pembayaran di sini --}}
+                <div id="notif-dokumen-tanpa-bayar" class="hidden rounded-xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 flex items-start gap-3 text-xs text-emerald-800">
+                    <span class="material-icons text-emerald-500 text-base mt-0.5 shrink-0">info</span>
+                    <span>Pengajuan dokumen <strong>tidak memerlukan pembayaran di sini</strong>. Kirim formulir dan tim administrasi DHS akan menghubungi Anda via WhatsApp untuk informasi biaya & proses selanjutnya.</span>
+                </div>
 
                 <!-- 7. CATATAN TAMBAHAN (OPSIONAL) -->
                 <div>
@@ -507,6 +534,42 @@ if (isset($categories) && $categories->count() > 0) {
 </section>
 
 <script>
+function showLayananFileName(input, labelId) {
+    const label = document.getElementById(labelId);
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Ukuran file melebihi batas 2MB.');
+            input.value = '';
+            label.textContent = 'Choose File | No file chosen';
+        } else {
+            label.textContent = '✓ ' + file.name;
+            label.style.color = '#1A365D';
+        }
+    }
+}
+
+function syncLayananFee(fromInit = false) {
+    if (!window.DHSFrontPay) return;
+    const jenisSelect = document.getElementById('reg-jenis-pengajuan-select');
+    const progSelect = document.getElementById('select-program-beasiswa');
+    if (!jenisSelect) return;
+
+    const selectedJenis = jenisSelect.options[jenisSelect.selectedIndex];
+    const type = selectedJenis && selectedJenis.dataset ? (selectedJenis.dataset.type || 'beasiswa') : 'beasiswa';
+    const jenisFee = selectedJenis && selectedJenis.dataset ? parseFloat(selectedJenis.dataset.fee || '0') : 0;
+
+    if (type === 'dokumen') {
+        window.DHSFrontPay.setOfficialFee('layanan', jenisFee, true, fromInit);
+    } else {
+        const progOpt = progSelect && progSelect.selectedIndex >= 0 ? progSelect.options[progSelect.selectedIndex] : null;
+        const progFee = progOpt && progOpt.dataset ? parseFloat(progOpt.dataset.fee || '0') : 0;
+        const resolvedFee = jenisFee > 0 ? jenisFee : progFee;
+        // Untuk beasiswa, tarif acuan boleh disesuaikan bila mendapat potongan
+        window.DHSFrontPay.setOfficialFee('layanan', resolvedFee, false, fromInit);
+    }
+}
+
 function onJenisPengajuanSelect(selectEl) {
     const selectedOpt = selectEl.options[selectEl.selectedIndex];
     const type = selectedOpt.dataset.type || 'beasiswa';
@@ -523,6 +586,12 @@ function onJenisPengajuanSelect(selectEl) {
     document.getElementById('checklist-beasiswa-info').classList.toggle('hidden', !isBeasiswa);
     document.getElementById('checklist-dokumen-info').classList.toggle('hidden', isBeasiswa);
 
+    // Tampilkan payment hanya untuk beasiswa; dokumen tidak ada pembayaran
+    const payWrapper = document.getElementById('payment-beasiswa-wrapper');
+    const notifDokumen = document.getElementById('notif-dokumen-tanpa-bayar');
+    if (payWrapper) payWrapper.classList.toggle('hidden', !isBeasiswa);
+    if (notifDokumen) notifDokumen.classList.toggle('hidden', isBeasiswa);
+
     const submitText = document.getElementById('btn-submit-text');
     if (submitText) {
         submitText.textContent = isBeasiswa ? `Kirim Pengajuan ${value}` : `Kirim Pengurusan ${value}`;
@@ -533,32 +602,46 @@ function onJenisPengajuanSelect(selectEl) {
     if (progSelectEl) {
         progSelectEl.required = isBeasiswa;
     }
+
+    syncLayananFee(false);
 }
 
-
 function resetFormState() {
+    const lbl = document.getElementById('label-bukti-layanan');
+    if (lbl) lbl.textContent = 'Choose File | No file chosen';
+    if (window.DHSFrontPay) {
+        window.DHSFrontPay.reset('layanan');
+    }
     setTimeout(() => {
         const select = document.getElementById('reg-jenis-pengajuan-select');
         if (select && select.value) onJenisPengajuanSelect(select);
     }, 100);
 }
 
-// Sync hidden category when program selection changes
-const progSelect = document.getElementById('select-program-beasiswa');
-if (progSelect) {
-    progSelect.addEventListener('change', function() {
-        const opt = this.options[this.selectedIndex];
-        const cat = opt.dataset.cat || '1-tahun';
-        const hidden = document.getElementById('hidden-kategori');
-        if (hidden) hidden.value = cat;
-    });
-}
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.DHSFrontPay) {
+        window.DHSFrontPay.init('layanan', 'form-layanan');
+    }
 
-// Init on load if pre-selected
-const initialSelect = document.getElementById('reg-jenis-pengajuan-select');
-if (initialSelect && initialSelect.value) {
-    onJenisPengajuanSelect(initialSelect);
-}
+    // Sync hidden category & fee when program selection changes
+    const progSelect = document.getElementById('select-program-beasiswa');
+    if (progSelect) {
+        progSelect.addEventListener('change', function() {
+            const opt = this.options[this.selectedIndex];
+            const cat = (opt && opt.dataset ? opt.dataset.cat : '') || '1-tahun';
+            const hidden = document.getElementById('hidden-kategori');
+            if (hidden) hidden.value = cat;
+            syncLayananFee(false);
+        });
+    }
+
+    // Init on load if pre-selected
+    const initialSelect = document.getElementById('reg-jenis-pengajuan-select');
+    if (initialSelect && initialSelect.value) {
+        onJenisPengajuanSelect(initialSelect);
+        syncLayananFee(true);
+    }
+});
 </script>
 
 @endsection

@@ -77,8 +77,8 @@
                 </div>
 
                 <div>
-                    <label class="bo-label">Estimasi Biaya Pendidikan (Opsional)</label>
-                    <input type="text" class="bo-input" x-model="form.tuition_fee" placeholder="Contoh: Rp 12.000.000 / semester">
+                    <label class="bo-label">Biaya Program (Rp, Opsional — Dasar Hitung DP Form Pendaftaran)</label>
+                    <input type="text" class="bo-input" x-model="form.tuition_fee" placeholder="Contoh: 15000000 (isi angka nominal)">
                 </div>
 
                 <div>

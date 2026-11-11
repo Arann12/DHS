@@ -129,14 +129,14 @@
                         <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 4px;">2A. Opsi Skema Beasiswa</h2>
                         <p style="font-size:12.5px;color:#718096;margin:0;">Pilihan beasiswa yang dapat dipilih pemohon pada dropdown formulir.</p>
                     </div>
-                    <button type="button" class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="beasiswaOptions.push({ name:'Beasiswa Baru', desc:'Keterangan beasiswa...', is_active:true })">
+                    <button type="button" class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="beasiswaOptions.push({ name:'Beasiswa Baru', desc:'Keterangan beasiswa...', fee:'', is_active:true })">
                         <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Skema Beasiswa
                     </button>
                 </div>
 
                 <div style="display:grid;gap:10px;">
                     <template x-for="(opt, idx) in beasiswaOptions" :key="idx">
-                        <div style="background:#fafafa;border:1.5px solid #eee;border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr 1fr 100px 40px;gap:12px;align-items:center;">
+                        <div style="background:#fafafa;border:1.5px solid #eee;border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr 1fr 145px 90px 40px;gap:12px;align-items:center;">
                             <div>
                                 <label class="bo-label" style="font-size:11px;">Nama Beasiswa</label>
                                 <input type="text" class="bo-input" style="padding:7px;font-weight:600;" x-model="opt.name">
@@ -144,6 +144,10 @@
                             <div>
                                 <label class="bo-label" style="font-size:11px;">Potongan / Deskripsi</label>
                                 <input type="text" class="bo-input" style="padding:7px;" x-model="opt.desc">
+                            </div>
+                            <div>
+                                <label class="bo-label" style="font-size:11px;">Tarif Biaya (Rp, Ops)</label>
+                                <input type="number" min="0" class="bo-input" style="padding:7px;" x-model="opt.fee" placeholder="0 / kosong">
                             </div>
                             <div>
                                 <label class="bo-label" style="font-size:11px;">Status</label>
@@ -169,14 +173,14 @@
                         <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0 0 4px;">2B. Opsi Layanan Dokumen & Sertifikasi</h2>
                         <p style="font-size:12.5px;color:#718096;margin:0;">Pilihan pengurusan dokumen yang tampil pada dropdown pengajuan dokumen.</p>
                     </div>
-                    <button type="button" class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="dokumenOptions.push({ name:'Dokumen Baru', issuer:'DHS', duration:'1-3 hari', is_active:true })">
+                    <button type="button" class="btn-primary" style="padding:6px 14px;font-size:12.5px;" @click="dokumenOptions.push({ name:'Dokumen Baru', issuer:'DHS', duration:'1-3 hari', fee:'', is_active:true })">
                         <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Jenis Dokumen
                     </button>
                 </div>
 
                 <div style="display:grid;gap:10px;">
                     <template x-for="(opt, idx) in dokumenOptions" :key="idx">
-                        <div style="background:#fafafa;border:1.5px solid #eee;border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1.5fr 1fr 1fr 90px 40px;gap:12px;align-items:center;">
+                        <div style="background:#fafafa;border:1.5px solid #eee;border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1.4fr 1fr 1fr 135px 80px 40px;gap:10px;align-items:center;">
                             <div>
                                 <label class="bo-label" style="font-size:11px;">Nama Dokumen</label>
                                 <input type="text" class="bo-input" style="padding:7px;font-weight:600;" x-model="opt.name">
@@ -188,6 +192,10 @@
                             <div>
                                 <label class="bo-label" style="font-size:11px;">Estimasi Waktu</label>
                                 <input type="text" class="bo-input" style="padding:7px;" x-model="opt.duration">
+                            </div>
+                            <div>
+                                <label class="bo-label" style="font-size:11px;">Tarif Biaya (Rp, Ops)</label>
+                                <input type="number" min="0" class="bo-input" style="padding:7px;" x-model="opt.fee" placeholder="0 / kosong">
                             </div>
                             <div>
                                 <label class="bo-label" style="font-size:11px;">Status</label>

@@ -5,6 +5,65 @@
 @section('content')
 <div x-data="beritaData()">
 
+    {{-- Hero Image Panel --}}
+    <div class="bo-card" style="margin-bottom:24px;" x-data="heroImageBerita()">
+        {{-- Header --}}
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <span class="material-icons-round" style="font-size:22px;color:#C53030;">image</span>
+            <div>
+                <h3 style="margin:0;font-size:15px;font-weight:700;color:#1A365D;">Gambar Hero — Halaman Berita</h3>
+                <p style="margin:0;font-size:12px;color:#718096;">Gambar latar belakang pada bagian hero di halaman Berita &amp; Artikel publik.</p>
+            </div>
+        </div>
+
+        {{-- Preview Area --}}
+        <div style="position:relative;width:100%;height:180px;border-radius:12px;overflow:hidden;background:#1A365D;margin-bottom:16px;">
+            <img :src="heroUrl" x-show="heroUrl"
+                 style="width:100%;height:100%;object-fit:cover;opacity:0.8;"
+                 x-on:error="heroUrl = ''">
+            <div x-show="!heroUrl"
+                 style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+                <span class="material-icons-round" style="font-size:44px;color:rgba(255,255,255,0.25);">image_not_supported</span>
+                <span style="font-size:12px;color:rgba(255,255,255,0.4);">Belum ada gambar — menggunakan gambar default</span>
+            </div>
+            <div x-show="heroUrl" style="position:absolute;bottom:10px;right:12px;pointer-events:none;">
+                <span style="background:rgba(0,0,0,0.5);color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase;">Preview</span>
+            </div>
+        </div>
+
+        {{-- URL Input --}}
+        <div style="margin-bottom:14px;">
+            <label class="bo-label">URL Gambar Hero</label>
+            <input type="text" class="bo-input" x-model="heroUrl"
+                   placeholder="https://... atau kosongkan untuk gunakan gambar default"
+                   @keyup.enter="save()">
+            <div style="font-size:11px;color:#aaa;margin-top:5px;">Gambar disimpan di folder <code>uploads/hero/berita/</code></div>
+        </div>
+
+        {{-- Action Buttons --}}
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button class="btn-primary" style="gap:8px;" @click="openPicker()" :disabled="saving">
+                <span class="material-icons-round" style="font-size:18px;">upload</span>
+                Upload / Pilih Gambar
+            </button>
+            <button class="btn-primary" style="background:#276749;gap:8px;" @click="save()" :disabled="saving">
+                <span class="material-icons-round" style="font-size:18px;" x-text="saving ? 'hourglass_empty' : 'save'"></span>
+                <span x-text="saving ? 'Menyimpan...' : 'Simpan Gambar Hero'"></span>
+            </button>
+            <button x-show="heroUrl" class="btn-danger" style="gap:6px;" @click="clear()" :disabled="saving">
+                <span class="material-icons-round" style="font-size:16px;">delete</span>
+                Hapus Gambar
+            </button>
+        </div>
+
+        {{-- Toast --}}
+        <div x-show="toast" x-transition style="display:none;margin-top:14px;padding:11px 16px;border-radius:8px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;"
+             :style="toastType==='success' ? 'background:#f0fff4;color:#276749;border:1px solid #c6f6d5;' : 'background:#fff5f5;color:#9b2c2c;border:1px solid #fed7d7;'">
+            <span class="material-icons-round" style="font-size:18px;" x-text="toastType==='success' ? 'check_circle' : 'error'"></span>
+            <span x-text="toastMsg"></span>
+        </div>
+    </div>
+
     {{-- Toolbar --}}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -199,6 +258,53 @@
 
 @push('scripts')
 <script>
+function heroImageBerita() {
+    return {
+        heroUrl: @json($heroImage ?? ''),
+        saving: false,
+        toast: false,
+        toastMsg: '',
+        toastType: 'success',
+
+        openPicker() {
+            Alpine.store('imageUpload').open(url => { this.heroUrl = url; }, 'uploads/hero/berita');
+        },
+
+        save() {
+            this.saving = true;
+            const fd = new FormData();
+            fd.append('hero_image', this.heroUrl || '');
+            fd.append('_token', '{{ csrf_token() }}');
+            fetch('/backoffice/berita/hero/update', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(data => {
+                    this.saving = false;
+                    if (data.success) {
+                        this.showToast('Gambar hero Berita berhasil disimpan!', 'success');
+                    } else {
+                        this.showToast('Gagal menyimpan gambar.', 'error');
+                    }
+                })
+                .catch(() => {
+                    this.saving = false;
+                    this.showToast('Terjadi kesalahan. Coba lagi.', 'error');
+                });
+        },
+
+        clear() {
+            this.heroUrl = '';
+            this.save();
+        },
+
+        showToast(msg, type) {
+            this.toastMsg = msg;
+            this.toastType = type;
+            this.toast = true;
+            setTimeout(() => { this.toast = false; }, 3500);
+        }
+    };
+}
+
 function beritaData() {
     return {
         search: '',
