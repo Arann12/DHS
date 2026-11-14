@@ -50,15 +50,71 @@
         ['year' => '2026', 'title' => 'Transformasi Masa Depan', 'desc' => 'DHS melangkah ke era pendidikan hospitality digital modern dengan kurikulum berbasis teknologi industri global.'],
     ];
 
-    // Meta konfigurasi interaktif untuk Peta Jejak Karir Global DHS
+    // Meta konfigurasi interaktif Minimalist Single-Screen Time-Machine
     $stageMeta = [
-        '2005' => ['phase' => 'Langkah Awal', 'hub' => 'Kampus Pusat Bali', 'highlight' => 'Berdiri di Bawah Yayasan Guna Widya Paramesthi', 'badge' => 'KAMPUS PUSAT BALI', 'icon' => 'school', 'nodes' => ['bali'], 'arcs' => []],
-        '2009' => ['phase' => 'Akreditasi A', 'hub' => 'Pusat Vokasi Bali & Indonesia', 'highlight' => 'Standar Mutu Pendidikan Perhotelan Terakreditasi A', 'badge' => 'AKREDITASI A BAN-PT', 'icon' => 'verified', 'nodes' => ['bali'], 'arcs' => []],
-        '2013' => ['phase' => 'Ekspansi Fasilitas', 'hub' => 'Klungkung & Denpasar, Bali', 'highlight' => 'Fasilitas Praktik Standar Kapal Pesiar & Hotel Mewah', 'badge' => '4.500 m² TRAINING CENTER', 'icon' => 'apartment', 'nodes' => ['bali', 'klungkung'], 'arcs' => []],
-        '2017' => ['phase' => 'Kemitraan Global', 'hub' => 'Marriott Luxury Hotels Network', 'highlight' => 'Akses Penyaluran Kerja Langsung Tanpa Potongan Agen Fee', 'badge' => 'MARRIOTT GLOBAL NETWORK', 'icon' => 'handshake', 'nodes' => ['bali', 'singapore', 'dubai', 'tokyo'], 'arcs' => ['bali-sg', 'bali-dubai', 'bali-tokyo']],
-        '2022' => ['phase' => 'Go International', 'hub' => 'Swiss (Eropa) & Singapura', 'highlight' => 'Pengalaman Belajar Sambil Bekerja di Eropa & Asia', 'badge' => 'SWISS & ASIA EXCHANGE', 'icon' => 'flight_takeoff', 'nodes' => ['bali', 'singapore', 'swiss', 'germany'], 'arcs' => ['bali-sg', 'bali-swiss', 'bali-germany']],
-        '2024' => ['phase' => 'Jejak Global', 'hub' => 'Jaringan Alumni 20+ Negara Dunia', 'highlight' => 'Penyaluran Magang & Karir Internasional Berkelanjutan', 'badge' => '3.000+ ALUMNI DUNIA', 'icon' => 'public', 'nodes' => ['bali', 'singapore', 'swiss', 'germany', 'australia', 'usa', 'dubai', 'tokyo'], 'arcs' => ['bali-sg', 'bali-swiss', 'bali-germany', 'bali-aus', 'bali-usa', 'bali-dubai', 'bali-tokyo']],
-        '2026' => ['phase' => 'Masa Depan Vokasi', 'hub' => 'Pusat Keunggulan Hospitality Cerdas', 'highlight' => 'Integrasi Kurikulum Global & Jalur Magang Berbayar Luar Negeri', 'badge' => 'ERA VOKASI CERDAS', 'icon' => 'trending_up', 'nodes' => ['bali', 'singapore', 'swiss', 'germany', 'australia', 'usa', 'dubai', 'tokyo'], 'arcs' => ['bali-sg', 'bali-swiss', 'bali-germany', 'bali-aus', 'bali-usa', 'bali-dubai', 'bali-tokyo']],
+        '2005' => [
+            'phase' => 'Langkah Awal',
+            'hub' => 'Denpasar, Bali',
+            'image' => '/image/about_dhs.jpg',
+            'stat_val' => 'EST. 2005',
+            'stat_label' => 'Tahun Pendirian',
+            'stat_desc' => 'Berdiri di bawah Yayasan Guna Widya Paramesthi',
+            'badge' => 'KAMPUS PERDANA'
+        ],
+        '2009' => [
+            'phase' => 'Akreditasi A',
+            'hub' => 'Pusat Vokasi Bali',
+            'image' => '/image/short_course.jpg',
+            'stat_val' => 'GRADE A',
+            'stat_label' => 'Akreditasi BAN-PT',
+            'stat_desc' => 'Pengakuan resmi mutu pendidikan kejuruan nasional',
+            'badge' => 'MUTU TERBAIK'
+        ],
+        '2013' => [
+            'phase' => 'Ekspansi Kampus',
+            'hub' => 'Klungkung, Bali',
+            'image' => '/image/culinary_students.jpg',
+            'stat_val' => '4.500 m²',
+            'stat_label' => 'Luas Fasilitas',
+            'stat_desc' => 'Training Center terintegrasi kitchen, bar & restoran',
+            'badge' => 'PUSAT PRAKTEK'
+        ],
+        '2017' => [
+            'phase' => 'Kemitraan Global',
+            'hub' => 'Jaringan Hotel Bintang 5',
+            'image' => '/image/hotel_lobby.jpg',
+            'stat_val' => '5-STAR',
+            'stat_label' => 'Mitra Marriott Group',
+            'stat_desc' => 'Jalur karir langsung tanpa potongan biaya agen',
+            'badge' => 'GLOBAL NETWORK'
+        ],
+        '2022' => [
+            'phase' => 'Program Luar Negeri',
+            'hub' => 'Swiss & Singapura',
+            'image' => '/image/international_program.jpg',
+            'stat_val' => '2 BENUA',
+            'stat_label' => 'Program Exchange',
+            'stat_desc' => 'Belajar dan magang berbayar di Eropa dan Asia',
+            'badge' => 'GO INTERNATIONAL'
+        ],
+        '2024' => [
+            'phase' => 'Jejak Global',
+            'hub' => '20+ Negara & Kapal Pesiar',
+            'image' => '/image/Kapal.jpg',
+            'stat_val' => '3.000+',
+            'stat_label' => 'Alumni Internasional',
+            'stat_desc' => 'Berkarir di kapal pesiar dunia & hotel bintang 5',
+            'badge' => 'ALUMNI DUNIA'
+        ],
+        '2026' => [
+            'phase' => 'Era Vokasi Cerdas',
+            'hub' => 'Kampus Masa Depan',
+            'image' => '/image/campus_students.jpg',
+            'stat_val' => 'SMART HUB',
+            'stat_label' => 'Hospitality Digital',
+            'stat_desc' => 'Integrasi teknologi digital & kurikulum modern',
+            'badge' => 'MASA DEPAN'
+        ]
     ];
 
     $timelineStages = [];
@@ -66,12 +122,12 @@
         $yr = (string)($item['year'] ?? '');
         $meta = $stageMeta[$yr] ?? [
             'phase' => 'Milestone',
-            'hub' => 'Denpasar Hotel School',
-            'highlight' => 'Transformasi Pendidikan Hospitality Menuju Keunggulan Global',
-            'badge' => 'MILESTONE ' . $yr,
-            'icon' => 'star',
-            'nodes' => ['bali'],
-            'arcs' => []
+            'hub' => 'Bali, Indonesia',
+            'image' => '/image/about_dhs.jpg',
+            'stat_val' => $yr,
+            'stat_label' => 'Tahun Milestone',
+            'stat_desc' => 'Transformasi pendidikan hospitality berkelanjutan',
+            'badge' => 'MILESTONE'
         ];
         $timelineStages[] = array_merge([
             'year' => $yr,
@@ -220,524 +276,536 @@
     </section>
 
 
-        <!-- ░░ INTERACTIVE GLOBAL FLIGHT ARC & MAP JOURNEY (SEJARAH & MILESTONE) ░░ -->
-    <section id="global-journey-section" class="py-20 md:py-28 text-white px-4 sm:px-6 md:px-16 w-full relative overflow-hidden select-none" style="background: linear-gradient(180deg, #071322 0%, #0d1e34 50%, #071322 100%); color: #ffffff;">
-        {{-- Atmospheric Background Glows --}}
-        <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(197,48,48,0.25) 0%, transparent 70%); filter: blur(60px);"></div>
-        <div class="absolute -bottom-40 -right-40 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(197,168,128,0.2) 0%, transparent 70%); filter: blur(60px);"></div>
+        
+    
+    
+    <!-- ░░ FULLSCREEN 100VH IMMERSIVE TIME-MACHINE (SEJARAH & MILESTONE) ░░ -->
+    <section id="fullscreen-chrono-section" class="dhs-fullscreen-chrono w-full text-white select-none relative overflow-hidden" style="background: #080D15; color: #ffffff;">
+        {{-- Subtle Ambient Radial Lighting --}}
+        <div class="absolute -top-32 right-1/4 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(100px);"></div>
+        <div class="absolute -bottom-32 left-10 w-[450px] h-[450px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(90px);"></div>
 
-        <div class="max-w-7xl mx-auto relative z-10 w-full">
-            {{-- Section Header --}}
-            <div class="text-center mb-10 sm:mb-14" data-reveal="fade-up">
-                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[0.68rem] font-bold tracking-[0.2em] uppercase mb-4 shadow-sm" style="background: rgba(197,168,128,0.12); color: #E5C397; border: 1px solid rgba(197,168,128,0.35);">
-                    <span class="w-2 h-2 rounded-full animate-ping" style="background-color: #E5C397;"></span>
-                    <span data-id="PERJALANAN KAMI — DARI BALI MENUJU DUNIA" data-en="OUR JOURNEY — FROM BALI TO THE WORLD">{{ $timelineSectionLabel ?? 'Perjalanan Kami' }} — Dari Bali Menuju Dunia</span>
-                </span>
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold tracking-wide mb-4" style="color: #ffffff;">
-                    <span data-id="{{ $timelineSectionTitle ?? 'Sejarah & Jejak Karir Global' }}" data-en="{{ $timelineSectionTitle ?? 'History & Global Career Footprint' }}">{{ $timelineSectionTitle ?? 'Sejarah & Jejak Karir Global' }}</span>
-                </h2>
-                <p class="text-sm sm:text-base max-w-2xl mx-auto leading-relaxed" style="color: #cbd5e1;">
-                    <span data-id="Menyusuri transformasi Denpasar Hotel School sejak 2005 hingga melahirkan lebih dari 3.000 alumni unggul yang berkarir di hotel bintang 5 dan kapal pesiar mewah internasional di 20+ negara."
-                          data-en="Tracing the transformation of Denpasar Hotel School since 2005, cultivating over 3,000 successful alumni working in 5-star hotels and luxury cruise lines across 20+ countries.">
-                        Menyusuri transformasi Denpasar Hotel School sejak 2005 hingga melahirkan lebih dari 3.000 alumni unggul yang berkarir di hotel bintang 5 dan kapal pesiar mewah internasional di 20+ negara.
-                    </span>
-                </p>
-            </div>
-
-            {{-- Interactive Chrono Bar (Year Pills & Autoplay Controls) --}}
-            <div class="mb-8 sm:mb-10 rounded-2xl p-3 sm:p-4 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4" style="background: rgba(13, 30, 52, 0.9); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px);" data-reveal="fade-up" data-delay="100">
-                {{-- Year Selector Buttons --}}
-                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto py-1 px-1 scrollbar-none" id="dhs-chrono-pills">
-                    @foreach($timelineStages as $idx => $m)
-                    <button type="button"
-                            class="dhs-chrono-pill shrink-0 px-4 sm:px-5 py-2.5 rounded-xl font-sans text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 {{ $idx === 0 ? 'active' : '' }}"
-                            onclick="dhsSelectMilestone({{ $idx }})"
-                            data-year="{{ $m['year'] }}"
-                            id="pill-{{ $idx }}">
-                        <span class="w-2 h-2 rounded-full pill-dot transition-colors"></span>
-                        <span class="font-serif tracking-wider text-sm sm:text-base">{{ $m['year'] }}</span>
-                        <span class="text-[0.68rem] opacity-75 font-normal hidden lg:inline-block tracking-tight">({{ $m['phase'] }})</span>
-                    </button>
-                    @endforeach
-                </div>
-
-                {{-- Autoplay / Mode Controls --}}
-                <div class="flex items-center gap-3 shrink-0 w-full md:w-auto justify-end px-2">
-                    <div class="text-[0.7rem] tracking-widest uppercase font-mono font-bold flex items-center gap-1.5" style="color: #E5C397;">
-                        <span class="material-icons text-sm">schedule</span>
-                        <span id="dhs-milestone-counter">FASE 01 / 0{{ count($timelineStages) }}</span>
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 py-6 lg:py-8 relative z-10">
+            {{-- Top Header & Navigation Bar --}}
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10 shrink-0">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full" style="background-color: #C5A880;"></span>
+                        <span class="text-[0.68rem] tracking-[0.25em] uppercase font-bold" style="color: #E5C397;">
+                            MILESTONE DHS (2005 — 2026)
+                        </span>
                     </div>
-                    <button type="button" id="dhs-autoplay-toggle" onclick="dhsToggleAutoplay()"
-                            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border text-xs transition-colors font-medium cursor-pointer"
-                            style="background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: #f1f5f9;">
-                        <span class="material-icons text-sm" id="dhs-autoplay-icon">pause</span>
-                        <span id="dhs-autoplay-label" class="text-[0.7rem] uppercase tracking-wider">Otomatis</span>
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-tight text-white">
+                        Dua Dekade Menuju Keunggulan Global
+                    </h2>
+                </div>
+
+                {{-- Compact Navigation Controls --}}
+                <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
+                    <span id="dhs-counter-label" class="font-mono text-xs font-semibold px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
+                        01 / 0{{ count($timelineStages) }}
+                    </span>
+                    <button type="button" onclick="dhsChronoNav(-1)"
+                            class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
+                            title="Sebelumnya (Arrow Left / Scroll Up)">
+                        <span class="material-icons text-base">arrow_back</span>
+                    </button>
+                    <button type="button" onclick="dhsChronoNav(1)"
+                            class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
+                            title="Selanjutnya (Arrow Right / Scroll Down)">
+                        <span class="material-icons text-base">arrow_forward</span>
+                    </button>
+                    <button type="button" id="dhs-chrono-autoplay-btn" onclick="dhsChronoToggleAutoplay()"
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/15 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                            title="Jeda / Putar Otomatis">
+                        <span class="material-icons text-xs" id="dhs-chrono-autoplay-icon">pause</span>
+                        <span id="dhs-chrono-autoplay-text" class="text-[0.65rem] uppercase tracking-wider font-semibold">Otomatis</span>
                     </button>
                 </div>
             </div>
 
-            {{-- Main Interactive Theater (Story Card + SVG Flight Map) --}}
-            <div class="dhs-theater-grid" data-reveal="fade-up" data-delay="200">
-                {{-- Column Left: Story & Metric Card --}}
-                <div class="dhs-story-col">
-                    <div class="dhs-glass-card h-full flex flex-col justify-between">
-                        {{-- Massive Glowing Background Year Watermark --}}
-                        <div id="dhs-card-year-watermark"
-                             class="absolute -bottom-8 -right-4 font-serif text-[110px] sm:text-[140px] font-extrabold leading-none pointer-events-none select-none transition-all duration-500"
-                             style="color: rgba(255, 255, 255, 0.04);">
-                            2005
-                        </div>
+            {{-- Center Viewport: Split Screen (50:50) with 3D Parallax Tilt --}}
+            <div class="flex-1 flex items-center justify-center my-auto py-3 lg:py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center w-full">
+                    {{-- Left Column: 3D Tilt Archival Visual Theater (lg:col-span-6) --}}
+                    <div class="lg:col-span-6 w-full flex justify-center">
+                        <div class="dhs-tilt-perspective w-full max-w-[540px]">
+                            <div id="dhs-tilt-card" class="dhs-tilt-card group">
+                                <img id="dhs-chrono-img"
+                                     src="/image/about_dhs.jpg"
+                                     alt="Denpasar Hotel School Milestone"
+                                     class="dhs-photo-kenburns" />
 
-                        {{-- Card Header --}}
-                        <div>
-                            <div class="flex items-center justify-between gap-2 mb-4">
-                                <span id="dhs-card-phase-badge"
-                                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.68rem] font-bold tracking-widest uppercase"
-                                      style="background: rgba(197, 48, 48, 0.25); color: #fca5a5; border: 1px solid rgba(197, 48, 48, 0.45);">
-                                    LANGKAH AWAL
+                                {{-- Specular Glare Overlay --}}
+                                <div id="dhs-glare" class="dhs-glare-overlay"></div>
+
+                                {{-- Subtle Vignette --}}
+                                <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(180deg, rgba(8,13,21,0.05) 0%, rgba(8,13,21,0.65) 100%);"></div>
+
+                                {{-- Floating Badges over Photo --}}
+                                <div class="absolute top-4 left-4 z-10">
+                                    <span id="dhs-photo-badge" class="px-3 py-1 rounded-full text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
+                                          style="background: rgba(8, 13, 21, 0.75); border-color: rgba(197, 168, 128, 0.4); color: #E5C397;">
+                                        KAMPUS PERDANA
+                                    </span>
+                                </div>
+
+                                {{-- Top-Right Lightbox Zoom Button --}}
+                                <div class="absolute top-4 right-4 z-10">
+                                    <button type="button"
+                                            id="dhs-zoom-btn"
+                                            class="w-8 h-8 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:scale-110 transition-all cursor-pointer"
+                                            onclick="dhsOpenCurrentLightbox()"
+                                            title="Perbesar Foto Arsip">
+                                        <span class="material-icons text-sm">fullscreen</span>
+                                    </button>
+                                </div>
+
+                                {{-- Bottom Location Bar --}}
+                                <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.8);">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-icons text-sm" style="color: #E5C397;">place</span>
+                                        <span id="dhs-photo-hub" class="font-medium text-white">Denpasar, Bali</span>
+                                    </div>
+                                    <span class="text-[0.65rem] font-mono tracking-wider text-slate-400">HISTORIC ARCHIVE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Right Column: Kinetic Editorial Narrative (lg:col-span-6) --}}
+                    <div class="lg:col-span-6 flex flex-col justify-center">
+                        <div class="space-y-4 max-w-xl">
+                            {{-- Phase Indicator --}}
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs uppercase tracking-[0.25em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
+                                    01 / LANGKAH AWAL
                                 </span>
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm"
-                                     style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.18); color: #E5C397;">
-                                    <span class="material-icons text-xl" id="dhs-card-icon">school</span>
+                            </div>
+
+                            {{-- Rolling Number Year Animation Container --}}
+                            <div class="dhs-rolling-year-container">
+                                <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none" style="color: #C5A880;">
+                                    2005
                                 </div>
                             </div>
 
-                            <div class="font-serif text-3xl sm:text-4xl font-extrabold tracking-wide mb-2 flex items-baseline gap-2.5" style="color: #E5C397;">
-                                <span id="dhs-card-year">2005</span>
-                                <span class="text-xs font-sans uppercase tracking-widest font-semibold" style="color: #94a3b8;" id="dhs-card-hub">Kampus Pusat Bali</span>
-                            </div>
-
-                            <h3 id="dhs-card-title" class="font-serif text-xl sm:text-2xl font-bold mb-4 leading-snug" style="color: #ffffff;">
-                                DHS Berdiri di Bali
+                            {{-- Milestone Title --}}
+                            <h3 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
+                                Pendirian Kampus Denpasar
                             </h3>
 
-                            <p id="dhs-card-desc" class="text-sm sm:text-base leading-relaxed mb-6" style="color: #cbd5e1;">
-                                Denpasar Hotel School didirikan di Denpasar dengan visi membawa standar pendidikan vokasi hospitality internasional ke Bali.
+                            {{-- Milestone Description --}}
+                            <p class="text-sm sm:text-base text-slate-300 leading-relaxed transition-opacity duration-300" id="dhs-chrono-desc">
+                                Denpasar Hotel School didirikan di Bali dengan visi menghadirkan standar pendidikan kejuruan hospitality bertaraf internasional.
                             </p>
-                        </div>
 
-                        {{-- Card Bottom Stats & Features --}}
-                        <div class="pt-6 space-y-4" style="border-top: 1px solid rgba(255, 255, 255, 0.12);">
-                            <div class="rounded-xl p-3.5 flex items-center gap-3" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0 animate-pulse"></span>
-                                <div class="flex-1">
-                                    <div class="text-[0.65rem] uppercase tracking-wider font-semibold" style="color: #94a3b8;">Pencapaian Utama</div>
-                                    <div id="dhs-card-highlight" class="text-xs sm:text-sm font-bold text-emerald-300">
-                                        Berdiri di Bawah Yayasan Guna Widya Paramesthi
+                            {{-- Single Metric Card --}}
+                            <div class="pt-3">
+                                <div class="p-3.5 sm:p-4 rounded-2xl border border-white/10 flex items-center gap-4 transition-all" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="font-serif text-2xl sm:text-3xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
+                                        EST. 2005
+                                    </div>
+                                    <div class="w-px h-10 bg-white/15 shrink-0"></div>
+                                    <div class="min-w-0">
+                                        <div class="text-[0.68rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
+                                            Tahun Pendirian
+                                        </div>
+                                        <div class="text-xs sm:text-sm font-medium text-white truncate" id="dhs-stat-desc">
+                                            Berdiri di bawah Yayasan Guna Widya Paramesthi
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- Navigation Buttons --}}
-                            <div class="flex items-center justify-between pt-2">
-                                <button type="button" onclick="dhsNavMilestone(-1)"
-                                        class="px-4 py-2.5 rounded-xl text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer hover:scale-105 active:scale-95"
-                                        style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15);">
-                                    <span class="material-icons text-sm">arrow_back</span>
-                                    <span>Sebelumnya</span>
-                                </button>
-                                <button type="button" onclick="dhsNavMilestone(1)"
-                                        class="px-5 py-2.5 rounded-xl text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md cursor-pointer hover:scale-105 active:scale-95"
-                                        style="background: linear-gradient(135deg, #C53030 0%, #C5A880 100%);">
-                                    <span>Selanjutnya</span>
-                                    <span class="material-icons text-sm">arrow_forward</span>
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {{-- Column Right: Interactive Vector World Map Stage --}}
-                <div class="dhs-map-col">
-                    <div class="dhs-glass-card h-full flex flex-col justify-between">
-                        {{-- Top Map Status Bar --}}
-                        <div class="flex items-center justify-between gap-3 mb-3 pb-3 text-xs" style="border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                <span class="font-mono text-[0.7rem] tracking-wider uppercase font-semibold text-emerald-400">LIVE GLOBAL PLACEMENT RADAR</span>
+            {{-- Bottom: Sleek Integrated Timeline Track with Live Pulse Beam --}}
+            <div class="pt-3 border-t border-white/10 shrink-0">
+                <div class="relative py-2">
+                    {{-- Base Track Rail --}}
+                    <div class="dhs-track-line">
+                        {{-- Completed Fill --}}
+                        <div id="dhs-track-fill" class="dhs-track-fill" style="width: 0%;"></div>
+                        {{-- Live Beam Counting Progress --}}
+                        <div id="dhs-track-live-beam" class="dhs-track-live-beam"></div>
+                    </div>
+
+                    {{-- Milestone Dots Row with Micro-Tooltips --}}
+                    <div class="dhs-dots-row">
+                        @foreach($timelineStages as $idx => $m)
+                        <div class="relative group/dot flex flex-col items-center">
+                            {{-- Floating Hover Tooltip --}}
+                            <div class="dhs-dot-tooltip">
+                                <span class="font-serif font-bold text-dhs-gold text-xs">{{ $m['year'] }}</span>
+                                <span class="text-[0.65rem] text-slate-200 block whitespace-nowrap">{{ $m['title'] }}</span>
                             </div>
-                            <div id="dhs-map-active-badge" class="px-3 py-1 rounded-full text-[0.68rem] font-bold tracking-widest uppercase"
-                                 style="background: rgba(197, 168, 128, 0.2); color: #E5C397; border: 1px solid rgba(197, 168, 128, 0.35);">
-                                1 HUB AKTIF
-                            </div>
+
+                            <button type="button"
+                                    class="dhs-dot-btn {{ $idx === 0 ? 'active' : '' }}"
+                                    id="dhs-dot-{{ $idx }}"
+                                    onclick="dhsChronoSelect({{ $idx }})"
+                                    aria-label="Pilih Tahun {{ $m['year'] }}">
+                                <div class="dhs-dot-bezel">
+                                    <div class="dhs-dot-core"></div>
+                                </div>
+                                <span class="dhs-dot-year">{{ $m['year'] }}</span>
+                                <span class="dhs-dot-phase hidden md:inline-block">{{ $m['phase'] }}</span>
+                            </button>
                         </div>
-
-                        {{-- SVG World Map Viewport --}}
-                        <div class="dhs-map-viewport">
-                            <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <radialGradient id="dhs-ocean-glow" cx="80%" cy="58%" r="65%">
-                                        <stop offset="0%" stop-color="#1E3A8A" stop-opacity="0.35"/>
-                                        <stop offset="100%" stop-color="#050C16" stop-opacity="0"/>
-                                    </radialGradient>
-                                    <linearGradient id="gold-flight-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stop-color="#C5A880" stop-opacity="1"/>
-                                        <stop offset="50%" stop-color="#E5C397" stop-opacity="1"/>
-                                        <stop offset="100%" stop-color="#C53030" stop-opacity="1"/>
-                                    </linearGradient>
-                                    <filter id="gold-beam" x="-20%" y="-20%" width="140%" height="140%">
-                                        <feGaussianBlur stdDeviation="2.5" result="blur" />
-                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                    </filter>
-                                </defs>
-
-                                {{-- Ocean background with depth --}}
-                                <rect width="1000" height="500" fill="#06101D" />
-                                <rect width="1000" height="500" fill="url(#dhs-ocean-glow)" />
-
-                                {{-- Cartography Grid Lines --}}
-                                <g stroke="rgba(255,255,255,0.05)" stroke-width="0.8" fill="none">
-                                    <line x1="0" y1="250" x2="1000" y2="250" stroke-dasharray="4 4" stroke="rgba(197,168,128,0.25)"/>
-                                    <line x1="0" y1="185" x2="1000" y2="185"/>
-                                    <line x1="0" y1="315" x2="1000" y2="315"/>
-                                    <line x1="250" y1="0" x2="250" y2="500"/>
-                                    <line x1="520" y1="0" x2="520" y2="500"/>
-                                    <line x1="750" y1="0" x2="750" y2="500"/>
-                                </g>
-
-                                {{-- Continents with Luxury Navy/Gold Silhouette --}}
-                                <g class="dhs-continent-paths" fill="#12253E" stroke="rgba(197,168,128,0.3)" stroke-width="0.85" stroke-linejoin="round">
-                                    <!-- North America -->
-                                    <path d="M 125,75 Q 160,50 210,65 Q 260,80 300,90 Q 325,120 280,140 Q 250,130 235,160 Q 265,185 240,215 Q 210,245 185,220 Q 150,210 135,175 Q 110,150 95,115 Q 105,85 125,75 Z M 275,55 Q 315,40 345,45 Q 370,70 335,85 Q 295,75 275,55 Z" />
-                                    <!-- South America -->
-                                    <path d="M 225,255 Q 275,255 315,295 Q 345,335 320,390 Q 285,455 265,465 Q 250,425 235,360 Q 210,305 225,255 Z" />
-                                    <!-- Europe & Scandinavia -->
-                                    <path d="M 470,95 Q 520,75 565,100 Q 555,130 525,140 Q 495,160 465,150 Q 455,120 470,95 Z M 435,100 Q 455,95 450,125 Q 430,120 435,100 Z M 505,65 Q 530,55 545,80 Q 520,90 505,65 Z" />
-                                    <!-- Africa -->
-                                    <path d="M 465,175 Q 535,165 585,200 Q 615,250 585,315 Q 555,375 515,385 Q 475,330 450,255 Q 455,200 465,175 Z M 605,320 Q 625,335 615,370 Q 595,350 605,320 Z" />
-                                    <!-- Asia -->
-                                    <path d="M 565,100 Q 660,80 760,85 Q 850,110 895,150 Q 860,195 810,215 Q 770,255 720,265 Q 675,240 625,230 Q 590,205 565,155 Z M 875,130 Q 900,145 885,185 Q 865,170 875,130 Z M 805,245 Q 835,235 845,265 Q 815,270 805,245 Z M 670,210 Q 700,205 705,225 Q 680,230 670,210 Z" />
-                                    <!-- Australia & New Zealand -->
-                                    <path d="M 785,345 Q 865,320 920,345 Q 915,405 865,435 Q 815,415 780,375 Z M 925,410 Q 945,420 935,445 Q 915,435 925,410 Z" />
-                                    <!-- Indonesia / Maritime SE Asia (Prominently Highlighted) -->
-                                    <path d="M 745,275 Q 785,265 775,290 Q 735,295 745,275 Z M 785,285 Q 825,275 820,305 Q 780,300 785,285 Z M 845,285 Q 895,275 890,310 Q 845,305 845,285 Z M 815,308 Q 835,308 830,316 Q 815,315 815,308 Z" fill="#1B4168" stroke="#C5A880" stroke-width="1.3"/>
-                                </g>
-
-                                {{-- Golden Curved Flight Arcs (Dynamic Visibility per Milestone) --}}
-                                <g id="dhs-flight-arcs" fill="none" stroke="url(#gold-flight-grad)" stroke-width="2.2" stroke-linecap="round" filter="url(#gold-beam)">
-                                    <!-- Bali to Singapore -->
-                                    <path id="arc-bali-sg" d="M 820,312 Q 795,280 770,280" class="flight-arc-path" />
-                                    <!-- Bali to Switzerland (Zurich/Geneva) -->
-                                    <path id="arc-bali-swiss" d="M 820,312 Q 650,140 518,135" class="flight-arc-path" />
-                                    <!-- Bali to Germany (Munich/Frankfurt) -->
-                                    <path id="arc-bali-germany" d="M 820,312 Q 660,115 522,118" class="flight-arc-path" />
-                                    <!-- Bali to Dubai (UAE) -->
-                                    <path id="arc-bali-dubai" d="M 820,312 Q 730,220 645,205" class="flight-arc-path" />
-                                    <!-- Bali to Tokyo (Japan) -->
-                                    <path id="arc-bali-tokyo" d="M 820,312 Q 865,220 885,165" class="flight-arc-path" />
-                                    <!-- Bali to Australia (Sydney/Melbourne) -->
-                                    <path id="arc-bali-aus" d="M 820,312 Q 870,340 905,395" class="flight-arc-path" />
-                                    <!-- Bali to USA & Caribbean (Cruise Line Hub Miami) -->
-                                    <path id="arc-bali-usa" d="M 820,312 Q 520,60 275,195" class="flight-arc-path" />
-                                </g>
-
-                                {{-- Geographic Nodes & Radar Pulse Beacons --}}
-                                <g id="dhs-map-nodes">
-                                    <!-- Bali HQ (Always Active & Prominently Glowing) -->
-                                    <g id="node-bali" class="map-node active-node" transform="translate(820, 312)">
-                                        <circle r="16" fill="none" stroke="#C5A880" stroke-width="1.5" class="radar-circle-1" />
-                                        <circle r="26" fill="none" stroke="#C5A880" stroke-width="0.8" class="radar-circle-2" opacity="0.6" />
-                                        <circle r="6" fill="#C53030" stroke="#FFF" stroke-width="2" />
-                                        <text x="14" y="4" fill="#E5C397" font-size="10.5" font-family="'Inter', sans-serif" font-weight="bold" letter-spacing="0.5">BALI (HQ)</text>
-                                    </g>
-
-                                    <!-- Klungkung Hub -->
-                                    <g id="node-klungkung" class="map-node" transform="translate(828, 308)">
-                                        <circle r="4.5" fill="#C5A880" stroke="#FFF" stroke-width="1.5" />
-                                        <text x="10" y="-8" fill="#FFF" font-size="9" font-family="'Inter', sans-serif" font-weight="600">KLUNGKUNG</text>
-                                    </g>
-
-                                    <!-- Singapore -->
-                                    <g id="node-singapore" class="map-node" transform="translate(770, 280)">
-                                        <circle r="12" fill="none" stroke="#C5A880" stroke-width="1" class="radar-circle-1" />
-                                        <circle r="4.5" fill="#E5C397" stroke="#FFF" stroke-width="1.5" />
-                                        <text x="-12" y="-10" fill="#E2E8F0" font-size="9.5" font-family="'Inter', sans-serif" font-weight="600" text-anchor="end">🇸🇬 SINGAPURA</text>
-                                    </g>
-
-                                    <!-- Switzerland -->
-                                    <g id="node-swiss" class="map-node" transform="translate(518, 135)">
-                                        <circle r="14" fill="none" stroke="#C5A880" stroke-width="1.2" class="radar-circle-1" />
-                                        <circle r="5" fill="#C53030" stroke="#FFF" stroke-width="1.8" />
-                                        <text x="-12" y="-6" fill="#F8FAFC" font-size="10" font-family="'Inter', sans-serif" font-weight="bold" text-anchor="end">🇨🇭 SWISS</text>
-                                    </g>
-
-                                    <!-- Germany -->
-                                    <g id="node-germany" class="map-node" transform="translate(522, 118)">
-                                        <circle r="12" fill="none" stroke="#C5A880" stroke-width="1" class="radar-circle-1" />
-                                        <circle r="4.5" fill="#E5C397" stroke="#FFF" stroke-width="1.5" />
-                                        <text x="12" y="-6" fill="#E2E8F0" font-size="9.5" font-family="'Inter', sans-serif" font-weight="600">🇩🇪 JERMAN</text>
-                                    </g>
-
-                                    <!-- Dubai UAE -->
-                                    <g id="node-dubai" class="map-node" transform="translate(645, 205)">
-                                        <circle r="12" fill="none" stroke="#C5A880" stroke-width="1" class="radar-circle-1" />
-                                        <circle r="4.5" fill="#E5C397" stroke="#FFF" stroke-width="1.5" />
-                                        <text x="-10" y="-8" fill="#E2E8F0" font-size="9.5" font-family="'Inter', sans-serif" font-weight="600" text-anchor="end">🇦🇪 DUBAI</text>
-                                    </g>
-
-                                    <!-- Tokyo Japan -->
-                                    <g id="node-tokyo" class="map-node" transform="translate(885, 165)">
-                                        <circle r="12" fill="none" stroke="#C5A880" stroke-width="1" class="radar-circle-1" />
-                                        <circle r="4.5" fill="#E5C397" stroke="#FFF" stroke-width="1.5" />
-                                        <text x="10" y="4" fill="#E2E8F0" font-size="9.5" font-family="'Inter', sans-serif" font-weight="600">🇯🇵 JEPANG</text>
-                                    </g>
-
-                                    <!-- Australia (Sydney) -->
-                                    <g id="node-australia" class="map-node" transform="translate(905, 395)">
-                                        <circle r="14" fill="none" stroke="#C5A880" stroke-width="1" class="radar-circle-1" />
-                                        <circle r="5" fill="#C53030" stroke="#FFF" stroke-width="1.8" />
-                                        <text x="12" y="4" fill="#F8FAFC" font-size="9.5" font-family="'Inter', sans-serif" font-weight="bold">🇦🇺 AUSTRALIA</text>
-                                    </g>
-
-                                    <!-- USA & Caribbean (Cruise Line HQ) -->
-                                    <g id="node-usa" class="map-node" transform="translate(275, 195)">
-                                        <circle r="15" fill="none" stroke="#C5A880" stroke-width="1.2" class="radar-circle-1" />
-                                        <circle r="5" fill="#C53030" stroke="#FFF" stroke-width="1.8" />
-                                        <text x="-12" y="4" fill="#F8FAFC" font-size="9.5" font-family="'Inter', sans-serif" font-weight="bold" text-anchor="end">🇺🇸 USA & CARIBBEAN</text>
-                                    </g>
-                                </g>
-                            </svg>
-                        </div>
-
-                        {{-- Map Legend Bar --}}
-                        <div class="mt-4 pt-3 flex flex-wrap items-center justify-between gap-3 text-[0.68rem] text-slate-400" style="border-top: 1px solid rgba(255, 255, 255, 0.12);">
-                            <div class="flex items-center gap-4">
-                                <span class="flex items-center gap-1.5">
-                                    <span class="w-2.5 h-2.5 rounded-full border border-white" style="background-color: #C53030;"></span>
-                                    <span>Hub Utama DHS (Bali)</span>
-                                </span>
-                                <span class="flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full" style="background-color: #E5C397;"></span>
-                                    <span>Destinasi Global</span>
-                                </span>
-                                <span class="flex items-center gap-1.5">
-                                    <span class="w-5 h-0.5" style="background: linear-gradient(90deg, #C53030, #E5C397);"></span>
-                                    <span>Lintasan Karir Dunia</span>
-                                </span>
-                            </div>
-                            <div class="font-mono text-[0.68rem] font-bold" style="color: #cbd5e1;">
-                                JARINGAN 20+ NEGARA
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- Luxury Scoped Styling for Map, Radar, and Responsive Grid --}}
+    {{-- ░░ SCOPED FULLSCREEN LUXURY CSS ░░ --}}
     <style>
-        /* Scoped Theater Grid Layout */
-        .dhs-theater-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.75rem;
+        /* Exact 100vh on Desktop */
+        .dhs-fullscreen-chrono {
             width: 100%;
-            align-items: stretch;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            scroll-snap-align: start;
         }
         @media (min-width: 1024px) {
-            .dhs-theater-grid {
-                grid-template-columns: 42% calc(58% - 1.75rem);
+            .dhs-fullscreen-chrono {
+                height: 100vh;
+                max-height: 100vh;
             }
         }
-        .dhs-story-col, .dhs-map-col {
-            min-width: 0;
-            width: 100%;
+
+        /* 3D Parallax Tilt Card Container */
+        .dhs-tilt-perspective {
+            perspective: 1200px;
         }
-        .dhs-glass-card {
-            background: linear-gradient(180deg, rgba(14, 30, 52, 0.95) 0%, rgba(7, 19, 34, 0.98) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 1.5rem;
-            padding: 1.75rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        .dhs-tilt-card {
             position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            max-height: 400px;
+            border-radius: 1.25rem;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+            background: #060B12;
+            transform-style: preserve-3d;
+            transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+        }
+        .dhs-tilt-card:hover {
+            box-shadow: 0 25px 60px rgba(197, 168, 128, 0.25);
+        }
+        @media (max-width: 640px) {
+            .dhs-tilt-card {
+                aspect-ratio: 4 / 3;
+            }
+        }
+        .dhs-photo-kenburns {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            animation: dhsKenBurnsMotion 18s ease-in-out infinite alternate;
+            transition: opacity 0.4s ease-in-out;
+        }
+        @keyframes dhsKenBurnsMotion {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.06) translate(-1%, -0.8%); }
+            100% { transform: scale(1.03) translate(0.8%, -1%); }
         }
 
-        /* Scoped Year Pills */
-        .dhs-chrono-pill {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(197, 168, 128, 0.3);
-            color: #cbd5e1;
+        /* Specular Glare */
+        .dhs-glare-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+            opacity: var(--go, 0);
+            transition: opacity 0.2s ease;
+            mix-blend-mode: overlay;
+            z-index: 5;
+        }
+
+        /* Rolling Year Animation */
+        .dhs-rolling-year-container {
+            overflow: hidden;
+            height: 4.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .dhs-rolling-year {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+        }
+        .dhs-rolling-year.anim-out {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        .dhs-rolling-year.anim-in {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        /* Timeline Track & Active Fill */
+        .dhs-track-line {
+            position: relative;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            margin: 12px 0;
+            overflow: visible;
+        }
+        .dhs-track-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #C53030 0%, #C5A880 100%);
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(197, 168, 128, 0.7);
+            transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dhs-track-live-beam {
+            position: absolute;
+            top: -2px;
+            height: 7px;
+            width: 24px;
+            background: radial-gradient(circle, #ffffff 0%, #E5C397 50%, transparent 80%);
+            border-radius: 999px;
+            box-shadow: 0 0 12px #ffffff;
+            transition: left 0.1s linear;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Dots Row & Interactive Buttons */
+        .dhs-dots-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-top: -21px;
+        }
+        .dhs-dot-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            border: none;
             cursor: pointer;
+            padding: 4px;
+            user-select: none;
+            transition: transform 0.25s ease;
         }
-        .dhs-chrono-pill:hover {
-            background: rgba(255, 255, 255, 0.18);
-            color: #ffffff;
-            border-color: rgba(197, 168, 128, 0.7);
+        .dhs-dot-btn:hover {
+            transform: translateY(-2px);
         }
-        .dhs-chrono-pill .pill-dot {
-            background-color: #94a3b8;
-        }
-        .dhs-chrono-pill.active {
-            background: linear-gradient(135deg, #C53030 0%, #C5A880 100%) !important;
-            color: #ffffff !important;
-            border-color: rgba(255, 255, 255, 0.7) !important;
-            box-shadow: 0 4px 20px rgba(197, 48, 48, 0.5) !important;
-            transform: scale(1.03);
-        }
-        .dhs-chrono-pill.active .pill-dot {
-            background-color: #ffffff !important;
-            box-shadow: 0 0 8px #ffffff;
-        }
-
-        /* Map Viewport Container */
-        .dhs-map-viewport {
-            position: relative;
-            width: 100%;
-            min-height: 360px;
-            height: 400px;
-            background: #06101D;
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
+        .dhs-dot-bezel {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #080D15;
+            border: 2px solid rgba(255, 255, 255, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .dhs-map-viewport svg {
-            width: 100%;
-            height: 100%;
-            display: block;
+        .dhs-dot-core {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #94a3b8;
+            transition: all 0.3s ease;
+        }
+        .dhs-dot-year {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-top: 8px;
+            transition: color 0.3s ease;
+        }
+        .dhs-dot-phase {
+            font-size: 0.62rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 1px;
+            transition: color 0.3s ease;
         }
 
-        /* Radar Beacon Rings */
-        .radar-circle-1 {
-            animation: radarPulse 2.4s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            transform-origin: center;
+        /* Active Dot State */
+        .dhs-dot-btn.active .dhs-dot-bezel {
+            border-color: #E5C397;
+            background: #C53030;
+            transform: scale(1.4);
+            box-shadow: 0 0 14px rgba(229, 195, 151, 0.85);
         }
-        .radar-circle-2 {
-            animation: radarPulse 2.4s infinite cubic-bezier(0.215, 0.61, 0.355, 1) 0.8s;
-            transform-origin: center;
+        .dhs-dot-btn.active .dhs-dot-core {
+            background: #ffffff;
         }
-        @keyframes radarPulse {
-            0% { r: 4; opacity: 0.95; stroke-width: 1.5; }
-            50% { opacity: 0.5; }
-            100% { r: 24; opacity: 0; stroke-width: 0.4; }
+        .dhs-dot-btn.active .dhs-dot-year {
+            color: #E5C397;
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+        .dhs-dot-btn.active .dhs-dot-phase {
+            color: #e2e8f0;
+            font-weight: 600;
         }
 
-        /* Flight Arc Path - Streaming Golden Radar Dash */
-        .flight-arc-path {
-            opacity: 0;
-            stroke-dasharray: 8 6;
-            stroke-dashoffset: 0;
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Hover Tooltip */
+        .dhs-dot-tooltip {
+            position: absolute;
+            bottom: 42px;
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            background: rgba(10, 18, 30, 0.95);
+            border: 1px solid rgba(197, 168, 128, 0.4);
+            padding: 5px 10px;
+            border-radius: 8px;
             pointer-events: none;
+            opacity: 0;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+            z-index: 30;
         }
-        .flight-arc-path.active-arc {
-            opacity: 1 !important;
-            animation: arcDashStream 8s linear infinite;
-        }
-        @keyframes arcDashStream {
-            from { stroke-dashoffset: 0; }
-            to { stroke-dashoffset: -140; }
-        }
-
-        /* Map Nodes Active / Inactive states */
-        .map-node {
-            opacity: 0.25;
-            transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-box: fill-box;
-            transform-origin: center;
-        }
-        .map-node.active-node {
-            opacity: 1 !important;
-            transform: scale(1.1);
+        .group\/dot:hover .dhs-dot-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
     </style>
 
-    {{-- Interactive Controller Script --}}
+    {{-- ░░ INTERACTIVE CONTROLLER JAVASCRIPT ░░ --}}
     <script>
     (function() {
         const milestones = @json($timelineStages);
         let currentIndex = 0;
         let autoplayTimer = null;
+        let beamRaf = null;
         let isAutoplay = true;
+        let lastWheelTime = 0;
+        const STAGE_DURATION = 6000; // 6 seconds per stage
+        let stageStartTime = Date.now();
 
-        function updateUI(idx) {
+        function updateView(idx) {
             currentIndex = idx;
+            stageStartTime = Date.now();
             const data = milestones[idx];
             if (!data) return;
 
-            // Update Pills
-            document.querySelectorAll('.dhs-chrono-pill').forEach((pill, i) => {
-                pill.classList.toggle('active', i === idx);
-            });
-
-            // Update Counter
-            const counter = document.getElementById('dhs-milestone-counter');
-            if (counter) {
-                counter.textContent = 'FASE ' + String(idx + 1).padStart(2, '0') + ' / ' + String(milestones.length).padStart(2, '0');
+            // Update Photo with cross-fade
+            const img = document.getElementById('dhs-chrono-img');
+            if (img && data.image) {
+                img.style.opacity = '0.2';
+                setTimeout(() => {
+                    img.src = data.image;
+                    img.style.opacity = '1';
+                }, 180);
             }
 
-            // Update Story Card with smooth fade
-            const cardYear = document.getElementById('dhs-card-year');
-            const cardYearWatermark = document.getElementById('dhs-card-year-watermark');
-            const cardPhase = document.getElementById('dhs-card-phase-badge');
-            const cardHub = document.getElementById('dhs-card-hub');
-            const cardTitle = document.getElementById('dhs-card-title');
-            const cardDesc = document.getElementById('dhs-card-desc');
-            const cardHighlight = document.getElementById('dhs-card-highlight');
-            const cardIcon = document.getElementById('dhs-card-icon');
-            const mapActiveBadge = document.getElementById('dhs-map-active-badge');
+            // Update Photo Badges
+            const photoBadge = document.getElementById('dhs-photo-badge');
+            const photoHub = document.getElementById('dhs-photo-hub');
+            if (photoBadge) photoBadge.textContent = data.badge || data.phase.toUpperCase();
+            if (photoHub) photoHub.textContent = data.hub || 'Denpasar, Bali';
 
-            if (cardYear) cardYear.textContent = data.year;
-            if (cardYearWatermark) cardYearWatermark.textContent = data.year;
-            if (cardPhase) cardPhase.textContent = data.phase.toUpperCase();
-            if (cardHub) cardHub.textContent = data.hub;
-            if (cardTitle) cardTitle.textContent = data.title;
-            if (cardDesc) cardDesc.textContent = data.desc;
-            if (cardHighlight) cardHighlight.textContent = data.highlight;
-            if (cardIcon) cardIcon.textContent = data.icon;
+            // Rolling Year Digits Animation
+            const yearEl = document.getElementById('dhs-chrono-year');
+            if (yearEl) {
+                yearEl.classList.add('anim-out');
+                setTimeout(() => {
+                    yearEl.textContent = data.year;
+                    yearEl.classList.remove('anim-out');
+                    yearEl.classList.add('anim-in');
+                    void yearEl.offsetWidth; // trigger reflow
+                    yearEl.classList.remove('anim-in');
+                }, 180);
+            }
 
-            // Update Map Nodes
-            const allNodes = document.querySelectorAll('.map-node');
-            allNodes.forEach(node => {
-                const id = node.id.replace('node-', '');
-                if (data.nodes.includes(id)) {
-                    node.classList.add('active-node');
-                } else {
-                    node.classList.remove('active-node');
-                }
+            // Update Narrative Texts with soft fade
+            const phase = document.getElementById('dhs-chrono-phase');
+            const title = document.getElementById('dhs-chrono-title');
+            const desc = document.getElementById('dhs-chrono-desc');
+            const counter = document.getElementById('dhs-counter-label');
+
+            if (phase) phase.textContent = String(idx + 1).padStart(2, '0') + ' / ' + (data.phase || '').toUpperCase();
+            if (title) {
+                title.style.opacity = '0.3';
+                setTimeout(() => { title.textContent = data.title; title.style.opacity = '1'; }, 180);
+            }
+            if (desc) {
+                desc.style.opacity = '0.3';
+                setTimeout(() => { desc.textContent = data.desc; desc.style.opacity = '1'; }, 180);
+            }
+            if (counter) counter.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(milestones.length).padStart(2, '0');
+
+            // Update Metric Box
+            const statVal = document.getElementById('dhs-stat-val');
+            const statLabel = document.getElementById('dhs-stat-label');
+            const statDesc = document.getElementById('dhs-stat-desc');
+            if (statVal) statVal.textContent = data.stat_val || data.year;
+            if (statLabel) statLabel.textContent = data.stat_label || 'Pencapaian';
+            if (statDesc) statDesc.textContent = data.stat_desc || data.highlight || '';
+
+            // Update Dots
+            document.querySelectorAll('.dhs-dot-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === idx);
             });
 
-            // Update Flight Arcs
-            const allArcs = document.querySelectorAll('.flight-arc-path');
-            allArcs.forEach(arc => {
-                const id = arc.id.replace('arc-', '');
-                if (data.arcs.includes(id)) {
-                    arc.classList.add('active-arc');
-                } else {
-                    arc.classList.remove('active-arc');
-                }
-            });
-
-            // Map Badge
-            if (mapActiveBadge) {
-                const activeCount = data.nodes.length;
-                mapActiveBadge.textContent = activeCount + ' HUB AKTIF';
+            // Update Track Progress Fill
+            const fill = document.getElementById('dhs-track-fill');
+            if (fill && milestones.length > 1) {
+                const percent = (idx / (milestones.length - 1)) * 100;
+                fill.style.width = percent + '%';
             }
         }
 
-        window.dhsSelectMilestone = function(idx) {
-            updateUI(idx);
-            // Reset autoplay timer on user interaction
-            if (isAutoplay) {
-                startAutoplay();
-            }
+        window.dhsChronoSelect = function(idx) {
+            updateView(idx);
+            if (isAutoplay) startAutoplay();
         };
 
-        window.dhsNavMilestone = function(direction) {
-            let next = (currentIndex + direction + milestones.length) % milestones.length;
-            dhsSelectMilestone(next);
+        window.dhsChronoNav = function(dir) {
+            let next = (currentIndex + dir + milestones.length) % milestones.length;
+            dhsChronoSelect(next);
         };
+
+        // Live Beam Animation RAF Loop
+        function animateLiveBeam() {
+            if (isAutoplay && milestones.length > 1) {
+                const elapsed = Date.now() - stageStartTime;
+                const progressWithinStage = Math.min(elapsed / STAGE_DURATION, 1);
+                
+                const segmentWidth = 100 / (milestones.length - 1);
+                const currentPercent = (currentIndex * segmentWidth) + (progressWithinStage * segmentWidth);
+                
+                const beam = document.getElementById('dhs-track-live-beam');
+                if (beam) {
+                    beam.style.left = 'calc(' + Math.min(currentPercent, 100) + '% - 12px)';
+                    beam.style.opacity = '0.85';
+                }
+            } else {
+                const beam = document.getElementById('dhs-track-live-beam');
+                if (beam) beam.style.opacity = '0';
+            }
+            beamRaf = requestAnimationFrame(animateLiveBeam);
+        }
 
         function startAutoplay() {
             if (autoplayTimer) clearInterval(autoplayTimer);
+            stageStartTime = Date.now();
             autoplayTimer = setInterval(() => {
                 let next = (currentIndex + 1) % milestones.length;
-                updateUI(next);
-            }, 5500); // changes every 5.5s
+                updateView(next);
+            }, STAGE_DURATION);
         }
 
         function stopAutoplay() {
@@ -747,25 +815,103 @@
             }
         }
 
-        window.dhsToggleAutoplay = function() {
+        window.dhsChronoToggleAutoplay = function() {
             isAutoplay = !isAutoplay;
-            const icon = document.getElementById('dhs-autoplay-icon');
-            const label = document.getElementById('dhs-autoplay-label');
+            const icon = document.getElementById('dhs-chrono-autoplay-icon');
+            const text = document.getElementById('dhs-chrono-autoplay-text');
             if (isAutoplay) {
                 startAutoplay();
                 if (icon) icon.textContent = 'pause';
-                if (label) label.textContent = 'Otomatis';
+                if (text) text.textContent = 'Otomatis';
             } else {
                 stopAutoplay();
                 if (icon) icon.textContent = 'play_arrow';
-                if (label) label.textContent = 'Jeda';
+                if (text) text.textContent = 'Jeda';
             }
         };
 
-        // Initialize on DOM ready
+        // 3D Parallax Tilt Card Implementation
+        function initTilt() {
+            const card = document.getElementById('dhs-tilt-card');
+            if (!card) return;
+
+            card.addEventListener('mousemove', function(e) {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                
+                // Tilt rotation range: -7deg to +7deg
+                const rx = ((y - cy) / cy) * -7;
+                const ry = ((x - cx) / cx) * 7;
+                
+                card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+                card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+                card.style.setProperty('--gx', ((x / rect.width) * 100).toFixed(1) + '%');
+                card.style.setProperty('--gy', ((y / rect.height) * 100).toFixed(1) + '%');
+                card.style.setProperty('--go', '1');
+            });
+
+            card.addEventListener('mouseleave', function() {
+                card.style.setProperty('--rx', '0deg');
+                card.style.setProperty('--ry', '0deg');
+                card.style.setProperty('--go', '0');
+            });
+        }
+
+        // Mouse Wheel Navigation (Debounced)
+        function initWheelNav() {
+            const section = document.getElementById('fullscreen-chrono-section');
+            if (!section) return;
+
+            section.addEventListener('wheel', function(e) {
+                const now = Date.now();
+                // Cooldown 600ms between wheel steps
+                if (now - lastWheelTime > 600 && Math.abs(e.deltaY) > 25) {
+                    if (e.deltaY > 0) {
+                        dhsChronoNav(1);
+                    } else {
+                        dhsChronoNav(-1);
+                    }
+                    lastWheelTime = now;
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        }
+
+        // Lightbox Zoom Handler
+        window.dhsOpenCurrentLightbox = function() {
+            const cur = milestones[currentIndex];
+            if (!cur) return;
+            const src = cur.image || '/image/about_dhs.jpg';
+            const caption = cur.year + ' — ' + cur.title + ' (' + (cur.hub || 'Denpasar Hotel School') + ')';
+            
+            const modal = document.getElementById('dhs-lightbox-modal');
+            const img = document.getElementById('dhs-lightbox-img');
+            const cap = document.getElementById('dhs-lightbox-caption');
+            if (modal && img) {
+                img.src = src;
+                if (cap) cap.textContent = caption;
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+        };
+
+        // Keyboard Navigation (Arrow Left / Right)
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') dhsChronoNav(-1);
+            if (e.key === 'ArrowRight') dhsChronoNav(1);
+        });
+
+        // Initialize on DOM Ready
         document.addEventListener('DOMContentLoaded', function() {
-            updateUI(0);
+            updateView(0);
             startAutoplay();
+            beamRaf = requestAnimationFrame(animateLiveBeam);
+            initTilt();
+            initWheelNav();
         });
     })();
     </script>
