@@ -41,99 +41,65 @@
     $timelineSectionLabel = $aboutTimeline['sectionLabel'] ?? 'Perjalanan Kami';
     $timelineSectionTitle = $aboutTimeline['sectionTitle'] ?? 'Sejarah & Milestone';
     $timelineItems = $aboutTimeline['items'] ?? [
-        ['year' => '2005', 'title' => 'DHS Berdiri', 'desc' => 'Denpasar Hotel School didirikan dengan visi membawa standar pendidikan hospitality internasional ke Bali.'],
-        ['year' => '2009', 'title' => 'Akreditasi Nasional', 'desc' => 'DHS meraih akreditasi A dari BAN-PT. Sebuah pengakuan atas komitmen kami terhadap kualitas pendidikan.'],
-        ['year' => '2013', 'title' => 'Gedung Training Center Baru', 'desc' => 'Peresmian Training Center seluas 4.500 m² dengan dapur profesional, training bar, dan training restaurant.'],
-        ['year' => '2017', 'title' => 'MoU Marriott International', 'desc' => 'Penandatanganan MoU strategis dengan Marriott International membuka jalur rekrutmen langsung hotel bintang 5 & kapal pesiar dunia.'],
-        ['year' => '2022', 'title' => 'Program Internasional', 'desc' => 'Peluncuran program exchange mahasiswa dengan sekolah perhotelan di Swiss dan Singapura.'],
-        ['year' => '2024', 'title' => 'DHS Hari Ini', 'desc' => '3.000+ alumni tersebar di hotel-hotel terkemuka di 20+ negara.'],
-        ['year' => '2026', 'title' => 'Transformasi Masa Depan', 'desc' => 'DHS melangkah ke era pendidikan hospitality digital modern dengan kurikulum berbasis teknologi industri global.'],
+        ['year' => '2017', 'title' => 'Kemitraan Marriott International', 'desc' => 'Penandatanganan kemitraan strategis dengan Marriott International membuka akses penyaluran karir langsung tanpa potongan biaya agen fee ke jaringan hotel bintang 5 dunia.'],
+        ['year' => '2022', 'title' => 'Program Internasional Swiss & Singapura', 'desc' => 'Peluncuran program pertukaran mahasiswa dan magang berbayar lintas benua di Swiss dan Singapura, memperkuat kompetensi berstandar hospitality global.'],
+        ['year' => '2024', 'title' => '3.000+ Alumni di 20+ Negara Dunia', 'desc' => 'Lebih dari 3.000 alumni DHS sukses berkarir di maskapai kapal pesiar mewah internasional serta jaringan hotel bintang 5 di lebih dari 20 negara.'],
     ];
 
-    // Meta konfigurasi interaktif Minimalist Single-Screen Time-Machine
+    // Meta konfigurasi interaktif 3 Milestone Strategis (2017 - 2024)
     $stageMeta = [
-        '2005' => [
-            'phase' => 'Langkah Awal',
-            'hub' => 'Denpasar, Bali',
-            'image' => '/image/about_dhs.jpg',
-            'stat_val' => 'EST. 2005',
-            'stat_label' => 'Tahun Pendirian',
-            'stat_desc' => 'Berdiri di bawah Yayasan Guna Widya Paramesthi',
-            'badge' => 'KAMPUS PERDANA'
-        ],
-        '2009' => [
-            'phase' => 'Akreditasi A',
-            'hub' => 'Pusat Vokasi Bali',
-            'image' => '/image/short_course.jpg',
-            'stat_val' => 'GRADE A',
-            'stat_label' => 'Akreditasi BAN-PT',
-            'stat_desc' => 'Pengakuan resmi mutu pendidikan kejuruan nasional',
-            'badge' => 'MUTU TERBAIK'
-        ],
-        '2013' => [
-            'phase' => 'Ekspansi Kampus',
-            'hub' => 'Klungkung, Bali',
-            'image' => '/image/culinary_students.jpg',
-            'stat_val' => '4.500 m²',
-            'stat_label' => 'Luas Fasilitas',
-            'stat_desc' => 'Training Center terintegrasi kitchen, bar & restoran',
-            'badge' => 'PUSAT PRAKTEK'
-        ],
         '2017' => [
-            'phase' => 'Kemitraan Global',
-            'hub' => 'Jaringan Hotel Bintang 5',
+            'phase' => 'Kemitraan Global Bintang 5',
+            'hub' => 'Jaringan Hotel Bintang 5 Dunia',
             'image' => '/image/hotel_lobby.jpg',
             'stat_val' => '5-STAR',
             'stat_label' => 'Mitra Marriott Group',
             'stat_desc' => 'Jalur karir langsung tanpa potongan biaya agen',
-            'badge' => 'GLOBAL NETWORK'
+            'badge' => 'GLOBAL NETWORK',
+            'quote' => 'Membuka akses karir eksklusif ke jaringan hotel bintang 5 global tanpa biaya agen.'
         ],
         '2022' => [
-            'phase' => 'Program Luar Negeri',
-            'hub' => 'Swiss & Singapura',
+            'phase' => 'Program Lintas Benua',
+            'hub' => 'Swiss & Singapura (2 Benua)',
             'image' => '/image/international_program.jpg',
             'stat_val' => '2 BENUA',
-            'stat_label' => 'Program Exchange',
+            'stat_label' => 'Program Exchange & Magang',
             'stat_desc' => 'Belajar dan magang berbayar di Eropa dan Asia',
-            'badge' => 'GO INTERNATIONAL'
+            'badge' => 'GO INTERNATIONAL',
+            'quote' => 'Pengalaman belajar dan magang kerja berbayar di pusat hospitality Eropa dan Asia.'
         ],
         '2024' => [
-            'phase' => 'Jejak Global',
-            'hub' => '20+ Negara & Kapal Pesiar',
+            'phase' => 'Jejak Global & Prestasi Alumni',
+            'hub' => '20+ Negara & Kapal Pesiar Mewah',
             'image' => '/image/Kapal.jpg',
             'stat_val' => '3.000+',
             'stat_label' => 'Alumni Internasional',
             'stat_desc' => 'Berkarir di kapal pesiar dunia & hotel bintang 5',
-            'badge' => 'ALUMNI DUNIA'
-        ],
-        '2026' => [
-            'phase' => 'Era Vokasi Cerdas',
-            'hub' => 'Kampus Masa Depan',
-            'image' => '/image/campus_students.jpg',
-            'stat_val' => 'SMART HUB',
-            'stat_label' => 'Hospitality Digital',
-            'stat_desc' => 'Integrasi teknologi digital & kurikulum modern',
-            'badge' => 'MASA DEPAN'
+            'badge' => 'ALUMNI DUNIA',
+            'quote' => 'Bukti nyata alumni DHS dipercaya oleh maskapai kapal pesiar dan luxury resort dunia.'
         ]
     ];
 
     $timelineStages = [];
     foreach ($timelineItems as $item) {
         $yr = (string)($item['year'] ?? '');
-        $meta = $stageMeta[$yr] ?? [
-            'phase' => 'Milestone',
-            'hub' => 'Bali, Indonesia',
-            'image' => '/image/about_dhs.jpg',
-            'stat_val' => $yr,
-            'stat_label' => 'Tahun Milestone',
-            'stat_desc' => 'Transformasi pendidikan hospitality berkelanjutan',
-            'badge' => 'MILESTONE'
-        ];
+        if (!isset($stageMeta[$yr])) continue; // Strictly 3 modern milestones
+        $meta = $stageMeta[$yr];
         $timelineStages[] = array_merge([
             'year' => $yr,
             'title' => $item['title'] ?? 'Milestone DHS',
             'desc' => $item['desc'] ?? '',
         ], $meta);
+    }
+    // Fallback if empty
+    if (empty($timelineStages)) {
+        foreach ($stageMeta as $yr => $meta) {
+            $timelineStages[] = array_merge([
+                'year' => (string)$yr,
+                'title' => $meta['phase'],
+                'desc' => $meta['stat_desc'],
+            ], $meta);
+        }
     }
 
     $directorP1 = $aboutDirector['p1'] ?? '';
@@ -281,33 +247,29 @@
     
     
     
-    <!-- ░░ FULLSCREEN SCROLL-LOCKED TIME-MACHINE (SEJARAH & MILESTONE) ░░ -->
+    <!-- ░░ FULLSCREEN AMBIENT SHOWCASE: SEJARAH & MILESTONE (100VH DESKTOP, NATURAL SCROLL) ░░ -->
     <section id="fullscreen-chrono-section" class="dhs-fullscreen-chrono w-full text-white select-none relative overflow-hidden" style="background: #080D15; color: #ffffff;">
         {{-- Subtle Ambient Radial Lighting --}}
-        <div class="absolute -top-32 right-1/4 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(100px);"></div>
-        <div class="absolute -bottom-32 left-10 w-[450px] h-[450px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(90px);"></div>
+        <div class="absolute -top-32 right-1/4 w-[550px] h-[550px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(100px);"></div>
+        <div class="absolute -bottom-32 left-10 w-[500px] h-[500px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(95px);"></div>
 
-        <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 py-6 lg:py-8 relative z-10">
-            {{-- Top Header & Navigation Bar --}}
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 py-5 lg:py-7 relative z-10">
+            {{-- Top Header & Navigation Controls (No "Scroll untuk navigasi" badge) --}}
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10 shrink-0">
                 <div>
                     <div class="flex items-center gap-2 mb-1">
                         <span class="w-2 h-2 rounded-full" style="background-color: #C5A880;"></span>
                         <span class="text-[0.68rem] tracking-[0.25em] uppercase font-bold" style="color: #E5C397;">
-                            MILESTONE DHS (2005 — 2026)
+                            MILESTONE STRATEGIS (2017 — 2024)
                         </span>
                     </div>
                     <h2 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-tight text-white">
-                        Dua Dekade Menuju Keunggulan Global
+                        Transformasi Keunggulan & Reputasi Global
                     </h2>
                 </div>
 
-                {{-- Compact Navigation Controls & Scroll Hint --}}
+                {{-- Interactive Controls --}}
                 <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-                    <span class="hidden md:inline-flex items-center gap-1 text-[0.65rem] text-slate-400 font-medium px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
-                        <span class="material-icons text-xs text-dhs-gold">mouse</span>
-                        <span>Scroll untuk navigasi</span>
-                    </span>
                     <span id="dhs-counter-label" class="font-mono text-xs font-semibold px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
                         01 / 0{{ count($timelineStages) }}
                     </span>
@@ -324,21 +286,21 @@
                     <button type="button" id="dhs-chrono-autoplay-btn" onclick="dhsChronoToggleAutoplay()"
                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/15 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                             title="Jeda / Putar Otomatis">
-                        <span class="material-icons text-xs" id="dhs-chrono-autoplay-icon">play_arrow</span>
+                        <span class="material-icons text-xs" id="dhs-chrono-autoplay-icon">pause</span>
                         <span id="dhs-chrono-autoplay-text" class="text-[0.65rem] uppercase tracking-wider font-semibold">Otomatis</span>
                     </button>
                 </div>
             </div>
 
-            {{-- Center Viewport: Split Screen (50:50) with 3D Parallax Tilt --}}
-            <div class="flex-1 flex items-center justify-center my-auto py-3 lg:py-6">
+            {{-- Center Viewport: Split Screen Theater (50:50) --}}
+            <div class="flex-1 flex items-center justify-center my-auto py-3 lg:py-5">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center w-full">
                     {{-- Left Column: 3D Tilt Archival Visual Theater (lg:col-span-6) --}}
                     <div class="lg:col-span-6 w-full flex justify-center">
                         <div class="dhs-tilt-perspective w-full max-w-[540px]">
                             <div id="dhs-tilt-card" class="dhs-tilt-card group">
                                 <img id="dhs-chrono-img"
-                                     src="/image/about_dhs.jpg"
+                                     src="{{ $timelineStages[0]['image'] ?? '/image/hotel_lobby.jpg' }}"
                                      alt="Denpasar Hotel School Milestone"
                                      class="dhs-photo-kenburns" />
 
@@ -352,7 +314,7 @@
                                 <div class="absolute top-4 left-4 z-10">
                                     <span id="dhs-photo-badge" class="px-3 py-1 rounded-full text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
                                           style="background: rgba(8, 13, 21, 0.75); border-color: rgba(197, 168, 128, 0.4); color: #E5C397;">
-                                        KAMPUS PERDANA
+                                        {{ $timelineStages[0]['badge'] ?? 'GLOBAL NETWORK' }}
                                     </span>
                                 </div>
 
@@ -368,10 +330,10 @@
                                 </div>
 
                                 {{-- Bottom Location Bar --}}
-                                <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.8);">
+                                <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs backdrop-blur-md px-4 py-2 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.85);">
                                     <div class="flex items-center gap-1.5">
                                         <span class="material-icons text-sm" style="color: #E5C397;">place</span>
-                                        <span id="dhs-photo-hub" class="font-medium text-white">Denpasar, Bali</span>
+                                        <span id="dhs-photo-hub" class="font-medium text-white">{{ $timelineStages[0]['hub'] ?? 'Jaringan Hotel Bintang 5 Dunia' }}</span>
                                     </div>
                                     <span class="text-[0.65rem] font-mono tracking-wider text-slate-400">HISTORIC ARCHIVE</span>
                                 </div>
@@ -381,44 +343,51 @@
 
                     {{-- Right Column: Kinetic Editorial Narrative (lg:col-span-6) --}}
                     <div class="lg:col-span-6 flex flex-col justify-center">
-                        <div class="space-y-4 max-w-xl">
+                        <div class="space-y-3.5 max-w-xl">
                             {{-- Phase Indicator --}}
                             <div class="flex items-center gap-2">
                                 <span class="text-xs uppercase tracking-[0.25em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
-                                    01 / LANGKAH AWAL
+                                    01 / {{ strtoupper($timelineStages[0]['phase'] ?? 'Kemitraan Global Bintang 5') }}
                                 </span>
                             </div>
 
                             {{-- Rolling Number Year Animation Container --}}
                             <div class="dhs-rolling-year-container">
                                 <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none" style="color: #C5A880;">
-                                    2005
+                                    {{ $timelineStages[0]['year'] ?? '2017' }}
                                 </div>
                             </div>
 
                             {{-- Milestone Title --}}
                             <h3 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
-                                Pendirian Kampus Denpasar
+                                {{ $timelineStages[0]['title'] ?? 'Kemitraan Marriott International' }}
                             </h3>
 
                             {{-- Milestone Description --}}
                             <p class="text-sm sm:text-base text-slate-300 leading-relaxed transition-opacity duration-300" id="dhs-chrono-desc">
-                                Denpasar Hotel School didirikan di Bali dengan visi menghadirkan standar pendidikan kejuruan hospitality bertaraf internasional.
+                                {{ $timelineStages[0]['desc'] ?? '' }}
                             </p>
 
+                            {{-- Editorial Quote Pill --}}
+                            <div class="pl-3.5 border-l-2 transition-opacity duration-300" style="border-color: #C5A880;" id="dhs-chrono-quote-box">
+                                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed" id="dhs-chrono-quote">
+                                    "{{ $timelineStages[0]['quote'] ?? 'Membuka akses karir eksklusif ke jaringan hotel bintang 5 global tanpa biaya agen.' }}"
+                                </p>
+                            </div>
+
                             {{-- Single Metric Card --}}
-                            <div class="pt-3">
-                                <div class="p-3.5 sm:p-4 rounded-2xl border border-white/10 flex items-center gap-4 transition-all" style="background: rgba(255, 255, 255, 0.04);">
+                            <div class="pt-1.5">
+                                <div class="p-3 sm:p-3.5 rounded-2xl border border-white/10 flex items-center gap-4 transition-all" style="background: rgba(255, 255, 255, 0.04);">
                                     <div class="font-serif text-2xl sm:text-3xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
-                                        EST. 2005
+                                        {{ $timelineStages[0]['stat_val'] ?? '5-STAR' }}
                                     </div>
-                                    <div class="w-px h-10 bg-white/15 shrink-0"></div>
+                                    <div class="w-px h-9 bg-white/15 shrink-0"></div>
                                     <div class="min-w-0">
                                         <div class="text-[0.68rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
-                                            Tahun Pendirian
+                                            {{ $timelineStages[0]['stat_label'] ?? 'Mitra Marriott Group' }}
                                         </div>
                                         <div class="text-xs sm:text-sm font-medium text-white truncate" id="dhs-stat-desc">
-                                            Berdiri di bawah Yayasan Guna Widya Paramesthi
+                                            {{ $timelineStages[0]['stat_desc'] ?? 'Jalur karir langsung ke hotel luxury internasional' }}
                                         </div>
                                     </div>
                                 </div>
@@ -428,58 +397,56 @@
                 </div>
             </div>
 
-            {{-- Bottom: Sleek Integrated Timeline Track with Live Pulse Beam --}}
+            {{-- Bottom: 3-Segment Interactive Milestone Timeline Tabs with Live Progress Bar --}}
             <div class="pt-3 border-t border-white/10 shrink-0">
-                <div class="relative py-2">
-                    {{-- Base Track Rail --}}
-                    <div class="dhs-track-line">
-                        {{-- Completed Fill --}}
-                        <div id="dhs-track-fill" class="dhs-track-fill" style="width: 0%;"></div>
-                        {{-- Live Beam Counting Progress --}}
-                        <div id="dhs-track-live-beam" class="dhs-track-live-beam"></div>
-                    </div>
-
-                    {{-- Milestone Dots Row with Micro-Tooltips --}}
-                    <div class="dhs-dots-row">
-                        @foreach($timelineStages as $idx => $m)
-                        <div class="relative group/dot flex flex-col items-center">
-                            {{-- Floating Hover Tooltip --}}
-                            <div class="dhs-dot-tooltip">
-                                <span class="font-serif font-bold text-dhs-gold text-xs">{{ $m['year'] }}</span>
-                                <span class="text-[0.65rem] text-slate-200 block whitespace-nowrap">{{ $m['title'] }}</span>
-                            </div>
-
-                            <button type="button"
-                                    class="dhs-dot-btn {{ $idx === 0 ? 'active' : '' }}"
-                                    id="dhs-dot-{{ $idx }}"
-                                    onclick="dhsChronoSelect({{ $idx }})"
-                                    aria-label="Pilih Tahun {{ $m['year'] }}">
-                                <div class="dhs-dot-bezel">
-                                    <div class="dhs-dot-core"></div>
-                                </div>
-                                <span class="dhs-dot-year">{{ $m['year'] }}</span>
-                                <span class="dhs-dot-phase hidden md:inline-block">{{ $m['phase'] }}</span>
-                            </button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-4xl mx-auto w-full">
+                    @foreach($timelineStages as $idx => $m)
+                    <button type="button"
+                            onclick="dhsChronoSelect({{ $idx }})"
+                            id="dhs-tab-{{ $idx }}"
+                            class="dhs-milestone-tab group text-left p-3 rounded-2xl border transition-all duration-300 cursor-pointer {{ $idx === 0 ? 'active' : '' }}">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="dhs-tab-year font-serif font-bold text-base transition-colors">{{ $m['year'] }}</span>
+                            <span class="dhs-tab-badge text-[0.62rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full transition-colors">{{ $m['badge'] }}</span>
                         </div>
-                        @endforeach
-                    </div>
+                        <div class="dhs-tab-title text-xs font-semibold text-slate-300 truncate transition-colors">{{ $m['title'] }}</div>
+                        {{-- Micro Progress Bar for Autoplay --}}
+                        <div class="mt-2 w-full h-[3px] bg-white/10 rounded-full overflow-hidden">
+                            <div class="dhs-tab-progress h-full w-0 rounded-full transition-all duration-75" style="background: linear-gradient(90deg, #C53030, #E5C397);"></div>
+                        </div>
+                    </button>
+                    @endforeach
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- ░░ SCOPED FULLSCREEN LOCK LUXURY CSS ░░ --}}
+    {{-- ░░ SCOPED FULLSCREEN LUXURY CSS ░░ --}}
     <style>
         /* Exact 100vh on Desktop */
-        .dhs-fullscreen-chrono {
-            width: 100%;
-            height: 100vh;
-            min-height: 100vh;
-            max-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
+        @media (min-width: 1024px) {
+            .dhs-fullscreen-chrono {
+                width: 100%;
+                height: 100vh;
+                min-height: 100vh;
+                max-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                position: relative;
+            }
+        }
+        @media (max-width: 1023px) {
+            .dhs-fullscreen-chrono {
+                width: 100%;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                position: relative;
+                padding-top: 5rem;
+                padding-bottom: 2.5rem;
+            }
         }
 
         /* 3D Parallax Tilt Card Container */
@@ -490,7 +457,7 @@
             position: relative;
             width: 100%;
             aspect-ratio: 16 / 10;
-            max-height: 400px;
+            max-height: 380px;
             border-radius: 1.25rem;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -537,7 +504,7 @@
         /* Rolling Year Animation */
         .dhs-rolling-year-container {
             overflow: hidden;
-            height: 4.5rem;
+            height: 4.25rem;
             display: flex;
             align-items: center;
         }
@@ -553,148 +520,54 @@
             opacity: 0;
         }
 
-        /* Timeline Track & Active Fill */
-        .dhs-track-line {
-            position: relative;
-            width: 100%;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            margin: 12px 0;
-            overflow: visible;
+        /* 3 Modern Interactive Milestone Tabs */
+        .dhs-milestone-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
         }
-        .dhs-track-fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #C53030 0%, #C5A880 100%);
-            border-radius: 999px;
-            box-shadow: 0 0 10px rgba(197, 168, 128, 0.7);
-            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        .dhs-milestone-tab .dhs-tab-year {
+            color: #94a3b8;
         }
-        .dhs-track-live-beam {
-            position: absolute;
-            top: -2px;
-            height: 7px;
-            width: 24px;
-            background: radial-gradient(circle, #ffffff 0%, #E5C397 50%, transparent 80%);
-            border-radius: 999px;
-            box-shadow: 0 0 12px #ffffff;
-            transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
-            opacity: 0.8;
+        .dhs-milestone-tab .dhs-tab-badge {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        /* Dots Row & Interactive Buttons */
-        .dhs-dots-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            margin-top: -21px;
-        }
-        .dhs-dot-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            user-select: none;
-            transition: transform 0.25s ease;
-        }
-        .dhs-dot-btn:hover {
+        .dhs-milestone-tab:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(197, 168, 128, 0.3);
             transform: translateY(-2px);
         }
-        .dhs-dot-bezel {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #080D15;
-            border: 2px solid rgba(255, 255, 255, 0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .dhs-dot-core {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #94a3b8;
-            transition: all 0.3s ease;
-        }
-        .dhs-dot-year {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #94a3b8;
-            margin-top: 8px;
-            transition: color 0.3s ease;
-        }
-        .dhs-dot-phase {
-            font-size: 0.62rem;
-            color: #64748b;
-            font-weight: 500;
-            margin-top: 1px;
-            transition: color 0.3s ease;
-        }
 
-        /* Active Dot State */
-        .dhs-dot-btn.active .dhs-dot-bezel {
-            border-color: #E5C397;
-            background: #C53030;
-            transform: scale(1.4);
-            box-shadow: 0 0 14px rgba(229, 195, 151, 0.85);
+        /* Active Tab State */
+        .dhs-milestone-tab.active {
+            background: rgba(197, 168, 128, 0.08);
+            border-color: rgba(197, 168, 128, 0.5);
+            box-shadow: 0 4px 20px rgba(197, 168, 128, 0.12);
         }
-        .dhs-dot-btn.active .dhs-dot-core {
-            background: #ffffff;
-        }
-        .dhs-dot-btn.active .dhs-dot-year {
+        .dhs-milestone-tab.active .dhs-tab-year {
             color: #E5C397;
-            font-size: 0.95rem;
-            font-weight: 800;
         }
-        .dhs-dot-btn.active .dhs-dot-phase {
-            color: #e2e8f0;
-            font-weight: 600;
+        .dhs-milestone-tab.active .dhs-tab-title {
+            color: #ffffff;
         }
-
-        /* Hover Tooltip */
-        .dhs-dot-tooltip {
-            position: absolute;
-            bottom: 42px;
-            left: 50%;
-            transform: translateX(-50%) translateY(6px);
-            background: rgba(10, 18, 30, 0.95);
-            border: 1px solid rgba(197, 168, 128, 0.4);
-            padding: 5px 10px;
-            border-radius: 8px;
-            pointer-events: none;
-            opacity: 0;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-            z-index: 30;
-        }
-        .group\/dot:hover .dhs-dot-tooltip {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        .dhs-milestone-tab.active .dhs-tab-badge {
+            background: rgba(197, 168, 128, 0.18);
+            color: #E5C397;
+            border-color: rgba(197, 168, 128, 0.4);
         }
     </style>
 
-    {{-- ░░ INTERACTIVE SCROLL-LOCK CONTROLLER JAVASCRIPT ░░ --}}
+    {{-- ░░ AMBIENT SHOWCASE CONTROLLER (NO SCROLL-LOCK, NATURAL FLUID FLOW) ░░ --}}
     <script>
     (function() {
         const milestones = @json($timelineStages);
         let currentIndex = 0;
-        let lastWheelTime = 0;
-        let touchStartY = 0;
-        let autoplayTimer = null;
-        let isAutoplay = false;
-        const STAGE_DURATION = 6000;
+        let autoplayInterval = null;
+        let isAutoplay = true;
+        let autoplayProgress = 0;
+        const PROGRESS_STEP_MS = 60;
+        const DURATION_MS = 6000;
 
         function updateView(idx) {
             currentIndex = idx;
@@ -715,7 +588,7 @@
             const photoBadge = document.getElementById('dhs-photo-badge');
             const photoHub = document.getElementById('dhs-photo-hub');
             if (photoBadge) photoBadge.textContent = data.badge || data.phase.toUpperCase();
-            if (photoHub) photoHub.textContent = data.hub || 'Denpasar, Bali';
+            if (photoHub) photoHub.textContent = data.hub || 'Jaringan Global DHS';
 
             // Rolling Year Digits Animation
             const yearEl = document.getElementById('dhs-chrono-year');
@@ -734,6 +607,8 @@
             const phase = document.getElementById('dhs-chrono-phase');
             const title = document.getElementById('dhs-chrono-title');
             const desc = document.getElementById('dhs-chrono-desc');
+            const quote = document.getElementById('dhs-chrono-quote');
+            const quoteBox = document.getElementById('dhs-chrono-quote-box');
             const counter = document.getElementById('dhs-counter-label');
 
             if (phase) phase.textContent = String(idx + 1).padStart(2, '0') + ' / ' + (data.phase || '').toUpperCase();
@@ -745,6 +620,13 @@
                 desc.style.opacity = '0.3';
                 setTimeout(() => { desc.textContent = data.desc; desc.style.opacity = '1'; }, 180);
             }
+            if (quote && quoteBox) {
+                quoteBox.style.opacity = '0.3';
+                setTimeout(() => {
+                    quote.textContent = '"' + (data.quote || 'Komitmen pendidikan hospitality kelas dunia.') + '"';
+                    quoteBox.style.opacity = '1';
+                }, 180);
+            }
             if (counter) counter.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(milestones.length).padStart(2, '0');
 
             // Update Metric Box
@@ -755,147 +637,77 @@
             if (statLabel) statLabel.textContent = data.stat_label || 'Pencapaian';
             if (statDesc) statDesc.textContent = data.stat_desc || data.highlight || '';
 
-            // Update Dots
-            document.querySelectorAll('.dhs-dot-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === idx);
-            });
-
-            // Update Track Progress Fill & Beam
-            const fill = document.getElementById('dhs-track-fill');
-            const beam = document.getElementById('dhs-track-live-beam');
-            if (milestones.length > 1) {
-                const percent = (idx / (milestones.length - 1)) * 100;
-                if (fill) fill.style.width = percent + '%';
-                if (beam) {
-                    beam.style.left = 'calc(' + percent + '% - 12px)';
-                    beam.style.opacity = '1';
+            // Update Tabs Active State
+            milestones.forEach((_, i) => {
+                const tab = document.getElementById('dhs-tab-' + i);
+                if (tab) {
+                    tab.classList.toggle('active', i === idx);
+                    const prog = tab.querySelector('.dhs-tab-progress');
+                    if (prog && i !== idx) prog.style.width = '0%';
                 }
-            }
+            });
         }
 
         window.dhsChronoSelect = function(idx) {
             updateView(idx);
-            if (isAutoplay) startAutoplay();
+            autoplayProgress = 0;
+            if (isAutoplay) {
+                resetAndStartAutoplay();
+            }
         };
 
         window.dhsChronoNav = function(dir) {
-            let next = Math.max(0, Math.min(milestones.length - 1, currentIndex + dir));
+            let next = (currentIndex + dir + milestones.length) % milestones.length;
             dhsChronoSelect(next);
         };
 
-        // ── SCROLL INTERCEPTOR (LOCK UNTIL MILESTONES FINISHED) ──
-        function initScrollLock() {
-            const section = document.getElementById('fullscreen-chrono-section');
-            if (!section) return;
+        // ── AUTOPLAY ENGINE WITH MICRO-PROGRESS BAR ──
+        function resetAndStartAutoplay() {
+            stopAutoplay();
+            isAutoplay = true;
+            updateAutoplayUI(true);
+            autoplayProgress = 0;
 
-            window.addEventListener('wheel', function(e) {
-                const rect = section.getBoundingClientRect();
-                // Check if section is centered / active in viewport
-                const isSectionActive = rect.top <= 60 && rect.bottom >= window.innerHeight - 60;
-
-                if (isSectionActive) {
-                    const now = Date.now();
-                    const delta = e.deltaY;
-
-                    if (delta > 15) {
-                        // User scrolling DOWN
-                        if (currentIndex < milestones.length - 1) {
-                            // MUST SCROLL TO THE END FIRST: Lock page & advance milestone!
-                            e.preventDefault();
-                            if (now - lastWheelTime > 400) {
-                                dhsChronoNav(1);
-                                lastWheelTime = now;
-                            }
-                        }
-                        // If already at last milestone (2026), DO NOT PREVENT: natural scroll down to next section!
-                    } else if (delta < -15) {
-                        // User scrolling UP
-                        if (currentIndex > 0) {
-                            // Lock page & step backward!
-                            e.preventDefault();
-                            if (now - lastWheelTime > 400) {
-                                dhsChronoNav(-1);
-                                lastWheelTime = now;
-                            }
-                        }
-                        // If already at first milestone (2005), DO NOT PREVENT: natural scroll up to previous section!
-                    }
+            autoplayInterval = setInterval(() => {
+                autoplayProgress += (PROGRESS_STEP_MS / DURATION_MS) * 100;
+                const activeProg = document.querySelector('#dhs-tab-' + currentIndex + ' .dhs-tab-progress');
+                if (activeProg) {
+                    activeProg.style.width = Math.min(100, autoplayProgress) + '%';
                 }
-            }, { passive: false });
 
-            // Touch Swipe Support for Mobile/Tablet
-            window.addEventListener('touchstart', function(e) {
-                if (e.touches && e.touches.length === 1) {
-                    touchStartY = e.touches[0].clientY;
+                if (autoplayProgress >= 100) {
+                    autoplayProgress = 0;
+                    let next = (currentIndex + 1) % milestones.length;
+                    dhsChronoSelect(next);
                 }
-            }, { passive: true });
-
-            window.addEventListener('touchmove', function(e) {
-                if (!touchStartY || !e.touches || e.touches.length !== 1) return;
-                const rect = section.getBoundingClientRect();
-                const isSectionActive = rect.top <= 60 && rect.bottom >= window.innerHeight - 60;
-
-                if (isSectionActive) {
-                    const deltaY = touchStartY - e.touches[0].clientY; // > 0 means swipe UP (scroll down)
-                    if (deltaY > 20 && currentIndex < milestones.length - 1) {
-                        e.preventDefault();
-                    } else if (deltaY < -20 && currentIndex > 0) {
-                        e.preventDefault();
-                    }
-                }
-            }, { passive: false });
-
-            window.addEventListener('touchend', function(e) {
-                if (!touchStartY) return;
-                const touchEndY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : touchStartY;
-                const deltaY = touchStartY - touchEndY;
-                touchStartY = 0;
-
-                const rect = section.getBoundingClientRect();
-                const isSectionActive = rect.top <= 80 && rect.bottom >= window.innerHeight - 80;
-
-                if (isSectionActive && Math.abs(deltaY) > 40) {
-                    const now = Date.now();
-                    if (now - lastWheelTime > 350) {
-                        if (deltaY > 0 && currentIndex < milestones.length - 1) {
-                            dhsChronoNav(1);
-                            lastWheelTime = now;
-                        } else if (deltaY < 0 && currentIndex > 0) {
-                            dhsChronoNav(-1);
-                            lastWheelTime = now;
-                        }
-                    }
-                }
-            }, { passive: true });
-        }
-
-        function startAutoplay() {
-            if (autoplayTimer) clearInterval(autoplayTimer);
-            autoplayTimer = setInterval(() => {
-                let next = (currentIndex + 1) % milestones.length;
-                updateView(next);
-            }, STAGE_DURATION);
+            }, PROGRESS_STEP_MS);
         }
 
         function stopAutoplay() {
-            if (autoplayTimer) {
-                clearInterval(autoplayTimer);
-                autoplayTimer = null;
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
             }
+            const activeProg = document.querySelector('#dhs-tab-' + currentIndex + ' .dhs-tab-progress');
+            if (activeProg && !isAutoplay) {
+                activeProg.style.width = '0%';
+            }
+        }
+
+        function updateAutoplayUI(active) {
+            const icon = document.getElementById('dhs-chrono-autoplay-icon');
+            const text = document.getElementById('dhs-chrono-autoplay-text');
+            if (icon) icon.textContent = active ? 'pause' : 'play_arrow';
+            if (text) text.textContent = active ? 'Otomatis' : 'Jeda';
         }
 
         window.dhsChronoToggleAutoplay = function() {
             isAutoplay = !isAutoplay;
-            const icon = document.getElementById('dhs-chrono-autoplay-icon');
-            const text = document.getElementById('dhs-chrono-autoplay-text');
+            updateAutoplayUI(isAutoplay);
             if (isAutoplay) {
-                startAutoplay();
-                if (icon) icon.textContent = 'pause';
-                if (text) text.textContent = 'Otomatis';
+                resetAndStartAutoplay();
             } else {
                 stopAutoplay();
-                if (icon) icon.textContent = 'play_arrow';
-                if (text) text.textContent = 'Jeda';
             }
         };
 
@@ -911,8 +723,8 @@
                 const cx = rect.width / 2;
                 const cy = rect.height / 2;
                 
-                const rx = ((y - cy) / cy) * -7;
-                const ry = ((x - cx) / cx) * 7;
+                const rx = ((y - cy) / cy) * -6;
+                const ry = ((x - cx) / cx) * 6;
                 
                 card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
                 card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
@@ -932,7 +744,7 @@
         window.dhsOpenCurrentLightbox = function() {
             const cur = milestones[currentIndex];
             if (!cur) return;
-            const src = cur.image || '/image/about_dhs.jpg';
+            const src = cur.image || '/image/hotel_lobby.jpg';
             const caption = cur.year + ' — ' + cur.title + ' (' + (cur.hub || 'Denpasar Hotel School') + ')';
             
             const modal = document.getElementById('dhs-lightbox-modal');
@@ -949,15 +761,40 @@
 
         // Keyboard Navigation (Arrow Left / Right)
         window.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') dhsChronoNav(-1);
-            if (e.key === 'ArrowRight') dhsChronoNav(1);
+            const section = document.getElementById('fullscreen-chrono-section');
+            if (!section) return;
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+                if (e.key === 'ArrowLeft') dhsChronoNav(-1);
+                if (e.key === 'ArrowRight') dhsChronoNav(1);
+            }
         });
+
+        // Hover to Pause / Resume Autoplay
+        function initHoverPause() {
+            const section = document.getElementById('fullscreen-chrono-section');
+            if (!section) return;
+
+            section.addEventListener('mouseenter', function() {
+                if (isAutoplay && autoplayInterval) {
+                    clearInterval(autoplayInterval);
+                    autoplayInterval = null;
+                }
+            });
+
+            section.addEventListener('mouseleave', function() {
+                if (isAutoplay && !autoplayInterval) {
+                    resetAndStartAutoplay();
+                }
+            });
+        }
 
         // Initialize on DOM Ready
         document.addEventListener('DOMContentLoaded', function() {
             updateView(0);
             initTilt();
-            initScrollLock();
+            initHoverPause();
+            resetAndStartAutoplay();
         });
     })();
     </script>

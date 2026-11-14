@@ -328,24 +328,30 @@
 
         body.page-ready nav {
             opacity: 1;
-            transform: none;
-            /* remove transform context entirely */
         }
 
         #main-nav {
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                        opacity 0.4s ease,
-                        background 0.3s ease,
-                        backdrop-filter 0.3s ease,
-                        box-shadow 0.3s ease,
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            filter: blur(0px);
+            transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 0.35s ease,
+                        backdrop-filter 0.35s ease,
+                        box-shadow 0.35s ease,
                         padding 0.3s ease !important;
-            will-change: transform, opacity;
+            will-change: transform, opacity, filter;
         }
 
         #main-nav.nav-hidden {
-            transform: translateY(-115%) !important;
+            transform: translateY(-120%) scale(0.96) !important;
             opacity: 0 !important;
+            filter: blur(12px) !important;
             pointer-events: none !important;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
         /* ================================================================
@@ -967,18 +973,19 @@
                     // Auto-hide navbar while scrolling, smoothly reappear after 2s idle
                     var isMobileMenuOpen = document.getElementById('mobile-menu') && document.getElementById('mobile-menu').classList.contains('is-open');
                     if (!isMobileMenuOpen) {
-                        if (scrolled > 80 && Math.abs(scrolled - lastScrollY) > 4) {
-                            navbar.classList.add('nav-hidden');
-                        } else if (scrolled <= 60) {
+                        if (scrolled <= 60) {
+                            if (navIdleTimer) clearTimeout(navIdleTimer);
                             navbar.classList.remove('nav-hidden');
+                        } else {
+                            if (Math.abs(scrolled - lastScrollY) > 5) {
+                                navbar.classList.add('nav-hidden');
+                            }
+                            if (navIdleTimer) clearTimeout(navIdleTimer);
+                            navIdleTimer = setTimeout(function () {
+                                navbar.classList.remove('nav-hidden');
+                            }, 2000);
                         }
-
                         lastScrollY = scrolled;
-
-                        if (navIdleTimer) clearTimeout(navIdleTimer);
-                        navIdleTimer = setTimeout(function () {
-                            navbar.classList.remove('nav-hidden');
-                        }, 2000);
                     }
                 }
             }
