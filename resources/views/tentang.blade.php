@@ -270,44 +270,44 @@
         <div class="absolute -bottom-32 left-10 w-[550px] h-[550px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(100px);"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full pointer-events-none opacity-5" style="background: radial-gradient(ellipse, #C5A880 0%, transparent 75%); filter: blur(120px);"></div>
 
-        <div class="max-w-[1540px] mx-auto w-full h-full flex flex-col justify-between px-5 sm:px-8 lg:px-14 relative z-10">
+        <div class="max-w-[1540px] mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 lg:px-14 relative z-10">
             {{-- Top Header & Navigation Controls --}}
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 pb-2.5 border-b border-white/10 shrink-0">
-                <div>
-                    <div class="flex items-center gap-2 mb-0.5">
-                        <span class="w-2 h-2 rounded-full" style="background-color: #C5A880;"></span>
-                        <span class="text-[0.68rem] tracking-[0.25em] uppercase font-bold" style="color: #E5C397;">
+            <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10 shrink-0">
+                <div class="min-w-0 pr-2">
+                    <div class="flex items-center gap-1.5 mb-0.5">
+                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: #C5A880;"></span>
+                        <span class="text-[0.62rem] sm:text-[0.68rem] tracking-[0.2em] uppercase font-bold" style="color: #E5C397;">
                             MILESTONE STRATEGIS (2017 — 2024)
                         </span>
                     </div>
-                    <h2 class="text-lg sm:text-xl lg:text-2xl font-serif font-bold tracking-tight text-white">
+                    <h2 class="text-base sm:text-xl lg:text-2xl font-serif font-bold tracking-tight text-white leading-snug truncate sm:overflow-visible">
                         Transformasi Keunggulan & Reputasi Global
                     </h2>
                 </div>
 
                 {{-- Interactive Controls --}}
-                <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                    <span id="dhs-counter-label" class="font-mono text-xs font-semibold px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <span id="dhs-counter-label" class="font-mono text-[0.7rem] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
                         01 / 0{{ count($timelineStages) }}
                     </span>
                     <button type="button" onclick="dhsChronoNav(-1)"
-                            class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
+                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
                             title="Sebelumnya">
-                        <span class="material-icons text-base">arrow_back</span>
+                        <span class="material-icons text-sm sm:text-base">arrow_back</span>
                     </button>
                     <button type="button" onclick="dhsChronoNav(1)"
-                            class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
+                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
                             title="Selanjutnya">
-                        <span class="material-icons text-base">arrow_forward</span>
+                        <span class="material-icons text-sm sm:text-base">arrow_forward</span>
                     </button>
                 </div>
             </div>
 
             {{-- Center Viewport: Split Screen Theater (50:50) --}}
-            <div class="flex-1 flex items-center justify-center my-auto py-2 lg:py-4 min-h-0">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-center w-full">
+            <div class="flex-1 flex items-center justify-center my-auto py-2.5 lg:py-4 min-h-0">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-center w-full">
                     {{-- Left Column: 3D Tilt Archival Visual Theater (lg:col-span-6) --}}
-                    <div class="lg:col-span-6 w-full flex justify-center">
+                    <div class="lg:col-span-6 w-full flex flex-col items-center justify-center">
                         <div class="dhs-tilt-perspective w-full max-w-[500px] lg:max-w-[540px]">
                             <div id="dhs-tilt-card" class="dhs-tilt-card group">
                                 <img id="dhs-chrono-img"
@@ -322,55 +322,61 @@
                                 <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(180deg, rgba(8,13,21,0.05) 0%, rgba(8,13,21,0.65) 100%);"></div>
 
                                 {{-- Floating Badges over Photo --}}
-                                <div class="absolute top-3.5 left-3.5 z-10">
-                                    <span id="dhs-photo-badge" class="px-3 py-1 rounded-full text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
+                                <div class="absolute top-3 left-3 z-10">
+                                    <span id="dhs-photo-badge" class="px-2.5 py-0.5 rounded-full text-[0.6rem] sm:text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
                                           style="background: rgba(8, 13, 21, 0.75); border-color: rgba(197, 168, 128, 0.4); color: #E5C397;">
                                         {{ $timelineStages[0]['badge'] ?? 'GLOBAL NETWORK' }}
                                     </span>
                                 </div>
 
                                 {{-- Top-Right Lightbox Zoom Button --}}
-                                <div class="absolute top-3.5 right-3.5 z-10">
+                                <div class="absolute top-3 right-3 z-10">
                                     <button type="button"
                                             id="dhs-zoom-btn"
-                                            class="w-8 h-8 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:scale-110 transition-all cursor-pointer"
+                                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:scale-110 transition-all cursor-pointer"
                                             onclick="dhsOpenCurrentLightbox()"
                                             title="Perbesar Foto Arsip">
-                                        <span class="material-icons text-sm">fullscreen</span>
+                                        <span class="material-icons text-xs sm:text-sm">fullscreen</span>
                                     </button>
                                 </div>
 
                                 {{-- Bottom Location Bar --}}
-                                <div class="absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between text-xs backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.85);">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="material-icons text-sm" style="color: #E5C397;">place</span>
-                                        <span id="dhs-photo-hub" class="font-medium text-white text-xs truncate">{{ $timelineStages[0]['hub'] ?? 'Jaringan Hotel Bintang 5 Dunia' }}</span>
+                                <div class="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between text-xs backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.85);">
+                                    <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                                        <span class="material-icons text-xs sm:text-sm shrink-0" style="color: #E5C397;">place</span>
+                                        <span id="dhs-photo-hub" class="font-medium text-white text-[0.65rem] sm:text-xs truncate">{{ $timelineStages[0]['hub'] ?? 'Jaringan Hotel Bintang 5 Dunia' }}</span>
                                     </div>
-                                    <span class="text-[0.62rem] font-mono tracking-wider text-slate-400 shrink-0">HISTORIC ARCHIVE</span>
+                                    <span class="text-[0.6rem] font-mono tracking-wider text-slate-400 shrink-0">HISTORIC ARCHIVE</span>
                                 </div>
                             </div>
+                        </div>
+
+                        {{-- Mobile Micro Swipe Hint --}}
+                        <div class="flex sm:hidden items-center justify-center gap-1.5 text-[0.62rem] text-slate-400 mt-2">
+                            <span class="material-icons text-xs" style="color: #E5C397;">swipe</span>
+                            <span>Usap ke samping untuk berganti tahun</span>
                         </div>
                     </div>
 
                     {{-- Right Column: Kinetic Editorial Narrative (lg:col-span-6) --}}
                     <div class="lg:col-span-6 flex flex-col justify-center">
-                        <div class="space-y-2.5 lg:space-y-3 max-w-xl">
+                        <div class="space-y-2 lg:space-y-3 max-w-xl">
                             {{-- Phase Indicator --}}
                             <div class="flex items-center gap-2">
-                                <span class="text-xs uppercase tracking-[0.25em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
+                                <span class="text-[0.68rem] sm:text-xs uppercase tracking-[0.2em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
                                     01 / {{ strtoupper($timelineStages[0]['phase'] ?? 'Kemitraan Global Bintang 5') }}
                                 </span>
                             </div>
 
                             {{-- Rolling Number Year Animation Container --}}
                             <div class="dhs-rolling-year-container">
-                                <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none" style="color: #C5A880;">
+                                <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-none" style="color: #C5A880;">
                                     {{ $timelineStages[0]['year'] ?? '2017' }}
                                 </div>
                             </div>
 
                             {{-- Milestone Title --}}
-                            <h3 class="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
+                            <h3 class="text-base sm:text-xl lg:text-2xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
                                 {{ $timelineStages[0]['title'] ?? 'Kemitraan Marriott International' }}
                             </h3>
 
@@ -380,24 +386,24 @@
                             </p>
 
                             {{-- Editorial Quote Pill --}}
-                            <div class="pl-3.5 border-l-2 transition-opacity duration-300" style="border-color: #C5A880;" id="dhs-chrono-quote-box">
-                                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed" id="dhs-chrono-quote">
+                            <div class="pl-3 border-l-2 transition-opacity duration-300" style="border-color: #C5A880;" id="dhs-chrono-quote-box">
+                                <p class="text-[0.72rem] sm:text-xs italic text-slate-300 leading-relaxed" id="dhs-chrono-quote">
                                     "{{ $timelineStages[0]['quote'] ?? 'Membuka akses karir eksklusif ke jaringan hotel bintang 5 global tanpa biaya agen.' }}"
                                 </p>
                             </div>
 
                             {{-- Single Metric Card --}}
-                            <div class="pt-1">
-                                <div class="p-2.5 sm:p-3 rounded-2xl border border-white/10 flex items-center gap-3.5 transition-all" style="background: rgba(255, 255, 255, 0.04);">
-                                    <div class="font-serif text-xl sm:text-2xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
+                            <div class="pt-0.5 sm:pt-1">
+                                <div class="p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-white/10 flex items-center gap-3 sm:gap-3.5 transition-all" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="font-serif text-lg sm:text-2xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
                                         {{ $timelineStages[0]['stat_val'] ?? '5-STAR' }}
                                     </div>
-                                    <div class="w-px h-8 bg-white/15 shrink-0"></div>
+                                    <div class="w-px h-7 sm:h-8 bg-white/15 shrink-0"></div>
                                     <div class="min-w-0">
-                                        <div class="text-[0.65rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
+                                        <div class="text-[0.62rem] sm:text-[0.65rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
                                             {{ $timelineStages[0]['stat_label'] ?? 'Mitra Marriott Group' }}
                                         </div>
-                                        <div class="text-xs font-medium text-white truncate" id="dhs-stat-desc">
+                                        <div class="text-[0.7rem] sm:text-xs font-medium text-white truncate" id="dhs-stat-desc">
                                             {{ $timelineStages[0]['stat_desc'] ?? 'Jalur karir langsung ke hotel luxury internasional' }}
                                         </div>
                                     </div>
@@ -493,7 +499,11 @@
         }
         @media (max-width: 640px) {
             .dhs-tilt-card {
-                aspect-ratio: 4 / 3;
+                aspect-ratio: 16 / 9;
+                max-height: 205px;
+            }
+            .dhs-rolling-year-container {
+                height: 2.5rem;
             }
         }
         .dhs-photo-kenburns {
