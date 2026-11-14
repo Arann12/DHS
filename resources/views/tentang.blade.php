@@ -409,20 +409,20 @@
             </div>
 
             {{-- Bottom: 3-Segment Interactive Milestone Timeline Tabs with Live Progress Bar --}}
-            <div class="pt-2.5 border-t border-white/10 shrink-0">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 max-w-4xl lg:max-w-5xl mx-auto w-full">
+            <div class="pt-2 sm:pt-2.5 border-t border-white/10 shrink-0">
+                <div class="grid grid-cols-3 gap-1.5 sm:gap-3 max-w-4xl lg:max-w-5xl mx-auto w-full">
                     @foreach($timelineStages as $idx => $m)
                     <button type="button"
                             onclick="dhsChronoSelect({{ $idx }})"
                             id="dhs-tab-{{ $idx }}"
-                            class="dhs-milestone-tab group text-left p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 cursor-pointer {{ $idx === 0 ? 'active' : '' }}">
+                            class="dhs-milestone-tab group text-left p-2 sm:p-2.5 lg:p-3 rounded-xl sm:rounded-2xl border transition-all duration-300 cursor-pointer {{ $idx === 0 ? 'active' : '' }}">
                         <div class="flex items-center justify-between mb-0.5">
-                            <span class="dhs-tab-year font-serif font-bold text-sm sm:text-base transition-colors">{{ $m['year'] }}</span>
-                            <span class="dhs-tab-badge text-[0.62rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full transition-colors">{{ $m['badge'] }}</span>
+                            <span class="dhs-tab-year font-serif font-bold text-xs sm:text-sm lg:text-base transition-colors">{{ $m['year'] }}</span>
+                            <span class="dhs-tab-badge text-[0.55rem] sm:text-[0.62rem] font-bold tracking-wider uppercase px-1.5 sm:px-2 py-0.5 rounded-full transition-colors hidden sm:inline-block">{{ $m['badge'] }}</span>
                         </div>
-                        <div class="dhs-tab-title text-xs font-semibold text-slate-300 truncate transition-colors">{{ $m['title'] }}</div>
+                        <div class="dhs-tab-title text-[0.65rem] sm:text-xs font-semibold text-slate-300 truncate transition-colors">{{ $m['title'] }}</div>
                         {{-- Micro Progress Bar for Autoplay --}}
-                        <div class="mt-1.5 w-full h-[3px] bg-white/10 rounded-full overflow-hidden">
+                        <div class="mt-1 sm:mt-1.5 w-full h-[2px] sm:h-[3px] bg-white/10 rounded-full overflow-hidden">
                             <div class="dhs-tab-progress h-full w-0 rounded-full transition-all duration-75" style="background: linear-gradient(90deg, #C53030, #E5C397);"></div>
                         </div>
                     </button>
@@ -450,19 +450,23 @@
                 box-sizing: border-box;
                 scroll-snap-align: start;
                 scroll-margin-top: 0;
+                overflow: hidden;
             }
         }
+        /* Fluid Natural Height on Tablet & Mobile */
         @media (max-width: 1023px) {
             .dhs-fullscreen-chrono {
                 width: 100%;
                 min-height: 100vh;
+                height: auto !important;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
                 position: relative;
-                padding-top: 5.5rem;
-                padding-bottom: 2.5rem;
+                padding-top: 5rem;
+                padding-bottom: 2rem;
                 box-sizing: border-box;
+                overflow: visible !important;
             }
         }
 
@@ -818,12 +822,48 @@
             }, { passive: true });
         }
 
+        // Touch Swipe Navigation for Mobile / Tablet
+        function initTouchSwipe() {
+            const section = document.getElementById('fullscreen-chrono-section');
+            if (!section) return;
+
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            section.addEventListener('touchstart', function(e) {
+                if (e.touches && e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            section.addEventListener('touchend', function(e) {
+                if (!touchStartX) return;
+                const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : touchStartX;
+                const endY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : touchStartY;
+                const deltaX = touchStartX - endX;
+                const deltaY = touchStartY - endY;
+                touchStartX = 0;
+                touchStartY = 0;
+
+                // Horizontal swipe (deltaX > deltaY) with at least 45px threshold
+                if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+                    if (deltaX > 0) {
+                        dhsChronoNav(1);
+                    } else {
+                        dhsChronoNav(-1);
+                    }
+                }
+            }, { passive: true });
+        }
+
         // Initialize on DOM Ready
         document.addEventListener('DOMContentLoaded', function() {
             updateView(0);
             initTilt();
             initHoverPause();
             initAutoAlign();
+            initTouchSwipe();
             resetAndStartAutoplay();
         });
     })();
