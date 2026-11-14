@@ -181,27 +181,64 @@
                 </div>
                 <div class="form-group">
                     <label class="bo-label">Section Title</label>
-                    <input type="text" class="bo-input" x-model="timelineSectionTitle" placeholder="Sejarah & Milestone">
+                    <input type="text" class="bo-input" x-model="timelineSectionTitle" placeholder="Transformasi Keunggulan & Reputasi Global">
                 </div>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0;">Milestone Timeline</h2>
-                <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="timeline.push({year:'', title:'', desc:''})">
+                <div>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:18px;color:#0F2440;margin:0;">Milestone & Sejarah (3 Era Utama)</h2>
+                    <p style="font-size:12px;color:#64748b;margin:4px 0 0;">Menampilkan 3 milestone strategis mulai dari 2017 pada tampilan layar penuh 100vh.</p>
+                </div>
+                <button class="btn-primary" style="padding:6px 12px;font-size:12px;" @click="timeline.push({year:'', title:'', desc:'', badge:'', hub:'', quote:'', stat_val:'', stat_label:'', stat_desc:'', image:''})">
                     <span class="material-icons-round" style="font-size:16px;">add</span> Tambah Milestone
                 </button>
             </div>
 
-            <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;flex-direction:column;gap:16px;">
                 <template x-for="(item, idx) in timeline" :key="idx">
-                    <div style="padding:14px;background:#fafafa;border-radius:12px;border:1.5px solid #eee;">
-                        <div style="display:flex;gap:12px;margin-bottom:8px;">
-                            <input type="text" class="bo-input" style="width:100px;font-weight:700;padding:6px;" x-model="item.year" placeholder="Tahun">
-                            <input type="text" class="bo-input" style="flex:1;font-weight:700;padding:6px;" x-model="item.title" placeholder="Judul Milestone">
-                            <button class="btn-icon danger" style="width:32px;height:32px;" @click="timeline.splice(idx,1)">
+                    <div style="padding:16px;background:#fafafa;border-radius:14px;border:1.5px solid #e2e8f0;">
+                        <div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;">
+                            <input type="text" class="bo-input" style="width:90px;font-weight:700;padding:6px 10px;" x-model="item.year" placeholder="Tahun">
+                            <input type="text" class="bo-input" style="flex:1;font-weight:700;padding:6px 10px;" x-model="item.title" placeholder="Judul Milestone">
+                            <input type="text" class="bo-input" style="width:150px;padding:6px 10px;font-size:12px;" x-model="item.badge" placeholder="Badge (e.g. GLOBAL NETWORK)">
+                            <button class="btn-icon danger" style="width:32px;height:32px;flex-shrink:0;" @click="timeline.splice(idx,1)" title="Hapus Milestone">
                                 <span class="material-icons-round" style="font-size:16px;">delete</span>
                             </button>
                         </div>
-                        <textarea class="bo-textarea" style="min-height:50px;padding:6px;" x-model="item.desc" placeholder="Deskripsi milestone..."></textarea>
+                        <div style="margin-bottom:10px;">
+                            <textarea class="bo-textarea" style="min-height:55px;padding:8px 10px;font-size:13px;" x-model="item.desc" placeholder="Deskripsi ringkas milestone..."></textarea>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
+                            <div>
+                                <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;">Lokasi / Hub</label>
+                                <input type="text" class="bo-input" style="padding:5px 8px;font-size:12px;" x-model="item.hub" placeholder="e.g. Swiss & Singapura">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;">Nilai Stat</label>
+                                <input type="text" class="bo-input" style="padding:5px 8px;font-size:12px;" x-model="item.stat_val" placeholder="e.g. 5-STAR / 3.000+">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;">Label Stat</label>
+                                <input type="text" class="bo-input" style="padding:5px 8px;font-size:12px;" x-model="item.stat_label" placeholder="e.g. Mitra Marriott Group">
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;">
+                            <input type="text" class="bo-input" style="padding:5px 8px;font-size:12px;" x-model="item.quote" placeholder="Kutipan kuratorial (e.g. Bukti nyata alumni DHS dipercaya...)">
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:36px;height:36px;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+                                     @click="$store.imageUpload.open(url => { item.image = url })" title="Ganti Foto">
+                                    <template x-if="item.image">
+                                        <img :src="item.image" style="width:100%;height:100%;object-fit:cover;">
+                                    </template>
+                                    <template x-if="!item.image">
+                                        <span class="material-icons-round" style="font-size:18px;color:#94a3b8;">image</span>
+                                    </template>
+                                </div>
+                                <button type="button" class="btn-secondary" style="padding:5px 10px;font-size:11px;" @click="$store.imageUpload.open(url => { item.image = url })">
+                                    Pilih Foto
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </template>
             </div>

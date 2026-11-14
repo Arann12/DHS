@@ -83,13 +83,29 @@
     $timelineStages = [];
     foreach ($timelineItems as $item) {
         $yr = (string)($item['year'] ?? '');
-        if (!isset($stageMeta[$yr])) continue; // Strictly 3 modern milestones
-        $meta = $stageMeta[$yr];
-        $timelineStages[] = array_merge([
-            'year' => $yr,
-            'title' => $item['title'] ?? 'Milestone DHS',
-            'desc' => $item['desc'] ?? '',
-        ], $meta);
+        $meta = $stageMeta[$yr] ?? [
+            'phase' => $item['phase'] ?? 'Milestone Strategis',
+            'hub' => $item['hub'] ?? 'Jaringan Global DHS',
+            'image' => !empty($item['image']) ? $item['image'] : '/image/hotel_lobby.jpg',
+            'stat_val' => $item['stat_val'] ?? $yr,
+            'stat_label' => $item['stat_label'] ?? 'Pencapaian',
+            'stat_desc' => $item['stat_desc'] ?? ($item['title'] ?? ''),
+            'badge' => $item['badge'] ?? 'MILESTONE',
+            'quote' => $item['quote'] ?? 'Komitmen pendidikan hospitality kelas dunia.'
+        ];
+        $timelineStages[] = [
+            'year'       => $yr,
+            'title'      => $item['title'] ?? ($meta['title'] ?? 'Milestone DHS'),
+            'desc'       => $item['desc'] ?? ($meta['desc'] ?? ''),
+            'phase'      => $item['phase'] ?? ($meta['phase'] ?? 'Milestone Strategis'),
+            'hub'        => $item['hub'] ?? ($meta['hub'] ?? 'Jaringan Global DHS'),
+            'image'      => !empty($item['image']) ? $item['image'] : ($meta['image'] ?? '/image/hotel_lobby.jpg'),
+            'stat_val'   => $item['stat_val'] ?? ($meta['stat_val'] ?? $yr),
+            'stat_label' => $item['stat_label'] ?? ($meta['stat_label'] ?? 'Pencapaian'),
+            'stat_desc'  => $item['stat_desc'] ?? ($meta['stat_desc'] ?? ''),
+            'badge'      => $item['badge'] ?? ($meta['badge'] ?? 'MILESTONE'),
+            'quote'      => $item['quote'] ?? ($meta['quote'] ?? 'Komitmen pendidikan hospitality kelas dunia.')
+        ];
     }
     // Fallback if empty
     if (empty($timelineStages)) {
@@ -270,7 +286,7 @@
                 </div>
 
                 {{-- Interactive Controls --}}
-                <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
+                <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
                     <span id="dhs-counter-label" class="font-mono text-xs font-semibold px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
                         01 / 0{{ count($timelineStages) }}
                     </span>
@@ -283,12 +299,6 @@
                             class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
                             title="Selanjutnya">
                         <span class="material-icons text-base">arrow_forward</span>
-                    </button>
-                    <button type="button" id="dhs-chrono-autoplay-btn" onclick="dhsChronoToggleAutoplay()"
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/15 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                            title="Jeda / Putar Otomatis">
-                        <span class="material-icons text-xs" id="dhs-chrono-autoplay-icon">pause</span>
-                        <span id="dhs-chrono-autoplay-text" class="text-[0.65rem] uppercase tracking-wider font-semibold">Otomatis</span>
                     </button>
                 </div>
             </div>
@@ -672,7 +682,6 @@
         function resetAndStartAutoplay() {
             stopAutoplay();
             isAutoplay = true;
-            updateAutoplayUI(true);
             autoplayProgress = 0;
 
             autoplayInterval = setInterval(() => {
@@ -700,23 +709,6 @@
                 activeProg.style.width = '0%';
             }
         }
-
-        function updateAutoplayUI(active) {
-            const icon = document.getElementById('dhs-chrono-autoplay-icon');
-            const text = document.getElementById('dhs-chrono-autoplay-text');
-            if (icon) icon.textContent = active ? 'pause' : 'play_arrow';
-            if (text) text.textContent = active ? 'Otomatis' : 'Jeda';
-        }
-
-        window.dhsChronoToggleAutoplay = function() {
-            isAutoplay = !isAutoplay;
-            updateAutoplayUI(isAutoplay);
-            if (isAutoplay) {
-                resetAndStartAutoplay();
-            } else {
-                stopAutoplay();
-            }
-        };
 
         // 3D Parallax Tilt Card Implementation
         function initTilt() {
