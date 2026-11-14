@@ -280,226 +280,206 @@
     
     
     
-    <!-- ░░ PINNED SCROLLYTELLING TRACK (SEJARAH & MILESTONE) ░░ -->
-    <div id="milestone-scroll-track" class="dhs-pinned-milestone-track relative w-full">
-        <section id="fullscreen-chrono-section" class="dhs-fullscreen-chrono w-full text-white select-none relative overflow-hidden" style="background: #080D15; color: #ffffff;">
-            {{-- Subtle Ambient Radial Lighting --}}
-            <div class="absolute -top-32 right-1/4 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(100px);"></div>
-            <div class="absolute -bottom-32 left-10 w-[450px] h-[450px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(90px);"></div>
+    
+    <!-- ░░ FULLSCREEN SCROLL-LOCKED TIME-MACHINE (SEJARAH & MILESTONE) ░░ -->
+    <section id="fullscreen-chrono-section" class="dhs-fullscreen-chrono w-full text-white select-none relative overflow-hidden" style="background: #080D15; color: #ffffff;">
+        {{-- Subtle Ambient Radial Lighting --}}
+        <div class="absolute -top-32 right-1/4 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(100px);"></div>
+        <div class="absolute -bottom-32 left-10 w-[450px] h-[450px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(90px);"></div>
 
-            <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 py-6 lg:py-8 relative z-10">
-                {{-- Top Header & Navigation Bar --}}
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10 shrink-0">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="w-2 h-2 rounded-full" style="background-color: #C5A880;"></span>
-                            <span class="text-[0.68rem] tracking-[0.25em] uppercase font-bold" style="color: #E5C397;">
-                                MILESTONE DHS (2005 — 2026)
-                            </span>
-                        </div>
-                        <h2 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-tight text-white">
-                            Dua Dekade Menuju Keunggulan Global
-                        </h2>
-                    </div>
-
-                    {{-- Compact Navigation Controls --}}
-                    <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-                        <span id="dhs-counter-label" class="font-mono text-xs font-semibold px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
-                            01 / 0{{ count($timelineStages) }}
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 py-6 lg:py-8 relative z-10">
+            {{-- Top Header & Navigation Bar --}}
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10 shrink-0">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full" style="background-color: #C5A880;"></span>
+                        <span class="text-[0.68rem] tracking-[0.25em] uppercase font-bold" style="color: #E5C397;">
+                            MILESTONE DHS (2005 — 2026)
                         </span>
-                        <button type="button" onclick="dhsChronoNav(-1)"
-                                class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
-                                title="Sebelumnya (Arrow Left / Scroll Up)">
-                            <span class="material-icons text-base">arrow_back</span>
-                        </button>
-                        <button type="button" onclick="dhsChronoNav(1)"
-                                class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
-                                title="Selanjutnya (Arrow Right / Scroll Down)">
-                            <span class="material-icons text-base">arrow_forward</span>
-                        </button>
-                        <button type="button" id="dhs-chrono-autoplay-btn" onclick="dhsChronoToggleAutoplay()"
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/15 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                                title="Jeda / Putar Otomatis">
-                            <span class="material-icons text-xs" id="dhs-chrono-autoplay-icon">pause</span>
-                            <span id="dhs-chrono-autoplay-text" class="text-[0.65rem] uppercase tracking-wider font-semibold">Otomatis</span>
-                        </button>
                     </div>
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-tight text-white">
+                        Dua Dekade Menuju Keunggulan Global
+                    </h2>
                 </div>
 
-                {{-- Center Viewport: Split Screen (50:50) with 3D Parallax Tilt --}}
-                <div class="flex-1 flex items-center justify-center my-auto py-3 lg:py-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center w-full">
-                        {{-- Left Column: 3D Tilt Archival Visual Theater (lg:col-span-6) --}}
-                        <div class="lg:col-span-6 w-full flex justify-center">
-                            <div class="dhs-tilt-perspective w-full max-w-[540px]">
-                                <div id="dhs-tilt-card" class="dhs-tilt-card group">
-                                    <img id="dhs-chrono-img"
-                                         src="/image/about_dhs.jpg"
-                                         alt="Denpasar Hotel School Milestone"
-                                         class="dhs-photo-kenburns" />
+                {{-- Compact Navigation Controls & Scroll Hint --}}
+                <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
+                    <span class="hidden md:inline-flex items-center gap-1 text-[0.65rem] text-slate-400 font-medium px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
+                        <span class="material-icons text-xs text-dhs-gold">mouse</span>
+                        <span>Scroll untuk navigasi</span>
+                    </span>
+                    <span id="dhs-counter-label" class="font-mono text-xs font-semibold px-3 py-1 rounded-full border border-white/10" style="background: rgba(255,255,255,0.05); color: #cbd5e1;">
+                        01 / 0{{ count($timelineStages) }}
+                    </span>
+                    <button type="button" onclick="dhsChronoNav(-1)"
+                            class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
+                            title="Sebelumnya">
+                        <span class="material-icons text-base">arrow_back</span>
+                    </button>
+                    <button type="button" onclick="dhsChronoNav(1)"
+                            class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white transition-all hover:bg-white/10 hover:border-white/30 cursor-pointer active:scale-95"
+                            title="Selanjutnya">
+                        <span class="material-icons text-base">arrow_forward</span>
+                    </button>
+                    <button type="button" id="dhs-chrono-autoplay-btn" onclick="dhsChronoToggleAutoplay()"
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/15 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                            title="Jeda / Putar Otomatis">
+                        <span class="material-icons text-xs" id="dhs-chrono-autoplay-icon">play_arrow</span>
+                        <span id="dhs-chrono-autoplay-text" class="text-[0.65rem] uppercase tracking-wider font-semibold">Otomatis</span>
+                    </button>
+                </div>
+            </div>
 
-                                    {{-- Specular Glare Overlay --}}
-                                    <div id="dhs-glare" class="dhs-glare-overlay"></div>
+            {{-- Center Viewport: Split Screen (50:50) with 3D Parallax Tilt --}}
+            <div class="flex-1 flex items-center justify-center my-auto py-3 lg:py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center w-full">
+                    {{-- Left Column: 3D Tilt Archival Visual Theater (lg:col-span-6) --}}
+                    <div class="lg:col-span-6 w-full flex justify-center">
+                        <div class="dhs-tilt-perspective w-full max-w-[540px]">
+                            <div id="dhs-tilt-card" class="dhs-tilt-card group">
+                                <img id="dhs-chrono-img"
+                                     src="/image/about_dhs.jpg"
+                                     alt="Denpasar Hotel School Milestone"
+                                     class="dhs-photo-kenburns" />
 
-                                    {{-- Subtle Vignette --}}
-                                    <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(180deg, rgba(8,13,21,0.05) 0%, rgba(8,13,21,0.65) 100%);"></div>
+                                {{-- Specular Glare Overlay --}}
+                                <div id="dhs-glare" class="dhs-glare-overlay"></div>
 
-                                    {{-- Floating Badges over Photo --}}
-                                    <div class="absolute top-4 left-4 z-10">
-                                        <span id="dhs-photo-badge" class="px-3 py-1 rounded-full text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
-                                              style="background: rgba(8, 13, 21, 0.75); border-color: rgba(197, 168, 128, 0.4); color: #E5C397;">
-                                            KAMPUS PERDANA
-                                        </span>
-                                    </div>
+                                {{-- Subtle Vignette --}}
+                                <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(180deg, rgba(8,13,21,0.05) 0%, rgba(8,13,21,0.65) 100%);"></div>
 
-                                    {{-- Top-Right Lightbox Zoom Button --}}
-                                    <div class="absolute top-4 right-4 z-10">
-                                        <button type="button"
-                                                id="dhs-zoom-btn"
-                                                class="w-8 h-8 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:scale-110 transition-all cursor-pointer"
-                                                onclick="dhsOpenCurrentLightbox()"
-                                                title="Perbesar Foto Arsip">
-                                            <span class="material-icons text-sm">fullscreen</span>
-                                        </button>
-                                    </div>
-
-                                    {{-- Bottom Location Bar --}}
-                                    <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.8);">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="material-icons text-sm" style="color: #E5C397;">place</span>
-                                            <span id="dhs-photo-hub" class="font-medium text-white">Denpasar, Bali</span>
-                                        </div>
-                                        <span class="text-[0.65rem] font-mono tracking-wider text-slate-400">HISTORIC ARCHIVE</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Right Column: Kinetic Editorial Narrative (lg:col-span-6) --}}
-                        <div class="lg:col-span-6 flex flex-col justify-center">
-                            <div class="space-y-4 max-w-xl">
-                                {{-- Phase Indicator --}}
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs uppercase tracking-[0.25em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
-                                        01 / LANGKAH AWAL
+                                {{-- Floating Badges over Photo --}}
+                                <div class="absolute top-4 left-4 z-10">
+                                    <span id="dhs-photo-badge" class="px-3 py-1 rounded-full text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
+                                          style="background: rgba(8, 13, 21, 0.75); border-color: rgba(197, 168, 128, 0.4); color: #E5C397;">
+                                        KAMPUS PERDANA
                                     </span>
                                 </div>
 
-                                {{-- Rolling Number Year Animation Container --}}
-                                <div class="dhs-rolling-year-container">
-                                    <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none" style="color: #C5A880;">
-                                        2005
-                                    </div>
+                                {{-- Top-Right Lightbox Zoom Button --}}
+                                <div class="absolute top-4 right-4 z-10">
+                                    <button type="button"
+                                            id="dhs-zoom-btn"
+                                            class="w-8 h-8 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:scale-110 transition-all cursor-pointer"
+                                            onclick="dhsOpenCurrentLightbox()"
+                                            title="Perbesar Foto Arsip">
+                                        <span class="material-icons text-sm">fullscreen</span>
+                                    </button>
                                 </div>
 
-                                {{-- Milestone Title --}}
-                                <h3 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
-                                    Pendirian Kampus Denpasar
-                                </h3>
-
-                                {{-- Milestone Description --}}
-                                <p class="text-sm sm:text-base text-slate-300 leading-relaxed transition-opacity duration-300" id="dhs-chrono-desc">
-                                    Denpasar Hotel School didirikan di Bali dengan visi menghadirkan standar pendidikan kejuruan hospitality bertaraf internasional.
-                                </p>
-
-                                {{-- Single Metric Card --}}
-                                <div class="pt-3">
-                                    <div class="p-3.5 sm:p-4 rounded-2xl border border-white/10 flex items-center gap-4 transition-all" style="background: rgba(255, 255, 255, 0.04);">
-                                        <div class="font-serif text-2xl sm:text-3xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
-                                            EST. 2005
-                                        </div>
-                                        <div class="w-px h-10 bg-white/15 shrink-0"></div>
-                                        <div class="min-w-0">
-                                            <div class="text-[0.68rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
-                                                Tahun Pendirian
-                                            </div>
-                                            <div class="text-xs sm:text-sm font-medium text-white truncate" id="dhs-stat-desc">
-                                                Berdiri di bawah Yayasan Guna Widya Paramesthi
-                                            </div>
-                                        </div>
+                                {{-- Bottom Location Bar --}}
+                                <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.8);">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-icons text-sm" style="color: #E5C397;">place</span>
+                                        <span id="dhs-photo-hub" class="font-medium text-white">Denpasar, Bali</span>
                                     </div>
+                                    <span class="text-[0.65rem] font-mono tracking-wider text-slate-400">HISTORIC ARCHIVE</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- Bottom: Sleek Integrated Timeline Track with Live Pulse Beam --}}
-                <div class="pt-3 border-t border-white/10 shrink-0">
-                    <div class="relative py-2">
-                        {{-- Base Track Rail --}}
-                        <div class="dhs-track-line">
-                            {{-- Completed Fill --}}
-                            <div id="dhs-track-fill" class="dhs-track-fill" style="width: 0%;"></div>
-                            {{-- Live Beam Counting Progress --}}
-                            <div id="dhs-track-live-beam" class="dhs-track-live-beam"></div>
-                        </div>
-
-                        {{-- Milestone Dots Row with Micro-Tooltips --}}
-                        <div class="dhs-dots-row">
-                            @foreach($timelineStages as $idx => $m)
-                            <div class="relative group/dot flex flex-col items-center">
-                                {{-- Floating Hover Tooltip --}}
-                                <div class="dhs-dot-tooltip">
-                                    <span class="font-serif font-bold text-dhs-gold text-xs">{{ $m['year'] }}</span>
-                                    <span class="text-[0.65rem] text-slate-200 block whitespace-nowrap">{{ $m['title'] }}</span>
-                                </div>
-
-                                <button type="button"
-                                        class="dhs-dot-btn {{ $idx === 0 ? 'active' : '' }}"
-                                        id="dhs-dot-{{ $idx }}"
-                                        onclick="dhsChronoSelect({{ $idx }})"
-                                        aria-label="Pilih Tahun {{ $m['year'] }}">
-                                    <div class="dhs-dot-bezel">
-                                        <div class="dhs-dot-core"></div>
-                                    </div>
-                                    <span class="dhs-dot-year">{{ $m['year'] }}</span>
-                                    <span class="dhs-dot-phase hidden md:inline-block">{{ $m['phase'] }}</span>
-                                </button>
+                    {{-- Right Column: Kinetic Editorial Narrative (lg:col-span-6) --}}
+                    <div class="lg:col-span-6 flex flex-col justify-center">
+                        <div class="space-y-4 max-w-xl">
+                            {{-- Phase Indicator --}}
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs uppercase tracking-[0.25em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
+                                    01 / LANGKAH AWAL
+                                </span>
                             </div>
-                            @endforeach
+
+                            {{-- Rolling Number Year Animation Container --}}
+                            <div class="dhs-rolling-year-container">
+                                <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none" style="color: #C5A880;">
+                                    2005
+                                </div>
+                            </div>
+
+                            {{-- Milestone Title --}}
+                            <h3 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
+                                Pendirian Kampus Denpasar
+                            </h3>
+
+                            {{-- Milestone Description --}}
+                            <p class="text-sm sm:text-base text-slate-300 leading-relaxed transition-opacity duration-300" id="dhs-chrono-desc">
+                                Denpasar Hotel School didirikan di Bali dengan visi menghadirkan standar pendidikan kejuruan hospitality bertaraf internasional.
+                            </p>
+
+                            {{-- Single Metric Card --}}
+                            <div class="pt-3">
+                                <div class="p-3.5 sm:p-4 rounded-2xl border border-white/10 flex items-center gap-4 transition-all" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="font-serif text-2xl sm:text-3xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
+                                        EST. 2005
+                                    </div>
+                                    <div class="w-px h-10 bg-white/15 shrink-0"></div>
+                                    <div class="min-w-0">
+                                        <div class="text-[0.68rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
+                                            Tahun Pendirian
+                                        </div>
+                                        <div class="text-xs sm:text-sm font-medium text-white truncate" id="dhs-stat-desc">
+                                            Berdiri di bawah Yayasan Guna Widya Paramesthi
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
 
-    {{-- ░░ SCOPED FULLSCREEN PINNED LUXURY CSS ░░ --}}
+            {{-- Bottom: Sleek Integrated Timeline Track with Live Pulse Beam --}}
+            <div class="pt-3 border-t border-white/10 shrink-0">
+                <div class="relative py-2">
+                    {{-- Base Track Rail --}}
+                    <div class="dhs-track-line">
+                        {{-- Completed Fill --}}
+                        <div id="dhs-track-fill" class="dhs-track-fill" style="width: 0%;"></div>
+                        {{-- Live Beam Counting Progress --}}
+                        <div id="dhs-track-live-beam" class="dhs-track-live-beam"></div>
+                    </div>
+
+                    {{-- Milestone Dots Row with Micro-Tooltips --}}
+                    <div class="dhs-dots-row">
+                        @foreach($timelineStages as $idx => $m)
+                        <div class="relative group/dot flex flex-col items-center">
+                            {{-- Floating Hover Tooltip --}}
+                            <div class="dhs-dot-tooltip">
+                                <span class="font-serif font-bold text-dhs-gold text-xs">{{ $m['year'] }}</span>
+                                <span class="text-[0.65rem] text-slate-200 block whitespace-nowrap">{{ $m['title'] }}</span>
+                            </div>
+
+                            <button type="button"
+                                    class="dhs-dot-btn {{ $idx === 0 ? 'active' : '' }}"
+                                    id="dhs-dot-{{ $idx }}"
+                                    onclick="dhsChronoSelect({{ $idx }})"
+                                    aria-label="Pilih Tahun {{ $m['year'] }}">
+                                <div class="dhs-dot-bezel">
+                                    <div class="dhs-dot-core"></div>
+                                </div>
+                                <span class="dhs-dot-year">{{ $m['year'] }}</span>
+                                <span class="dhs-dot-phase hidden md:inline-block">{{ $m['phase'] }}</span>
+                            </button>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ░░ SCOPED FULLSCREEN LOCK LUXURY CSS ░░ --}}
     <style>
-        /* Pinned Scrollytelling Track & Sticky 100vh */
-        .dhs-pinned-milestone-track {
-            position: relative;
-            width: 100%;
-        }
-        @media (min-width: 1024px) {
-            .dhs-pinned-milestone-track {
-                height: 450vh; /* 4.5 screens of smooth scroll track */
-            }
-            .dhs-fullscreen-chrono {
-                position: sticky !important;
-                top: 0 !important;
-                height: 100vh !important;
-                max-height: 100vh !important;
-                z-index: 25;
-            }
-        }
-        @media (max-width: 1023px) {
-            .dhs-pinned-milestone-track {
-                height: auto;
-            }
-            .dhs-fullscreen-chrono {
-                position: relative;
-                min-height: 100vh;
-                height: auto;
-            }
-        }
-
+        /* Exact 100vh on Desktop */
         .dhs-fullscreen-chrono {
             width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
         }
 
         /* 3D Parallax Tilt Card Container */
@@ -591,7 +571,7 @@
             background: linear-gradient(90deg, #C53030 0%, #C5A880 100%);
             border-radius: 999px;
             box-shadow: 0 0 10px rgba(197, 168, 128, 0.7);
-            transition: width 0.2s ease-out;
+            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .dhs-track-live-beam {
             position: absolute;
@@ -601,7 +581,7 @@
             background: radial-gradient(circle, #ffffff 0%, #E5C397 50%, transparent 80%);
             border-radius: 999px;
             box-shadow: 0 0 12px #ffffff;
-            transition: left 0.15s ease-out;
+            transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
             opacity: 0.8;
         }
@@ -705,20 +685,18 @@
         }
     </style>
 
-    {{-- ░░ INTERACTIVE PINNED SCROLL CONTROLLER JAVASCRIPT ░░ --}}
+    {{-- ░░ INTERACTIVE SCROLL-LOCK CONTROLLER JAVASCRIPT ░░ --}}
     <script>
     (function() {
         const milestones = @json($timelineStages);
         let currentIndex = 0;
-        let isProgrammaticScroll = false;
+        let lastWheelTime = 0;
+        let touchStartY = 0;
         let autoplayTimer = null;
-        let isAutoplay = false; // By default off when pinned scrollytelling is active so user controls via scroll
+        let isAutoplay = false;
         const STAGE_DURATION = 6000;
 
         function updateView(idx) {
-            if (idx === currentIndex && document.getElementById('dhs-chrono-year').textContent.trim() === milestones[idx].year) {
-                return;
-            }
             currentIndex = idx;
             const data = milestones[idx];
             if (!data) return;
@@ -781,80 +759,121 @@
             document.querySelectorAll('.dhs-dot-btn').forEach((btn, i) => {
                 btn.classList.toggle('active', i === idx);
             });
-        }
 
-        // Pinned Scrollytelling handler (syncs native page scroll to milestone stage)
-        function handlePinnedScroll() {
-            if (window.innerWidth < 1024) return;
-            const track = document.getElementById('milestone-scroll-track');
-            if (!track) return;
-
-            const rect = track.getBoundingClientRect();
-            const totalScrollable = track.offsetHeight - window.innerHeight;
-            if (totalScrollable <= 0) return;
-
-            // Offset within track
-            const currentScroll = -rect.top;
-            if (currentScroll >= 0 && currentScroll <= totalScrollable) {
-                const progress = currentScroll / totalScrollable; // 0.0 to 1.0
-                const targetIdx = Math.min(Math.floor(progress * milestones.length), milestones.length - 1);
-                
-                updateView(targetIdx);
-
-                // Continuous fluid progress bar and beam
-                const fill = document.getElementById('dhs-track-fill');
-                if (fill) fill.style.width = (progress * 100).toFixed(2) + '%';
-                
-                const beam = document.getElementById('dhs-track-live-beam');
+            // Update Track Progress Fill & Beam
+            const fill = document.getElementById('dhs-track-fill');
+            const beam = document.getElementById('dhs-track-live-beam');
+            if (milestones.length > 1) {
+                const percent = (idx / (milestones.length - 1)) * 100;
+                if (fill) fill.style.width = percent + '%';
                 if (beam) {
-                    beam.style.left = 'calc(' + (progress * 100).toFixed(2) + '% - 12px)';
+                    beam.style.left = 'calc(' + percent + '% - 12px)';
                     beam.style.opacity = '1';
                 }
-            } else if (currentScroll < 0) {
-                // Above track: reset to 0
-                const fill = document.getElementById('dhs-track-fill');
-                if (fill) fill.style.width = '0%';
-                const beam = document.getElementById('dhs-track-live-beam');
-                if (beam) beam.style.opacity = '0';
-            } else if (currentScroll > totalScrollable) {
-                // Past track: 100%
-                const fill = document.getElementById('dhs-track-fill');
-                if (fill) fill.style.width = '100%';
-                const beam = document.getElementById('dhs-track-live-beam');
-                if (beam) beam.style.opacity = '0';
             }
         }
 
         window.dhsChronoSelect = function(idx) {
-            if (window.innerWidth >= 1024) {
-                const track = document.getElementById('milestone-scroll-track');
-                if (track) {
-                    const totalScrollable = track.offsetHeight - window.innerHeight;
-                    const progress = idx / (milestones.length - 1);
-                    const trackAbsoluteTop = window.scrollY + track.getBoundingClientRect().top;
-                    const targetScrollY = trackAbsoluteTop + (progress * totalScrollable);
-                    
-                    window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
-                    return;
-                }
-            }
             updateView(idx);
-            const fill = document.getElementById('dhs-track-fill');
-            if (fill && milestones.length > 1) {
-                fill.style.width = ((idx / (milestones.length - 1)) * 100) + '%';
-            }
+            if (isAutoplay) startAutoplay();
         };
 
         window.dhsChronoNav = function(dir) {
-            let next = (currentIndex + dir + milestones.length) % milestones.length;
+            let next = Math.max(0, Math.min(milestones.length - 1, currentIndex + dir));
             dhsChronoSelect(next);
         };
+
+        // ── SCROLL INTERCEPTOR (LOCK UNTIL MILESTONES FINISHED) ──
+        function initScrollLock() {
+            const section = document.getElementById('fullscreen-chrono-section');
+            if (!section) return;
+
+            window.addEventListener('wheel', function(e) {
+                const rect = section.getBoundingClientRect();
+                // Check if section is centered / active in viewport
+                const isSectionActive = rect.top <= 60 && rect.bottom >= window.innerHeight - 60;
+
+                if (isSectionActive) {
+                    const now = Date.now();
+                    const delta = e.deltaY;
+
+                    if (delta > 15) {
+                        // User scrolling DOWN
+                        if (currentIndex < milestones.length - 1) {
+                            // MUST SCROLL TO THE END FIRST: Lock page & advance milestone!
+                            e.preventDefault();
+                            if (now - lastWheelTime > 400) {
+                                dhsChronoNav(1);
+                                lastWheelTime = now;
+                            }
+                        }
+                        // If already at last milestone (2026), DO NOT PREVENT: natural scroll down to next section!
+                    } else if (delta < -15) {
+                        // User scrolling UP
+                        if (currentIndex > 0) {
+                            // Lock page & step backward!
+                            e.preventDefault();
+                            if (now - lastWheelTime > 400) {
+                                dhsChronoNav(-1);
+                                lastWheelTime = now;
+                            }
+                        }
+                        // If already at first milestone (2005), DO NOT PREVENT: natural scroll up to previous section!
+                    }
+                }
+            }, { passive: false });
+
+            // Touch Swipe Support for Mobile/Tablet
+            window.addEventListener('touchstart', function(e) {
+                if (e.touches && e.touches.length === 1) {
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', function(e) {
+                if (!touchStartY || !e.touches || e.touches.length !== 1) return;
+                const rect = section.getBoundingClientRect();
+                const isSectionActive = rect.top <= 60 && rect.bottom >= window.innerHeight - 60;
+
+                if (isSectionActive) {
+                    const deltaY = touchStartY - e.touches[0].clientY; // > 0 means swipe UP (scroll down)
+                    if (deltaY > 20 && currentIndex < milestones.length - 1) {
+                        e.preventDefault();
+                    } else if (deltaY < -20 && currentIndex > 0) {
+                        e.preventDefault();
+                    }
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchend', function(e) {
+                if (!touchStartY) return;
+                const touchEndY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : touchStartY;
+                const deltaY = touchStartY - touchEndY;
+                touchStartY = 0;
+
+                const rect = section.getBoundingClientRect();
+                const isSectionActive = rect.top <= 80 && rect.bottom >= window.innerHeight - 80;
+
+                if (isSectionActive && Math.abs(deltaY) > 40) {
+                    const now = Date.now();
+                    if (now - lastWheelTime > 350) {
+                        if (deltaY > 0 && currentIndex < milestones.length - 1) {
+                            dhsChronoNav(1);
+                            lastWheelTime = now;
+                        } else if (deltaY < 0 && currentIndex > 0) {
+                            dhsChronoNav(-1);
+                            lastWheelTime = now;
+                        }
+                    }
+                }
+            }, { passive: true });
+        }
 
         function startAutoplay() {
             if (autoplayTimer) clearInterval(autoplayTimer);
             autoplayTimer = setInterval(() => {
                 let next = (currentIndex + 1) % milestones.length;
-                dhsChronoSelect(next);
+                updateView(next);
             }, STAGE_DURATION);
         }
 
@@ -892,7 +911,6 @@
                 const cx = rect.width / 2;
                 const cy = rect.height / 2;
                 
-                // Tilt rotation range: -7deg to +7deg
                 const rx = ((y - cy) / cy) * -7;
                 const ry = ((x - cx) / cx) * 7;
                 
@@ -939,8 +957,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateView(0);
             initTilt();
-            window.addEventListener('scroll', handlePinnedScroll, { passive: true });
-            handlePinnedScroll();
+            initScrollLock();
         });
     })();
     </script>

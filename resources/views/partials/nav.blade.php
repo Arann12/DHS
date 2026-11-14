@@ -1,5 +1,5 @@
 <nav id="main-nav"
-    class="fixed w-full z-50 py-3 sm:py-5 px-4 sm:px-8 md:px-16 flex justify-between items-center nav-transparent relative">
+    class="fixed top-0 left-0 right-0 w-full z-50 py-3 sm:py-5 px-4 sm:px-8 md:px-16 flex justify-between items-center nav-transparent">
 
     <!-- ── Left Menu: Beranda, Tentang Kami, Akademi, Layanan ── -->
     <div class="hidden md:flex items-center justify-start space-x-8 text-xs font-light tracking-wide flex-1">

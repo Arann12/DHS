@@ -332,17 +332,18 @@
             /* remove transform context entirely */
         }
 
-        body.page-ready #main-nav {
-            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                        opacity 0.45s ease,
+        #main-nav {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.4s ease,
                         background 0.3s ease,
                         backdrop-filter 0.3s ease,
                         box-shadow 0.3s ease,
                         padding 0.3s ease !important;
+            will-change: transform, opacity;
         }
 
-        body.page-ready #main-nav.nav-hidden {
-            transform: translateY(-110%) !important;
+        #main-nav.nav-hidden {
+            transform: translateY(-115%) !important;
             opacity: 0 !important;
             pointer-events: none !important;
         }
@@ -943,6 +944,7 @@
             var navbar = document.getElementById('main-nav');
             var scrollProgress = document.getElementById('dhs-scroll-progress');
             var navIdleTimer = null;
+            var lastScrollY = window.scrollY;
 
             function handleScroll() {
                 var scrolled = window.scrollY;
@@ -965,11 +967,13 @@
                     // Auto-hide navbar while scrolling, smoothly reappear after 2s idle
                     var isMobileMenuOpen = document.getElementById('mobile-menu') && document.getElementById('mobile-menu').classList.contains('is-open');
                     if (!isMobileMenuOpen) {
-                        if (scrolled > 60) {
+                        if (scrolled > 80 && Math.abs(scrolled - lastScrollY) > 4) {
                             navbar.classList.add('nav-hidden');
-                        } else {
+                        } else if (scrolled <= 60) {
                             navbar.classList.remove('nav-hidden');
                         }
+
+                        lastScrollY = scrolled;
 
                         if (navIdleTimer) clearTimeout(navIdleTimer);
                         navIdleTimer = setTimeout(function () {
@@ -1016,7 +1020,6 @@
                 nav.style.setProperty('right', '0', 'important');
                 nav.style.setProperty('width', '100%', 'important');
                 nav.style.setProperty('max-width', '100%', 'important');
-                nav.style.setProperty('transform', 'none', 'important');
             }
         } catch (e) {}
     }
