@@ -49,15 +49,20 @@
                         {{-- Divider --}}
                         <div class="testi-divider"></div>
 
-                        {{-- Author Info (text only, no photo) --}}
+                        {{-- Author Info with Verified Badge --}}
                         <div class="testimonial-author">
                             <div class="author-info">
-                                <h4 class="author-name">{{ $testi->name }}</h4>
+                                <div class="flex items-center justify-center gap-1.5 mb-1">
+                                    <h4 class="author-name">{{ $testi->name }}</h4>
+                                    <span class="inline-flex items-center text-primary" title="Alumni Terverifikasi">
+                                        <span class="material-icons" style="font-size: 16px;">verified</span>
+                                    </span>
+                                </div>
                                 @if($testi->position)
                                 <p class="author-position">{{ $testi->position }}</p>
                                 @endif
                                 @if($testi->company)
-                                <p class="author-company">{{ $testi->company }}</p>
+                                <p class="author-company font-medium text-primary/90">{{ $testi->company }}</p>
                                 @endif
                             </div>
                         </div>

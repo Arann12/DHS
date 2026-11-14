@@ -70,8 +70,11 @@
 
     {{-- Top Bar --}}
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.35rem;">
-        <div style="font-size:13.5px;color:#64748b;">
-            Pilih kategori program akademi Denpasar Hotel School yang diinginkan untuk mengelola keuangan program, atau tambah kategori program baru.
+        <div>
+            <h2 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#0f172a;font-family:'Inter',sans-serif;">Keuangan Program</h2>
+            <div style="font-size:13.5px;color:#64748b;">
+                Ringkasan arus kas, pendapatan, pengeluaran, serta uang di lapangan khusus program akademi Denpasar Hotel School.
+            </div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <a href="/backoffice/kas" class="btn-secondary" style="font-size:13px;padding:8px 14px;">
@@ -83,6 +86,53 @@
                 Kelola Kategori &amp; Program
             </a>
         </div>
+    </div>
+
+    {{-- 4 Summary Cards Khusus Program: Pemasukan, Pengeluaran, Piutang, Selisih --}}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:1.5rem;">
+
+        {{-- 1. Pemasukan Program --}}
+        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #16a34a;border-radius:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#64748b;text-transform:uppercase;">Pemasukan</span>
+                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#dcfce7;color:#15803d;">Program</span>
+            </div>
+            <div style="font-size:21px;font-weight:800;color:#15803d;">Rp {{ number_format($totalMasuk ?? 0, 0, ',', '.') }}</div>
+            <div style="font-size:11.5px;color:#64748b;margin-top:4px;">Total penerimaan kas program terealisasi</div>
+        </div>
+
+        {{-- 2. Pengeluaran Program --}}
+        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #dc2626;border-radius:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#64748b;text-transform:uppercase;">Pengeluaran</span>
+                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fee2e2;color:#b91c1c;">Program</span>
+            </div>
+            <div style="font-size:21px;font-weight:800;color:#b91c1c;">Rp {{ number_format($totalKeluar ?? 0, 0, ',', '.') }}</div>
+            <div style="font-size:11.5px;color:#64748b;margin-top:4px;">Total biaya operasional khusus program</div>
+        </div>
+
+        {{-- 3. Piutang Program (Uang di Lapangan) --}}
+        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #f59e0b;border-radius:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#64748b;text-transform:uppercase;">Piutang</span>
+                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fef3c7;color:#b45309;">Uang Lapangan</span>
+            </div>
+            <div style="font-size:21px;font-weight:800;color:#b45309;">Rp {{ number_format($totalPiutang ?? 0, 0, ',', '.') }}</div>
+            <div style="font-size:11.5px;color:#92400e;margin-top:4px;">Tagihan / cicilan siswa belum lunas</div>
+        </div>
+
+        {{-- 4. Selisih (Saldo / Surplus Program) --}}
+        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #2563eb;border-radius:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#64748b;text-transform:uppercase;">Selisih</span>
+                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#dbeafe;color:#1d4ed8;">{{ $persenKeuntungan ?? 0 }}%</span>
+            </div>
+            <div style="font-size:21px;font-weight:800;color:{{ ($selisih ?? 0) >= 0 ? '#1d4ed8' : '#dc2626' }};">
+                {{ ($selisih ?? 0) < 0 ? '- Rp ' : 'Rp ' }}{{ number_format(abs($selisih ?? 0), 0, ',', '.') }}
+            </div>
+            <div style="font-size:11.5px;color:#64748b;margin-top:4px;">Surplus / net arus kas program</div>
+        </div>
+
     </div>
 
     {{-- Kategori Program Akademi DHS --}}
@@ -143,6 +193,96 @@
                     </div>
                 </a>
             @endforeach
+        </div>
+    </div>
+
+    {{-- Section: Pendapatan dan Pengeluaran per Program --}}
+    <div class="bo-card" style="padding:0;overflow:hidden;border:1px solid #e2e8f0;border-radius:18px;margin-top:1.5rem;"
+         x-data="{ progSearch: '' }">
+        <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:#ffffff;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:38px;height:38px;border-radius:10px;background:#f0fdf4;color:#16a34a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <span class="material-icons-round" style="font-size:22px;">assessment</span>
+                </div>
+                <div>
+                    <h3 style="margin:0;font-size:16px;font-weight:800;color:#0f172a;font-family:'Inter',sans-serif;">Pendapatan dan Pengeluaran per Program</h3>
+                    <div style="font-size:12px;color:#64748b;">Rincian total pemasukan, pengeluaran, piutang, dan selisih masing-masing program akademi</div>
+                </div>
+            </div>
+
+            {{-- Search box --}}
+            <div style="position:relative;width:260px;">
+                <span class="material-icons-round" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:17px;color:#94a3b8;pointer-events:none;">search</span>
+                <input type="text"
+                       class="bo-input"
+                       x-model="progSearch"
+                       placeholder="Search program..."
+                       style="padding-left:34px;height:38px;font-size:13px;border-radius:9px;">
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table class="bo-table" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th style="width:50px;text-align:center;">#</th>
+                        <th style="text-align:left;">Program &amp; Kategori</th>
+                        <th style="text-align:right;">Pendapatan (Pemasukan)</th>
+                        <th style="text-align:right;">Pengeluaran</th>
+                        <th style="text-align:right;">Piutang</th>
+                        <th style="text-align:right;">Selisih</th>
+                        <th style="text-align:center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($perProgramData as $index => $pp)
+                        <tr x-show="!progSearch || '{{ strtolower(addslashes($pp['title'])) }} {{ strtolower(addslashes($pp['category_name'])) }}'.includes(progSearch.toLowerCase())">
+                            <td style="text-align:center;font-weight:600;color:#94a3b8;">{{ $index + 1 }}</td>
+                            <td>
+                                <div style="font-size:13.5px;font-weight:700;color:#0f172a;">{{ $pp['title'] }}</div>
+                                <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                                    <span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:#f1f5f9;color:#475569;">
+                                        {{ $pp['category_name'] }}
+                                    </span>
+                                    <span style="font-size:11px;color:#94a3b8;">&bull; {{ $pp['count'] }} transaksi</span>
+                                </div>
+                            </td>
+                            <td style="text-align:right;font-weight:700;color:#15803d;white-space:nowrap;">
+                                Rp {{ number_format($pp['masuk'], 0, ',', '.') }}
+                            </td>
+                            <td style="text-align:right;font-weight:700;color:#b91c1c;white-space:nowrap;">
+                                Rp {{ number_format($pp['keluar'], 0, ',', '.') }}
+                            </td>
+                            <td style="text-align:right;font-weight:700;color:#b45309;white-space:nowrap;">
+                                @if($pp['piutang'] > 0)
+                                    <span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#fef3c7;color:#92400e;">
+                                        Rp {{ number_format($pp['piutang'], 0, ',', '.') }}
+                                    </span>
+                                @else
+                                    <span style="color:#94a3b8;">Rp 0</span>
+                                @endif
+                            </td>
+                            <td style="text-align:right;font-weight:800;white-space:nowrap;color:{{ $pp['selisih'] >= 0 ? '#1d4ed8' : '#dc2626' }};">
+                                {{ $pp['selisih'] < 0 ? '- Rp ' : 'Rp ' }}{{ number_format(abs($pp['selisih']), 0, ',', '.') }}
+                            </td>
+                            <td style="text-align:center;white-space:nowrap;">
+                                <a href="/backoffice/kas-kategori-kas/{{ $pp['category_id'] }}"
+                                   class="btn-secondary"
+                                   style="font-size:12px;padding:6px 12px;border-radius:7px;display:inline-flex;align-items:center;gap:4px;">
+                                    <span>Buka Transaksi</span>
+                                    <span class="material-icons-round" style="font-size:14px;">arrow_forward</span>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align:center;padding:2rem;color:#94a3b8;">
+                                Belum ada data program yang terdaftar.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 

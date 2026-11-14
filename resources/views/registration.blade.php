@@ -139,6 +139,37 @@ if (isset($categories) && $categories->count() > 0) {
             </div>
             @endif
 
+            {{-- ── Step-by-Step Interactive Progress Tracker ── --}}
+            <div class="mb-10 bg-slate-50/80 border border-black/5 rounded-2xl p-5 sm:p-6 shadow-xs">
+                <div class="flex items-center justify-between max-w-md mx-auto relative">
+                    <div class="absolute left-6 right-6 top-4 h-0.5 bg-slate-200 -z-0"></div>
+
+                    {{-- Step 1 --}}
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-md ring-4 ring-white">
+                            1
+                        </div>
+                        <span class="text-[0.68rem] font-bold text-primary tracking-wider uppercase">Data Diri</span>
+                    </div>
+
+                    {{-- Step 2 --}}
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <div class="w-8 h-8 rounded-full bg-white text-slate-600 border-2 border-slate-300 flex items-center justify-center font-bold text-xs shadow-sm ring-4 ring-white">
+                            2
+                        </div>
+                        <span class="text-[0.68rem] font-semibold text-slate-500 tracking-wider uppercase">Program</span>
+                    </div>
+
+                    {{-- Step 3 --}}
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <div class="w-8 h-8 rounded-full bg-white text-slate-600 border-2 border-slate-300 flex items-center justify-center font-bold text-xs shadow-sm ring-4 ring-white">
+                            3
+                        </div>
+                        <span class="text-[0.68rem] font-semibold text-slate-500 tracking-wider uppercase">Berkas</span>
+                    </div>
+                </div>
+            </div>
+
             <form action="/pendaftaran" method="POST" enctype="multipart/form-data" class="space-y-6" id="form-pendaftaran">
                 @csrf
 
@@ -242,12 +273,13 @@ if (isset($categories) && $categories->count() > 0) {
                 <!-- Form Action Buttons -->
                 <div class="flex justify-end gap-3 pt-6 border-t border-black/10">
                     <button type="reset" onclick="resetFormState()"
-                        class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 border border-black/10 text-text-light text-xs font-semibold rounded transition-all">
+                        class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 border border-black/10 text-text-light text-xs font-semibold rounded-lg transition-all">
                         <span data-id="Batal" data-en="Cancel">Batal</span>
                     </button>
-                    <button type="submit"
-                        class="px-7 py-2.5 bg-dhs-navy hover:bg-primary text-white text-xs font-semibold rounded transition-all shadow-sm">
-                        <span data-id="Kirim" data-en="Submit">Kirim</span>
+                    <button type="submit" id="btn-submit-reg"
+                        class="px-8 py-2.5 bg-dhs-navy hover:bg-primary text-white text-xs font-semibold rounded-lg transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.02] flex items-center gap-2">
+                        <span id="btn-submit-text" data-id="Kirim Pendaftaran" data-en="Submit Application">Kirim Pendaftaran</span>
+                        <span class="material-icons text-base">send</span>
                     </button>
                 </div>
             </form>
@@ -262,7 +294,7 @@ if (isset($categories) && $categories->count() > 0) {
     if (str_starts_with($waClean, '0')) {
         $waClean = '62' . substr($waClean, 1);
     }
-    $emailAddr = $helpdesk['helpdesk_email'] ?? 'sahabat@dhs.or.id';
+    $emailAddr = $helpdesk['helpdesk_email'] ?? ($footerSettings['email_denpasar'] ?? 'dhsvokasi@gmail.com');
     $serviceHours = $helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA';
 @endphp
 <section class="bg-dhs-lightblue py-16 px-6 md:px-16">
@@ -333,6 +365,21 @@ function resetFormState() {
     document.getElementById('label-pendaftaran').textContent = 'Choose File | No file chosen';
     document.getElementById('label-program').textContent = 'Choose File | No file chosen';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('form-pendaftaran');
+    if (form) {
+        form.addEventListener('submit', function() {
+            var btn = document.getElementById('btn-submit-reg');
+            var txt = document.getElementById('btn-submit-text');
+            if (btn) {
+                btn.style.opacity = '0.75';
+                btn.style.pointerEvents = 'none';
+                if (txt) txt.textContent = 'Mengirim Formulir...';
+            }
+        });
+    }
+});
 </script>
 
 @endsection

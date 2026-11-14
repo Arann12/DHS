@@ -60,11 +60,6 @@
                 <span class="material-icons-round" style="font-size:17px;">arrow_back</span>
                 Keuangan Program
             </a>
-            <a href="/backoffice/kas-program-detail/{{ $project->id }}/kwitansi" target="_blank"
-               style="display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:{{ $summary['is_lunas'] ? '#16a34a' : '#2563eb' }};border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 12px rgba(22,163,74,0.2);">
-                <span class="material-icons-round" style="font-size:17px;">print</span>
-                {{ $summary['is_lunas'] ? 'Cetak Kuitansi Lunas' : 'Cetak Kuitansi Program' }}
-            </a>
         </div>
     </div>
 
@@ -268,6 +263,7 @@
                 'submitText'         => 'Simpan Pemasukan',
                 'showCancel'         => false,
                 'btnBg'              => '#15803d',
+                'piutangCategories'  => $piutangCategories ?? [],
                 'optProgramMasuk'    => $optProgramMasuk ?? $optMasukList,
                 'optProgramKeluar'   => $optProgramKeluar ?? $optKeluarList,
             ])
@@ -278,12 +274,12 @@
                 <span style="font-size:11.5px;font-weight:800;letter-spacing:.06em;color:#475569;text-transform:uppercase;">RIWAYAT PEMASUKAN</span>
                 <span style="font-size:12px;color:#64748b;">{{ count($pemasukanList) }} transaksi tercatat</span>
             </div>
-            <div style="overflow-x:auto;">
-                <table class="bo-table">
+            <div>
+                <table class="bo-table kas-transaction-table">
                     <thead>
                         <tr>
                             <th>Tanggal</th>
-                            <th>Deskripsi / Kode</th>
+                            <th>Deskripsi</th>
                             <th>Kategori</th>
                             <th style="text-align:center;">Vol &amp; Satuan</th>
                             <th style="text-align:right;">Harga Satuan</th>
@@ -306,9 +302,6 @@
                                         <span style="display:inline-block;margin-top:3px;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700;background:{{ $isPendingPt ? '#fef3c7' : '#f1f5f9' }};color:{{ $isPendingPt ? '#b45309' : '#475569' }};">
                                             {{ $isPendingPt ? 'Piutang: ' : 'Penanggung: ' }}{{ $trx->piutang_nama }}
                                         </span>
-                                    @endif
-                                    @if($trx->keterangan)
-                                        <div style="font-size:11.5px;color:#64748b;margin-top:2px;">Ket: {{ $trx->keterangan }}</div>
                                     @endif
                                 </td>
                                 <td style="font-weight:600;color:#334155;">{{ $trx->jenis }}</td>
@@ -335,15 +328,7 @@
                                 </td>
                                 <td style="text-align:center;white-space:nowrap;">
                                     <div style="display:inline-flex;align-items:center;gap:6px;">
-                                        @if($isPendingPt)
-                                            <button type="button" class="btn-icon" title="Bayar / Lunasi Piutang" x-on:click="openPayPiutang({{ $trx->id }})">
-                                                <span class="material-icons-round" style="font-size:18px;color:#16a34a;">payments</span>
-                                            </button>
-                                        @endif
-                                        <a href="/backoffice/kas/{{ $trx->id }}/kwitansi" target="_blank" class="btn-icon" title="Cetak Kwitansi">
-                                            <span class="material-icons-round" style="font-size:17px;color:#2563eb;">receipt_long</span>
-                                        </a>
-                                        <button type="button" class="btn-icon danger" title="Hapus" x-on:click="deleteTrx({{ $trx->id }})">
+                                        <button type="button" class="btn-icon danger" title="Hapus" aria-label="Hapus transaksi" x-on:click="deleteTrx({{ $trx->id }})">
                                             <span class="material-icons-round" style="font-size:17px;">delete</span>
                                         </button>
                                     </div>
@@ -388,6 +373,7 @@
                 'submitText'         => 'Simpan Pengeluaran',
                 'showCancel'         => false,
                 'btnBg'              => '#dc2626',
+                'piutangCategories'  => $piutangCategories ?? [],
                 'optProgramMasuk'    => $optProgramMasuk ?? $optMasukList,
                 'optProgramKeluar'   => $optProgramKeluar ?? $optKeluarList,
             ])
@@ -398,12 +384,12 @@
                 <span style="font-size:11.5px;font-weight:800;letter-spacing:.06em;color:#475569;text-transform:uppercase;">RIWAYAT PENGELUARAN</span>
                 <span style="font-size:12px;color:#64748b;">{{ count($pengeluaranList) }} transaksi tercatat</span>
             </div>
-            <div style="overflow-x:auto;">
-                <table class="bo-table">
+            <div>
+                <table class="bo-table kas-transaction-table">
                     <thead>
                         <tr>
                             <th>Tanggal</th>
-                            <th>Deskripsi / Kode</th>
+                            <th>Deskripsi</th>
                             <th>Kategori</th>
                             <th style="text-align:center;">Vol &amp; Satuan</th>
                             <th style="text-align:right;">Harga Satuan</th>
@@ -419,9 +405,6 @@
                                 <td>
                                     <div style="font-weight:700;color:#0f172a;">{{ $trx->deskripsi ?: '-' }}</div>
                                     <div style="font-size:11.5px;color:#64748b;font-family:monospace;">{{ $trx->kode ?: '-' }}</div>
-                                    @if($trx->keterangan)
-                                        <div style="font-size:11.5px;color:#64748b;margin-top:2px;">Ket: {{ $trx->keterangan }}</div>
-                                    @endif
                                 </td>
                                 <td style="font-weight:600;color:#334155;">{{ $trx->jenis }}</td>
                                 <td style="text-align:center;white-space:nowrap;">{{ (float)($trx->volume ?? 1) }} {{ $trx->satuan ?: 'Paket' }}</td>
@@ -442,10 +425,7 @@
                                 </td>
                                 <td style="text-align:center;white-space:nowrap;">
                                     <div style="display:inline-flex;align-items:center;gap:6px;">
-                                        <a href="/backoffice/kas/{{ $trx->id }}/kwitansi" target="_blank" class="btn-icon" title="Cetak Kwitansi">
-                                            <span class="material-icons-round" style="font-size:17px;color:#2563eb;">receipt_long</span>
-                                        </a>
-                                        <button type="button" class="btn-icon danger" title="Hapus" x-on:click="deleteTrx({{ $trx->id }})">
+                                        <button type="button" class="btn-icon danger" title="Hapus" aria-label="Hapus transaksi" x-on:click="deleteTrx({{ $trx->id }})">
                                             <span class="material-icons-round" style="font-size:17px;">delete</span>
                                         </button>
                                     </div>
@@ -472,12 +452,12 @@
                     <div style="font-size:12px;color:#b45309;">Klik Bayar / Lunasi untuk mencatat pelunasan penuh atau cicilan masuk ke kas</div>
                 </div>
             </div>
-            <div style="overflow-x:auto;">
-                <table class="bo-table">
+            <div>
+                <table class="bo-table kas-transaction-table">
                     <thead>
                         <tr>
                             <th>Tanggal</th>
-                            <th>Penanggung / Deskripsi</th>
+                            <th>Deskripsi</th>
                             <th>Kategori</th>
                             <th style="text-align:right;">Sisa Piutang</th>
                             <th style="text-align:center;">Aksi</th>
@@ -495,9 +475,7 @@
                                 <td>{{ $ptx->jenis }}</td>
                                 <td style="text-align:right;font-weight:800;color:#b45309;">Rp {{ number_format($ptx->jumlah, 0, ',', '.') }}</td>
                                 <td style="text-align:center;">
-                                    <button type="button" class="btn-primary" style="padding:6px 12px;font-size:12px;background:#15803d;" x-on:click="openPayPiutang({{ $ptx->id }})">
-                                        Bayar / Lunasi
-                                    </button>
+                                    <span style="color:#64748b;font-size:12px;">Gunakan Edit pada transaksi</span>
                                 </td>
                             </tr>
                         @empty
@@ -523,12 +501,12 @@
                     Kembali ke Keuangan Program
                 </a>
             </div>
-            <div style="overflow-x:auto;">
-                <table class="bo-table">
+            <div>
+                <table class="bo-table kas-transaction-table">
                     <thead>
                         <tr>
                             <th>Kode</th>
-                            <th>Judul &amp; Nama Program</th>
+                            <th>Deskripsi</th>
                             <th>PIC</th>
                             <th style="text-align:right;">Nilai Program</th>
                             <th style="text-align:right;">Terbayar</th>
@@ -570,7 +548,6 @@
         </div>
     </div>
 
-    @include('backoffice.partials.kas-piutang-pay-modal', ['payScope' => 'piutangPay', 'payRedirect' => '/backoffice/kas-program-detail/' . $project->id])
 
     <form id="programTrxDeleteForm" method="POST" action="" style="display:none;">
         @csrf
@@ -592,17 +569,6 @@ function kasProgramDetailData() {
         unitsList:      @json($unitsData),
         pendingTrxList: @json($pendingPiutangTrx ?? []),
 
-        piutangPay: {
-            open: false,
-            trxId: null,
-            kode: '',
-            deskripsi: '',
-            nama: '',
-            sisa: 0,
-            bayarDisplay: '',
-            tanggal: today,
-            catatan: '',
-        },
 
         formMasuk: {
             editMode:           false,
@@ -615,6 +581,7 @@ function kasProgramDetailData() {
             volume:             1,
             hargaSatuanDisplay: '',
             payment_mode:       'lunas',
+            totalHargaDisplay:  '',
             dpNominalDisplay:   '',
             piutang_nama:       '',
             keterangan:         '',
@@ -634,29 +601,13 @@ function kasProgramDetailData() {
             volume:             1,
             hargaSatuanDisplay: '',
             payment_mode:       'lunas',
+            totalHargaDisplay:  '',
             dpNominalDisplay:   '',
             piutang_nama:       '',
             keterangan:         '',
             kodeMode:           'auto',
             kode:               '',
             bukti_gambar:       '',
-        },
-
-        openPayPiutang(trxId) {
-            const item = this.pendingTrxList.find(t => String(t.id) === String(trxId));
-            if (!item) return;
-            const sisa = parseFloat(item.jumlah) || 0;
-            this.piutangPay = {
-                open:         true,
-                trxId:        item.id,
-                kode:         item.kode || '',
-                deskripsi:    item.deskripsi || item.jenis || 'Tagihan Piutang',
-                nama:         item.piutang_nama || '',
-                sisa:         sisa,
-                bayarDisplay: sisa ? Math.round(sisa).toLocaleString('id-ID') : '',
-                tanggal:      new Date().toISOString().slice(0, 10),
-                catatan:      '',
-            };
         },
 
         deleteTrx(id) {

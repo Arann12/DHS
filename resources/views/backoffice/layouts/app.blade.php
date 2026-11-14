@@ -108,6 +108,21 @@
         .bo-table tr:last-child td { border-bottom: none; }
         .bo-table tr:hover td { background: #fafafa; }
 
+        /* Compact finance transaction lists with uniform row heights */
+        .kas-transaction-table { width:100%; min-width:1050px; border-collapse:collapse; }
+        .kas-transaction-table th { padding:10px 10px !important; font-size:11px !important; font-weight:700 !important; color:#475569 !important; background:#f8fafc !important; border-bottom:1.5px solid #e2e8f0 !important; letter-spacing:.04em !important; white-space:nowrap; }
+        .kas-transaction-table tr { height:50px; }
+        .kas-transaction-table tr:hover td { background:#f8fafc; }
+        .kas-transaction-table td { padding:8px 10px !important; font-size:12px !important; vertical-align:middle; border-bottom:1px solid #f1f5f9; }
+        .kas-transaction-table .kas-transaction-main { font-weight:700; color:#0f172a; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .kas-transaction-table .kas-transaction-meta { display:block; margin-top:2px; color:#64748b; font-size:10.5px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .kas-transaction-actions { display:inline-flex; align-items:center; justify-content:center; gap:4px; flex-wrap:nowrap; }
+        @media (max-width:900px) {
+            .kas-transaction-table th { font-size:9.5px !important; padding:8px 6px !important; }
+            .kas-transaction-table td { font-size:11px !important; padding:8px 6px !important; }
+            .kas-transaction-table .btn-icon { width:26px; height:26px; }
+        }
+
         /* FORMS */
         .bo-label { display: block; font-size: 12.5px; font-weight: 600; color: #444; margin-bottom: 6px; }
         .bo-input { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--bo-text); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
@@ -129,6 +144,7 @@
         .badge-green { background: rgba(34,197,94,0.12); color: #16a34a; }
         .badge-gray { background: rgba(138,132,120,0.15); color: #666; }
         .badge-red { background: rgba(197,48,48,0.1); color: var(--bo-red); }
+        .badge-amber { background: #fef3c7; color: #b45309; }
 
         /* SEARCH */
         .bo-search { display: flex; align-items: center; gap: 8px; background: var(--bo-cream); border: 1.5px solid transparent; border-radius: 10px; padding: 8px 14px; transition: border-color 0.2s; }
@@ -175,6 +191,7 @@
         @media (max-width: 480px) {
             .bo-grid-4 { grid-template-columns: 1fr !important; }
         }
+        [hidden] { display: none !important; }
     </style>
     @stack('styles')
 </head>
@@ -190,6 +207,23 @@
 <main id="bo-main">
     @yield('content')
 </main>
+
+<div id="logout-confirm-modal" class="bo-modal-backdrop" hidden style="display:none;" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title">
+    <div class="bo-modal" style="max-width:420px;text-align:center;">
+        <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:#EBF4FF;color:#1A365D;display:flex;align-items:center;justify-content:center;">
+            <span class="material-icons-round" aria-hidden="true" style="font-size:28px;">logout</span>
+        </div>
+        <h2 id="logout-modal-title" style="font-family:'Playfair Display',serif;font-size:22px;color:#0F2440;margin:0 0 8px;">Keluar dari Backoffice?</h2>
+        <p style="font-size:14px;color:#718096;margin:0 0 24px;">Sesi Anda akan ditutup dan kembali ke halaman login.</p>
+        <div style="display:flex;gap:10px;justify-content:center;">
+            <button type="button" class="btn-secondary" onclick="closeLogoutModal()">Batal</button>
+            <form action="/backoffice/logout" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn-primary" style="background:#C53030;">Ya, Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 {{-- ═══════ GLOBAL IMAGE PICKER MODAL ═══════ --}}
 <div id="image-picker-modal" x-data="imageUploadModal()" x-show="$store.imageUpload.isOpen" x-cloak
@@ -402,6 +436,30 @@
         sidebar.classList.remove('mobile-open');
         overlay.classList.remove('visible');
     }
+
+    const logoutModal = document.getElementById('logout-confirm-modal');
+    let logoutTrigger = null;
+
+    function openLogoutModal() {
+        logoutTrigger = document.activeElement;
+        logoutModal.hidden = false;
+        logoutModal.style.display = 'flex';
+        logoutModal.querySelector('button').focus();
+    }
+
+    function closeLogoutModal() {
+        logoutModal.hidden = true;
+        logoutModal.style.display = 'none';
+        if (logoutTrigger) logoutTrigger.focus();
+    }
+
+    logoutModal?.addEventListener('click', (event) => {
+        if (event.target === logoutModal) closeLogoutModal();
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && logoutModal && !logoutModal.hidden) closeLogoutModal();
+    });
 
     applySidebarState();
     window.addEventListener('resize', applySidebarState);

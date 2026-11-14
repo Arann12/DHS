@@ -4,40 +4,49 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $users = [
             [
-                'id' => 1,
                 'name' => 'Super Admin DHS',
                 'username' => 'denpasarhotelschool',
                 'email' => 'admin@denpasarhotelschool.com',
-                'password' => '$2y$10$434jurd5Whrg1gJ.6Cst4uuX6eHIENwwXahECQURV6Zkw8A45Xxm.', // indoapps2026
+                'password' => 'indoapps2026',
                 'role' => 'super_admin',
-                'is_active' => true,
             ],
             [
-                'id' => 2,
-                'name' => 'Editor Konten',
-                'username' => 'editor',
-                'email' => 'editor@dhs.or.id',
-                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-                'role' => 'editor',
-                'is_active' => true,
+                'name' => 'Admin DHS',
+                'username' => 'admin',
+                'email' => 'admin@dhs.or.id',
+                'password' => 'adminDHS2026!',
+                'role' => 'admin',
+            ],
+            [
+                'name' => 'Finance DHS',
+                'username' => 'finance',
+                'email' => 'finance@dhs.or.id',
+                'password' => 'financeDHS2026!',
+                'role' => 'finance',
             ],
         ];
 
         foreach ($users as $userData) {
-            User::updateOrCreate(
-                ['username' => $userData['username']],
-                $userData
-            );
+            $password = $userData['password'];
+            unset($userData['password']);
+            $userData['is_active'] = true;
+
+            $user = User::firstOrNew(['username' => $userData['username']]);
+            $user->fill($userData);
+            if (!$user->exists) {
+                $user->password = Hash::make($password);
+            }
+            $user->save();
         }
+
+        User::where('username', 'editor')->update(['role' => 'admin']);
     }
 }

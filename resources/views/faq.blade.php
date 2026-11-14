@@ -102,7 +102,7 @@
             </p>
             @php
                 $helpdeskWA = $footerSettings['helpdesk_wa'] ?? '+62 81 246 319966';
-                $helpdeskEmail = $footerSettings['helpdesk_email'] ?? 'sahabat@dhs.or.id';
+                $helpdeskEmail = $footerSettings['helpdesk_email'] ?? ($footerSettings['email_denpasar'] ?? 'dhsvokasi@gmail.com');
                 $waNumber = preg_replace('/[^0-9]/', '', $helpdeskWA);
                 if (str_starts_with($waNumber, '62')) { $waNumber = $waNumber; }
                 elseif (str_starts_with($waNumber, '0')) { $waNumber = '62' . substr($waNumber, 1); }

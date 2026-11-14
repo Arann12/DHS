@@ -1,7 +1,7 @@
 @extends('backoffice.layouts.app')
 
-@section('title', 'Jenis Kas')
-@section('page-title', 'Jenis Kas')
+@section('title', 'Kategori')
+@section('page-title', 'Kategori')
 
 @section('content')
 <div x-data="kasKategoriData()" x-init="init()">
@@ -35,7 +35,7 @@
 
         <button type="button" class="btn-primary" x-on:click="openModal('add', null)">
             <span class="material-icons-round" style="font-size:18px;">add</span>
-            Tambah Jenis Kas
+            Tambah Kategori
         </button>
     </div>
 
@@ -45,16 +45,16 @@
             {{-- Search --}}
             <div class="bo-search" style="min-width:260px;flex:1;max-width:400px;">
                 <span class="material-icons-round" style="font-size:18px;color:#718096;">search</span>
-                <input type="text" placeholder="Cari nama jenis atau keterangan..." x-model="search">
+                <input type="text" placeholder="Search kategori atau deskripsi..." x-model="search">
             </div>
 
-            {{-- Filter Tipe Tabs --}}
+            {{-- Filter Transaksi Tabs --}}
             <div style="display:flex;gap:6px;background:var(--bo-cream);padding:4px;border-radius:10px;flex-wrap:wrap;">
                 <button type="button"
                         x-on:click="filterTipe = ''"
                         :style="filterTipe === '' ? 'background:#fff;color:var(--bo-blue);box-shadow:0 1px 4px rgba(0,0,0,0.08);' : 'background:transparent;color:#718096;'"
                         style="border:none;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;">
-                    Semua (<span x-text="items.length"></span>)
+                    Semua Transaksi (<span x-text="items.length"></span>)
                 </button>
                 <button type="button"
                         x-on:click="filterTipe = 'masuk'"
@@ -85,19 +85,20 @@
                 <thead>
                     <tr>
                         <th style="width:50px;text-align:center;">#</th>
-                        <th style="width:140px;text-align:center;">Tipe</th>
-                        <th style="text-align:left;">Nama Jenis Transaksi</th>
+                        <th style="width:130px;text-align:center;">Transaksi</th>
+                        <th style="text-align:left;">Nama Kategori</th>
                         <th style="text-align:left;">Keterangan / Deskripsi</th>
-                        <th style="width:100px;text-align:center;">Status</th>
-                        <th style="width:120px;text-align:center;">Aksi</th>
+                        <th style="width:160px;text-align:center;">Bisa Cicil / DP</th>
+                        <th style="width:90px;text-align:center;">Status</th>
+                        <th style="width:110px;text-align:center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <template x-if="filtered.length === 0">
                         <tr>
-                            <td colspan="6" style="text-align:center;padding:40px;color:#718096;">
+                            <td colspan="7" style="text-align:center;padding:40px;color:#718096;">
                                 <span class="material-icons-round" style="font-size:40px;color:#cbd5e1;display:block;margin-bottom:8px;">category</span>
-                                Tidak ada jenis transaksi ditemukan.
+                                Tidak ada jenis kategori ditemukan.
                             </td>
                         </tr>
                     </template>
@@ -114,6 +115,24 @@
                             </td>
                             <td>
                                 <div style="color:#555;font-size:13px;" x-text="item.deskripsi || '-'"></div>
+                            </td>
+                            <td style="text-align:center;">
+                                <template x-if="item.type === 'masuk' || item.type === 'umum'">
+                                    <button type="button"
+                                            x-on:click="toggleCicil(item)"
+                                            :title="item.bisa_cicil ? 'Klik untuk ubah menjadi: Hanya Lunas' : 'Klik untuk ubah menjadi: Bisa Cicil / DP'"
+                                            :style="item.bisa_cicil ? 'background:#fef3c7;color:#92400e;border:1.5px solid #fde68a;' : 'background:#f1f5f9;color:#64748b;border:1.5px solid #e2e8f0;'"
+                                            style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 12px;border-radius:20px;font-weight:700;cursor:pointer;transition:all 0.15s;outline:none;">
+                                        <span class="material-icons-round" style="font-size:14px;"
+                                              :style="item.bisa_cicil ? 'color:#d97706;' : 'color:#94a3b8;'"
+                                              x-text="item.bisa_cicil ? 'check_circle' : 'lock'"></span>
+                                        <span x-text="item.bisa_cicil ? 'Bisa Cicil / DP' : 'Hanya Lunas'"></span>
+                                        <span class="material-icons-round" style="font-size:12px;opacity:0.5;">sync</span>
+                                    </button>
+                                </template>
+                                <template x-if="item.type === 'keluar'">
+                                    <span style="color:#cbd5e1;font-size:13px;">—</span>
+                                </template>
                             </td>
                             <td style="text-align:center;">
                                 <span :class="item.is_active ? 'badge badge-green' : 'badge badge-gray'"
@@ -136,7 +155,7 @@
         </div>
 
         <div style="padding:12px 20px;font-size:12.5px;color:#718096;border-top:1px solid #f3f4f6;" x-show="filtered.length > 0">
-            Menampilkan <strong x-text="filtered.length"></strong> dari <span x-text="items.length"></span> jenis transaksi
+            Menampilkan <strong x-text="filtered.length"></strong> dari <span x-text="items.length"></span> jenis kategori
         </div>
     </div>
 
@@ -151,7 +170,7 @@
          @keydown.escape.window="modal.open = false">
         <div class="bo-modal" style="max-width:540px;width:95%;" x-on:click.stop>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                <h3 style="margin:0;" x-text="modal.mode === 'add' ? 'Tambah Pilihan Jenis Kas' : 'Edit Pilihan Jenis Kas'"></h3>
+                <h3 style="margin:0;" x-text="modal.mode === 'add' ? 'Tambah Kategori' : 'Edit Kategori'"></h3>
                 <button type="button" class="btn-icon" x-on:click="modal.open = false">
                     <span class="material-icons-round">close</span>
                 </button>
@@ -159,9 +178,9 @@
 
             <form x-on:submit.prevent="save()">
                 <div class="form-group">
-                    <label class="bo-label">Tipe Kas <span style="color:red">*</span></label>
+                    <label class="bo-label">Transaksi <span style="color:red">*</span></label>
                     <select class="bo-select" x-model="modal.form.type" required>
-                        <option value="">-- Pilih Tipe --</option>
+                        <option value="">-- Pilih Transaksi --</option>
                         <option value="masuk">Pemasukan (Uang Masuk)</option>
                         <option value="keluar">Pengeluaran (Uang Keluar)</option>
                         <option value="umum">Umum (Operasional / Biaya Kantor)</option>
@@ -169,7 +188,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="bo-label">Nama Jenis Transaksi <span style="color:red">*</span></label>
+                    <label class="bo-label">Nama Kategori <span style="color:red">*</span></label>
                     <input type="text" class="bo-input" x-model="modal.form.nama"
                            placeholder="Contoh: Pembayaran SPP / Uang Kuliah" maxlength="100" required>
                 </div>
@@ -178,6 +197,34 @@
                     <label class="bo-label">Deskripsi / Keterangan</label>
                     <textarea class="bo-textarea" rows="2" x-model="modal.form.deskripsi"
                               placeholder="Keterangan singkat tentang jenis transaksi ini..."></textarea>
+                </div>
+
+                {{-- Pengaturan Bisa Cicil / DP (Piutang) --}}
+                <div class="form-group" x-show="modal.form.type === 'masuk' || modal.form.type === 'umum'" x-transition>
+                    <div style="background:#fffcf0;border:1.5px solid #fde68a;border-radius:12px;padding:14px 16px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                            <div style="display:flex;align-items:flex-start;gap:10px;">
+                                <div style="width:34px;height:34px;border-radius:9px;background:#fef3c7;color:#b45309;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+                                    <span class="material-icons-round" style="font-size:19px;">payments</span>
+                                </div>
+                                <div>
+                                    <div style="font-size:13.5px;font-weight:700;color:#92400e;">Izinkan Pembayaran Cicilan / DP (Piutang)</div>
+                                    <div style="font-size:12px;color:#78350f;margin-top:2px;line-height:1.4;">
+                                        Jika diaktifkan, kategori transaksi ini dapat dibayar sebagian / bertahap (DP) saat input kas, dan sisa nominalnya dicatat sebagai Uang di Lapangan.
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- Switch Toggle --}}
+                            <label style="position:relative;display:inline-block;width:48px;height:26px;flex-shrink:0;cursor:pointer;margin:0;">
+                                <input type="checkbox" x-model="modal.form.bisa_cicil" style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;border-radius:34px;transition:.3s;"
+                                      :style="modal.form.bisa_cicil ? 'background:#16a34a;' : 'background:#cbd5e1;'">
+                                    <span style="position:absolute;content:'';height:20px;width:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"
+                                          :style="modal.form.bisa_cicil ? 'transform:translateX(22px);' : ''"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
@@ -220,8 +267,8 @@
             <div style="width:56px;height:56px;border-radius:50%;background:rgba(197,48,48,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
                 <span class="material-icons-round" style="font-size:28px;color:#C53030;">delete_forever</span>
             </div>
-            <h3 style="margin:0 0 8px;">Hapus Jenis Transaksi?</h3>
-            <p style="font-size:14px;color:#718096;margin:0 0 20px;">Jenis transaksi ini tidak akan muncul lagi di pilihan dropdown form kas.</p>
+            <h3 style="margin:0 0 8px;">Hapus Kategori?</h3>
+            <p style="font-size:14px;color:#718096;margin:0 0 20px;">Kategori ini tidak akan muncul lagi di pilihan dropdown form transaksi kas.</p>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button type="button" class="btn-secondary" x-on:click="deleteConfirm.open = false">Batal</button>
                 <button type="button" class="btn-danger" x-on:click="confirmDelete()">
@@ -239,6 +286,7 @@
         <input type="hidden" name="deskripsi" id="k_store_deskripsi">
         <input type="hidden" name="display_order" id="k_store_order">
         <input type="hidden" name="is_active" id="k_store_active">
+        <input type="hidden" name="bisa_cicil" id="k_store_bisa_cicil">
     </form>
 
     <form id="kategoriUpdateForm" method="POST" action="" style="display:none;">
@@ -248,6 +296,7 @@
         <input type="hidden" name="deskripsi" id="k_update_deskripsi">
         <input type="hidden" name="display_order" id="k_update_order">
         <input type="hidden" name="is_active" id="k_update_active">
+        <input type="hidden" name="bisa_cicil" id="k_update_bisa_cicil">
     </form>
 
     <form id="kategoriDeleteForm" method="POST" action="" style="display:none;">
@@ -278,7 +327,8 @@ function kasKategoriData() {
         init() {
             this.items = this.items.map(i => ({
                 ...i,
-                is_active: Boolean(i.is_active)
+                is_active: Boolean(i.is_active),
+                bisa_cicil: Boolean(i.bisa_cicil)
             }));
         },
 
@@ -312,7 +362,8 @@ function kasKategoriData() {
                     nama: '',
                     deskripsi: '',
                     display_order: this.items.length + 1,
-                    is_active: 1
+                    is_active: 1,
+                    bisa_cicil: (this.filterTipe === 'masuk' || !this.filterTipe) ? true : false
                 };
             } else {
                 this.modal.form = {
@@ -320,7 +371,8 @@ function kasKategoriData() {
                     nama: item.nama,
                     deskripsi: item.deskripsi || '',
                     display_order: item.display_order || 0,
-                    is_active: item.is_active ? 1 : 0
+                    is_active: item.is_active ? 1 : 0,
+                    bisa_cicil: Boolean(item.bisa_cicil)
                 };
             }
             this.modal.open = true;
@@ -329,26 +381,48 @@ function kasKategoriData() {
         save() {
             const f = this.modal.form;
             if (!f.type || !f.nama.trim()) {
-                alert('Tipe dan Nama Jenis tidak boleh kosong.');
+                alert('Transaksi dan Nama Kategori tidak boleh kosong.');
                 return;
             }
 
             if (this.modal.mode === 'add') {
-                document.getElementById('k_store_type').value      = f.type;
-                document.getElementById('k_store_nama').value      = f.nama.trim();
-                document.getElementById('k_store_deskripsi').value = f.deskripsi || '';
-                document.getElementById('k_store_order').value     = f.display_order || 0;
-                document.getElementById('k_store_active').value    = f.is_active ? '1' : '0';
+                document.getElementById('k_store_type').value       = f.type;
+                document.getElementById('k_store_nama').value       = f.nama.trim();
+                document.getElementById('k_store_deskripsi').value  = f.deskripsi || '';
+                document.getElementById('k_store_order').value      = f.display_order || 0;
+                document.getElementById('k_store_active').value     = f.is_active ? '1' : '0';
+                document.getElementById('k_store_bisa_cicil').value = f.bisa_cicil ? '1' : '0';
                 document.getElementById('kategoriStoreForm').submit();
             } else {
                 const form = document.getElementById('kategoriUpdateForm');
                 form.action = '/backoffice/kas-kategori/' + this.modal.editId + '/update';
-                document.getElementById('k_update_type').value      = f.type;
-                document.getElementById('k_update_nama').value      = f.nama.trim();
-                document.getElementById('k_update_deskripsi').value = f.deskripsi || '';
-                document.getElementById('k_update_order').value     = f.display_order || 0;
-                document.getElementById('k_update_active').value    = f.is_active ? '1' : '0';
+                document.getElementById('k_update_type').value       = f.type;
+                document.getElementById('k_update_nama').value       = f.nama.trim();
+                document.getElementById('k_update_deskripsi').value  = f.deskripsi || '';
+                document.getElementById('k_update_order').value      = f.display_order || 0;
+                document.getElementById('k_update_active').value     = f.is_active ? '1' : '0';
+                document.getElementById('k_update_bisa_cicil').value = f.bisa_cicil ? '1' : '0';
                 form.submit();
+            }
+        },
+
+        async toggleCicil(item) {
+            if (item.type === 'keluar') return;
+            try {
+                const res = await fetch('/backoffice/kas-kategori/' + item.id + '/toggle-cicil', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    item.bisa_cicil = Boolean(data.bisa_cicil);
+                }
+            } catch(err) {
+                console.error('Gagal mengubah pengaturan cicil:', err);
             }
         },
 
@@ -366,4 +440,3 @@ function kasKategoriData() {
 }
 </script>
 @endpush
-

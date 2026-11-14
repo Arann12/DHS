@@ -796,7 +796,7 @@ function berandaCompleteData() {
             denpasar: {
                 address: ct.denpasar_address || 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali',
                 wa: ct.denpasar_wa || '+62 81 246 319966',
-                email: ct.denpasar_email || 'sahabat@dhs.or.id'
+                email: ct.denpasar_email || 'dhsvokasi@gmail.com'
             },
             klungkung: {
                 address: ct.klungkung_address || 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali',

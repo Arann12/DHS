@@ -494,7 +494,7 @@ if (isset($categories) && $categories->count() > 0) {
     if (str_starts_with($waClean, '0')) {
         $waClean = '62' . substr($waClean, 1);
     }
-    $emailAddr = $formSettings['helpdesk_email'] ?? ($helpdesk['helpdesk_email'] ?? ($footerSettings['email_denpasar'] ?? 'sahabat@dhs.or.id'));
+    $emailAddr = $formSettings['helpdesk_email'] ?? ($helpdesk['helpdesk_email'] ?? ($footerSettings['email_denpasar'] ?? 'dhsvokasi@gmail.com'));
     $serviceHours = $formSettings['helpdesk_hours'] ?? ($helpdesk['helpdesk_hours'] ?? 'Senin – Sabtu: 08:00 – 17:00 WITA');
 @endphp
 <section class="bg-dhs-lightblue py-16 px-6 md:px-16">

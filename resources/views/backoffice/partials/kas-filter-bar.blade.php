@@ -23,20 +23,21 @@
             </select>
         </div>
 
-        {{-- 2. TIPE TRANSAKSI --}}
+        {{-- 2. TRANSAKSI (PEMASUKAN, PENGELUARAN, PIUTANG) --}}
         <div>
             <label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#475569;text-transform:uppercase;margin-bottom:6px;">
                 <span class="material-icons-round" style="font-size:15px;color:#64748b;">swap_vert</span>
-                <span>TIPE KAS</span>
+                <span>TRANSAKSI</span>
             </label>
             <select class="bo-select" x-model="filterTipe" style="width:100%;height:42px;box-sizing:border-box;padding:0 12px;font-size:13.5px;font-weight:500;border-radius:10px;border:1.5px solid #cbd5e1;background:#fff;outline:none;cursor:pointer;font-family:'Inter',sans-serif;">
-                <option value="">Semua Tipe</option>
-                <option value="masuk">🟢 Pemasukan Saja</option>
-                <option value="keluar">🔴 Pengeluaran Saja</option>
+                <option value="">Semua Transaksi</option>
+                <option value="masuk">🟢 Pemasukan</option>
+                <option value="keluar">🔴 Pengeluaran</option>
+                <option value="piutang">⏳ Piutang</option>
             </select>
         </div>
 
-        {{-- 3. STATUS TRANSAKSI --}}
+        {{-- 3. STATUS TRANSAKSI (HANYA 2: LUNAS & CICIL) --}}
         <div>
             <label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#475569;text-transform:uppercase;margin-bottom:6px;">
                 <span class="material-icons-round" style="font-size:15px;color:#059669;">verified</span>
@@ -44,8 +45,8 @@
             </label>
             <select class="bo-select" x-model="filterStatus" style="width:100%;height:42px;box-sizing:border-box;padding:0 12px;font-size:13.5px;font-weight:500;border-radius:10px;border:1.5px solid #cbd5e1;background:#fff;outline:none;cursor:pointer;font-family:'Inter',sans-serif;">
                 <option value="">Semua Status</option>
-                <option value="lunas">✓ Lunas / Terealisasi</option>
-                <option value="piutang">⏳ Piutang (Uang Lapangan)</option>
+                <option value="lunas">✓ Lunas</option>
+                <option value="cicil">⏳ Cicil</option>
             </select>
         </div>
 
@@ -218,13 +219,13 @@
         <div style="flex:1;min-width:280px;">
             <label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#475569;text-transform:uppercase;margin-bottom:6px;">
                 <span class="material-icons-round" style="font-size:15px;color:#3b82f6;">search</span>
-                <span>PENCARIAN CEPAT</span>
+                <span>SEARCH</span>
             </label>
             <div style="position:relative;display:flex;align-items:center;">
                 <span class="material-icons-round" style="position:absolute;left:13px;color:#94a3b8;font-size:19px;pointer-events:none;">search</span>
                 <input type="text"
                        x-model="filterSearch"
-                       placeholder="Cari transaksi berdasarkan judul, kode kas, deskripsi, siswa, kategori..."
+                       placeholder="Search transaksi berdasarkan kode kas, deskripsi, siswa, kategori..."
                        class="bo-input"
                        style="width:100%;height:42px;box-sizing:border-box;padding-left:40px;padding-right:36px;font-size:13.5px;border-radius:10px;border:1.5px solid #cbd5e1;background:#fff;outline:none;transition:all 0.15s;font-family:'Inter',sans-serif;">
                 <button type="button"
@@ -253,11 +254,23 @@
         {{-- Tombol Export CSV --}}
         <div>
             <a :href="exportCsvUrl()"
-               style="height:42px;display:inline-flex;align-items:center;gap:6px;padding:0 20px;background:#059669;border:1.5px solid #047857;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;box-shadow:0 1px 3px rgba(5,150,105,0.25);white-space:nowrap;"
+               style="height:42px;display:inline-flex;align-items:center;gap:6px;padding:0 18px;background:#059669;border:1.5px solid #047857;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;box-shadow:0 1px 3px rgba(5,150,105,0.25);white-space:nowrap;"
                onmouseover="this.style.background='#047857';this.style.borderColor='#065f46'"
                onmouseout="this.style.background='#059669';this.style.borderColor='#047857'">
                 <span class="material-icons-round" style="font-size:18px;color:#a7f3d0;">download</span>
                 <span>Export CSV</span>
+            </a>
+        </div>
+
+        {{-- Tombol Export PDF --}}
+        <div>
+            <a :href="exportPdfUrl()"
+               target="_blank"
+               style="height:42px;display:inline-flex;align-items:center;gap:6px;padding:0 18px;background:#dc2626;border:1.5px solid #b91c1c;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;box-shadow:0 1px 3px rgba(220,38,38,0.25);white-space:nowrap;"
+               onmouseover="this.style.background='#b91c1c';this.style.borderColor='#991b1b'"
+               onmouseout="this.style.background='#dc2626';this.style.borderColor='#b91c1c'">
+                <span class="material-icons-round" style="font-size:18px;color:#fecaca;">picture_as_pdf</span>
+                <span>Export PDF</span>
             </a>
         </div>
 

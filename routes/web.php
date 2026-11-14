@@ -19,8 +19,8 @@ Route::get('/berita/{slug}',   [FrontendController::class, 'detailBerita']);
 Route::get('/berita/{slug}/views', [FrontendController::class, 'getArticleViews']);
 Route::get('/faq',             function () { return app(FrontendController::class)->faq(); });
 Route::get('/karier',          function () { return app(FrontendController::class)->karier(); });
-Route::get('/cara-mendaftar',  function () { return app(FrontendController::class)->registration(); });
-Route::get('/formulir-pendaftaran', function () { return app(FrontendController::class)->registration(); });
+Route::get('/formulir-pendaftaran', [FrontendController::class, 'registration']);
+Route::redirect('/cara-mendaftar', '/formulir-pendaftaran', 301);
 
 Route::post('/pendaftaran', [FrontendController::class, 'submitRegistration'])->middleware('throttle:3,1');
 
@@ -73,6 +73,8 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::get('/backoffice/navigasi',      [BackofficeController::class, 'navigasi']);
     Route::get('/backoffice/footer-cms',    [BackofficeController::class, 'footer']);
     Route::get('/backoffice/users',         [BackofficeController::class, 'users']);
+    Route::get('/backoffice/password',      [BackofficeController::class, 'passwordEdit']);
+    Route::post('/backoffice/password',     [BackofficeController::class, 'passwordUpdate']);
 
     // Pengajuan Layanan (Beasiswa & Dokumen)
     Route::get('/backoffice/layanan',                          [BackofficeController::class, 'layanan']);
@@ -191,7 +193,7 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     // Kas & Keuangan
     Route::get('/backoffice/kas',                        [BackofficeController::class, 'kas']);
     Route::get('/backoffice/kas/export-csv',             [BackofficeController::class, 'kasExportCsv']);
-    Route::get('/backoffice/kas/{id}/kwitansi',          [BackofficeController::class, 'kasKwitansi']);
+    Route::get('/backoffice/kas/export-pdf',             [BackofficeController::class, 'kasExportPdf']);
     Route::get('/backoffice/kas-keuangan-program',       [BackofficeController::class, 'kasKeuanganProgram']);
     Route::post('/backoffice/kas-kategori-program/store', [BackofficeController::class, 'kasProgramCategoryStore']);
     Route::post('/backoffice/kas-program-item/store',    [BackofficeController::class, 'kasProgramItemStore']);
@@ -207,7 +209,6 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::post('/backoffice/kas-program/{id}/update',          [BackofficeController::class, 'kasJenisProgramUpdate']);
     Route::post('/backoffice/kas-program/{id}/update-nilai',    [BackofficeController::class, 'kasJenisProgramUpdateNilai']);
     Route::post('/backoffice/kas-program/{id}/delete',          [BackofficeController::class, 'kasJenisProgramDestroy']);
-    Route::get('/backoffice/kas-program-detail/{id}/kwitansi',  [BackofficeController::class, 'kasProgramKwitansi']);
     Route::get('/backoffice/kas-program-detail/{id}',           [BackofficeController::class, 'kasProgramDetail']);
 
     // Redirect legacy /backoffice/kas-jenis-program & /backoffice/kas-proyek paths
@@ -223,8 +224,9 @@ Route::middleware(['backoffice.auth', 'throttle:60,1'])->group(function () {
     Route::post('/backoffice/kas-satuan/store',          [BackofficeController::class, 'kasSatuanStore']);
 
     // Pilihan Jenis Kas (Kategori)
-    Route::get('/backoffice/kas-kategori',              [BackofficeController::class, 'kasKategori']);
-    Route::post('/backoffice/kas-kategori/store',       [BackofficeController::class, 'kasKategoriStore']);
-    Route::post('/backoffice/kas-kategori/{id}/update', [BackofficeController::class, 'kasKategoriUpdate']);
-    Route::post('/backoffice/kas-kategori/{id}/delete', [BackofficeController::class, 'kasKategoriDestroy']);
+    Route::get('/backoffice/kas-kategori',                     [BackofficeController::class, 'kasKategori']);
+    Route::post('/backoffice/kas-kategori/store',              [BackofficeController::class, 'kasKategoriStore']);
+    Route::post('/backoffice/kas-kategori/{id}/update',        [BackofficeController::class, 'kasKategoriUpdate']);
+    Route::post('/backoffice/kas-kategori/{id}/toggle-cicil',  [BackofficeController::class, 'kasKategoriToggleCicil']);
+    Route::post('/backoffice/kas-kategori/{id}/delete',        [BackofficeController::class, 'kasKategoriDestroy']);
 });

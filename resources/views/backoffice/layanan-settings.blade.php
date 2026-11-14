@@ -350,7 +350,7 @@ function layananSettingsCompleteData() {
         ],
         contact: {
             wa: rawSettings.helpdesk_wa || '+62 81 246 319966',
-            email: rawSettings.helpdesk_email || 'sahabat@dhs.or.id',
+            email: rawSettings.helpdesk_email || 'dhsvokasi@gmail.com',
             hours: rawSettings.helpdesk_hours || 'Senin – Sabtu: 08:00 – 17:00 WITA'
         },
         saveAll() {

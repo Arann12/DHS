@@ -134,7 +134,7 @@ function footerData() {
             copyright: settings.copyright ?? '© 2026 Denpasar Hotel School.',
             address_denpasar: settings.address_denpasar ?? 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali',
             phone_denpasar: settings.phone_denpasar ?? '+62 81 246 319966',
-            email: settings.email ?? 'sahabat@dhs.or.id',
+            email: settings.email_denpasar ?? (settings.email ?? 'dhsvokasi@gmail.com'),
             address_klungkung: settings.address_klungkung ?? 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali',
             phone_klungkung: settings.phone_klungkung ?? '+0366 5582998',
             wa_klungkung: settings.wa_klungkung ?? '+62 81 337 106480',

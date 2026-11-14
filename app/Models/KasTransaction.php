@@ -26,6 +26,8 @@ class KasTransaction extends Model
         'is_piutang',
         'piutang_lunas_at',
         'piutang_nama',
+        'no_hp',
+        'metode_pembayaran',
     ];
 
     protected $casts = [

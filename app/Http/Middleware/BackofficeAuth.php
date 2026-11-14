@@ -8,6 +8,35 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BackofficeAuth
 {
+    private const FINANCE_PREFIXES = [
+        'backoffice/kas',
+        'backoffice/kas-keuangan-program',
+        'backoffice/kas-kategori',
+        'backoffice/kas-program',
+        'backoffice/kas-jenis-program',
+        'backoffice/kas-proyek',
+        'backoffice/program-kategori',
+    ];
+
+    public static function roleAllowsPath(string $role, string $path): bool
+    {
+        // Users management is restricted strictly to super_admin
+        if (str_starts_with($path, 'backoffice/users')) {
+            return $role === 'super_admin';
+        }
+
+        $isFinancePath = collect(self::FINANCE_PREFIXES)
+            ->contains(fn (string $prefix) => str_starts_with($path, $prefix));
+        $isPasswordPath = str_starts_with($path, 'backoffice/password');
+
+        return match ($role) {
+            'super_admin' => true,
+            'finance' => $isFinancePath || $isPasswordPath || $path === 'backoffice/',
+            'admin' => !$isFinancePath,
+            default => false,
+        };
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -36,15 +65,14 @@ class BackofficeAuth
             return redirect('/backoffice')->with('error', 'Akun Anda telah dinonaktifkan.');
         }
 
-        // Role-based authorization for sensitive routes
-        $sensitivePaths = ['backoffice/users', 'backoffice/branding'];
-        $requiresAdmin = collect($sensitivePaths)->contains(fn($p) => str_starts_with($request->path(), $p));
-        $userRole = $sessionUser['role'] ?? '';
-        if ($requiresAdmin && !in_array($userRole, ['super_admin', 'admin'])) {
+        // Role-based authorization for all backoffice routes.
+        $userRole = $dbUser->role;
+        if (!self::roleAllowsPath($userRole, $request->path())) {
             if ($request->expectsJson()) {
                 return response()->json(['error' => 'Forbidden'], 403);
             }
-            return redirect('/backoffice/dashboard')->with('error', 'Akses ditolak.');
+            $fallback = $userRole === 'finance' ? '/backoffice/kas' : '/backoffice/dashboard';
+            return redirect($fallback)->with('error', 'Akses ditolak.');
         }
 
         // Periodic session regeneration (every 30 mins)

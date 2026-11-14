@@ -115,39 +115,48 @@
         </div>
     </div>
 
-    {{-- Summary Cards --}}
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:1.5rem;">
+    {{-- Summary Cards: Pemasukan, Pengeluaran, Piutang, Selisih --}}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:1.5rem;">
+        
+        {{-- 1. Pemasukan --}}
         <div class="bo-card" style="padding:18px 20px;border-left:4px solid #16a34a;border-radius:14px;">
             <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Pemasukan</div>
             <div style="font-size:20px;font-weight:800;color:#15803d;" x-text="'Rp ' + formatNumber(summaryFiltered.masuk)"></div>
+            <div style="font-size:11.5px;color:#64748b;margin-top:4px;" x-text="summaryFiltered.countMasuk + ' transaksi terealisasi'"></div>
         </div>
+
+        {{-- 2. Pengeluaran --}}
         <div class="bo-card" style="padding:18px 20px;border-left:4px solid #dc2626;border-radius:14px;">
             <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Pengeluaran</div>
             <div style="font-size:20px;font-weight:800;color:#b91c1c;" x-text="'Rp ' + formatNumber(summaryFiltered.keluar)"></div>
+            <div style="font-size:11.5px;color:#64748b;margin-top:4px;" x-text="summaryFiltered.countKeluar + ' item pengeluaran'"></div>
         </div>
-        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #2563eb;border-radius:14px;">
-            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Saldo</div>
-            <div style="font-size:20px;font-weight:800;"
-                 :style="summaryFiltered.saldo >= 0 ? 'color:#1d4ed8;' : 'color:#dc2626;'"
-                 x-text="'Rp ' + formatNumber(summaryFiltered.saldo)"></div>
-        </div>
+
+        {{-- 3. Piutang (Uang di Lapangan) --}}
         <button type="button"
                 x-on:click="filterStatus = (filterStatus === 'piutang' ? '' : 'piutang')"
                 class="bo-card"
                 style="padding:18px 20px;border:none;border-left:4px solid #f59e0b;border-radius:14px;text-align:left;cursor:pointer;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:6px;">
-                <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Uang di Lapangan</span>
-                <span style="font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px;background:#fef3c7;color:#b45309;">Piutang</span>
+                <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Piutang</span>
+                <span style="font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px;background:#fef3c7;color:#b45309;">Uang Lapangan</span>
             </div>
             <div style="font-size:20px;font-weight:800;color:#b45309;">Rp {{ number_format($totalPiutang ?? 0, 0, ',', '.') }}</div>
             <div style="font-size:11px;color:#92400e;margin-top:3px;" x-text="filterStatus === 'piutang' ? 'Filter Piutang aktif (klik reset)' : 'Klik untuk saring transaksi piutang'"></div>
         </button>
-        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #9333ea;border-radius:14px;">
-            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Margin Keuntungan</div>
+
+        {{-- 4. Selisih (Saldo) --}}
+        <div class="bo-card" style="padding:18px 20px;border-left:4px solid #2563eb;border-radius:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Selisih</span>
+                <span style="font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px;background:#dbeafe;color:#1d4ed8;" x-text="summaryFiltered.persen.toFixed(1) + '%'"></span>
+            </div>
             <div style="font-size:20px;font-weight:800;"
-                 :style="summaryFiltered.persen >= 0 ? 'color:#7e22ce;' : 'color:#dc2626;'"
-                 x-text="summaryFiltered.persen.toFixed(1) + '%'"></div>
+                 :style="summaryFiltered.saldo >= 0 ? 'color:#1d4ed8;' : 'color:#dc2626;'"
+                 x-text="(summaryFiltered.saldo < 0 ? '- Rp ' : 'Rp ') + formatNumber(summaryFiltered.saldo)"></div>
+            <div style="font-size:11.5px;color:#64748b;margin-top:4px;" x-text="'Margin filter ' + summaryFiltered.persen.toFixed(1) + '%'"></div>
         </div>
+
     </div>
 
     {{-- Program Selector Pills dalam Kategori Ini --}}
@@ -217,74 +226,88 @@
     {{-- Tabel --}}
     <div class="bo-card" style="padding:0;overflow:hidden;border:1px solid #e2e8f0;">
         <div style="overflow-x:auto;">
-            <table class="bo-table" style="width:100%;border-collapse:collapse;">
+            <table class="bo-table kas-transaction-table" style="width:100%;min-width:1060px;border-collapse:collapse;">
                 <thead>
                     <tr>
-                        <th style="white-space:nowrap;">Tanggal</th>
-                        <th style="white-space:nowrap;">Kode</th>
-                        <th>Program</th>
-                        <th>Kategori &amp; Deskripsi</th>
-                        <th style="text-align:center;">Vol &amp; Satuan</th>
-                        <th style="text-align:right;">Harga Satuan</th>
-                        <th style="text-align:right;">Total</th>
-                        <th style="text-align:center;">Tipe</th>
-                        <th style="text-align:center;">Bukti</th>
-                        <th style="text-align:center;min-width:135px;">Aksi</th>
+                        <th style="width:125px;white-space:nowrap;">Kode</th>
+                        <th style="width:95px;white-space:nowrap;">Tanggal</th>
+                        <th style="width:90px;text-align:center;">Transaksi</th>
+                        <th style="width:160px;">Program</th>
+                        <th style="min-width:200px;">Judul / Penerima</th>
+                        <th style="width:90px;text-align:center;">Vol &amp; Satuan</th>
+                        <th style="width:115px;text-align:right;">Harga Satuan</th>
+                        <th style="width:125px;text-align:right;">Nominal</th>
+                        <th style="width:95px;">Metode</th>
+                        <th style="width:80px;text-align:center;">Status</th>
+                        <th style="width:60px;text-align:center;">Bukti</th>
+                        <th style="width:95px;text-align:center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <template x-if="filtered.length === 0">
                         <tr>
-                            <td colspan="10" style="text-align:center;padding:2.5rem;color:#94a3b8;">
+                            <td colspan="12" style="text-align:center;padding:2.5rem;color:#94a3b8;">
                                 <span class="material-icons-round" style="font-size:40px;display:block;margin-bottom:.5rem;">inbox</span>
                                 Tidak ada data transaksi ditemukan
                             </td>
                         </tr>
                     </template>
                     <template x-for="item in filtered" :key="item.id">
-                        <tr>
-                            <td style="white-space:nowrap;font-size:13px;" x-text="formatTanggal(item.tanggal)"></td>
-                            <td style="white-space:nowrap;font-size:12.5px;font-family:monospace;color:#64748b;" x-text="item.kode || '-'"></td>
-                            <td>
-                                <div style="font-weight:600;color:#334155;" x-text="item.program ? item.program.title : 'Umum'"></div>
+                        <tr style="height:50px;">
+                            <td style="white-space:nowrap;font-size:11.5px;font-family:monospace;color:#64748b;font-weight:700;" x-text="item.kode || '-'"></td>
+                            <td style="white-space:nowrap;font-size:12px;color:#475569;" x-text="formatTanggal(item.tanggal)"></td>
+                            <td style="text-align:center;white-space:nowrap;">
+                                <span class="badge"
+                                      :class="window.DHSKasHelper.getTransactionType(item).badgeClass"
+                                      x-text="window.DHSKasHelper.getTransactionType(item).label"></span>
                             </td>
-                            <td>
-                                <div style="font-weight:600;color:#0f172a;" x-text="item.jenis"></div>
-                                <div style="font-size:12.5px;color:#475569;" x-text="item.deskripsi || '-'"></div>
-                                <template x-if="item.piutang_nama">
-                                    <div style="display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700;"
-                                         :style="item.is_piutang && !item.piutang_lunas_at ? 'background:#fef3c7;color:#b45309;' : 'background:#f1f5f9;color:#475569;'"
-                                         x-text="(item.is_piutang && !item.piutang_lunas_at ? 'Piutang: ' : 'Penanggung: ') + item.piutang_nama"></div>
-                                </template>
-                                <template x-if="item.keterangan">
-                                    <div style="font-size:11.5px;color:#94a3b8;" x-text="'Ket: ' + item.keterangan"></div>
-                                </template>
+                            <td style="max-width:160px;white-space:nowrap;">
+                                <span style="font-weight:600;color:#334155;font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;"
+                                      :title="item.program ? item.program.title : 'Umum'"
+                                      x-text="item.program ? item.program.title : 'Umum'"></span>
                             </td>
-                            <td style="text-align:center;white-space:nowrap;" x-text="(parseFloat(item.volume) || 1) + ' ' + (item.satuan || 'Paket')"></td>
-                            <td style="text-align:right;white-space:nowrap;color:#64748b;" x-text="'Rp ' + formatNumber(item.harga_satuan || item.jumlah)"></td>
-                            <td style="text-align:right;white-space:nowrap;font-weight:700;">
+                            <td style="max-width:240px;">
+                                <div style="font-weight:700;color:#0f172a;font-size:12.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                                     :title="item.jenis"
+                                     x-text="item.jenis"></div>
+                                <div style="display:flex;align-items:center;gap:5px;margin-top:2px;font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <template x-if="item.piutang_nama">
+                                        <span style="display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;flex-shrink:0;"
+                                              :style="item.is_piutang && !item.piutang_lunas_at ? 'background:#fef3c7;color:#b45309;' : 'background:#f1f5f9;color:#475569;'"
+                                              x-text="item.piutang_nama"></span>
+                                    </template>
+                                    <span style="overflow:hidden;text-overflow:ellipsis;" :title="item.deskripsi" x-text="item.deskripsi || '-'"></span>
+                                </div>
+                            </td>
+                            <td style="text-align:center;white-space:nowrap;">
+                                <span style="font-weight:600;color:#334155;font-size:12px;display:inline-block;padding:2px 8px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;"
+                                      x-text="(parseFloat(item.volume) || 1) + ' ' + (item.satuan || 'Paket')"></span>
+                            </td>
+                            <td style="text-align:right;white-space:nowrap;color:#64748b;font-size:12px;" x-text="'Rp ' + formatNumber(item.harga_satuan || item.jumlah)"></td>
+                            <td style="text-align:right;white-space:nowrap;font-weight:800;font-size:13px;">
                                 <template x-if="item.is_piutang && !item.piutang_lunas_at">
-                                    <span style="color:#b45309;">
-                                        <span style="font-size:10.5px;display:block;font-weight:600;">(Piutang)</span>
-                                        <span x-text="'Rp ' + formatNumber(item.jumlah)"></span>
-                                    </span>
+                                    <span style="color:#b45309;" x-text="'Rp ' + formatNumber(item.jumlah)"></span>
                                 </template>
                                 <template x-if="!item.is_piutang || item.piutang_lunas_at">
                                     <span :style="item.type === 'masuk' ? 'color:#15803d;' : 'color:#b91c1c;'"
                                           x-text="(item.type === 'masuk' ? '+ Rp ' : '- Rp ') + formatNumber(item.jumlah)"></span>
                                 </template>
                             </td>
-                            <td style="text-align:center;">
-                                <span :class="item.type === 'masuk' ? 'badge badge-green' : 'badge badge-red'"
-                                      x-text="item.type === 'masuk' ? 'Pemasukan' : 'Pengeluaran'"></span>
+                            <td style="white-space:nowrap;font-size:11.5px;color:#475569;">
+                                <span x-text="item.metode_pembayaran || (item.payment_mode === 'dp' ? 'DP (Uang Muka)' : (item.type === 'masuk' ? 'Transfer Bank' : 'Kas Tunai'))"></span>
                             </td>
-                            <td style="text-align:center;">
+                            <td style="text-align:center;white-space:nowrap;">
+                                <span class="badge"
+                                      :class="window.DHSKasHelper.getTransactionStatus(item).badgeClass"
+                                      x-text="window.DHSKasHelper.getTransactionStatus(item).label"></span>
+                            </td>
+                            <td style="text-align:center;white-space:nowrap;">
                                 <template x-if="item.bukti_gambar && window.DHSKasHelper.isPdf(item.bukti_gambar)">
                                     <a :href="item.bukti_gambar" target="_blank" class="badge badge-red" style="text-decoration:none;">PDF</a>
                                 </template>
                                 <template x-if="item.bukti_gambar && !window.DHSKasHelper.isPdf(item.bukti_gambar)">
                                     <a :href="item.bukti_gambar" target="_blank">
-                                        <img :src="item.bukti_gambar" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0;">
+                                        <img :src="item.bukti_gambar" style="width:32px;height:32px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0;vertical-align:middle;">
                                     </a>
                                 </template>
                                 <template x-if="!item.bukti_gambar">
@@ -292,19 +315,14 @@
                                 </template>
                             </td>
                             <td style="text-align:center;white-space:nowrap;">
-                                <div style="display:inline-flex;align-items:center;gap:5px;">
-                                    <template x-if="item.is_piutang && !item.piutang_lunas_at">
-                                        <button type="button" class="btn-icon" title="Bayar / Lunasi Piutang" x-on:click="lunasPiutang(item)">
-                                            <span class="material-icons-round" style="font-size:18px;color:#16a34a;">payments</span>
-                                        </button>
-                                    </template>
-                                    <a :href="'/backoffice/kas/' + item.id + '/kwitansi'" target="_blank" class="btn-icon" title="Cetak Kwitansi">
-                                        <span class="material-icons-round" style="font-size:18px;color:#2563eb;">receipt_long</span>
-                                    </a>
-                                    <button type="button" class="btn-icon" title="Edit" x-on:click="openModal('edit', item)">
+                                <div style="display:inline-flex;align-items:center;gap:4px;">
+                                    <button type="button" class="btn-icon" title="Detail Transaksi" aria-label="Detail transaksi" x-on:click="detailModal.open = true; detailModal.item = item" style="position:relative;z-index:2;pointer-events:auto;">
+                                        <span class="material-icons-round" style="font-size:18px;color:#0891b2;pointer-events:none;">visibility</span>
+                                    </button>
+                                    <button type="button" class="btn-icon" title="Edit" aria-label="Edit transaksi" x-on:click="openModal('edit', item)">
                                         <span class="material-icons-round" style="font-size:18px;color:#374151;">edit</span>
                                     </button>
-                                    <button type="button" class="btn-icon danger" title="Hapus" x-on:click="deleteItem(item.id)">
+                                    <button type="button" class="btn-icon danger" title="Hapus" aria-label="Hapus transaksi" x-on:click="deleteItem(item.id)">
                                         <span class="material-icons-round" style="font-size:18px;color:#ef4444;">delete</span>
                                     </button>
                                 </div>
@@ -347,9 +365,90 @@
                 'submitText'         => 'Simpan Transaksi',
                 'showCancel'         => true,
                 'cancelAction'       => 'modal.open = false',
+                'piutangCategories'  => $piutangCategories ?? [],
                 'optProgramMasuk'    => $optProgramMasuk ?? $optMasukList,
                 'optProgramKeluar'   => $optProgramKeluar ?? $optKeluarList,
             ])
+        </div>
+    </div>
+
+    {{-- Modal Detail Transaksi --}}
+    <div class="bo-modal-backdrop"
+         x-show="detailModal.open"
+         x-transition
+         style="display:none;"
+         x-on:click.self="detailModal.open = false"
+         x-on:keydown.escape.window="detailModal.open = false">
+        <div class="bo-modal" style="max-width:580px;width:95%;" x-on:click.stop>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;border-bottom:1px solid #f1f5f9;padding-bottom:.75rem;">
+                <h3 style="margin:0;font-size:1.15rem;font-weight:700;">Detail Transaksi</h3>
+                <button type="button" class="btn-icon" x-on:click="detailModal.open = false">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <template x-if="detailModal.item">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;">Tanggal</div><div style="font-weight:700;" x-text="formatTanggal(detailModal.item.tanggal)"></div></div>
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;">Kode</div><div style="font-weight:700;" x-text="detailModal.item.kode || '-' "></div></div>
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;">Kategori</div><div style="font-weight:700;" x-text="detailModal.item.jenis"></div></div>
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;">
+                        <div style="color:#64748b;font-size:11px;">Status Transaksi</div>
+                        <div style="margin-top:2px;">
+                            <span class="badge" :class="window.DHSKasHelper.getTransactionStatus(detailModal.item).badgeClass"
+                                  x-text="window.DHSKasHelper.getTransactionStatus(detailModal.item).label"></span>
+                        </div>
+                        <template x-if="detailModal.item.is_piutang && !detailModal.item.piutang_lunas_at">
+                            <div style="font-size:10.5px;color:#d97706;font-weight:600;margin-top:3px;">(Tagihan Piutang)</div>
+                        </template>
+                    </div>
+                    <template x-if="detailModal.item.piutang_nama || detailModal.item.no_hp">
+                        <div style="background:#f8fafc;padding:10px;border-radius:8px;">
+                            <div style="color:#64748b;font-size:11px;">Kontak &amp; Siswa / Pembayar</div>
+                            <div style="font-weight:700;color:#0f172a;" x-text="detailModal.item.piutang_nama || 'Pelanggan'"></div>
+                            <template x-if="detailModal.item.no_hp">
+                                <div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:2px;display:flex;align-items:center;gap:4px;">
+                                    <span class="material-icons-round" style="font-size:14px;">chat</span>
+                                    <span x-text="detailModal.item.no_hp"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;">Volume / Satuan</div><div style="font-weight:700;" x-text="(parseFloat(detailModal.item.volume) || 1) + ' ' + (detailModal.item.satuan || 'Paket')"></div></div>
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;">Harga Satuan</div><div style="font-weight:700;" x-text="'Rp ' + formatNumber(detailModal.item.harga_satuan || detailModal.item.jumlah)"></div></div>
+                    <div style="background:#f8fafc;padding:10px;border-radius:8px;">
+                        <div style="color:#64748b;font-size:11px;">Metode Pembayaran</div>
+                        <div style="font-weight:700;color:#0f172a;margin-top:2px;" x-text="detailModal.item.metode_pembayaran || 'Transfer Bank'"></div>
+                    </div>
+                    <div style="grid-column:1/-1;background:#f8fafc;padding:12px;border-radius:8px;">
+                        <div style="color:#64748b;font-size:11px;margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Keterangan &amp; Uraian</div>
+                        <div style="color:#1e293b;font-size:13px;line-height:1.55;" x-html="detailModal.item.keterangan || detailModal.item.deskripsi || '-'"></div>
+                    </div>
+                    <template x-if="detailModal.item.bukti_gambar"><div style="grid-column:1/-1;background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;margin-bottom:5px;">Bukti Transaksi</div><a :href="detailModal.item.bukti_gambar" target="_blank" style="color:#2563eb;font-weight:700;">Buka bukti transaksi</a></div></template>
+                    <div style="grid-column:1/-1;background:#f8fafc;padding:10px;border-radius:8px;"><div style="color:#64748b;font-size:11px;">Nominal</div><div style="font-size:18px;font-weight:800;" :style="detailModal.item.type === 'masuk' ? 'color:#15803d;' : 'color:#b91c1c;'" x-text="(detailModal.item.type === 'masuk' ? '+ Rp ' : '- Rp ') + formatNumber(detailModal.item.jumlah)"></div></div>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #f1f5f9;margin-top:14px;padding-top:12px;flex-wrap:wrap;gap:10px;">
+                    <div>
+                        <template x-if="detailModal.item.no_hp">
+                            <a :href="window.DHSKasHelper.getWhatsAppUrl(detailModal.item)" target="_blank"
+                               style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 3px 10px rgba(37,211,102,0.3);transition:all 0.15s;"
+                               onmouseover="this.style.background='#1ebc59';" onmouseout="this.style.background='#25D366';">
+                                <span class="material-icons-round" style="font-size:18px;">chat</span>
+                                <span>Hubungi via WhatsApp</span>
+                            </a>
+                        </template>
+                        <template x-if="!detailModal.item.no_hp">
+                            <span style="font-size:12px;color:#94a3b8;font-style:italic;">(Nomor HP belum diisi)</span>
+                        </template>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button type="button" class="btn-secondary" x-on:click="openModal('edit', detailModal.item); detailModal.open = false;">
+                            <span class="material-icons-round" style="font-size:16px;">edit</span> Edit
+                        </button>
+                        <button type="button" class="btn-primary" x-on:click="detailModal.open = false">Tutup</button>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 
@@ -374,8 +473,6 @@
             </div>
         </div>
     </div>
-
-    @include('backoffice.partials.kas-piutang-pay-modal', ['payScope' => 'piutangPay', 'payRedirect' => '/backoffice/kas-kategori-kas/' . $kategori->id])
 
     <form id="kpDeleteForm" method="POST" action="" style="display:none;">
         @csrf
@@ -424,24 +521,16 @@ function kasProgramData() {
                 payment_mode: 'lunas',
                 dpNominalDisplay: '',
                 piutang_nama: '',
+                no_hp: '',
+                metode_pembayaran: 'Transfer Bank',
                 keterangan: '',
                 kodeMode: 'auto',
                 kode: '',
                 bukti_gambar: '',
             },
         },
-        piutangPay: {
-            open: false,
-            trxId: null,
-            kode: '',
-            deskripsi: '',
-            nama: '',
-            sisa: 0,
-            bayarDisplay: '',
-            tanggal: new Date().toISOString().slice(0, 10),
-            catatan: '',
-        },
         deleteConfirm: { open: false, targetId: null },
+        detailModal: { open: false, item: null },
 
         init() {
             this.items = this.items.map(i => ({
@@ -490,8 +579,17 @@ function kasProgramData() {
             return window.DHSKasHelper.buildExportUrl('/backoffice/kas/export-csv?category_id={{ $kategori->id }}', this);
         },
 
+        exportPdfUrl() {
+            return window.DHSKasHelper.buildExportUrl('/backoffice/kas/export-pdf?category_id={{ $kategori->id }}', this);
+        },
+
         formatNumber(n)  { return window.DHSKasHelper.formatNumber(n); },
         formatTanggal(s) { return window.DHSKasHelper.formatTanggal(s); },
+
+        openDetail(item) {
+            this.detailModal.item = item;
+            this.detailModal.open = true;
+        },
 
         openModal(mode, item) {
             this.modal.mode   = mode;
@@ -499,6 +597,11 @@ function kasProgramData() {
             if (mode === 'add') {
                 this.modal.form = {
                     editMode:           false,
+                    itemId:             null,
+                    is_piutang:         false,
+                    piutang_lunas_at:   null,
+                    is_pending_piutang: false,
+                    sisa_piutang:       0,
                     program_ref:        '{{ $firstProgId ? "prog:" . $firstProgId : "" }}',
                     tanggal:            new Date().toISOString().slice(0, 10),
                     type:               '',
@@ -508,8 +611,11 @@ function kasProgramData() {
                     volume:             1,
                     hargaSatuanDisplay: '',
                     payment_mode:       'lunas',
+                    totalHargaDisplay:  '',
                     dpNominalDisplay:   '',
                     piutang_nama:       '',
+                    no_hp:              '',
+                    metode_pembayaran:  'Transfer Bank',
                     keterangan:         '',
                     kodeMode:           'auto',
                     kode:               '',
@@ -521,8 +627,14 @@ function kasProgramData() {
                     : (parseFloat(item.jumlah) || 0);
                 const ref = item.program_id ? ('prog:' + item.program_id) : '';
                 const isPendingPt = !!(item.is_piutang && !item.piutang_lunas_at);
+                const sisaPiutang = isPendingPt ? (parseFloat(item.jumlah) || 0) : 0;
                 this.modal.form = {
                     editMode:           true,
+                    itemId:             item.id,
+                    is_piutang:         !!item.is_piutang,
+                    piutang_lunas_at:   item.piutang_lunas_at || null,
+                    is_pending_piutang: isPendingPt,
+                    sisa_piutang:       sisaPiutang,
                     program_ref:        ref,
                     tanggal:            item.tanggal ? String(item.tanggal).substring(0, 10) : '',
                     type:               item.type || '',
@@ -532,8 +644,11 @@ function kasProgramData() {
                     volume:             parseFloat(item.volume) || 1,
                     hargaSatuanDisplay: harga ? Math.round(harga).toLocaleString('id-ID') : '',
                     payment_mode:       isPendingPt ? 'cicil' : 'lunas',
+                    totalHargaDisplay:  harga ? Math.round(harga).toLocaleString('id-ID') : '',
                     dpNominalDisplay:   '',
                     piutang_nama:       item.piutang_nama || '',
+                    no_hp:              item.no_hp || '',
+                    metode_pembayaran:  item.metode_pembayaran || 'Transfer Bank',
                     keterangan:         item.keterangan || '',
                     kodeMode:           item.kode ? 'manual' : 'auto',
                     kode:               item.kode || '',
@@ -541,21 +656,12 @@ function kasProgramData() {
                 };
             }
             this.modal.open = true;
-        },
 
-        lunasPiutang(item) {
-            const sisa = parseFloat(item.jumlah) || 0;
-            this.piutangPay = {
-                open:         true,
-                trxId:        item.id,
-                kode:         item.kode || '',
-                deskripsi:    item.deskripsi || item.jenis || 'Tagihan Piutang',
-                nama:         item.piutang_nama || '',
-                sisa:         sisa,
-                bayarDisplay: sisa ? Math.round(sisa).toLocaleString('id-ID') : '',
-                tanggal:      new Date().toISOString().slice(0, 10),
-                catatan:      '',
-            };
+            this.$nextTick(() => {
+                if (window.DHSKasHelper && window.DHSKasHelper.initSummernote) {
+                    window.DHSKasHelper.initSummernote('#summernote-kas-keterangan', this.modal.form.keterangan || '');
+                }
+            });
         },
 
         deleteItem(id) {

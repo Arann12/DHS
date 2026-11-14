@@ -9,7 +9,9 @@
         <div class="logo-text">Denpasar<br>Hotel School</div>
     </div>
 
+    @php $currentRole = session('backoffice_user.role', ''); @endphp
     <nav class="sidebar-nav">
+        @if($currentRole !== 'finance')
         <div class="nav-group-label">Utama</div>
         <a href="/backoffice/dashboard" class="nav-item {{ Request::is('backoffice/dashboard') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">dashboard</span>
@@ -116,6 +118,9 @@
             <span class="nav-label">C1/D Visa (US Seaman)</span>
         </a>
 
+        @endif
+
+        @if(in_array($currentRole, ['super_admin', 'finance']))
         <div class="nav-group-label">Manajemen Keuangan</div>
         <a href="/backoffice/kas" class="nav-item {{ Request::is('backoffice/kas') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">account_balance_wallet</span>
@@ -125,15 +130,19 @@
             <span class="material-icons-round mat-icon">folder_open</span>
             <span class="nav-label">Keuangan Program</span>
         </a>
+        @if(in_array($currentRole, ['super_admin', 'finance']))
         <a href="/backoffice/program-kategori" class="nav-item {{ Request::is('backoffice/program-kategori*') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">account_tree</span>
             <span class="nav-label">Kategori &amp; Program</span>
         </a>
+        @endif
         <a href="/backoffice/kas-kategori" class="nav-item {{ Request::is('backoffice/kas-kategori*') && !Request::is('backoffice/kas-kategori-kas*') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">category</span>
-            <span class="nav-label">Jenis Kas</span>
+            <span class="nav-label">Kategori</span>
         </a>
+        @endif
 
+        @if($currentRole !== 'finance')
         <div class="nav-group-label">Pengaturan System</div>
         <a href="/backoffice/navigasi" class="nav-item {{ Request::is('backoffice/navigasi') ? 'active' : '' }}">
             <span class="material-icons-round mat-icon">menu</span>
@@ -143,15 +152,21 @@
             <span class="material-icons-round mat-icon">web</span>
             <span class="nav-label">Footer</span>
         </a>
+        @endif
+
+        @if($currentRole === 'super_admin')
+        <div class="nav-group-label">Akses Super Admin</div>
+        <a href="/backoffice/users" class="nav-item {{ Request::is('backoffice/users*') ? 'active' : '' }}">
+            <span class="material-icons-round mat-icon">manage_accounts</span>
+            <span class="nav-label">Kelola Akun</span>
+        </a>
+        @endif
     </nav>
 
     <div class="sidebar-footer">
-        <form action="/backoffice/logout" method="POST" onsubmit="return confirm('Yakin ingin logout?')">
-            @csrf
-            <button type="submit" class="nav-item" style="margin:0;background:none;border:none;cursor:pointer;width:100%;text-align:left;">
-                <span class="material-icons-round mat-icon">logout</span>
-                <span class="nav-label">Logout</span>
-            </button>
-        </form>
+        <button type="button" class="nav-item" style="margin:0;background:none;border:none;cursor:pointer;width:100%;text-align:left;" onclick="openLogoutModal()" aria-label="Logout">
+            <span class="material-icons-round mat-icon">logout</span>
+            <span class="nav-label">Logout</span>
+        </button>
     </div>
 </aside>

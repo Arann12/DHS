@@ -209,7 +209,7 @@ function admisiCompleteData() {
         ],
         contact: {
             wa: '{{ $helpdesk["helpdesk_wa"] ?? "+62 81 246 319966" }}',
-            email: '{{ $helpdesk["helpdesk_email"] ?? "sahabat@dhs.or.id" }}',
+            email: '{{ $helpdesk["helpdesk_email"] ?? "dhsvokasi@gmail.com" }}',
             hours: '{{ $helpdesk["helpdesk_hours"] ?? "Senin – Sabtu: 08:00 – 17:00 WITA" }}'
         },
         saveAll() {

@@ -9,7 +9,8 @@
     $heroCta1Text = $heroContent['cta1_text'] ?? 'JELAJAHI PROGRAM';
     $heroCta1Link = $heroContent['cta1_link'] ?? '/akademi';
     $heroCta2Text = $heroContent['cta2_text'] ?? 'DAFTAR SEKARANG';
-    $heroCta2Link = $heroContent['cta2_link'] ?? '/cara-mendaftar';
+    $heroCta2Link = $heroContent['cta2_link'] ?? '/formulir-pendaftaran';
+    if ($heroCta2Link === '/cara-mendaftar') { $heroCta2Link = '/formulir-pendaftaran'; }
     $heroScrollText = $heroContent['scroll_text'] ?? 'Geser Untuk Scroll';
     $heroBgImage = !empty($heroContent['background_image']) ? $heroContent['background_image'] : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBaJKFYExsjON0pHP43rfmOAIqTkD_R2sTlmKK5Y3CMDGPSja6oJ9DR5erhpkcJFaGwf8hwJZD58ClcpjuTPYEL5LyfjSjhB-t-AumWxxUO-avGgwTwc2wPhoyV6tw23si9SHWgb-5qyJtdTi6WaHdheSZI6A0nWVeXVQ69zkjhtBFvmGPvNvIy5vgQ3-jvlnbQ4bpVLKjjmedqgkXlfk0i_oXHtaIcsJSv5idQg1RZWqqLN8RrwIF70A';
     $heroVideoType = $heroContent['background_video_type'] ?? '';
@@ -91,7 +92,7 @@
     $contactContent = isset($sections['contact']) ? (is_array($sections['contact']->section_content) ? $sections['contact']->section_content : json_decode($sections['contact']->section_content ?? '[]', true)) : [];
     $contactDenpasarAddr = $contactContent['denpasar_address'] ?? 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali';
     $contactDenpasarWa = $contactContent['denpasar_wa'] ?? '+62 81 246 319966';
-    $contactDenpasarEmail = $contactContent['denpasar_email'] ?? 'sahabat@dhs.or.id';
+    $contactDenpasarEmail = $contactContent['denpasar_email'] ?? 'dhsvokasi@gmail.com';
 
     $contactKlungkungAddr = $contactContent['klungkung_address'] ?? 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali';
     $contactKlungkungPhone = $contactContent['klungkung_phone'] ?? '+0366 5582998';
@@ -100,7 +101,7 @@
     $contactFormContent = isset($sections['contact_form']) ? (is_array($sections['contact_form']->section_content) ? $sections['contact_form']->section_content : json_decode($sections['contact_form']->section_content ?? '[]', true)) : [];
     $contactFormTitle = $contactFormContent['title'] ?? 'Kirim Pertanyaan';
     $contactFormSubtitle = $contactFormContent['subtitle'] ?? 'Isi formulir — pesan dikirim otomatis ke email resmi kami.';
-    $contactFormEmail = $contactFormContent['recipient_email'] ?? ($contactDenpasarEmail ?? 'sahabat@dhs.or.id');
+    $contactFormEmail = $contactFormContent['recipient_email'] ?? ($contactDenpasarEmail ?? 'dhsvokasi@gmail.com');
     $contactFormButtonText = $contactFormContent['button_text'] ?? 'KIRIM VIA EMAIL';
 
     $contactSectionLabel = $contactContent['section_label'] ?? 'KONTAK';
@@ -226,9 +227,18 @@
 
                 <div class="flex flex-wrap gap-8 sm:gap-16 mt-8 sm:mt-12 pt-8 sm:pt-12 border-t border-black/10">
                     @foreach($stats->take(2) as $stat)
+                        @php
+                            $rawVal = $stat->stat_value ?? '0';
+                            $numPart = preg_replace('/[^0-9]/', '', $rawVal);
+                            $suffixPart = preg_replace('/[0-9]/', '', $rawVal);
+                        @endphp
                         <div>
-                            <div class="text-3xl sm:text-4xl font-serif mb-2 flex items-start text-text-light">{{ $stat->stat_value }}</div>
-                            <div class="label-text text-muted-light text-[0.6rem]">{{ strtoupper($stat->stat_label) }}</div>
+                            <div class="text-3xl sm:text-4xl font-serif mb-2 flex items-baseline text-text-light font-bold"
+                                 data-counter="{{ $numPart }}"
+                                 data-suffix="{{ $suffixPart }}">
+                                <span class="counter-number">0</span><span class="text-primary font-normal text-2xl sm:text-3xl ml-0.5">{{ $suffixPart }}</span>
+                            </div>
+                            <div class="label-text text-muted-light text-[0.6rem] tracking-wider">{{ strtoupper($stat->stat_label) }}</div>
                         </div>
                     @endforeach
                     <div class="text-xs sm:text-sm italic text-muted-light w-full sm:w-auto mt-2 sm:mt-0" data-id="{{ $aboutNote }}" data-en="{{ $aboutNote }}">
@@ -303,11 +313,18 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
                 @foreach($campusFotos as $idx => $foto)
-                    <div class="group relative overflow-hidden shadow-sm border border-black/5 bg-gray-100 h-[300px] sm:h-[420px] md:h-[480px] lg:h-[540px] xl:h-[580px]"
+                    <div class="group relative overflow-hidden shadow-sm border border-black/5 bg-gray-100 h-[300px] sm:h-[420px] md:h-[480px] lg:h-[540px] xl:h-[580px] cursor-pointer dhs-lightbox-trigger transition-transform duration-500 hover:-translate-y-1"
+                        data-lightbox-src="{{ $foto['src'] ?? '' }}"
+                        data-lightbox-caption="{{ $foto['alt'] ?? 'Kehidupan Kampus DHS' }}"
                         data-reveal="fade-up" data-delay="{{ ((($idx % 3) + 1) * 150) }}">
                         <img alt="{{ $foto['alt'] ?? 'Foto Kampus' }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                             src="{{ $foto['src'] ?? '' }}">
+                        <div class="absolute inset-0 bg-dhs-navy/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center justify-center">
+                            <span class="w-12 h-12 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                <span class="material-icons text-xl">zoom_in</span>
+                            </span>
+                        </div>
                         @if(!empty($foto['alt']))
                             <div class="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm px-4 py-2 text-white text-xs uppercase tracking-wider line-clamp-1 pointer-events-none">
                                 {{ $foto['alt'] }}
@@ -372,10 +389,18 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             @if(isset($facilitiesItems[0]))
-                <div class="md:col-span-2 relative h-[300px] sm:h-[400px] md:h-[600px] group overflow-hidden" data-reveal="fade-right">
+                <div class="md:col-span-2 relative h-[300px] sm:h-[400px] md:h-[600px] group overflow-hidden cursor-pointer dhs-lightbox-trigger"
+                    data-lightbox-src="{{ $facilitiesItems[0]['image'] ?? '' }}"
+                    data-lightbox-caption="{{ $facilitiesItems[0]['label'] ?? 'Fasilitas Kampus DHS' }}"
+                    data-reveal="fade-right">
                     <img alt="{{ $facilitiesItems[0]['label'] ?? 'Fasilitas' }}"
                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         src="{{ $facilitiesItems[0]['image'] ?? '' }}">
+                    <div class="absolute inset-0 bg-dhs-navy/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center justify-center">
+                        <span class="w-12 h-12 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                            <span class="material-icons text-xl">zoom_in</span>
+                        </span>
+                    </div>
                     <div class="absolute bottom-6 left-6 bg-black/60 backdrop-blur-sm px-4 py-2 text-white text-xs uppercase tracking-wider"
                         data-id="{{ $facilitiesItems[0]['label'] ?? '' }}">{{ $facilitiesItems[0]['label'] ?? '' }}</div>
                 </div>
@@ -383,10 +408,17 @@
 
             <div class="flex flex-col gap-4 sm:gap-6 h-[300px] sm:h-[400px] md:h-[600px]" data-reveal="fade-left" data-delay="200">
                 @foreach(array_slice($facilitiesItems, 1, 2) as $fac)
-                    <div class="relative h-1/2 group overflow-hidden">
+                    <div class="relative h-1/2 group overflow-hidden cursor-pointer dhs-lightbox-trigger"
+                        data-lightbox-src="{{ $fac['image'] ?? '' }}"
+                        data-lightbox-caption="{{ $fac['label'] ?? 'Fasilitas Kampus DHS' }}">
                         <img alt="{{ $fac['label'] ?? 'Fasilitas' }}"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             src="{{ $fac['image'] ?? '' }}">
+                        <div class="absolute inset-0 bg-dhs-navy/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center justify-center">
+                            <span class="w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                <span class="material-icons text-lg">zoom_in</span>
+                            </span>
+                        </div>
                         <div class="absolute bottom-6 left-6 bg-black/60 backdrop-blur-sm px-4 py-2 text-white text-xs uppercase tracking-wider"
                             data-id="{{ $fac['label'] ?? '' }}">{{ $fac['label'] ?? '' }}</div>
                     </div>
@@ -395,19 +427,181 @@
         </div>
     </section>
 
-    <!-- Message from Director Section -->
-    <section class="py-20 sm:py-32 bg-dhs-lightblue px-4 sm:px-6 md:px-16 relative">
+    <!-- Message from Director Section with Typewriter Effect -->
+    <style>
+        .director-typewriter-cursor {
+            display: inline-block;
+            width: 2.5px;
+            height: 1.05em;
+            background-color: #B91C1C;
+            margin-left: 3px;
+            vertical-align: -0.1em;
+            border-radius: 1px;
+            animation: directorCursorBlink 0.75s infinite;
+            transition: opacity 0.4s ease;
+        }
+        @keyframes directorCursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+
+    <section id="director-quote-section" class="py-20 sm:py-32 bg-dhs-lightblue px-4 sm:px-6 md:px-16 relative overflow-hidden">
         <div class="max-w-4xl mx-auto text-center relative z-10 text-text-light" data-reveal="zoom-in">
-            <span class="label-text text-dhs-red mb-6 sm:mb-8 block">{{ $directorLabel }}</span>
-            <h2 class="text-lg sm:text-2xl md:text-3xl font-serif leading-relaxed mb-6 sm:mb-8">
-                <span>"{{ $directorMessage }}"</span>
-            </h2>
-            <div>
+            <span class="label-text text-dhs-red mb-6 sm:mb-8 block tracking-widest">{{ $directorLabel }}</span>
+            
+            <div class="relative mb-6 sm:mb-8 cursor-pointer" id="director-quote-container" title="Klik untuk menampilkan seluruh pesan">
+                {{-- Invisible ghost text to reserve height and guarantee ZERO layout shift (CLS) --}}
+                <h2 class="text-lg sm:text-2xl md:text-3xl font-serif leading-relaxed invisible select-none pointer-events-none" aria-hidden="true">
+                    “{{ $directorMessage }}”
+                </h2>
+
+                {{-- Animated typewriter text overlaid on top of the reserved area --}}
+                <h2 class="text-lg sm:text-2xl md:text-3xl font-serif leading-relaxed absolute top-0 left-0 right-0 w-full text-center">
+                    <span id="director-typewriter-quote-open" class="text-primary font-serif select-none" style="opacity:0;transition:opacity 0.3s ease;">“</span><span id="director-typed-text" data-text="{{ e($directorMessage) }}">{{ $directorMessage }}</span><span id="director-typewriter-quote-close" class="text-primary font-serif select-none" style="opacity:0;transition:opacity 0.3s ease;">”</span><span id="director-typewriter-cursor" class="director-typewriter-cursor" aria-hidden="true" style="display:none;"></span>
+                </h2>
+            </div>
+
+            <div id="director-author-block" style="opacity:0;transform:translateY(12px);transition:opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
                 <h4 class="font-bold text-sm tracking-widest uppercase mb-1">{{ $directorName }}</h4>
                 <p class="label-text text-muted-light">{{ $directorTitle }}</p>
             </div>
         </div>
     </section>
+
+    <script>
+    (function() {
+        function initDirectorTypewriter() {
+            const section = document.getElementById('director-quote-section');
+            const typedEl = document.getElementById('director-typed-text');
+            const cursorEl = document.getElementById('director-typewriter-cursor');
+            const openQuote = document.getElementById('director-typewriter-quote-open');
+            const closeQuote = document.getElementById('director-typewriter-quote-close');
+            const authorBlock = document.getElementById('director-author-block');
+            const container = document.getElementById('director-quote-container');
+
+            if (!section || !typedEl) return;
+
+            let fullText = (typedEl.getAttribute('data-text') || typedEl.textContent || '').trim();
+            fullText = fullText.replace(/^[“"']+|[”"']+$/g, '').trim();
+
+            const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) {
+                typedEl.textContent = fullText;
+                if (openQuote) openQuote.style.opacity = '1';
+                if (closeQuote) closeQuote.style.opacity = '1';
+                if (authorBlock) {
+                    authorBlock.style.opacity = '1';
+                    authorBlock.style.transform = 'translateY(0)';
+                }
+                return;
+            }
+
+            typedEl.textContent = '';
+            let currentIndex = 0;
+            let isTyping = false;
+            let hasFinished = false;
+            let typingTimeout = null;
+
+            function finishImmediately() {
+                if (hasFinished) return;
+                if (typingTimeout) clearTimeout(typingTimeout);
+                hasFinished = true;
+                isTyping = false;
+                typedEl.textContent = fullText;
+                if (openQuote) openQuote.style.opacity = '1';
+                if (closeQuote) closeQuote.style.opacity = '1';
+                if (authorBlock) {
+                    authorBlock.style.opacity = '1';
+                    authorBlock.style.transform = 'translateY(0)';
+                }
+                if (cursorEl) {
+                    setTimeout(() => {
+                        cursorEl.style.opacity = '0';
+                        setTimeout(() => { cursorEl.style.display = 'none'; }, 400);
+                    }, 800);
+                }
+            }
+
+            if (container) {
+                container.addEventListener('click', finishImmediately);
+            }
+
+            function typeNextChar() {
+                if (hasFinished) return;
+
+                if (currentIndex < fullText.length) {
+                    currentIndex++;
+                    typedEl.textContent = fullText.substring(0, currentIndex);
+
+                    if (currentIndex >= Math.floor(fullText.length * 0.82) && authorBlock) {
+                        authorBlock.style.opacity = '1';
+                        authorBlock.style.transform = 'translateY(0)';
+                    }
+
+                    const lastChar = fullText.charAt(currentIndex - 1);
+                    let delay = 18;
+                    if (lastChar === '.' || lastChar === '!' || lastChar === '?') {
+                        delay = 140;
+                    } else if (lastChar === ',' || lastChar === ';') {
+                        delay = 80;
+                    } else if (lastChar === ' ') {
+                        delay = 24;
+                    } else {
+                        delay += Math.floor(Math.random() * 8) - 4;
+                    }
+
+                    typingTimeout = setTimeout(typeNextChar, Math.max(10, delay));
+                } else {
+                    hasFinished = true;
+                    isTyping = false;
+                    if (closeQuote) closeQuote.style.opacity = '1';
+                    if (authorBlock) {
+                        authorBlock.style.opacity = '1';
+                        authorBlock.style.transform = 'translateY(0)';
+                    }
+                    if (cursorEl) {
+                        setTimeout(() => {
+                            cursorEl.style.opacity = '0';
+                            setTimeout(() => { cursorEl.style.display = 'none'; }, 400);
+                        }, 2000);
+                    }
+                }
+            }
+
+            function startTyping() {
+                if (isTyping || hasFinished) return;
+                isTyping = true;
+                if (openQuote) openQuote.style.opacity = '1';
+                if (cursorEl) cursorEl.style.display = 'inline-block';
+                setTimeout(typeNextChar, 250);
+            }
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            startTyping();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.25,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+                observer.observe(section);
+            } else {
+                startTyping();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDirectorTypewriter);
+        } else {
+            initDirectorTypewriter();
+        }
+    })();
+    </script>
 
     <!-- Insights & Articles Section -->
     <section class="py-16 sm:py-24">
@@ -502,21 +696,27 @@
         $renderCard = function ($item) {
             $name = e(is_array($item) ? ($item['name'] ?? '') : ($item->name ?? ''));
             $logo = is_array($item) ? ($item['logo_url'] ?? '') : ($item->logo_url ?? '');
+            $type = is_array($item) ? ($item['partner_group'] ?? '') : ($item->partner_group ?? '');
+            $typeLabel = $type === 'partnership' ? 'Mitra Internasional' : 'Mitra Industri';
 
-            $out = '<div class="bg-white border border-black/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center w-48 h-32 p-4 cursor-default select-none shrink-0 rounded-lg gap-3">';
+            $out = '<div class="bg-white border border-black/10 hover:border-primary/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center w-52 h-36 p-4 cursor-pointer select-none shrink-0 rounded-xl gap-2 group relative overflow-hidden">';
 
-            // Logo area
-            $out .= '<div class="flex items-center justify-center w-full h-16 flex-shrink-0">';
+            // Subtle top gold/primary accent on hover
+            $out .= '<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-dhs-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>';
+
+            // Logo area with smooth scale and color reveal
+            $out .= '<div class="flex items-center justify-center w-full h-16 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">';
             if (!empty($logo)) {
-                $out .= '<img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain" loading="lazy">';
+                $out .= '<img src="' . e($logo) . '" alt="' . $name . '" class="max-w-full max-h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300" loading="lazy">';
             } else {
                 $out .= '<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center"><span class="material-icons text-slate-400 text-2xl">business</span></div>';
             }
             $out .= '</div>';
 
-            // Text area below logo
-            $out .= '<div class="text-center w-full pt-2 border-t border-slate-100">';
-            $out .= '<div class="font-sans text-[0.7rem] font-bold tracking-wide text-dhs-navy line-clamp-1 leading-tight">' . $name . '</div>';
+            // Text area below logo with partner badge
+            $out .= '<div class="text-center w-full pt-1.5 border-t border-slate-100">';
+            $out .= '<div class="font-sans text-[0.72rem] font-bold tracking-wide text-dhs-navy line-clamp-1 leading-tight group-hover:text-primary transition-colors">' . $name . '</div>';
+            $out .= '<span class="text-[0.6rem] text-muted-light uppercase tracking-wider block mt-0.5">' . $typeLabel . '</span>';
             $out .= '</div>';
 
             $out .= '</div>';
@@ -669,10 +869,13 @@
                     <div>
                         <span class="label-text text-muted-light mb-2 block" data-id="PENDAFTARAN ONLINE"
                             data-en="ONLINE REGISTRATION">PENDAFTARAN ONLINE</span>
-                        <p class="text-sm font-medium">Linktree: <a href="{{ $contactLinktreeUrl }}" target="_blank"
-                                class="underline text-primary hover:text-dhs-darknavy">{{ parse_url($contactLinktreeUrl, PHP_URL_HOST) ?: 'Linktree' }}</a>
+                        <p class="text-sm font-medium">
+                            <a href="/formulir-pendaftaran"
+                                class="inline-flex items-center gap-1.5 text-primary hover:text-dhs-darknavy font-semibold underline underline-offset-4 transition-colors">
+                                <span data-id="Formulir Pendaftaran Online" data-en="Online Registration Form">Formulir Pendaftaran Online</span>
+                                <span class="material-icons text-base">arrow_forward</span>
+                            </a>
                         </p>
-
                     </div>
                     {{-- Quick WA button --}}
                     <div class="pt-2">

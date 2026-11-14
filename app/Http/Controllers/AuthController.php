@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public const DUMMY_PASSWORD_HASH = '$2y$10$KlNR.Gdhj.zPRH/XavjAUOhs8TdVyO/PUWDdLeUPGPTrDzR06zQYC';
+
     public function showLogin()
     {
         if (session('backoffice_user')) {
-            return redirect('/backoffice/dashboard');
+            return redirect((session('backoffice_user.role') ?? '') === 'finance' ? '/backoffice/kas' : '/backoffice/dashboard');
         }
         return view('backoffice.auth.login');
     }
@@ -27,9 +29,10 @@ class AuthController extends Controller
         // Check by username field
         $user = User::where('username', $request->username)->where('is_active', 1)->first();
 
-        // Timing-safe: always run Hash::check even if user not found
-        $dummyHash = '$2y$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-        $passwordValid = $user ? Hash::check($request->password, $user->password) : Hash::check('x', $dummyHash);
+        // Timing-safe: always run Hash::check even if user not found.
+        $passwordValid = $user
+            ? Hash::check($request->password, $user->password)
+            : Hash::check($request->password, self::DUMMY_PASSWORD_HASH);
 
         if (!$user || !$passwordValid) {
             return back()->withErrors(['auth' => 'Username atau password salah.'])->withInput();
@@ -60,7 +63,7 @@ class AuthController extends Controller
             ]
         ]);
 
-        return redirect('/backoffice/dashboard');
+        return redirect($user->role === 'finance' ? '/backoffice/kas' : '/backoffice/dashboard');
     }
 
     public function logout()

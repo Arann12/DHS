@@ -376,7 +376,7 @@ INSERT IGNORE INTO homepage_sections (section_key, section_title, section_conten
 ('hero', 'Hero Section', '{"overline": "DENPASAR HOTEL SCHOOL — PUSAT PELATIHAN VOKASI INTERNASIONAL DI BALI", "headline": "Membentuk Masa Depan Perhotelan Global", "cta1_text": "JELAJAHI PROGRAM", "cta1_link": "/akademi", "cta2_text": "DAFTAR SEKARANG", "cta2_link": "/cara-mendaftar", "background_image": "https://example.com/hero.jpg"}', 1),
 ('about', 'Sekilas DHS', '{"label": "SEKILAS DHS", "headline": "Transformasi Menuju Unggul.", "paragraph1": "Denpasar Hotel School (DHS) adalah lembaga pendidikan dan pelatihan bidang perhotelan yang mengusung pendidikan luar negeri dengan mengintegrasikan lembaga pendidikan dan pelatihan dengan dunia industri.", "paragraph2": "Lembaga ini didirikan untuk memberi kesempatan generasi muda Indonesia menjadi tenaga profesional bidang perhotelan, hospitality, kapal pesiar dan pariwisata, serta belajar sambil bekerja di luar negeri."}', 2),
 ('vision', 'Visi & Misi', '{"section_title": "Standar Visioner.", "vision_text": "Mentransformasi lulusan SMA, SMK, dan sederajat menjadi tenaga profesional di bidang perhotelan dan pariwisata yang mau dan mampu bersaing di tingkat global.", "mission_items": ["Melaksanakan program pendidikan inovatif sesuai kebutuhan industri.", "Mengembangkan sumberdaya pendidikan dan pelatihan secara profesional.", "Memberikan kesempatan mahasiswa untuk belajar sambil bekerja di Australia, Jerman dan Asia Tenggara."]}', 3),
-('contact', 'Kontak & Lokasi', '{"denpasar_address": "Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali", "denpasar_wa": "+62 81 246 319966", "denpasar_email": "sahabat@dhs.or.id", "klungkung_address": "Jl. Raya Takmung No. 36, Klungkung 80752, Bali", "klungkung_phone": "+0366 5582998", "klungkung_wa": "+62 81 337 106480"}', 10);
+('contact', 'Kontak & Lokasi', '{"denpasar_address": "Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali", "denpasar_wa": "+62 81 246 319966", "denpasar_email": "dhsvokasi@gmail.com", "klungkung_address": "Jl. Raya Takmung No. 36, Klungkung 80752, Bali", "klungkung_phone": "+0366 5582998", "klungkung_wa": "+62 81 337 106480"}', 10);
 
 -- SEED: program_categories (Kategori Program)
 INSERT IGNORE INTO program_categories (category_key, category_name, subtitle, description, career_opportunities, display_order) VALUES
@@ -477,16 +477,16 @@ INSERT IGNORE INTO navigation_menus (parent_id, menu_label, menu_url, menu_type,
 INSERT IGNORE INTO footer_settings (setting_key, setting_value, setting_group) VALUES
 ('address_denpasar', 'Jl. Sari Dana IV No. 1 Gatsu Barat, Denpasar 80116, Bali', 'contact'),
 ('phone_denpasar', '+62 81 246 319966', 'contact'),
-('email_denpasar', 'sahabat@dhs.or.id', 'contact'),
+('email_denpasar', 'dhsvokasi@gmail.com', 'contact'),
 ('address_klungkung', 'Jl. Raya Takmung No. 36, Klungkung 80752, Bali', 'contact'),
 ('phone_klungkung', '+0366 5582998', 'contact'),
 ('wa_klungkung', '+62 81 337 106480', 'contact'),
 ('linktree_url', 'https://linktr.ee/BiayaPendidikan_DHS', 'links'),
 ('student_portal_url', 'http://www.dhs.or.id/student', 'links'),
 ('google_maps_url', 'https://maps.google.com/?q=Denpasar+Hotel+School', 'links'),
-('facebook_url', 'https://facebook.com/dhsofficial', 'social'),
-('instagram_url', 'https://instagram.com/dhsofficial', 'social'),
-('youtube_url', 'https://youtube.com/@dhsofficial', 'social');
+('facebook_url', 'https://www.facebook.com/denpasarhotelschool/?locale=id_ID', 'social'),
+('instagram_url', 'https://www.instagram.com/denpasarhotelschool_/', 'social'),
+('youtube_url', 'https://www.youtube.com/@denpasarhotelschool7368', 'social');
 
 -- SEED: registrations (Contoh Data Pendaftar)
 INSERT IGNORE INTO registrations (full_name, phone, email, category_key, program_title, special_request, info_sources, status, registration_date) VALUES

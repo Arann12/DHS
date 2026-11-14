@@ -7,10 +7,10 @@
     $phoneDenpasar = $footerSettings['phone_denpasar'] ?? '+62 81 246 319966';
     $phoneKlungkung = $footerSettings['phone_klungkung'] ?? '+0366 5582998';
     $waKlungkung = $footerSettings['wa_klungkung'] ?? '+62 81 337 106480';
-    $email = $footerSettings['email'] ?? 'sahabat@dhs.or.id';
-    $instagramUrl = $footerSettings['instagram_url'] ?? 'https://instagram.com/denpasarhotelschool';
-    $facebookUrl = $footerSettings['facebook_url'] ?? '#';
-    $youtubeUrl = $footerSettings['youtube_url'] ?? '#';
+    $email = $footerSettings['email'] ?? ($footerSettings['email_denpasar'] ?? 'dhsvokasi@gmail.com');
+    $instagramUrl = $footerSettings['instagram_url'] ?? 'https://www.instagram.com/denpasarhotelschool_/';
+    $facebookUrl = $footerSettings['facebook_url'] ?? 'https://www.facebook.com/denpasarhotelschool/?locale=id_ID';
+    $youtubeUrl = $footerSettings['youtube_url'] ?? 'https://www.youtube.com/@denpasarhotelschool7368';
     $copyright = $footerSettings['copyright'] ?? '© 2026 DENPASAR HOTEL SCHOOL.';
     $exploreLinks = json_decode($footerSettings['explore_links'] ?? '[]', true);
     if (empty($exploreLinks)) {

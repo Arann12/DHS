@@ -95,7 +95,7 @@ class HomepageSectionSeeder extends Seeder
   'denpasar_wa' => '+6281337644463',
   'google_maps' => 'https://maps.google.com/?q=Denpasar+Hotel+School',
   'klungkung_wa' => '+62 81 337 106480',
-  'denpasar_email' => 'sahabat@dhs.or.id',
+  'denpasar_email' => 'dhsvokasi@gmail.com',
   'student_portal' => 'http://www.dhs.or.id/student',
   'google_maps_dir' => 'https://maps.google.com/?q=Denpasar+Hotel+School',
   'klungkung_phone' => '+0366 5582998',
@@ -287,7 +287,7 @@ class HomepageSectionSeeder extends Seeder
   'title' => 'Kirim Pertanyaan',
   'subtitle' => 'Isi formulir pesan dikirim otomatis ke email resmi kami.',
   'button_text' => 'KIRIM VIA EMAIL',
-  'recipient_email' => 'sahabat@dhs.or.id',
+  'recipient_email' => 'dhsvokasi@gmail.com',
 ),
                 'is_active' => true,
                 'display_order' => 0,
@@ -356,7 +356,7 @@ class HomepageSectionSeeder extends Seeder
   'helpdesk_wa' => '+62 81 246 319966',
   'notice_text' => 'Unggah berkas kelengkapan Anda ke Google Drive dan cantumkan link publik pada formulir di bawah. Tim DHS akan segera memproses pengajuan Anda.',
   'header_title' => 'Formulir Pengajuan Beasiswa & Dokumen',
-  'helpdesk_email' => 'sahabat@dhs.or.id',
+  'helpdesk_email' => 'dhsvokasi@gmail.com',
   'helpdesk_hours' => 'Senin - Sabtu: 08:00 - 17:00 WITA',
   'dokumen_options' => 
   array (

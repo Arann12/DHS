@@ -315,9 +315,6 @@
                                     </a>
                                 </template>
                                 <template x-if="selectedItem.kas_transaction_id">
-                                    <a :href="'/backoffice/kas/' + selectedItem.kas_transaction_id + '/kwitansi'" target="_blank" class="btn-primary" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
-                                        <span class="material-icons-round" style="font-size:16px;">receipt_long</span> Cetak Kwitansi Kas
-                                    </a>
                                 </template>
                             </div>
                         </div>
