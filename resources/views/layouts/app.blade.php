@@ -332,6 +332,21 @@
             /* remove transform context entirely */
         }
 
+        body.page-ready #main-nav {
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.45s ease,
+                        background 0.3s ease,
+                        backdrop-filter 0.3s ease,
+                        box-shadow 0.3s ease,
+                        padding 0.3s ease !important;
+        }
+
+        body.page-ready #main-nav.nav-hidden {
+            transform: translateY(-110%) !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         /* ================================================================
             SCROLL REVEAL SYSTEM WITH ENHANCED FADE OUT
         ================================================================ */
@@ -927,6 +942,7 @@
 
             var navbar = document.getElementById('main-nav');
             var scrollProgress = document.getElementById('dhs-scroll-progress');
+            var navIdleTimer = null;
 
             function handleScroll() {
                 var scrolled = window.scrollY;
@@ -944,6 +960,21 @@
                     } else {
                         navbar.classList.remove('nav-glass');
                         navbar.classList.add('nav-transparent');
+                    }
+
+                    // Auto-hide navbar while scrolling, smoothly reappear after 2s idle
+                    var isMobileMenuOpen = document.getElementById('mobile-menu') && document.getElementById('mobile-menu').classList.contains('is-open');
+                    if (!isMobileMenuOpen) {
+                        if (scrolled > 60) {
+                            navbar.classList.add('nav-hidden');
+                        } else {
+                            navbar.classList.remove('nav-hidden');
+                        }
+
+                        if (navIdleTimer) clearTimeout(navIdleTimer);
+                        navIdleTimer = setTimeout(function () {
+                            navbar.classList.remove('nav-hidden');
+                        }, 2000);
                     }
                 }
             }
