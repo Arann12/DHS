@@ -249,21 +249,22 @@
     
     <!-- ░░ FULLSCREEN AMBIENT SHOWCASE: SEJARAH & MILESTONE (100VH DESKTOP, NATURAL SCROLL) ░░ -->
     <section id="fullscreen-chrono-section" class="dhs-fullscreen-chrono w-full text-white select-none relative overflow-hidden" style="background: #080D15; color: #ffffff;">
-        {{-- Subtle Ambient Radial Lighting --}}
-        <div class="absolute -top-32 right-1/4 w-[550px] h-[550px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(100px);"></div>
-        <div class="absolute -bottom-32 left-10 w-[500px] h-[500px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(95px);"></div>
+        {{-- Ambient Radial Lighting & Subtle Mesh Glow --}}
+        <div class="absolute -top-32 right-1/4 w-[600px] h-[600px] rounded-full pointer-events-none opacity-20" style="background: radial-gradient(circle, #C5A880 0%, transparent 70%); filter: blur(110px);"></div>
+        <div class="absolute -bottom-32 left-10 w-[550px] h-[550px] rounded-full pointer-events-none opacity-15" style="background: radial-gradient(circle, #C53030 0%, transparent 70%); filter: blur(100px);"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full pointer-events-none opacity-5" style="background: radial-gradient(ellipse, #C5A880 0%, transparent 75%); filter: blur(120px);"></div>
 
-        <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-between px-4 sm:px-8 py-5 lg:py-7 relative z-10">
-            {{-- Top Header & Navigation Controls (No "Scroll untuk navigasi" badge) --}}
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10 shrink-0">
+        <div class="max-w-[1540px] mx-auto w-full h-full flex flex-col justify-between px-5 sm:px-8 lg:px-14 relative z-10">
+            {{-- Top Header & Navigation Controls --}}
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 pb-2.5 border-b border-white/10 shrink-0">
                 <div>
-                    <div class="flex items-center gap-2 mb-1">
+                    <div class="flex items-center gap-2 mb-0.5">
                         <span class="w-2 h-2 rounded-full" style="background-color: #C5A880;"></span>
                         <span class="text-[0.68rem] tracking-[0.25em] uppercase font-bold" style="color: #E5C397;">
                             MILESTONE STRATEGIS (2017 — 2024)
                         </span>
                     </div>
-                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-tight text-white">
+                    <h2 class="text-lg sm:text-xl lg:text-2xl font-serif font-bold tracking-tight text-white">
                         Transformasi Keunggulan & Reputasi Global
                     </h2>
                 </div>
@@ -293,11 +294,11 @@
             </div>
 
             {{-- Center Viewport: Split Screen Theater (50:50) --}}
-            <div class="flex-1 flex items-center justify-center my-auto py-3 lg:py-5">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center w-full">
+            <div class="flex-1 flex items-center justify-center my-auto py-2 lg:py-4 min-h-0">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-center w-full">
                     {{-- Left Column: 3D Tilt Archival Visual Theater (lg:col-span-6) --}}
                     <div class="lg:col-span-6 w-full flex justify-center">
-                        <div class="dhs-tilt-perspective w-full max-w-[540px]">
+                        <div class="dhs-tilt-perspective w-full max-w-[500px] lg:max-w-[540px]">
                             <div id="dhs-tilt-card" class="dhs-tilt-card group">
                                 <img id="dhs-chrono-img"
                                      src="{{ $timelineStages[0]['image'] ?? '/image/hotel_lobby.jpg' }}"
@@ -311,7 +312,7 @@
                                 <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(180deg, rgba(8,13,21,0.05) 0%, rgba(8,13,21,0.65) 100%);"></div>
 
                                 {{-- Floating Badges over Photo --}}
-                                <div class="absolute top-4 left-4 z-10">
+                                <div class="absolute top-3.5 left-3.5 z-10">
                                     <span id="dhs-photo-badge" class="px-3 py-1 rounded-full text-[0.65rem] font-bold tracking-widest uppercase border backdrop-blur-md"
                                           style="background: rgba(8, 13, 21, 0.75); border-color: rgba(197, 168, 128, 0.4); color: #E5C397;">
                                         {{ $timelineStages[0]['badge'] ?? 'GLOBAL NETWORK' }}
@@ -319,7 +320,7 @@
                                 </div>
 
                                 {{-- Top-Right Lightbox Zoom Button --}}
-                                <div class="absolute top-4 right-4 z-10">
+                                <div class="absolute top-3.5 right-3.5 z-10">
                                     <button type="button"
                                             id="dhs-zoom-btn"
                                             class="w-8 h-8 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:scale-110 transition-all cursor-pointer"
@@ -330,12 +331,12 @@
                                 </div>
 
                                 {{-- Bottom Location Bar --}}
-                                <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs backdrop-blur-md px-4 py-2 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.85);">
+                                <div class="absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between text-xs backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10" style="background: rgba(8, 13, 21, 0.85);">
                                     <div class="flex items-center gap-1.5">
                                         <span class="material-icons text-sm" style="color: #E5C397;">place</span>
-                                        <span id="dhs-photo-hub" class="font-medium text-white">{{ $timelineStages[0]['hub'] ?? 'Jaringan Hotel Bintang 5 Dunia' }}</span>
+                                        <span id="dhs-photo-hub" class="font-medium text-white text-xs truncate">{{ $timelineStages[0]['hub'] ?? 'Jaringan Hotel Bintang 5 Dunia' }}</span>
                                     </div>
-                                    <span class="text-[0.65rem] font-mono tracking-wider text-slate-400">HISTORIC ARCHIVE</span>
+                                    <span class="text-[0.62rem] font-mono tracking-wider text-slate-400 shrink-0">HISTORIC ARCHIVE</span>
                                 </div>
                             </div>
                         </div>
@@ -343,7 +344,7 @@
 
                     {{-- Right Column: Kinetic Editorial Narrative (lg:col-span-6) --}}
                     <div class="lg:col-span-6 flex flex-col justify-center">
-                        <div class="space-y-3.5 max-w-xl">
+                        <div class="space-y-2.5 lg:space-y-3 max-w-xl">
                             {{-- Phase Indicator --}}
                             <div class="flex items-center gap-2">
                                 <span class="text-xs uppercase tracking-[0.25em] font-bold" style="color: #E5C397;" id="dhs-chrono-phase">
@@ -353,40 +354,40 @@
 
                             {{-- Rolling Number Year Animation Container --}}
                             <div class="dhs-rolling-year-container">
-                                <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none" style="color: #C5A880;">
+                                <div id="dhs-chrono-year" class="dhs-rolling-year font-serif italic font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none" style="color: #C5A880;">
                                     {{ $timelineStages[0]['year'] ?? '2017' }}
                                 </div>
                             </div>
 
                             {{-- Milestone Title --}}
-                            <h3 class="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
+                            <h3 class="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-white tracking-wide transition-opacity duration-300" id="dhs-chrono-title">
                                 {{ $timelineStages[0]['title'] ?? 'Kemitraan Marriott International' }}
                             </h3>
 
                             {{-- Milestone Description --}}
-                            <p class="text-sm sm:text-base text-slate-300 leading-relaxed transition-opacity duration-300" id="dhs-chrono-desc">
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed transition-opacity duration-300" id="dhs-chrono-desc">
                                 {{ $timelineStages[0]['desc'] ?? '' }}
                             </p>
 
                             {{-- Editorial Quote Pill --}}
                             <div class="pl-3.5 border-l-2 transition-opacity duration-300" style="border-color: #C5A880;" id="dhs-chrono-quote-box">
-                                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed" id="dhs-chrono-quote">
+                                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed" id="dhs-chrono-quote">
                                     "{{ $timelineStages[0]['quote'] ?? 'Membuka akses karir eksklusif ke jaringan hotel bintang 5 global tanpa biaya agen.' }}"
                                 </p>
                             </div>
 
                             {{-- Single Metric Card --}}
-                            <div class="pt-1.5">
-                                <div class="p-3 sm:p-3.5 rounded-2xl border border-white/10 flex items-center gap-4 transition-all" style="background: rgba(255, 255, 255, 0.04);">
-                                    <div class="font-serif text-2xl sm:text-3xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
+                            <div class="pt-1">
+                                <div class="p-2.5 sm:p-3 rounded-2xl border border-white/10 flex items-center gap-3.5 transition-all" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="font-serif text-xl sm:text-2xl font-extrabold shrink-0 tracking-tight" style="color: #E5C397;" id="dhs-stat-val">
                                         {{ $timelineStages[0]['stat_val'] ?? '5-STAR' }}
                                     </div>
-                                    <div class="w-px h-9 bg-white/15 shrink-0"></div>
+                                    <div class="w-px h-8 bg-white/15 shrink-0"></div>
                                     <div class="min-w-0">
-                                        <div class="text-[0.68rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
+                                        <div class="text-[0.65rem] uppercase tracking-wider font-semibold text-slate-400" id="dhs-stat-label">
                                             {{ $timelineStages[0]['stat_label'] ?? 'Mitra Marriott Group' }}
                                         </div>
-                                        <div class="text-xs sm:text-sm font-medium text-white truncate" id="dhs-stat-desc">
+                                        <div class="text-xs font-medium text-white truncate" id="dhs-stat-desc">
                                             {{ $timelineStages[0]['stat_desc'] ?? 'Jalur karir langsung ke hotel luxury internasional' }}
                                         </div>
                                     </div>
@@ -398,20 +399,20 @@
             </div>
 
             {{-- Bottom: 3-Segment Interactive Milestone Timeline Tabs with Live Progress Bar --}}
-            <div class="pt-3 border-t border-white/10 shrink-0">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-4xl mx-auto w-full">
+            <div class="pt-2.5 border-t border-white/10 shrink-0">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 max-w-4xl lg:max-w-5xl mx-auto w-full">
                     @foreach($timelineStages as $idx => $m)
                     <button type="button"
                             onclick="dhsChronoSelect({{ $idx }})"
                             id="dhs-tab-{{ $idx }}"
-                            class="dhs-milestone-tab group text-left p-3 rounded-2xl border transition-all duration-300 cursor-pointer {{ $idx === 0 ? 'active' : '' }}">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="dhs-tab-year font-serif font-bold text-base transition-colors">{{ $m['year'] }}</span>
+                            class="dhs-milestone-tab group text-left p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 cursor-pointer {{ $idx === 0 ? 'active' : '' }}">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <span class="dhs-tab-year font-serif font-bold text-sm sm:text-base transition-colors">{{ $m['year'] }}</span>
                             <span class="dhs-tab-badge text-[0.62rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full transition-colors">{{ $m['badge'] }}</span>
                         </div>
                         <div class="dhs-tab-title text-xs font-semibold text-slate-300 truncate transition-colors">{{ $m['title'] }}</div>
                         {{-- Micro Progress Bar for Autoplay --}}
-                        <div class="mt-2 w-full h-[3px] bg-white/10 rounded-full overflow-hidden">
+                        <div class="mt-1.5 w-full h-[3px] bg-white/10 rounded-full overflow-hidden">
                             <div class="dhs-tab-progress h-full w-0 rounded-full transition-all duration-75" style="background: linear-gradient(90deg, #C53030, #E5C397);"></div>
                         </div>
                     </button>
@@ -430,10 +431,15 @@
                 height: 100vh;
                 min-height: 100vh;
                 max-height: 100vh;
+                padding-top: 5.25rem; /* Exactly 84px for the floating navbar */
+                padding-bottom: 1.25rem;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
                 position: relative;
+                box-sizing: border-box;
+                scroll-snap-align: start;
+                scroll-margin-top: 0;
             }
         }
         @media (max-width: 1023px) {
@@ -444,8 +450,9 @@
                 flex-direction: column;
                 justify-content: space-between;
                 position: relative;
-                padding-top: 5rem;
+                padding-top: 5.5rem;
                 padding-bottom: 2.5rem;
+                box-sizing: border-box;
             }
         }
 
@@ -457,7 +464,7 @@
             position: relative;
             width: 100%;
             aspect-ratio: 16 / 10;
-            max-height: 380px;
+            max-height: min(320px, 34vh);
             border-radius: 1.25rem;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -504,7 +511,7 @@
         /* Rolling Year Animation */
         .dhs-rolling-year-container {
             overflow: hidden;
-            height: 4.25rem;
+            height: 3.5rem;
             display: flex;
             align-items: center;
         }
@@ -512,11 +519,11 @@
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
         }
         .dhs-rolling-year.anim-out {
-            transform: translateY(-50px);
+            transform: translateY(-40px);
             opacity: 0;
         }
         .dhs-rolling-year.anim-in {
-            transform: translateY(50px);
+            transform: translateY(40px);
             opacity: 0;
         }
 
@@ -789,11 +796,42 @@
             });
         }
 
+        // Auto-alignment helper to lock exactly 1 full screen when user scrolls near
+        let isSnapping = false;
+        function initAutoAlign() {
+            const section = document.getElementById('fullscreen-chrono-section');
+            if (!section) return;
+
+            let snapTimer = null;
+            window.addEventListener('scroll', function() {
+                if (window.innerWidth < 1024 || isSnapping) return;
+                const rect = section.getBoundingClientRect();
+                const viewportH = window.innerHeight;
+
+                // When section covers between 35% and 85% of viewport
+                if (rect.top > -viewportH * 0.35 && rect.top < viewportH * 0.55 && Math.abs(rect.top) > 25) {
+                    if (snapTimer) clearTimeout(snapTimer);
+                    snapTimer = setTimeout(function() {
+                        const r = section.getBoundingClientRect();
+                        if (r.top > -viewportH * 0.4 && r.top < viewportH * 0.55 && Math.abs(r.top) > 20) {
+                            isSnapping = true;
+                            window.scrollTo({
+                                top: section.offsetTop,
+                                behavior: 'smooth'
+                            });
+                            setTimeout(function() { isSnapping = false; }, 750);
+                        }
+                    }, 220);
+                }
+            }, { passive: true });
+        }
+
         // Initialize on DOM Ready
         document.addEventListener('DOMContentLoaded', function() {
             updateView(0);
             initTilt();
             initHoverPause();
+            initAutoAlign();
             resetAndStartAutoplay();
         });
     })();
